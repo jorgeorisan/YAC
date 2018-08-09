@@ -1,0 +1,145 @@
+<?php
+$lineId = rand(1000, 100000);
+if ($this->obj): ?>
+    <tr class="producto" lineid="<?php echo $lineId; ?>">
+        <td>
+            <?php echo $this->cantidad; ?>
+            <input type="hidden" name="cantidad[]" value="<?php echo $this->cantidad; ?>"/>
+            <input type="hidden" name="id_producto[]" value="<?php echo $this->obj->id_producto; ?>"/>
+        </td>
+        <td>
+            <?php echo $this->obj->codinter; ?>
+        </td>
+        <td>
+            <?php echo $this->obj->nombre; ?>
+        </td>
+        <td>
+            <?php
+            $precioBase = 0;
+            $descuento = false;
+            if ($this->obj->descuento_activado) {
+                $descuento = "Descuento en artículo";
+                $precioBase = $this->obj->precio_descuento;
+            } elseif ($this->obj->Marca->descuento_activado) {
+                $descuento = "Descuento en marca " . $this->obj->Marca->descuento . "%";
+                $precioBase = $this->obj->precio * ((100 - $this->obj->Marca->descuento) / 100);
+            } elseif ($this->obj->Categoria->descuento_activado) {
+                $descuento = "Descuento en categoría " . $this->obj->Categoria->descuento . "%";
+                $precioBase = $this->obj->precio * ((100 - $this->obj->Categoria->descuento) / 100);
+            } else {
+                ////////////////////existencias
+
+                $query = Doctrine_Query::create()
+                    ->select("ifnull(sum(existencias),0) totexistencias")
+                    ->from("Database_Model_ProductoTienda")
+                    ->where("id_producto=?",$this->obj->id_producto)
+                    ->andWhere("tienda_id_tienda!=14");
+                //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
+                foreach($query->execute() as $objt){
+                    $totexistencias=$objt["totexistencias"];
+                }
+                $id_tienda=$this->id_tienda;
+
+                $existentes=$totexistencias-$this->cantidad;
+
+
+                $ejeprecio= Doctrine_Query::create()
+                    ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                    ->where("a.id_producto=?",$this->obj->id_producto)
+                    ->andWhere("b.status='ACTIVO'")
+                    ->orderBy("id_entrada_producto DESC")
+                    ->limit(1)
+                    ;
+
+                $precio2=0;
+                $preciodesc2=0;
+                foreach($ejeprecio->execute() as $ex){
+                    $existentes=$ex["cantidad"]-$ex["cantvendida"]-$this->cantidad;
+                    $id_entrada_producto=$ex["id_entrada_producto"];
+                    $preciodesc2=$ex["precio_descuento"];
+                        $precioBase=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                    $precio2=$ex["precio"];
+                }
+                if($precio2){
+                    $precioBase=$precio2;
+                }else{
+                    $precioBase=$this->obj->precio;
+                }
+                if($preciodesc2>0){
+                    $preciodesc=$preciodesc2;
+                }else{
+                    $preciodesc=$this->obj->precio_descuento;
+                }
+                if($this->tipoprecio=="Mayoreo" ){//si son el precio es por mayoreo
+                    $precioBase=$preciodesc;
+                }
+                if($this->tipoprecio=="Promocumple" ) {//si son el precio es por promocion cumpleanios
+                    $precioBase=0;
+                }
+
+                //echo $precioBase; exit;
+                $ejecosto= Doctrine_Query::create()
+                    ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                    ->where("a.id_producto=?",$this->obj->id_producto)
+                    ->andWhere("b.status='ACTIVO'")
+                    ->andWhere("a.cantvendida<a.cantidad")
+                    ->orderBy("id_entrada_producto asc")
+                    ->limit(1);
+                $costoBase=$this->obj->costo;
+                foreach($ejecosto->execute() as $excosto){
+                    $costoBase=$ex["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                }
+            }
+            echo "<div  title='Existentes con este precio: ".$existentes."'>$" . number_format($precioBase, 2)."</div>";
+            ?>
+        </td>
+        <td>
+            <?php
+            if($this->obj->manual){
+                ?>
+                <input type="hidden" class="" name="costototal[]"
+                       value="0"/>
+                <input type="text" style="width: 50px" class="totales" onblur=" calcTotal();" name="total[]"
+                       value="<?php echo ($this->cantidad * $precioBase); ?>"/>
+                <input type="hidden" class="id_entrada_producto" name="id_entrada_producto[]"
+                       value="0"/>
+                <input type="hidden" class="id_tienda" name="id_tienda"
+                       value="<?php echo $id_tienda; ?>"/>
+                <input type="hidden" class="" name="tipoprecio[]"
+                       value="<?php echo $this->tipoprecio; ?>"/>
+                <?php
+            }else{
+                ?>
+                <input type="hidden" class="" name="costototal[]"
+                       value="<?php echo ($this->cantidad * $costoBase); ?>"/>
+                <input type="hidden" class="totales" name="total[]"
+                       value="<?php echo ($this->cantidad * $precioBase); ?>"/>
+                <input type="hidden" class="id_entrada_producto" name="id_entrada_producto[]"
+                       value="<?php echo $id_entrada_producto; ?>"/>
+                <input type="hidden" class="id_tienda" name="id_tienda"
+                       value="<?php echo $id_tienda; ?>"/>
+                <input type="hidden" class="" name="tipoprecio[]"
+                       value="<?php echo $this->tipoprecio; ?>"/>
+                $<?php echo number_format($this->cantidad * $precioBase, 2); ?>
+           <?php }?>
+
+        </td>
+
+        <td class="borrar-td">
+            <a href="#" class="borrar-producto" lineid="<?php echo $lineId; ?>">Cancelar</a>
+        </td>
+    </tr>
+    <?php if ($descuento): ?>
+        <tr lineid="<?php echo $lineId; ?>">
+            <td>
+            </td>
+            <td>
+                <?php echo $descuento; ?>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+    <?php endif; ?>
+<?php endif; ?>

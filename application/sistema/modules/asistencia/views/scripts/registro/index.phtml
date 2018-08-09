@@ -1,0 +1,85 @@
+<h1>Asistencia</h1>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var actionURL = "<?php if ($this->last == "Salida") {
+            echo $this->baseUrl("asistencia/registro/entrada");
+        } else {
+            echo $this->baseUrl("asistencia/registro/salida");
+        }; ?>";
+        //$("form").attr("action", actionURL);
+    });
+</script>
+<h3 class="tit">Historial del día</h3>
+
+<form action=""  method="post">
+
+    <table class="full-width">
+        <tr>
+            <td><label>Usuario</label></td>
+            <td>  <?php
+                $querysaldo = Doctrine_Query::create()
+                    ->from("Database_Model_Usuario")
+                    ->Where("status = ?", "ACTIVO")
+                    ->execute();
+                $arr = array();
+                foreach($querysaldo as $s){
+                    $arr[$s->id_usuario] = $s->nombre;
+                }
+
+                echo $this->formSelect("id_usuario", $this->profile()->id_usuario,
+                        array("style"=>"width:460px","class" => "selectnvo"),
+                    array($arr)
+                    );
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Tipo</label></td>
+            <td>  <?php
+                if ($this->last == "Salida"):
+                   $msj='Entrada';
+             else:
+                 $msj='Entrada';
+                 endif;
+                echo $this->formSelect("tipo",$msj,
+                    array("style"=>"width:460px","class" => "selectnvo"),
+                    array("Entrada"=>'Entrada',"Salida"=>'Salida')
+                );
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">   <input style="width: 100%" type="submit" id="send" class="button" value="Registrar"> </td>
+
+        </tr>
+
+    </table>
+
+</form>
+
+
+<h3 class="tit">Historial del día</h3>
+
+<table class="full-width">
+    <tr>
+        <th>Usuario</th>
+        <th>Hora</th>
+        <th>Tipo</th>
+    </tr>
+    <?php foreach ($this->query as $obj): ?>
+    <tr>
+        <td><?php echo $obj->id_usuario; ?></td>
+        <td><?php echo $obj->hora; ?></td>
+        <td><?php echo $obj->tipo; ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<script>
+    $(".selectnvo").multiselect({
+        multiple: false,
+        header: "Selecciona una opcion",
+        noneSelectedText: "Seleccionar",
+        selectedList: 1
+    }).multiselectfilter();
+</script>

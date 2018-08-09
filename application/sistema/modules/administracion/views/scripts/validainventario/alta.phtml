@@ -1,0 +1,129 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#barcodeform").submit(function (e) {
+            e.preventDefault();
+            var barcode = $("#barcode").val();
+            $("#codbarras").val(barcode);
+
+            $("#barcode").val("");
+
+            var datos=new FormData();  //generando un obj de un formulario que se va a crear virtualmente
+            var solicitud=new XMLHttpRequest();
+            datos.append("id",barcode);
+            solicitud.addEventListener("load",contdiv,true);
+            solicitud.open("POST","<?php echo $this->baseUrl("/"); ?>/administracion/productos/getproducto",true);
+            solicitud.send(datos);
+            return false;
+        });
+        $("#costo").keyup(function (e){
+            var precio = (parseFloat($(this).val())*  parseFloat($("#iva").val()) )*   parseFloat($("#multiplicador").val());
+            $("#precio").val(precio);
+        });
+        function contdiv(e){
+            var res=e.target.responseText;
+            document.getElementById("producto").innerHTML=res;
+           // $(".chzn-select").chosen();//este es para que ponga la busqueda en el select(nombre de la clase)
+           // $(".datatable-static").dataTable(); ///////este es para que ponga el paginador(nombre de la clase)
+        }
+    });
+</script>
+
+
+
+
+<h1>Inventario</h1>
+<h3 class="tit">ALTA DE INVENTARIO</h3>
+
+<form action="" id="barcodeform">
+    <input type="text" id="barcode" placeholder="Código de barras"/>
+    <input type="submit" value="Usar"/>
+</form>
+
+<form method="post" action="" class="form-horizontal">
+    <fieldset>
+        <legend>Entrada de Productos</legend>
+
+        <div class="control-group">
+            <label class="control-label">Producto</label>
+            <div class="controls">
+                <div id="producto">
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Tienda</label>
+            <div class="controls">
+                <?php echo $this->formSelect("id_tienda", $this->data["id_tienda"],
+                    array("style"=>"width:460px","required" => "required"),
+                    Database_Model_Tienda::getAll()
+                ); ?>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Cantidad</label>
+            <div class="controls">
+                <?php echo $this->formText("cantidad", $this->data["cantidad"],
+                    array("required" => "required")
+                ); ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Costo</label>
+            <div class="controls">$
+                <?php echo $this->formText("costo", $this->data["costo"],
+                    array("" => "")
+                ); ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Multiplicador IVA.</label>
+            <div class="controls">
+                <?php echo $this->formText("iva", 1.16,
+                    array("" => "")
+                ); ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Multiplicador</label>
+            <div class="controls">
+                <?php echo $this->formText("multiplicador", 1.5,
+                    array("" => "")
+                ); ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">Precio</label>
+            <div class="controls">$
+                <?php echo $this->formText("precio", $this->data["precio"],
+                    array("" => "")
+                ); ?>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Comentarios</label>
+            <div class="controls">
+                <?php echo $this->formTextarea("comentarios", $this->data["comentarios"],
+                    array()
+                ); ?>
+            </div>
+        </div>
+
+    </fieldset>
+
+
+    <div class="form-actions">
+        <input type="submit" value="Aceptar">
+
+    </div>
+</form>
+
+
+<script>
+
+
+</script>

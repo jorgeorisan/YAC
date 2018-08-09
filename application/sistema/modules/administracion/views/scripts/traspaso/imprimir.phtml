@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Trepsi</title>
+
+    <script type="text/javascript">
+        window.print();
+    </script>
+
+    <style type="text/css">
+        body {
+            font-family: Arial;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body style="text-align: center; width: 175px;">
+<table width="1000" border="0">
+    <tr colspan="3" align="left">
+        <td width="807">Trepsi traspaso de Productos</td>
+        <td width="0"></td>
+    </tr>
+    <tr>
+        <td colspan="3" align="left"><label style="font-size:14px">Mexico D.F. a &nbsp;<?php echo $this->obj->fecha; ?> </label></td>
+        <td width="177"><label style="font-size:14px">Folio:<label style="color:#F00"> No.&nbsp; <?php echo $this->obj->id_traspaso; ?></label></label></td>
+    </tr>
+    <tr colspan="3" align="left">
+        <td><label style="font-size:14px">Referencia:<label style="color:#120000"> No.&nbsp; <?php echo $this->obj->referencia; ?></label></label></td>
+        <td width="0"></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="left"><label style="font-size:14px">Concepto &nbsp;<?php echo $this->obj->concepto; ?> </label></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="left"><label style="font-size:14px">Tienda Origen &nbsp;<?php
+                $obj = Doctrine_Core::getTable("Database_Model_Tienda")->findOneBy("id_tienda", $this->obj->id_tiendaanterior);
+                echo strtoupper($obj->nombre); ?> </label></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="left"><label style="font-size:14px">Tienda Destino &nbsp;<?php echo $this->obj->Tienda->nombre;?> </label></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="left"><label style="font-size:14px">Usuario &nbsp;<?php echo $this->obj->Usuario->nombre; ?> </label></td>
+    </tr>
+</table>
+<h3>Artículos</h3>
+<table width="1000">
+    <tr>
+        <th>Cod Inter.</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Costo</th>
+        <th>Costo Total</th>
+    </tr>
+    <?php
+    $total = 0;
+    $costo = 0;
+    $totalComision = 0;
+    $query= Doctrine_Query::create()
+        ->from("Database_Model_TraspasoProducto")
+        ->where("id_traspaso=?",$this->obj->id_traspaso)
+        ->execute();
+    $cant=0;
+    foreach ($query as $obj): ?>
+        <tr >
+
+            <td><?php echo $obj->Producto->codinter; ?></td>
+            <td><?php echo $obj->nombre; ?></td>
+            <td align=""><?php $cant+=$obj->cantidad; echo $obj->cantidad; ?></td>
+            <td align="">$<?php  echo number_format($obj->costo, 2); ?></td>
+
+            <td align="">$<?php $costo+=$obj->totalcosto; echo number_format($obj->totalcosto, 2); ?></td>
+
+        </tr>
+    <?php endforeach; ?>
+    <tr>
+        <td colspan="6"></td>
+    </tr>
+    <tr>
+        <td colspan="1">&nbsp;</td>
+        <td align="right"><strong>Total</strong></td>
+        <td colspan=""><?php echo number_format($cant, 0); ?></td>
+
+        <td align="right"><strong>Sub Total</strong></td>
+        <td> $<?php echo number_format($costo, 2); ?></td>
+    </tr>
+    <tr>
+        <td colspan="3"></td>
+        <td colspan="" align="right"><strong>IVA: </strong></td>
+        <td> $<?php echo number_format($costo - ($costo / 1.16), 2); ?></td>
+    </tr>
+    <tr>
+        <td colspan="3"></td>
+        <td colspan="" align="right"><strong>TOTAL: </strong>  </td>
+        <td> $<?php echo number_format($costo+($costo - ($costo / 1.16)), 2); ?></td>
+    </tr>
+
+</table>
+
+</body>
+</html>

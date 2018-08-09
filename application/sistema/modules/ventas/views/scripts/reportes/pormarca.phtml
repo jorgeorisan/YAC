@@ -1,0 +1,35 @@
+<h1>Reportes</h1>
+<h3 class="tit">Ventas por marca</h3>
+
+<?php echo $this->form; ?>
+
+<h3 class="tit">Reporte generado</h3>
+
+<table width="100%">
+    <tr>
+        <th>Marca</th>
+        <th>Cantidad</th>
+        <th>Producto</th>
+        <th>Tienda</th>
+        <th>Total</th>
+    </tr>
+    <?php
+    $total = 0;
+    $totalComision = 0;
+    foreach ($this->query as $obj): ?>
+        <tr>
+            <td><?php echo $obj->ProductoTienda->Producto->Marca->nombre; ?></td>
+            <td><?php echo $obj->total_cantidad; ?></td>
+            <td><?php echo $obj->ProductoTienda->Producto->nombre; ?></td>
+            <td><?php echo $obj->Venta->Tienda->nombre; ?></td>
+            <td>$<?php $total += $obj->total_total; echo number_format($obj->total_total, 2); ?></td>
+        </tr>
+        <?php endforeach; ?>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td align="right">Total:</td>
+        <td>$<?php echo number_format($total, 2); ?></td>
+    </tr>
+</table>

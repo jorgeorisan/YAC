@@ -1,0 +1,194 @@
+<script>
+    function ProductosTienda(){
+
+        var tienda=document.getElementById("id_tienda").value;
+        var baseurl=document.getElementById("baseurl").value;
+
+       if(tienda!=4){
+           location.href = baseurl+"productotienda/id_tienda/"+tienda;
+       }else{
+           location.href = baseurl;
+       }
+    }
+</script>
+<h1>Productos</h1>
+<p class="t-right"><input type="hidden" id="baseurl" value="<?php echo $this->baseUrl($this->request->getModuleName(). "/" .$this->request->getControllerName()."/"); ?>">
+    <a title="Nuevo Producto" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/alta"); ?>">
+        <img src="<?php echo $this->baseUrl("css/img/add.png") ?>" border="0"/>
+    </a>
+</p>
+<legend>Buscar Por Tienda</legend>
+<?php
+if($this->tipousu=="2"|| $this->usu=="mariely"){
+?>
+<div class="control-group">
+    <label class="control-label">Tienda</label>
+    <div class="controls">
+        <?php echo $this->formSelect("id_tienda", $this->tienda,
+            array("style"=>"width:460px","onchange"=>"ProductosTienda();"),
+            Database_Model_Tienda::getAll()
+        ); ?>
+        <?php $url_actual = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+        //echo "<strong>$url_actual</strong>";
+        $pieces = explode("productotienda/", $url_actual);
+         $pieces[0]; // piece1
+         $pieces[1]; // piece2
+        $pieces2 = explode("/", $pieces[1]);
+         $pieces2[1];
+        ?>
+        <a href="<?php echo $this->baseUrl("administracion/productos/excelproductotienda/id_tienda/".$pieces2[1]); ?>" class="btn btn-app btn-success btn-mini">
+            <i class="icon-download bigger-160"></i>
+            Exportar
+        </a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a target="_blank" href="<?php echo $this->baseUrl("administracion/productos/imprimirtienda/id_tienda/".$pieces2[1]); ?>" class="btn btn-app btn-success btn-mini">
+            <i class="icon-download bigger-160"></i>
+            Imprimir
+        </a>
+    </div>
+</div>
+
+<?php
+}?>
+<?php echo $this->form; ?>
+<table class="full-width">
+    <thead>
+    <tr>
+        <th>Cont.</th>
+        <th>Codigo Inter.</th>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Categoría</th>
+        <th>Proveedor</th>
+        <?php
+        if($this->tipousu=="2"|| $this->usu=="mariely"){
+        ?>
+        <th>Costo</th>
+        <?php
+        }?>
+        <th>Precio</th>
+        <th>Existencias</th>
+        <th>Paquete</th>
+        <th>Tienda</th>
+        <th >Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach ($this->query as $obj):// de producto ?>
+    <tr tooltip="true" title="Código de barras: <?php echo $obj->Producto->codbarras; ?>">
+
+        <td><?php echo $this->counter++; ?></td>
+        <td><?php echo $obj->Producto->codinter; ?></td>
+        <td> <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/detallesproducto/id/".$obj->id_producto); ?>">
+                <?php echo $obj->Producto->nombre; ?> </a>
+        </td>
+        <td><?php echo $obj->Producto->Marca->nombre; ?></td>
+        <td><?php echo $obj->Producto->Categoria->categoria; ?></td>
+        <td><?php echo $obj->Producto->Proveedor->nombre_corto; ?></td>
+        <?php
+
+        ////////////////////existencias
+
+        $query = Doctrine_Query::create()
+            ->select("ifnull(sum(existencias),0) totexistencias")
+            ->from("Database_Model_ProductoTienda")
+            ->where("id_producto=?",$obj->id_producto)
+            ->andWhere("tienda_id_tienda=?",$this->tienda)
+            ->execute();//verificamos si es adminisrador
+
+        foreach($query as $objt){
+            $totexistencias=$objt["totexistencias"];
+        }
+
+        ////////////////////////////////precio
+        $ejeprecio= Doctrine_Query::create()
+            ->from("Database_Model_EntradaProducto a, a.Entrada b")
+            ->where("a.id_producto=?",$obj->id_producto)
+            //->andWhere("cantvendida<cantidad")
+            ->andWhere("b.status='ACTIVO'")
+            ->orderBy("id_entrada_producto DESC")
+            ->limit(1);
+
+
+        $existentes=$totexistencias;
+        $precio2=null;
+        foreach($ejeprecio->execute() as $ex){
+            $existentes=$ex["cantidad"]-$ex["cantvendida"];
+            $precio2=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+        }
+        if($precio2){
+            $precio=$precio2;
+        }else{
+            $precio=$obj->Producto->precio;
+        }
+
+
+
+
+
+        ?>
+        <?php
+         if($this->tipousu=="2"){
+
+             $ejecosto= Doctrine_Query::create()
+                 ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                 ->where("a.id_producto=?",$obj->id_producto)
+                 ->andWhere("b.status='ACTIVO'")
+                 //  ->andWhere("a.cantvendida<a.cantidad")
+                 ->orderBy("id_entrada_producto desc")
+                 ->limit(1);
+             $costoBase0=$obj->Producto->costo;
+             // echo $ejecosto->getSqlQuery();//imprime la consulta qu ese esta generando
+             $costoBase=0;
+             $costoBase1=null;
+             foreach($ejecosto->execute() as $excosto){
+
+                 $costoBase1=$excosto["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+             }
+             if($costoBase1){
+                 $costoBase=$costoBase1;
+             }else{
+                 $costoBase=$costoBase0;
+             }
+
+        ?>
+
+             <td>$<?php echo number_format($costoBase, 2); ?></td>
+         <?php
+         }?>
+
+
+        <td  title="<?php echo "Existentes con este precio: ".$existentes; ?>">$<?php echo number_format($precio, 2); ?></td>
+        <td><?php      echo $totexistencias; ?></td>
+
+        <td><?php
+            if($obj->Producto->paquete==1){
+                echo "<label style='color: #0000cc;'>SI</label><br> "; ?>
+                <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/detallespaquete/id/".$obj->Producto->id_producto); ?>">
+                    Mostrar </a>
+            <?php
+            }else{
+                echo "NO";
+            }
+            // echo $obj->existencias; ?></td>
+        <td><?php      echo $obj->Tienda->nombre; ?></td>
+        <td>
+            <a  title="Agregar nueva Entrada" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/entradaprod/id/" . $obj->Producto->id_producto); ?>">
+                <img src="<?php echo $this->baseUrl("css/img/add.png") ?>" border="0"/>
+            </a>
+            <a title="Editar Producto" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/editar/id/" . $obj->Producto->id_producto); ?>">
+                <img src="<?php echo $this->baseUrl("css/img/edit.png") ?>" border="0"/>
+            </a>
+            <a title="Baja Produco" delete="true"
+               href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/borrar/id/" . $obj->Producto->id_producto); ?>">
+                <img src="<?php echo $this->baseUrl("css/img/delete.png") ?>" border="0"/>
+            </a>
+        </td>
+    </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<div id="tnt_pagination">
+    <?php echo $this->paginator; ?>
+</div>

@@ -1,0 +1,138 @@
+<h1>Validar Traspasos de Productos</h1>
+
+<?php echo $this->form; ?>
+
+<div style="overflow: auto">
+<table width="100%">
+    <tr>
+        <th>Ver</th>
+        <th>ID</th>
+
+        <th>Fecha</th>
+        <th>Origen</th>
+        <th>Destino</th>
+
+
+        <th>Cantidad Total</th>
+        <th>Costo Total(S/IVA y IEPS)</th>
+        <th>Costo Total(C/IVA Y IEPS)</th>
+        <th>Precio Publico</th>
+        <th>Precio Total</th>
+
+
+
+        <th>Status</th>
+        <th>Usuario</th>
+        <th>Comentarios</th>
+        <th ></th>
+    </tr>
+    <?php
+    $total = 0;
+    $costo = 0;
+    $costot = 0;
+    $precio=0;
+    $costoieps=0;
+    $costoiva=0;
+    $costoivat=0;
+    $totalComision = 0;
+    $ieps=0;
+    $iva=0;
+    $preciop=0;
+    $preciopt=0;
+    $preciot=0;
+    foreach ($this->query as $obj): ?>
+        <tr <?php
+        $qryep= Doctrine_Query::create()
+            ->from("Database_Model_TraspasoProducto")
+            ->where("id_traspaso = ?", $obj->id_traspaso)
+            ->execute();
+        foreach($qryep as $objep){
+            if (!$objep->cancelado) {
+                $precio=$objep->cantidad* $objep->precio;
+                $preciop=$objep->precio;
+                if($objep->Producto->exento_iva>0){
+                    $ieps=(($objep->cantidad* $objep->costo))*1.08;
+                }else{
+                    $iva=(($objep->cantidad* $objep->costo))*1.16;
+                }
+                $costo=$objep->cantidad* $objep->costo;
+            }
+        }
+        $costoiva=$iva+$ieps;
+        if ($obj->cancelado) {
+            echo "class='cancelada'";
+        }?>
+            >
+
+            <td><a href="<?php echo $this->baseUrl("administracion/traspaso/ver/id/" . $obj->id_traspaso); ?>">
+                    <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a></td>
+            <td><?php echo $obj->id_traspaso; ?></td>
+
+
+            <td><?php echo $obj->fecha; ?></td>
+            <td><?php
+                $objtie = Doctrine_Core::getTable("Database_Model_Tienda")->findOneBy("id_tienda", $obj->id_tiendaanterior);
+                echo $objtie->nombre; ?></td>
+
+            <td><?php echo $obj->Tienda->nombre; ?></td>
+
+
+            <td><?php if (!$obj->cancelado) {
+                    $total += $obj->total;
+                } echo number_format($obj->total, 0); ?>
+            </td>
+            <td>$<?php if (!$obj->cancelado) {
+                    // $costo += $obj->costo_total;
+                }$costot+=$costo; echo number_format($costo, 2); ?>
+            </td>
+            <td>$<?php if (!$obj->cancelado) {
+
+                } $costoivat+=$costoiva;  echo number_format($costoiva, 2); ?>
+            </td>
+            <td>$<?php $preciopt+=$preciop;  echo number_format($preciop, 2); ?>
+            </td>
+            <td>$<?php  $preciot+=$precio; echo number_format($precio, 2); ?>
+            </td>
+            <td><?php echo $obj->status; ?></td>
+            <td><?php echo $obj->Usuario->nombre; ?></td>
+              <td><?php echo $obj->comentarios; ?></td>
+            <td>
+
+                <a title="Validar Traspaso" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/alta/id/" . $obj->id_traspaso); ?>">
+                    <img src="<?php echo $this->baseUrl("css/img/check.png") ?>" border="0" width="25" height="25"/>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <?php if (!$obj->cancelado): ?>
+                    <a title="Cancelar Traspaso" tooltip="true" delete="true"
+                       href="<?php echo $this->baseUrl("administracion/Traspaso/cancelar/id/" . $obj->id_traspaso); ?>">
+                        <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a>
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    <tr>
+      
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><strong>Totales</strong></td>
+        <td> <?php echo number_format($total, 0); ?></td>
+        <td>$<?php echo number_format($costot, 2); ?></td>
+        <td>$<?php echo number_format($costoivat, 2); ?></td>
+
+        <td>$<?php echo number_format($preciopt, 2); ?></td>
+        <td>$<?php echo number_format($preciot, 2); ?></td>
+        <td></td><td></td><td></td><td></td>
+
+    </tr>
+</table>
+</div>
+
+
+
+
+
+
+<div id="tnt_pagination">
+    <?php echo $this->paginator; ?>
+</div>

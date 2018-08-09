@@ -1,0 +1,182 @@
+<style type="text/css">
+    .cancelada {
+        opacity: .5;
+    }
+</style>
+<h1>Reportes</h1>
+<h3 class="tit">Producto Ventas</h3>
+
+<?php echo $this->form; ?>
+
+<h3 class="tit">Reporte generado</h3>
+<table width="100%">
+    <tr>
+        <th>No Folio</th>
+        <th>Cant.</th>
+
+        <th>Codigo</th>
+
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>User</th>
+        <th>Tipo</th>
+        <th>Precio Unit.</th>
+        <th>Total</th>
+
+        <th>Proveedor</th>
+        <th>Fecha</th>
+        <th>Tipo Precio</th>
+        <th></th>
+    </tr>
+    <?php
+    $total = 0;
+    $totalComision = 0;
+    $totdesc=0;
+    $totalsincom=0;
+    $totalcreditos=0;
+    $totalab=0;
+
+    if($this->queryabono){
+         $totalab+= $this->queryabono->total;
+    }
+
+
+    foreach ($this->query as $obj2){
+        $querydesc= Doctrine_Query::create()
+            ->from("Database_Model_Descuentos")
+            ->where("id_venta=?",$obj2->id_venta)
+            ->execute();
+        $msj="";
+        foreach ($querydesc as $objdesc):
+            if(!$obj2->cancelado) {
+                $totdesc += $objdesc->montodesc;
+            }
+            $class="";
+            if ($obj2->cancelado) {
+                $class= "class='cancelada'";
+            }
+            $msj .= "<tr $class>
+                <td></td><td></td><td></td><td></td><td></td>
+                <td>Folio:".$objdesc->Venta->folio."</td>
+                <td>
+                     ".$objdesc->descripciondesc."
+                </td>
+                <td>
+                     $-".$objdesc->montodesc."
+                </td><td></td>
+                <td></td>
+                <td></td><td></td><td></td>
+              </tr>";
+        endforeach;
+
+        $queryprod= Doctrine_Query::create()
+            ->from("Database_Model_ProductosVenta")
+            ->where("id_venta=?",$obj2->id_venta)
+            ->execute();
+
+        foreach ($queryprod as $obj) {
+            if($obj->ProductoTienda->Producto->id_producto==1328) {//RECARGAS
+                $totalsincom += $obj->total;
+            }
+            $querycancelado = Doctrine_Query::create()
+                ->from("Database_Model_VentaProductocancelado v")
+                ->where("id_productos_venta = '$obj->id_productos_venta'")
+                //->getSqlQuery();
+                ->fetchOne();
+            ?>
+            <tr <?php  if ($obj->Venta->cancelado || $obj->cancelado||$querycancelado) {
+                echo "class='cancelada'";
+            }
+
+
+            ?> >
+                <td><?php echo $obj->Venta->folio; ?></td>
+                <td><?php echo $obj->cantidad; ?></td>
+                <td><?php echo $obj->ProductoTienda->Producto->codinter; ?></td>
+                <td><?php echo $obj->nombre; ?></td>
+                <td><?php echo $obj->ProductoTienda->Producto->Marca->nombre; ?></td>
+                <td><?php echo $obj->Venta->id_usuario; ?></td>
+                <td><?php echo $obj->Venta->tipo;
+                    if($obj->Venta->icredito){
+                        echo "<br><span style='color:red'>En pago</span>";
+
+                    }
+                    ?></td>
+                <td><?php echo $obj->total / $obj->cantidad; ?></td>
+                <td>$<?php if ($obj->cancelado == 0 && $obj2->cancelado == 0) {
+                        $total += $obj->total;
+                        if($obj->Venta->icredito){ //si la venta no esta en estado de credito y adeuda
+                            $totalcreditos += $obj->total;
+                        }
+
+                    }
+                    echo number_format($obj->total, 2); ?></td>
+
+                <td><?php echo $obj->ProductoTienda->Producto->Proveedor->nombre_corto; ?></td>
+                <td><?php echo $obj->Venta->fecha; ?></td>
+                <td><?php echo $obj->tipoprecio;
+            if ($querycancelado){
+                echo "<label style='color:red'>Cancelado</label>";
+            }
+                    ?></td>
+                <td>
+                    <?php if (!$obj->cancelado): ?>
+                        <a title="Cancelar venta" tooltip="true"  fancybox="true"
+                           href="<?php echo $this->baseUrl("administracion/devoluciones/mostrarcancelarventap/id/" . $obj->id_productos_venta); ?>">
+                            <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php
+        }
+        echo $msj;
+    }
+     ?>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td colspan="2"><strong>
+            <table>
+                <tr>
+                    <td>Subtotal </td>
+                    <td title="<?php echo "=".$total."-".$totalsincom."-".$totalcreditos;?>">(+)$<?php $totbon=$total-$totalsincom-$totalcreditos; echo number_format($totbon, 2); ?> </td>
+                </tr>
+                <tr>
+                    <td>Descuentos</td>
+                    <td> (-)$<?php  echo number_format($totdesc, 2); ?></td>
+                </tr>
+                <tr>
+                    <td>Recargas </td>
+                    <td>(+)$<?php  echo number_format($totalsincom, 2); ?> </td>
+                </tr>
+                <tr>
+                    <td> Credito</td>
+                    <td> (+)$<?php  echo number_format($totalcreditos, 2); ?></td>
+                </tr>
+                <tr>
+                    <td>Abonos</td>
+                    <td>(+)$<?php  echo number_format($totalab, 2); ?></td>
+                </tr>
+                <tr>
+                    <td>Venta total</td>
+                    <td> $<?php  echo number_format($total-$totdesc-$totalcreditos+$totalab, 2); ?></td>
+                </tr>
+
+                <tr>
+                    <td>Venta General  </td>
+                    <td> $<?php  echo number_format($totbon-$totdesc+$totalcreditos+$totalsincom, 2); ?>   </td>
+                </tr>
+            </table>
+            </strong>
+        </td>
+        <td></td><td></td>
+        <td></td><td></td>
+    </tr>
+
+</table>
+<br>

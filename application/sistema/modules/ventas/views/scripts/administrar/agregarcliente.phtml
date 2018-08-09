@@ -1,0 +1,144 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#aceptar").click(function (e) {
+            e.preventDefault();
+            if($("#email").val()){
+                if($("#razon_social").val()){
+                $.get("<?php echo $this->baseUrl('ventas/administrar/altaagregarcliente/');?>",
+                    $("#formcliente").serialize(),
+                    function (data) {
+                        alert(data);
+                        if (data == "Exito al dar de alta") {
+
+                            $.get("<?php echo $this->baseUrl('ventas/administrar/obtenercliente/');?>",
+                                '',
+                                function (data) {
+                                    $('#contcliente').html(data);
+                                });
+                            $.fancybox.close();
+                        }
+                    });
+                }else{
+                    alert('Se requiere un Nombre Comercial o Razon Social');
+                }
+            }else{
+                alert('Se requiere un email');
+            }
+
+
+        });
+    });
+</script>
+
+<h1>CLIENTES</h1>
+    <h3 class="tit">ALTA DE CLIENTES</h3>
+<fieldset>
+   <table style="width: 100%">
+     <tr><td>
+             <form id="formcliente">
+    <legend>Datos Personales</legend>
+    <div class="control-group">
+        <label class="control-label">Tipo De Usuario</label>
+        <div class="controls">
+            <?php echo $this->formSelect("id_usuario_tipo", $this->data["id_usuario_tipo"],
+                array("style"=>"width:460px","onchange"=>"muestraidcliente();","required" => "required"),
+                array("1"=>"Cliente"),
+                Database_Model_UsuarioTipo::getAllArrusu($this->tipousu)
+            ); ?>
+        </div>
+    </div>
+             <div id="idcliente">
+                 <div class="control-group">
+                     <label class="control-label">Nombre Comercial(Razon Social)</label>
+                     <div class="controls">
+                         <?php echo $this->formText("razon_social", $this->data["razon_social"]
+                         ); ?>
+                     </div>
+                 </div>
+             </div>
+     <div class="control-group">
+         <label class="control-label">Nombre del Contacto</label>
+         <div class="controls">
+             <?php echo $this->formText("nombre", $this->data["nombre"],
+                 array("required" => "required")
+             ); ?>
+         </div>
+     </div>
+    <div class="control-group">
+        <label class="control-label">Apellido Paterno</label>
+        <div class="controls">
+            <?php echo $this->formText("ap_paterno", $this->data["ap_paterno"],
+                array("" => "")
+            ); ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Apellido Materno</label>
+        <div class="controls">
+            <?php echo $this->formText("ap_materno", $this->data["ap_materno"],
+                array("" => "")
+            ); ?>
+        </div>
+    </div>
+    </td>
+  </tr>
+</table>
+</fieldset>
+
+<fieldset>
+    <div class="control-group">
+        <label class="control-label">Email</label>
+        <div class="controls">
+            <?php echo $this->formText("email", $this->data["email"]
+            ); ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Celular Personal</label>
+        <div class="controls">
+            <?php echo $this->formText("celular", $this->data["celular"],
+                array("" => "")
+            ); ?>
+        </div>
+    </div>
+
+</fieldset>
+
+<fieldset>
+    <legend>Otros</legend>
+    <div class="control-group">
+        <label class="control-label">observaciones</label>
+        <div class="controls">
+            <?php echo $this->formText("observaciones", $this->data["observaciones"],
+                array()
+            ); ?>
+        </div>
+    </div>
+
+</fieldset>
+<div class="form-actions">
+        <input type="button" id="aceptar" value="Aceptar">
+
+</div>
+</form>
+<script>
+    $(function () {
+        //$( "#on_hire_fecha" ).datepicker();
+        $("#fecha_nacimiento").datepicker({
+            format: 'dd-mm-yyyy'
+        });
+    });
+   // document.getElementById("idcliente").style.display="none";
+    function muestraidcliente(){
+
+       if(document.getElementById("id_usuario_tipo").value==1 ){
+        document.getElementById("idcliente").style.display="Inherit";
+           document.getElementById("conttipousuario").style.display="none";
+       }else{
+           document.getElementById("idcliente").style.display="none";
+           document.getElementById("conttipousuario").style.display="Inherit";
+
+       }
+    }
+
+</script>

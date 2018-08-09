@@ -1,0 +1,82 @@
+<h1>Salidas de Almacen</h1>
+<h3 class="tit">Ver salida</h3>
+<a href="<?php echo $this->baseUrl("administracion/salida/imprimir/id/" . $this->obj->id_salida); ?>" target="_blank">Imprimir
+    Salida</a>
+<table>
+    <tr>
+        <th>Vendedor</th>
+        <td><?php echo $this->obj->id_usuario; ?></td>
+    </tr>
+    <tr>
+        <th>Fecha</th>
+        <td><?php echo $this->obj->fecha; ?></td>
+    </tr>
+    <tr>
+        <th>Referencia</th>
+        <td><?php echo $this->obj->referencia; ?></td>
+    </tr>
+    <tr>
+        <th>Folio</th>
+        <td><?php echo $this->obj->id_salida; ?></td>
+    </tr>
+    <tr>
+        <th>Concepto</th>
+        <td><?php echo $this->obj->concepto; ?></td>
+    </tr>
+    <tr>
+        <th>Tienda Origen</th>
+        <td><?php
+            $obj = Doctrine_Core::getTable("Database_Model_Tienda")->findOneBy("id_tienda", $this->obj->id_tiendaanterior);
+            echo strtoupper($obj->nombre); ?></td>
+    </tr>
+    <tr>
+        <th>Destino</th>
+        <td>SALIDA DE INVENTARIO</td>
+    </tr>
+
+
+</table>
+
+<h3 class="tit">Artículos</h3>
+
+<table width="100%">
+    <tr>
+        <th>Producto</th>
+        <th>Cod Inter.</th>
+
+        <th>Cantidad</th>
+        <th>Costo</th>
+        <th>Precio</th>
+        
+        <th>Costo Total</th>
+
+    </tr>
+    <?php
+    $total = 0;
+    $costo = 0;
+    $totalComision = 0;
+    $query= Doctrine_Query::create()
+        ->from("Database_Model_SalidaProducto")
+        ->where("id_salida=?",$this->obj->id_salida)
+        ->execute();
+    foreach ($query as $obj): ?>
+        <tr >
+            <td><?php echo $obj->Producto->codinter; ?></td>
+            <td><?php echo $obj->nombre; ?></td>
+            <td><?php echo $obj->cantidad; ?></td>
+            <td>$<?php  echo number_format($obj->costo, 2); ?></td>
+            <td>$<?php  echo number_format($obj->precio, 2); ?></td>
+            <td>$<?php $costo+=$obj->totalcosto; echo number_format($obj->totalcosto, 2); ?></td>
+
+        </tr>
+    <?php endforeach; ?>
+    <tr>
+
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><strong>Totales</strong></td>
+        <td>$ <?php echo number_format($costo, 2); ?></td>
+    </tr>
+</table>

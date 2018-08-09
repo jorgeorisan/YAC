@@ -1,0 +1,172 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#toggle-cxc").click(function (e) {
+            e.preventDefault();
+
+            $("#cxc").toggle();
+        });
+
+        $("#toggle-cxp").click(function (e) {
+            e.preventDefault();
+
+            $("#cxp").toggle();
+        });
+    });
+</script>
+<h1>Marcas</h1>
+
+<table style="min-width: 500px;">
+    <tr>
+        <th>Nombre</th>
+        <td><?php echo $this->obj->nombre; ?></td>
+    </tr>
+    <tr>
+        <th>ID</th>
+        <td><?php echo $this->obj->id_proveedor; ?></td>
+    </tr>
+    <tr>
+        <th>Saldo</th>
+        <td>$ <?php echo number_format($this->obj->saldo, 2); ?></td>
+    </tr>
+    <tr>
+        <th>Detalles</th>
+        <td><?php echo $this->obj->detalles; ?></td>
+    </tr>
+</table>
+
+<a href="#" id="toggle-cxc">Mostrar/esconder Cuentas por Cobrar</a>
+
+
+<div id="cxc" style="display: none;">
+    <h3 class="tit">Cuentas por cobrar</h3>
+    <table class="full-width" style="min-width: 500px;">
+        <tr>
+            <th>Descripción</th>
+            <th>Tipo</th>
+            <th>Referencia</th>
+            <th>Comentarios</th>
+            <th>Fecha generada</th>
+            <th>Monto</th>
+            <th></th>
+        </tr>
+        <?php
+        $queryCXC = Doctrine_Query::create()
+            ->from("Database_Model_CuentasPorCobrar")
+            ->where("id_objeto = ?", $this->obj->id_proveedor)
+            ->andWhere("objeto = ?", "Proveedor")
+            ->execute();
+        $total = 0;
+        foreach ($queryCXC as $obj): ?>
+            <tr>
+                <td><?php echo $obj->descripcion; ?></td>
+                <td>
+                    <?php if ($obj->objeto == "Factura"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("facturas/administrar/ver/id/" . $obj->id_objeto); ?>">Factura <?php echo $obj->Factura->num_factura; ?></a>
+                    <?php endif; ?>
+                    <?php if ($obj->objeto == "Cliente"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/clientes/ver/id/" . $obj->id_objeto); ?>"><?php echo $obj->Cliente->nombre; ?></a>
+                    <?php endif; ?>
+                    <?php if ($obj->objeto == "Cuenta"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/empresas/vercuenta/id/" . $obj->id_objeto); ?>"><?php echo $obj->Cuenta->nombre; ?></a>
+                    <?php endif; ?>
+                    <?php if ($obj->objeto == "Proveedor"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/proveedores/ver/id/" . $obj->id_objeto); ?>"><?php echo $obj->Proveedor->nombre; ?></a>
+                    <?php endif; ?>
+                    <?php if ($obj->objeto == "Usuario"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/usuarios/ver/id/" . $obj->id_objeto); ?>"><?php echo $obj->Usuario->nombre; ?>
+                        ></a>
+                    <?php endif; ?>
+
+                </td>
+                <td><?php echo $obj->referencia; ?></td>
+                <td><?php echo $obj->comentarios; ?></td>
+                <td><?php echo $obj->fecha_generada; ?></td>
+                <td>$ <?php $total += $obj->monto; echo number_format($obj->monto, 2); ?></td>
+                <td>
+                    <a href="<?php
+                        echo $this->baseUrl("cuentas/movimientos/cobrar/id/" . $obj->id_cuentas_por_cobrar);
+                        ?>">Cobrar</a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+
+
+
+
+        <tr>
+            <td colspan="5" class="t-right">
+                Total:
+            </td>
+            <td>$ <?php echo number_format($total, 2); ?></td>
+        </tr>
+    </table>
+</div>
+
+
+<Br/>
+<a href="#" id="toggle-cxp">Mostrar/esconder Cuentas por Pagar</a>
+<div id="cxp" style="display: none;">
+    <h3 class="tit">Cuentas por pagar</h3>
+
+    <table class="full-width" style="min-width: 500px;">
+        <tr>
+            <th>Descripción</th>
+            <th>Tipo</th>
+            <th>Referencia</th>
+            <th>Comentarios</th>
+            <th>Fecha generada</th>
+            <th>Monto</th>
+            <th></th>
+        </tr>
+        <?php
+        $queryCXP = Doctrine_Query::create()
+            ->from("Database_Model_CuentasPorPagar")
+            ->where("id_objeto = ?", $this->obj->id_proveedor)
+            ->andWhere("objeto = ?", "Proveedor")
+            ->execute();
+        $total = 0;
+        foreach ($queryCXP as $obj): ?>
+            <tr>
+                <td><?php echo $obj->descripcion; ?></td>
+                <td>
+                    <?php if ($obj->objeto == "Cliente"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/clientes/ver/id/" . $obj->id_objeto); ?>"><?php echo $obj->Cliente->nombre; ?></a>
+                    <?php endif; ?>
+                    <?php if ($obj->objeto == "Usuario"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/usuarios/ver/id/" . $obj->id_objeto); ?>"><?php echo $obj->Usuario->nombre; ?></a>
+                    <?php endif; ?>
+                    <?php if ($obj->objeto == "Proveedor"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/proveedores/ver/id/" . $obj->id_objeto); ?>"><?php echo $obj->Proveedor->nombre; ?></a>
+                    <?php endif; ?>
+                    <?php if ($obj->objeto == "Cuenta"): ?>
+                    <a fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/empresas/vercuenta/id/" . $obj->id_objeto); ?>"><?php echo $obj->Cuenta->nombre; ?></a>
+                    <?php endif; ?>
+                </td>
+                <td><?php echo $obj->referencia; ?></td>
+                <td><?php echo $obj->comentarios; ?></td>
+                <td><?php echo $obj->fecha_generada; ?></td>
+                <td>$ <?php $total += $obj->monto; echo number_format($obj->monto, 2); ?></td>
+                <td>
+                    <a href="<?php
+                        echo $this->baseUrl("cuentas/movimientos/pagar/id/" . $obj->id_cuentas_por_pagar);
+                        ?>">Pagar</a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        <tr>
+            <td colspan="5" class="t-right">
+                Total:
+            </td>
+            <td>$ <?php echo number_format($total, 2); ?></td>
+        </tr>
+    </table>
+</div>

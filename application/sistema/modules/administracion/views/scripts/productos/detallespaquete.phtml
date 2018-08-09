@@ -1,0 +1,73 @@
+
+<h3 class="tit">Detalles</h3>
+<?php  $objpqt = Doctrine_Core::getTable("Database_Model_Paquete")->findOneBy("id_producto",$this->id);
+echo $objpqt->nombre."  ".$objpqt->comentarios;
+?>
+
+<table style="width: 100%; border:1;" id="table-resultados" >
+    <tr>
+        <th>Codigo Inter.</th>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Categoria</th>
+        <th>Proveedor</th>
+        <th>Cantidad</th>
+        <?php
+        if($this->tipousu=="2"){
+            ?>
+            <th>Costo</th>
+        <?php
+        }?>
+        <th>Precio</th>
+       
+    </tr>
+
+    <?php
+
+    $query = Doctrine_Query::create()
+        //->select("t.id_producto id_producto")
+        ->from("Database_Model_Paquete ")
+        ->where("id_producto = ?", $this->id)
+        //  ->orderBy("t.nombre ASC")
+        ->execute();
+    foreach ($query as $obj):
+        $obj2 = Doctrine_Core::getTable("Database_Model_Producto")->findOneBy("id_producto",$obj->id_productocompuesto);
+
+        ?>
+        <tr>
+            <td><?php echo $obj2->codinter; ?></td>
+            <td><?php echo $obj2->nombre; ?></td>
+            <td><?php echo $obj2->Marca->nombre; ?></td>
+            <td><?php echo $obj2->Categoria->categoria; ?></td>
+            <td><?php echo $obj2->Proveedor->nombre_corto; ?></td>
+            <td><?php echo $obj->cantidad; ?></td>
+            <?php
+            if($this->tipousu=="2"){
+                ?>
+                <td>$<?php echo number_format($obj->Producto->costo, 2); ?></td>
+            <?php
+            }
+            $ejeprecio= Doctrine_Query::create()
+                ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                ->where("a.id_producto=?",$this->id)
+                //->andWhere("cantvendida<cantidad")
+                ->andWhere("b.status='ACTIVO'")
+                ->orderBy("id_entrada_producto DESC")
+                ->limit(1);
+            $precio=0;
+            foreach($ejeprecio->execute() as $ex){
+                $precio=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+            }
+            if($precio>0){
+                //$precio=$obj->precio;
+            }else{
+                $precio=$obj->Producto->precio;
+            }
+            ?>
+            <td>$<?php echo number_format($precio, 2); ?></td>
+
+
+        </tr>
+
+    <?php endforeach;?>
+</table>

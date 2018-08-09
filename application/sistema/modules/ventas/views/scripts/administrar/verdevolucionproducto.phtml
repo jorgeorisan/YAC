@@ -1,0 +1,67 @@
+<h1>Devolucion de Productos</h1>
+<h3 class="tit">Venta Folio No <?php echo $this->obj->ProductosVenta->folio; ?></h3>
+<a href="<?php echo $this->baseUrl("ventas/administrar/imprimirdp/id/" . $this->obj->id_venta_productocancelado); ?>" target="_blank">Imprimir
+    ticket de devolucion</a>
+
+<table>
+    <tr>
+        <th>Vendedor</th>
+        <td><?php echo $this->obj->id_usuario; ?></td>
+    </tr>
+    <tr>
+        <th>Fecha</th>
+        <td><?php echo $this->obj->fecha_registro; ?></td>
+    </tr>
+
+   
+    <tr>
+        <th>Total</th>
+        <td>$<?php echo number_format($this->obj->total, 2); ?></td>
+    </tr>
+
+
+</table>
+
+<h3 class="tit">Artículos</h3>
+
+
+<table class="full-width">
+    <tbody>
+    <tr  >
+        <th>Cantidad</th>
+        <th>Codigo Interno</th>
+        <th>Producto</th>
+        <th>Subtotal</th>
+        <th>Total</th>
+
+    </tr>
+    <?php
+    $total = 0;
+    $costo = 0;
+    $totalComision = 0;
+    $query= Doctrine_Query::create()
+        ->from("Database_Model_ProductosVenta")
+        ->where("id_productos_venta=?",$this->obj->id_productos_venta)
+        ->execute();
+
+
+
+    foreach ($query as $obj):
+
+
+        ?>
+
+        <tr >
+            <td><?php echo $obj->cantidad; ?></td>
+            <td><?php echo $obj->ProductoTienda->Producto->codinter; ?></td>
+            <td><?php echo $obj->nombre; ?></td>
+
+            <td>$<?php  echo number_format($obj->total/$obj->cantidad, 2); ?></td>
+            <td>$<?php  echo number_format($obj->total, 2); ?></td>
+
+        </tr>
+    <?php endforeach;
+    echo $msj;?>
+
+    </tbody>
+</table>

@@ -1,0 +1,380 @@
+<script type="text/javascript">
+    $(".borrar-vendedor").live('click', function (e) {
+        e.preventDefault();
+
+        var id = $(this).attr("lineid");
+        $("[lineid=" + id + "]").remove();
+    });
+        updateTotal = function (key) {
+
+            var totalvtas = $("#totalvtas"+key).val();
+            var totalasis = $("#totalasis"+key).val();
+
+          // var porcen = $("#porcen").val();
+           // $("#totalcomi").html(total.toFixed(2));
+            var $porcen='';
+            var $porcentaje=$("#porcen"+key).val();
+            var montocomi=totalvtas/totalasis;
+            $("#montocomi"+key).val(montocomi);
+            if(montocomi>0 &&montocomi<=4500){
+                $porcen= "20";
+                $porcentaje=0.20;
+            }
+            if(montocomi>4500 &&montocomi<=6500){
+                $porcen="24";
+                $porcentaje=0.24;
+            }
+            if(montocomi>6500 &&montocomi<=8500){
+                $porcen="27";
+                $porcentaje=0.27;
+            }
+            if(montocomi>8500){
+                $porcen= "30";
+                $porcentaje=0.30;
+            }
+            $("#porcen"+key).val($porcen);
+            var totalcomi=montocomi*$porcentaje;
+            var descgastos = $(".descgastosarr"+key);
+            var desctotalgtos=0;
+            for (var i = 0, len = descgastos.length; i < len; i++) {
+                    desctotalgtos += parseFloat($(descgastos[i]).val());
+
+            }
+            totalcomi=totalcomi-desctotalgtos;
+            $("#totalcomi"+key).val(totalcomi);
+        }
+        updateTotalporcent = function (key) {
+
+            var totalvtas = $("#totalvtas"+key).val();
+            var totalasis = $("#totalasis"+key).val();
+
+            // var porcen = $("#porcen").val();
+            // $("#totalcomi").html(total.toFixed(2));
+
+
+            var montocomi=totalvtas/totalasis;
+
+            $("#montocomi"+key).val(montocomi);
+            var $porcen=$("#porcen"+key).val();
+            var $porcentaje=$porcen/100;
+            $("#porcen"+key).val($porcen);
+            var totalcomi=montocomi*$porcentaje;
+            var descgastos = $(".descgastosarr"+key);
+            var desctotalgtos=0;
+            for (var i = 0, len = descgastos.length; i < len; i++) {
+                if (!isNaN($(descgastos[i]).val())) {
+                    desctotalgtos += parseFloat($(descgastos[i]).val());
+                }
+            }
+            totalcomi=totalcomi-desctotalgtos;
+            $("#totalcomi"+key).val(totalcomi);
+
+        }
+    $(document).ready(function () {
+        var fieldCounter = 1;
+         agregardescuento= function (key) {
+            if (fieldCounter < 100) {
+                var $articulos = $("#descuentos"+key);
+                var trHtml = $(".original-row"+key).html();
+
+                //trHtml = trHtml.replace(/X-X/gi, "" + fieldCounter++);
+                $articulos.append("<tr generatedbyme='true'>" + trHtml + "</tr>");
+                // updateTotal();
+            } else {
+                alert("Ya sobrepasó el número de conceptos.");
+            }
+
+        }
+
+        $("#remove-fields").click(function (e) {
+            e.preventDefault();
+
+            $("[generatedbyme=true]:last").remove();
+            fieldCounter--;
+
+            updateTotal();
+        });
+    });
+</script>
+
+<style type="text/css">
+    .cancelada {
+        opacity: .5;
+    }
+</style>
+<h1>Reportes</h1>
+<h3 class="tit">Comisiones</h3>
+
+
+<fieldset>
+    <form id="barcode-form" action="" method="get">
+        <table class="nostyle">
+            <tr>
+                <td>
+                    <div class="control-group" id="">
+                        <label class="control-label">Año</label>
+                        <div class="controls">
+                            <select name="anio" class="selectnvo" id="from"><option value="">Selecciona</option><?php
+                                for($i=2014;$i<=date('Y')+5;$i++){
+                                    $msj='';
+                                    if($i==date('Y')){
+                                        $msj='selected';
+                                    }
+                                    echo "<option $msj value='$i'>".$i."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="control-group" id="">
+                        <label class="control-label">Mes</label>
+                        <div class="controls">
+                            <select name="mes" class="selectnvo" >
+                                <option <?php  if($this->mes=='01'){ echo $chek='selected';} ?> value="01">Enero</option>
+                                <option  <?php  if($this->mes=='02'){ echo $chek='selected';} ?> value="02">Febrero</option>
+                                <option <?php  if($this->mes=='03'){ echo $chek='selected';} ?> value="03">Marzo</option>
+                                <option <?php  if($this->mes=='04'){ echo $chek='selected';} ?> value="04">Abril</option>
+                                <option <?php  if($this->mes=='05'){ echo $chek='selected';} ?> value="05">Mayo</option>
+                                <option <?php  if($this->mes=='06'){ echo $chek='selected';} ?> value="06">Junio</option>
+                                <option <?php  if($this->mes=='07'){ echo $chek='selected';} ?> value="07">Julio</option>
+                                <option <?php  if($this->mes=='08'){ echo $chek='selected';} ?> value="08">Agosto</option>
+                                <option  <?php  if($this->mes=='09'){ echo $chek='selected';} ?> value="09">Septiembre</option>
+                                <option <?php  if($this->mes=='10'){ echo $chek='selected';} ?> value="10">Octubre</option>
+                                <option <?php  if($this->mes=='11'){ echo $chek='selected';} ?> value="11">Noviembre</option>
+                                <option <?php  if($this->mes=='12'){ echo $chek='selected';} ?> value="12">Diciembre</option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="control-group" id="">
+                        <label class="control-label">Quincena</label>
+                        <div class="controls">
+                            <select name="quincena" class="selectnvo"  >
+                                <option <?php  if($this->quincena=='1'){ echo $chek='selected';} ?> value="1">1ra Quincena</option>
+                                <option  <?php if($this->quincena=='2'){ echo $chek='selected';} ?> value="2">2da Quincena</option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="control-group" id="">
+                    <label class="control-label">Vendedor</label>
+                    <div class="controls">
+                        <select name="id_usuario"  class="selectnvo" onchange="" id="id_usuario">
+                            <option value="">Selecciona Vendedor</option>
+                            <?php
+                            foreach (Doctrine_Query::create()
+                                         ->from("Database_Model_Usuario")
+                                         ->orderBy("id_usuario desc")
+                                         ->execute() as $obj) {
+                                $chek="";
+                                if($this->id_usuario==$obj->id_usuario){
+                                    if($i==1){
+                                        $chek='selected';
+                                    }
+
+                                }
+                                echo " <option $chek value='".$obj->id_usuario."'>".$obj->id_usuario."|".$obj->nombre."</option>";
+
+                            }
+                            ?>
+                        </select>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center">
+                    <input type="submit" value="Mostrar"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</fieldset>
+
+
+<h3 class="tit">Reporte generado</h3>
+<table width="100%">
+    <tr>
+
+        <th>No Folio</th>
+        <th>Vendedores</th>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Tienda</th>
+        <th>Total</th>
+        <th></th>
+    </tr>
+    <?php
+    $total = 0;
+    $totalComision = 0;
+    foreach ($this->query as $obj1):
+        $obj = Doctrine_Core::getTable("Database_Model_Venta")->findOneBy("id_venta", $obj1->id_venta);
+
+        ?>
+        <tr <?php  if ($obj->cancelado) {
+            echo "class='cancelada'";
+        }?>
+            >
+
+            <td><?php echo $obj->folio; ?></td>
+            <td><?php  $queryvend= Doctrine_Query::create()
+                    ->from("Database_Model_UsuariosVenta")
+                    ->where("id_venta=?",$obj->id_venta)
+                    ->execute();
+                $msjvend="";
+
+                foreach ($queryvend as $objvend):
+                    $msjvend.=$objvend->id_usuario." ".$objvend->porcentaje."%=".$objvend->monto."<br>";
+
+                endforeach;
+                echo $msjvend; ?></td>
+            <td><?php echo $obj->fecha; ?></td>
+            <td><?php echo $obj->tipo; ?></td>
+
+            <td><?php echo $obj->Tienda->nombre; ?></td>
+            <td>$<?php if (!$obj->cancelado) {
+                $total += $obj->total;
+            } echo number_format($obj->total, 2); ?></td>
+
+            <td><a href="<?php echo $this->baseUrl("ventas/administrar/ver/id/" . $obj->id_venta); ?>">
+                    <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a>
+                <?php if (!$obj->cancelado): ?>
+                    <!--  <a title="Cancelar venta" tooltip="true" delete="true"
+                   href="<?php echo $this->baseUrl("ventas/administrar/cancelar/id/" . $obj->id_venta); ?>">
+                    <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a> -->
+                <?php endif; ?>
+            </td>
+
+        </tr>
+        <?php endforeach; ?>
+    <tr>
+        <td></td>
+        <td>
+
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+
+        <td>$ <?php echo number_format($total, 2); ?></td>
+        <td></td>
+    </tr>
+</table>
+<br>
+<form action="" method="post">
+    <table>
+        <tr>
+            <th> Vendedor </th>
+            <th>Total Ventas</th>
+
+            <th>Dias Asistencia</th>
+
+            <th>Monto Comisionable</th>
+
+            <th>Porcentaje Comision</th>
+            <th>Total Comision</th>
+            <th>Desc Gtos</th>
+            <th class="borrar-td"></th>
+        </tr>
+
+        <input  class="small-field" readonly type="hidden" id="fecha_inicial<?php echo $key?>" name="fecha_inicial" value=" <?php echo $this->from;?> ">
+            <input  class="small-field" readonly type="hidden" id="fecha_final<?php echo $key?>" name="fecha_final" value=" <?php echo $this->to;?> ">
+            <input  class="small-field" readonly type="hidden" id="vendedor<?php echo $key?>" name="vendedor" value="<?php echo $this->vendedor;?> ">
+        <?php  $msjvendt='';
+        foreach ($this->queryvendmontos as $key => $objvendm):
+            $objusua = Doctrine_Core::getTable("Database_Model_Usuario")->findOneBy("id_usuario", $objvendm->id_usuario);
+
+            ?>
+        <tr  lineid="<?php echo $key; ?>">
+            <input  class="small-field" readonly type="hidden" id="id_tienda<?php echo $key?>" name="id_tienda[]" value="<?php echo $objusua->id_tienda;?> ">
+            <td><input  class="small-field" readonly type="hidden" id="idsusuario<?php echo $key?>" name="idsusuario[]" value="<?php echo $objvendm->id_usuario;?> "><?php echo $objvendm->id_usuario;?></td>
+            <td><input  style="width:80px;height:23px" onchange="updateTotal(<?php echo $key?>)" type="text" id="totalvtas<?php echo $key?>" name="totalvtas[]" value="<?php echo trim($objvendm->total);?>"> </td>
+
+            <td><?php
+                $totasis=0;
+                $montocomi=0;
+                $totalcomi=0;
+                $queryasis= Doctrine_Query::create()
+                    ->select("count(id_asistencia) totasis")
+                    ->from("Database_Model_Asistencia")
+                    ->where("id_usuario=?",$objvendm->id_usuario)
+                    ->andWhere("tipo='Entrada'")
+                    ->andwhere("DATE(hora) >= '$this->from'")
+                    ->andWhere("DATE(hora) <= '$this->to'")
+                    ->fetchOne();
+                $porcen=0;
+                if($queryasis){
+
+                      $totasis=$queryasis->totasis;//dias de asistencia
+                    $montocomi=$objvendm->total/$totasis;
+                    $porcentaje="";
+                    if($montocomi>0 &&$montocomi<=4500){
+                        $porcen= "20";
+                        $porcentaje=0.20;
+                    }
+                    if($montocomi>4500 &&$montocomi<=6500){
+                        $porcen="24";
+                        $porcentaje=0.24;
+                    }
+                    if($montocomi>6500 &&$montocomi<=8500){
+                        $porcen="27";
+                        $porcentaje=0.27;
+                    }
+                    if($montocomi>8500){
+                        $porcen= "30";
+                        $porcentaje=0.30;
+                    }
+                    $totalcomi=$montocomi*$porcentaje;
+                }
+
+                ?>
+                <input  style="width:80px;height:23px" onchange="updateTotal(<?php echo $key?>)" type="text" id="totalasis<?php echo $key?>" name="totalasis[]" value="<?php echo trim($totasis);?>">
+            </td>
+
+            <td><input  style="width:80px;height:23px" onchange="updateTotal(<?php echo $key?>)" type="text" id="montocomi<?php echo $key?>" name="montocomi[]" value="<?php echo trim($montocomi);?>">
+            </td>
+
+            <td><input  style="width:80px;height:23px" onchange="updateTotalporcent(<?php echo $key?>)" type="text" id="porcen<?php echo $key?>" name="porcen[]" value="<?php echo trim($porcen);?>">%
+            </td>
+            <td><input  style="width:80px;height:23px" onchange="updateTotal(<?php echo $key?>)" type="text" id="totalcomi<?php echo $key?>" name="totalcomi[]" value="<?php echo trim($totalcomi);?>">
+            </td>
+            <td>
+                <a href="#" id="add-fields" onclick="agregardescuento(<?php echo $key?>)">
+                    <img src="<?php echo $this->baseUrl("css/img/add.png"); ?>" border="0"/>
+                </a>
+                <table class="nostyle" id="descuentos<?php echo $key?>">
+                    <tr class="original-row<?php echo $key?>">
+                        <td> <input  style="width:80px;height:23px"   class="descgastosarr<?php echo $key?>" onchange="updateTotal(<?php echo $key?>)" type="text" id="descgastos<?php echo $key?>" name="descgastos[<?php echo $key?>][]" value="0"></td>
+                        <td><input  style="width:80px;height:23px"  type="text" id="conceptodescgastos<?php echo $key?>" name="conceptodescgastos[<?php echo $key?>][]" placeholder="Concepto" value=""></td>
+
+                    </tr>
+                </table>
+
+
+            </td>
+            <td class="borrar-td">
+                <a href="#" class="borrar-vendedor" lineid="<?php echo $key; ?>">Borrar</a>
+            </td>
+
+        </tr>
+        <?php
+        endforeach;
+         ?>
+    </table>
+    <div style="height: 25px;"></div>
+    <input style="width: 100%" type="submit" id="send" class="button" value="Registrar Comisiones">
+</form>
+<script>
+    $(".selectnvo").multiselect({
+        multiple: false,
+        header: "Selecciona una opcion",
+        noneSelectedText: "Seleccionar",
+        selectedList: 1
+    }).multiselectfilter();
+
+</script>

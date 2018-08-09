@@ -1,0 +1,93 @@
+<h1>USUARIOS</h1>
+    <h3 class="tit">ALTA DE USUARIOS</h3>
+
+<form method="post" action="" class="form-horizontal">
+<fieldset>
+
+     <td>
+         <div id="conttipousuario" style="display: ">
+             <legend>Crear Login</legend>
+             <div class="control-group">
+                 <label class="control-label">Tipo De Usuario</label>
+                 <div class="controls">
+                     <?php echo $this->formSelect("id_usuario_tipo", $this->data["id_usuario_tipo"],
+                         array("style"=>"width:460px","required" => "required"),
+                         Database_Model_UsuarioTipo::getAllArr()
+                     ); ?>
+                 </div>
+             </div>
+             <div class="control-group">
+                 <label class="control-label">Permisos</label>
+                 <div class="controls">
+                     <?php echo $this->formSelect("permisos", $this->data["permisos"],
+                         array("style"=>"width:460px","required" => "required"),
+                         array("TODO"=>"TODO","VENDEDOR"=>"VENDEDOR","REPORTES"=>"REPORTES")
+                     ); ?>
+                 </div>
+             </div>
+             <div class="control-group">
+                 <label class="control-label">Login</label>
+                 <div class="controls">
+                     <?php echo $this->formText("id_usuario", $this->data["id_usuario"],
+                         array("style"=>"width:460px","required" => "required")
+                     ); ?>
+                 </div>
+                 <label class="control-label">Password</label>
+                 <div class="controls">
+                     <?php echo $this->formPassword("password", "",
+                         array("style"=>"width:460px","required" => "required")
+                     ); ?>
+                 </div>
+                 <label class="control-label">Confirmar Password</label>
+                 <div class="controls">
+                     <?php echo $this->formPassword("confpassword", "",
+                         array("style"=>"width:460px","onblur"=>"valida()","required" => "required")
+                     ); ?>
+                 </div>
+             </div>
+             <div class="control-group">
+                 <label class="control-label">Nombre</label>
+                 <div class="controls">
+                     <?php echo $this->formText("nombre", $this->data["nombre"],
+                         array("style"=>"width:460px","required" => "required")
+                     ); ?>
+                 </div>
+
+             </div>
+             <div class="control-group">
+                 <label class="control-label">Tienda</label>
+                 <div class="controls">
+                     <?php echo $this->formSelect("id_tienda", $this->data["id_tienda"],
+                         array("style"=>"width:460px","required" => "required"),
+                         Database_Model_Tienda::getAll()
+                     ); ?>
+                 </div>
+             </div>
+         </div>
+
+     </td></tr>
+</table>
+</fieldset>
+
+
+
+<div class="form-actions">
+        <input type="submit" value="Aceptar">
+
+</div>
+</form>
+<script>
+    function valida(){
+        var pass = document.getElementById('password').value;
+       var conf = document.getElementById('confpassword').value;
+        //Verificar si la contraseña es de al menos 8 caracteres
+        if ((pass.length) < 6) {
+            alert('Las contraseña debe tener al menos 6 caracteres');
+        }
+        // Verifica si las contraseñas coinciden
+        if (pass != conf) {
+            alert('Las contraseñas no coinciden');
+        }
+    }
+
+</script>

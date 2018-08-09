@@ -1,0 +1,73 @@
+<h1>Traspasos</h1>
+<h3 class="tit">Traspasos de Productos</h3>
+
+<form method="post" action="" class="form-horizontal" id="form1"  name="form1">
+    <fieldset>
+        <table style="width: 100%"><tr><td>
+                    <legend>Datos Personales</legend>
+                    <input type="hidden" id="tipousu" value="<?php echo $this->tipousu; ?>">
+                    <div class="control-group" id="tiendaorigen" style="display: ">
+                        <label class="control-label">Tienda Origen </label>
+                        <div class="controls">
+                            <?php echo $this->formSelect("id_tiendaanterior", $this->idtienda,
+                                array("style"=>"width:460px","readonly" => "readonly","disabled" => "disabled" ),
+                                Database_Model_Tienda::getAll()
+                            ); ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Pasar a Tienda</label>
+                        <div class="controls">
+                            <?php echo $this->formSelect("id_tienda", $this->data["id_tienda"],
+                                array("style"=>"width:460px","required" => "required"),
+                                Database_Model_Tienda::getAll()
+                            ); ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Existentes</label>
+                        <div class="controls">
+                            <?php echo $this->formText("existencia", $this->existencia,
+                                array("readonly" => "readonly")
+                            ); ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Cantidad a Traspasar</label>
+                        <div class="controls">
+                            <?php echo $this->formText("cantidad", $this->data["cantidad"],
+                                array("required" => "required")
+                            ); ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Fecha Traspaso</label>
+                        <div class="controls">
+                            <?php echo $this->formText("fecha_traspaso", $this->data["fecha_traspaso"],
+                                array("required" => "required","datepicker"=>"past","class"=>"small-input")
+                            ); ?>
+                        </div>
+                    </div>
+
+
+                </td></tr>
+        </table>
+    </fieldset>
+
+
+    <div class="form-actions">
+        <input type="submit" value="Aceptar">
+
+    </div>
+</form>
+<script>
+    
+
+    if(document.getElementById("tipousu").value=="2"){
+        document.getElementById("tiendaorigen").style.display="Inherit";
+    }
+
+
+
+
+</script>

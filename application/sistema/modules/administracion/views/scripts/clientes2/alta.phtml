@@ -1,0 +1,163 @@
+<h1>CLIENTES</h1>
+    <h3 class="tit">ALTA DE CLIENTES</h3>
+
+<form method="post" action="" class="form-horizontal">
+<fieldset>
+ <table style="width: 100%"><tr><td>
+    <legend>Datos Personales</legend>
+    <div class="control-group">
+        <label class="control-label">Tipo De Usuario</label>
+        <div class="controls">
+            <?php echo $this->formSelect("id_usuario_tipo", $this->data["id_usuario_tipo"],
+                array("style"=>"width:460px","required" => "required"),
+                array("1"=>"Cliente"),
+                Database_Model_UsuarioTipo::getAllArrusu($this->tipousu)
+            ); ?>
+        </div>
+    </div>
+
+
+
+     <div class="control-group">
+         <label class="control-label">Nombre del Contacto</label>
+         <div class="controls">
+             <?php echo $this->formText("nombre", $this->data["nombre"],
+                 array("" => "")
+             ); ?>
+         </div>
+     </div>
+    <div class="control-group">
+        <label class="control-label">Apellido Paterno</label>
+        <div class="controls">
+            <?php echo $this->formText("ap_paterno", $this->data["ap_paterno"],
+                array("" => "")
+            ); ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Apellido Materno</label>
+        <div class="controls">
+            <?php echo $this->formText("ap_materno", $this->data["ap_materno"],
+                array("" => "")
+            ); ?>
+        </div>
+    </div>
+     <div class="control-group">
+        <label class="control-label">Telefono</label>
+        <div class="controls">
+            <?php echo $this->formText("telefono", $this->data["telefono"]
+            ); ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Observaciones</label>
+        <div class="controls">
+            <?php echo $this->formText("observaciones", $this->data["observaciones"],
+                array()
+            ); ?>
+        </div>
+    </div>
+
+
+    </td>
+   </tr>
+</table>
+</fieldset>
+
+<fieldset>
+    <legend>Domicilio</legend>
+    <div class="control-group">
+        <label class="control-label">Calle</label>
+        <div class="controls">
+            <?php echo $this->formText("calle", $this->data["calle"],
+                array()
+            ); ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">Num Ext.</label>
+        <div class="controls">
+            <?php echo $this->formText("num_exterior", $this->data["num_exterior"]
+            ); ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">Num Int.</label>
+        <div class="controls">
+            <?php echo $this->formText("num_interior", $this->data["num_interior"]
+            ); ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">Colonia</label>
+        <div class="controls">
+            <?php echo $this->formText("colonia", $this->data["colonia"]
+            ); ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">Municipio/Delegación </label>
+
+        <div class="controls">
+            <?php echo $this->formText("ciudad", $this->data["ciudad"],
+                array()
+            ); ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Estado </label>
+        <div class="controls">
+            <?php echo $this->formText("estado", $this->data["estado"],
+                array()
+            ); ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Codigo Postal </label>
+
+        <div class="controls">
+            <?php echo $this->formText("codigo_postal", $this->data["codigo_postal"],
+                array()
+            ); ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">Email</label>
+        <div class="controls">
+            <?php echo $this->formText("email", $this->data["email"]
+            ); ?>
+        </div>
+    </div>
+</fieldset>
+
+<div class="form-actions">
+        <input type="submit" value="Aceptar">
+
+</div>
+</form>
+<script>
+    $(function () {
+        //$( "#on_hire_fecha" ).datepicker();
+        $("#fecha_nacimiento").datepicker({
+            format: 'dd-mm-yyyy'
+        });
+    });
+   // document.getElementById("idcliente").style.display="none";
+    function muestraidcliente(){
+
+       if(document.getElementById("id_usuario_tipo").value==1 ){
+        document.getElementById("idcliente").style.display="Inherit";
+           document.getElementById("conttipousuario").style.display="none";
+       }else{
+           document.getElementById("idcliente").style.display="none";
+           document.getElementById("conttipousuario").style.display="Inherit";
+
+       }
+    }
+
+</script>

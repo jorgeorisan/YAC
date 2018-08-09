@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Cremas</title>
+
+    <script type="text/javascript">
+        window.print();
+    </script>
+
+    <style type="text/css">
+        body {
+            font-family: Arial;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body style="text-align: center; width: 175px;">
+<table width="1000" border="0" style="font-size: 18px">
+    <tr colspan="3">
+        <td width="400"  align="left">Inventario de productos</td>
+        <td width="0"  align="right"> <label style="font-size:14px">Mexico D.F. a &nbsp;<?php echo date('Y-m-d h:i:s'); ?> </label></td>
+    </tr>
+    <tr>
+        <td colspan="3" align="left"></td>
+        <td width="177"><label style="font-size:14px"><label style="color:#F00"></label></label></td>
+    </tr>
+    <tr colspan="3" align="left">
+        <td><label style="font-size:14px"><label style="color:#120000"> </label></label></td>
+        <td width="0"></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="left"><label style="font-size:14px"></label></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="left"><label style="font-size:14px">Usuario: &nbsp;<?php echo $this->profile()->nombre; ?> </label></td>
+    </tr>
+</table>
+<h3>Lista</h3>
+<table class="full-width" border="1">
+    <thead>
+    <tr>
+       
+        <th>Codigo Inter.</th>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Categoría</th>
+        <th>Proveedor</th>
+        <?php
+        if($this->tipousu=="2"){
+            ?>
+            <th>Costo</th>
+        <?php
+        }?>
+        <th>Precio</th>
+        <th>Existencias</th>
+        <th>Paquete</th>
+        <th>Tienda</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach ($this->query as $obj):// de producto ?>
+        <tr tooltip="true" title="Código de barras: <?php echo $obj->Producto->codbarras; ?>">
+            <td><?php echo $obj->Producto->codinter; ?></td>
+            <td> <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/detallesproducto/id/".$obj->id_producto); ?>">
+                    <?php echo $obj->Producto->nombre; ?> </a>
+            </td>
+            <td><?php echo $obj->Producto->Marca->nombre; ?></td>
+            <td><?php echo $obj->Producto->Categoria->categoria; ?></td>
+            <td><?php echo $obj->Producto->Proveedor->nombre_corto; ?></td>
+            <?php
+
+            ////////////////////existencias
+
+            $query = Doctrine_Query::create()
+                ->select("ifnull(sum(existencias),0) totexistencias")
+                ->from("Database_Model_ProductoTienda")
+                ->where("id_producto=?",$obj->id_producto)
+                ->andWhere("tienda_id_tienda=?",$this->tienda)
+                ->execute();//verificamos si es adminisrador
+
+            foreach($query as $objt){
+                $totexistencias=$objt["totexistencias"];
+            }
+
+            ////////////////////////////////precio
+            $ejeprecio= Doctrine_Query::create()
+                ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                ->where("a.id_producto=?",$obj->id_producto)
+                //->andWhere("cantvendida<cantidad")
+                ->andWhere("b.status='ACTIVO'")
+                ->orderBy("id_entrada_producto DESC")
+                ->limit(1);
+
+
+            $existentes=$totexistencias;
+            $precio2=null;
+            foreach($ejeprecio->execute() as $ex){
+                $existentes=$ex["cantidad"]-$ex["cantvendida"];
+                $precio2=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+            }
+            if($precio2){
+                $precio=$precio2;
+            }else{
+                $precio=$obj->Producto->precio;
+            }
+
+
+
+
+
+            ?>
+            <?php
+            if($this->tipousu=="2"){
+
+                $ejecosto= Doctrine_Query::create()
+                    ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                    ->where("a.id_producto=?",$obj->id_producto)
+                    ->andWhere("b.status='ACTIVO'")
+                    //  ->andWhere("a.cantvendida<a.cantidad")
+                    ->orderBy("id_entrada_producto desc")
+                    ->limit(1);
+                $costoBase0=$obj->Producto->costo;
+                // echo $ejecosto->getSqlQuery();//imprime la consulta qu ese esta generando
+                $costoBase=0;
+                $costoBase1=null;
+                foreach($ejecosto->execute() as $excosto){
+
+                    $costoBase1=$excosto["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                }
+                if($costoBase1){
+                    $costoBase=$costoBase1;
+                }else{
+                    $costoBase=$costoBase0;
+                }
+
+                ?>
+
+                <td>$<?php echo number_format($costoBase, 2); ?></td>
+            <?php
+            }?>
+
+
+            <td  title="<?php echo "Existentes con este precio: ".$existentes; ?>">$<?php echo number_format($precio, 2); ?></td>
+            <td><?php      echo $totexistencias; ?></td>
+
+            <td><?php
+                if($obj->Producto->paquete==1){
+                    echo "SI";
+                }else{
+                    echo "NO";
+                }
+                // echo $obj->existencias; ?></td>
+            <td><?php      echo $obj->Tienda->nombre; ?></td>
+
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+</body>
+</html>

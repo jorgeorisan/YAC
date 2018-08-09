@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Trepsi</title>
+
+    <script type="text/javascript">
+        window.print();
+    </script>
+
+    <style type="text/css">
+        body {
+            font-family: Arial;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body style="text-align: center; width: 175px;">
+<div align="center">
+    Trepsi S.A. DE C.V.<br/>
+    AV PALO SOLO NO.14<br/>
+    52471500<br/>
+    CD. DE MEXICO, ESTADO DE MEXICO, MEXICO<br/>
+    R.F.C: TRE 960930-U8A<br/>
+    REGIMEN FISCAL: PERSONA MORAL<br />
+    Folio Venta: <?php echo $this->obj->ProductosVenta->folio; ?>
+    <br />
+</div>
+
+
+<table width="170px">
+    <tr>
+        <th>Tienda</th>
+        <td><?php
+
+            echo $this->obj->ProductosVenta->Venta->Tienda->nombre; ?></td>
+    </tr>
+    <tr>
+        <th>Fecha</th>
+        <td><?php echo $this->obj->fecha_registro; ?></td>
+    </tr>
+    <tr>
+        <th>CAJERO</th>
+        <td><?php echo $this->obj->id_usuario; ?></td>
+    </tr>
+    <tr>
+        <th>CLIENTE</th>
+        <td><?php echo $this->obj->ProductosVenta->Venta->Persona->nombre; ?></td>
+    </tr>
+
+</table>
+
+<h3>Artículos</h3>
+<table width="170px">
+    <?php //echo $this->obj->ticket_items; ?>
+    <tbody>
+    <tr>
+        <th>Cantidad</th>
+       <!-- <th>Codigo Interno</th>  -->
+        <th>Producto</th>
+        <th>Subtotal</th>
+        <th>Total</th>
+
+    </tr>
+    <?php
+    $total = 0;
+    $costo = 0;
+    $totalComision = 0;
+    $query= Doctrine_Query::create()
+        ->from("Database_Model_ProductosVenta")
+        ->where("id_productos_venta=?",$this->obj->id_productos_venta)
+        ->execute();
+
+
+    $totalieps=0;
+    $totaliva=0;
+    foreach ($query as $obj):
+        if($obj->ProductoTienda->Producto->ieps>0){
+            $totalieps+=$obj->total*0.08;
+         }
+        if($obj->ProductoTienda->Producto->exento_iva==1){
+            //$totaliva+=$obj->total*$query->ProductoTienda->Producto->ieps;
+        }else{
+            $totaliva+=$obj->total*0.16;
+        }
+        ?>
+
+        <tr >
+            <td><?php echo $obj->cantidad; ?></td>
+           <!-- <td><?php echo $obj->ProductoTienda->Producto->codinter; ?></td>-->
+            <td><?php echo $obj->nombre; ?></td>
+
+            <td>$<?php  echo number_format($obj->total/$obj->cantidad, 2); ?></td>
+            <td>$<?php  echo number_format($obj->total, 2); ?></td>
+
+        </tr>
+    <?php endforeach;
+    echo $msj;?>
+
+    </tbody>
+    <tr>
+        <td colspan="4" align="right"><strong>Total</strong> $<?php echo number_format($this->obj->total, 2); ?></td>
+    </tr>
+   <!-- <tr>
+        <td colspan="4" align="right"><strong>IVA: </strong>
+            $<?php echo number_format($totaliva , 2); ?></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="right"><strong>IEPS: </strong>
+            $<?php echo number_format($totalieps, 2); ?></td>
+    </tr>
+    -->
+</table>
+
+
+<p>
+   Devolucion de Producto
+
+</p>
+</body>
+</html>
+
+

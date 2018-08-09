@@ -1,0 +1,419 @@
+<style type="text/css">
+    .cancelada {
+        opacity: .5;
+    }
+</style>
+<h1>Reportes</h1>
+<h3 class="tit">Ventas</h3>
+
+<?php echo $this->form; ?>
+
+<h3 class="tit">Reporte generado</h3>
+<table width="100%">
+    <tr>
+        <th></th>
+        <th>No Folio</th>
+        <th>Vendedor</th>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Tienda</th>
+        <th>Total</th>
+        <th>Comentarios</th>
+        <th></th>
+    </tr>
+    <?php
+    $total = 0;
+    $totalComision = 0;
+    $totdesc=0;
+    $totalcancel=0;
+    $totalsincom=0;
+     $totalrecarga=0;
+    $mayoreo=0;
+    $querycancel= Doctrine_Query::create()
+        ->from("Database_Model_VentaProductocancelado vpc, vpc.ProductosVenta pv, pv.Venta v")
+        ->where("DATE(vpc.fecha_registro) >= '$this->from'")
+        ->andWhere("DATE(vpc.fecha_registro) <= '$this->to'")
+        ->andWhere("v.cancelado=0")
+    ;
+    if($this->id_usuario){
+        $querycancel->andWhere("v.id_usuario=?",$this->id_usuario);
+    }
+    $msj2="";
+
+    foreach ($querycancel->execute() as $objdesc2){
+        $totalcancel+=$objdesc2->total;
+         $msj2.="<tr><td></td><td></td><td></td><td></td>
+                <td>Devolucion</td>
+                <td>".$objdesc2->ProductosVenta->Venta->folio.":".$objdesc2->ProductosVenta->nombre."</td>
+                <td>
+                     $-".$objdesc2->total."
+                </td>
+                <td>
+                     <label style='color:red'>Cancelado:".$objdesc2->observaciones."</label>
+                </td>
+                <td></td>
+              </tr>";
+
+    }
+    foreach ($this->query as $obj):
+        $querydesc= Doctrine_Query::create()
+            ->from("Database_Model_Descuentos")
+            ->where("id_venta=?",$obj->id_venta)
+            ->execute();
+        $msj="";
+
+        foreach ($querydesc as $objdesc):
+             if ($objdesc->Venta->cancelado) {
+              $class="class='cancelada'";
+            }else{
+                 $totdesc+=$objdesc->montodesc;
+             }
+
+
+            $msj.="<tr $class><td></td><td></td><td></td><td></td><td></td><td></td>
+
+                <td>
+                     $-".$objdesc->montodesc."
+                </td>
+                <td>
+                     ".$objdesc->descripciondesc."
+                </td>
+                <td></td>
+              </tr>";
+
+        endforeach;
+
+
+        $querysincom= Doctrine_Query::create()
+            ->from("Database_Model_ProductosVenta pv")
+            ->where("pv.id_venta=?",$obj->id_venta)
+            ->execute();
+
+
+
+        foreach ($querysincom as $objSINC):
+            if($objSINC->ProductoTienda->Producto->manual==1&&$objSINC->Venta->cancelado==0&&$objSINC->nombre=='EXCEDENTE') {//Excedente
+                $totalsincom += $objSINC->total;
+            }
+            if($objSINC->ProductoTienda->Producto->manual==1&&$objSINC->Venta->cancelado==0&&$objSINC->nombre=='RECARGA') {//RECARGAS
+                $totalrecarga += $objSINC->total;
+            }
+
+        endforeach;
+        ?>
+        <tr <?php  if ($obj->cancelado) {
+            echo "class='cancelada'";
+        }?> >
+
+            <td><a href="<?php echo $this->baseUrl("ventas/administrar/ver/id/" . $obj->id_venta); ?>">
+                <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a></td>
+            <td><?php echo $obj->folio; ?></td>
+            <td><?php
+                echo  $obj->id_usuario; ?></td>
+            <td><?php echo $obj->fecha; ?></td>
+            <td><?php echo $obj->tipo."<br>";
+                if($obj->icredito){
+                    echo "<span style='color:red'>En pago</span>";
+
+                }
+                ?></td>
+
+            <td><?php echo $obj->Tienda->nombre; ?></td>
+            <td>$<?php
+                if ($obj->cancelado==0) {
+                    $total += $obj->total;
+
+                }
+                echo number_format($obj->total, 2);
+                ?></td>
+            <td><?php echo $obj->comentarios; ?></td>
+            <td>
+                <?php if (!$obj->cancelado): ?>
+                    <a title="Cancelar venta" tooltip="true"  fancybox="true"
+                       href="<?php echo $this->baseUrl("administracion/devoluciones/mostrarcancelarventa/id/" . $obj->id_venta); ?>">
+                        <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a>
+                <?php endif; ?>
+            </td>
+        </tr>
+
+        <?php echo $msj;
+    endforeach;
+    echo $msj2;
+    $queryabono = Doctrine_Query::create()
+        ->select("ifnull(sum(v.montoabono),0) as total,v.id_usuario")
+        ->from("Database_Model_Deudores v")
+        ->where("DATE(v.fecha_abono) >= '$this->from'")
+        ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
+        //->getSqlQuery();
+            ;
+
+    $abon=0;
+    foreach ($queryabono->execute() as $objabon){
+        $abon+=$objabon->total;
+    }
+
+    ?>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><strong>Venta:<br>Abonos:<br>Excedente (Incluido en Venta)<br>Recargas (Incluido en Venta)<br>Venta sin Excedente y Recargas <br>Total General</strong></td>
+        <td><strong>
+                <?php echo number_format($total-$totalcancel, 2); ?><br>
+               $<?php echo number_format($abon, 2); ?><br>
+                $<?php   echo number_format($totalsincom, 2) ?><br>
+                $<?php   echo number_format($totalrecarga, 2) ?>
+            <br>
+                $<?php echo number_format(($total-$totalcancel-$totalsincom-$totalrecarga), 2); ?>
+                <br>
+                $<?php echo number_format(($total+$abon), 2); ?>
+            </strong>
+        </td>
+        <td></td>
+        <td></td>
+    </tr>
+
+</table>
+<br>
+
+<h3 class="tit">Comisiones de Ventas</h3>
+<table width="100%">
+    <tr>
+        <th>Usuario</th>
+        <th>Total Para Bono</th>
+        <th>Abonos</th>
+        <th>Recargas</th>
+        <th>Execente</th>
+        <th>Total Venta (CAJA)</th>
+        <th>Por Cobrar</th>
+        <th>Total General</th>
+        <th>Comision</th>
+    </tr>
+    <?php
+
+    $totalComision = 0;
+    $totalt=0;
+    $totaltvta=0;
+    $totalabonos=0;
+    $totalporpagar=0;
+    $totalrecargas=0;
+    $totalexcedente=0;
+    $totalgeneral=0;
+
+    $totdesctt=0;
+    foreach ($this->querycomisiones as $obj):
+        $totalrec= 0;
+        $totalexce=0;
+        $totalab=0;
+        $mayoreo=0;
+
+        $totalcancel2=0;
+        $credito=0;
+        $totdesctt=0;
+        $querycomi = Doctrine_Query::create()
+            ->select("sum(pv.total) as total, v.id_usuario id_usuario")
+            ->from("Database_Model_ProductosVenta pv, pv.Venta v,pv.ProductoTienda pt")
+            ->where("DATE(v.fecha) >= '$this->from'")
+            ->andWhere("DATE(v.fecha) <= '$this->to'")
+           // ->andWhere("pt.id_producto!=1328")//recargas
+            ->andWhere("v.cancelado=0")
+            ->andWhere("pv.cancelado=0")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            ->andWhere("v.icredito=0")
+            ->groupBy("v.id_usuario")
+        ->fetchOne();
+        $querycancel= Doctrine_Query::create()
+            ->from("Database_Model_VentaProductocancelado vpc, vpc.ProductosVenta pv, pv.Venta v")
+            ->where("DATE(vpc.fecha_registro) >= '$this->from'")
+            ->andWhere("DATE(vpc.fecha_registro) <= '$this->to'")
+            ->andWhere("v.icredito=0")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+        ;
+
+        foreach ($querycancel->execute() as $objdesc2){
+             $totalcancel2+=$objdesc2->total;
+
+        }
+        $querymayo= Doctrine_Query::create()
+            ->from("Database_Model_ProductosVenta pv, pv.Venta v,pv.ProductoTienda pt")
+            ->where("DATE(v.fecha) >= '$this->from'")
+            ->andWhere("DATE(v.fecha) <= '$this->to'")
+            ->andWhere("v.cancelado=0")
+            ->andWhere("pv.cancelado=0")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            ->execute();
+        $querydescv= Doctrine_Query::create()
+            ->from("Database_Model_Venta v")
+            ->where("DATE(v.fecha) >= '$this->from'")
+            ->andWhere("DATE(v.fecha) <= '$this->to'")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            ->execute();
+
+
+        foreach ($querydescv as $objSINCc):
+            $querydesc= Doctrine_Query::create()
+                ->from("Database_Model_Descuentos")
+                ->where("id_venta=?",$objSINCc->id_venta)
+                ->execute();
+            foreach ($querydesc as $objdesc):
+                if ($objdesc->Venta->cancelado) {
+                }else{
+                    $totdesctt+=$objdesc->montodesc;
+                }
+
+            endforeach;
+        endforeach;
+        foreach ($querymayo as $objSINC):
+            if($objSINC->tipoprecio=='Mayoreo'&&$objSINC->Venta->icredito==0){
+                $mayoreo += ($objSINC->total)/2;
+               // echo "<script>alert($mayoreo);</script>";
+            }
+            if($objSINC->Venta->icredito=='1'){
+                 $credito += ($objSINC->total);
+            }
+        endforeach;
+        $querycredpag= Doctrine_Query::create()
+            ->from("Database_Model_Venta v")
+            ->where("DATE(v.fecha) >= '$this->from'")
+            ->andWhere("DATE(v.fecha) <= '$this->to'")
+            ->andWhere("v.cancelado=0")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            ->execute();
+        $creditopagado=0;
+        foreach ($querycredpag as $objcred):
+            if($objcred->tipo=='Credito'&&$objcred->icredito==0){
+                $creditopagado+=$objcred->total;
+            }
+
+        endforeach;
+         $queryabono = Doctrine_Query::create()
+            ->select("sum(v.montoabono) as total")
+            ->from("Database_Model_Deudores v")
+            ->where("DATE(v.fecha_abono) >= '$this->from'")
+            ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            //->getSqlQuery();
+            ->fetchOne();
+         $queryrecag = Doctrine_Query::create()
+            ->select("sum(pv.total) as total")
+            ->from("Database_Model_ProductosVenta pv, pv.Venta v,pv.ProductoTienda pt, pt.Producto pr")
+            ->where("DATE(v.fecha) >= '$this->from'")
+            ->andWhere("DATE(v.fecha) <= '$this->to'")
+            ->andWhere("pr.manual=1")//recargas
+            ->andWhere("pv.nombre='RECARGA'")
+            ->andWhere("v.cancelado=0")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            ->andWhere("v.icredito=0")
+            ->groupBy("v.id_usuario")
+
+            ->fetchOne();
+        $queryexcedente = Doctrine_Query::create()
+            ->select("sum(pv.total) as total")
+            ->from("Database_Model_ProductosVenta pv, pv.Venta v,pv.ProductoTienda pt, pt.Producto pr")
+            ->where("DATE(v.fecha) >= '$this->from'")
+            ->andWhere("DATE(v.fecha) <= '$this->to'")
+            ->andWhere("pr.manual=1")//recargas
+            ->andWhere("pv.nombre='EXCEDENTE'")
+            ->andWhere("v.cancelado=0")
+            ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            ->andWhere("v.icredito=0")
+            ->groupBy("v.id_usuario")
+            ->fetchOne();
+        if($queryabono){
+            $totalab= $queryabono->total;
+            $totalabonos+=$queryabono->total;
+        }
+        if($queryrecag){
+            $totalrec= $queryrecag->total;
+            $totalrecargas+=$queryrecag->total;
+        }
+          if($queryexcedente){
+            $totalexce= $queryexcedente->total;
+            $totalexcedente+=$queryexcedente->total;
+        }
+        ?>
+        <tr>
+
+
+            <td><?php echo $obj->id_usuario;
+                $title="total=".($querycomi->total-$totdesctt)."(-excedente)".$totalexce."(-Recargas)".$totalrec."(-mayoreo)".$mayoreo;
+                ?></td>
+            <td title="<?php echo $title; ?>"><?php
+
+                $tott=$querycomi->total-$totdesctt-$mayoreo-$totalrec-$totalexce;
+                $tott2=$querycomi->total-$totdesctt;
+
+                $totalt+=$tott;
+                echo  ($querycomi->total-$totdesctt-$totalrec-$totalexce)."-".$mayoreo."=".($querycomi->total-$totdesctt-$mayoreo-$totalrec-$totalexce); ?></td>
+            <td><?php  echo  $totalab; ?></td>
+            <td><?php  echo  $totalrec; ?></td>
+            <td><?php  echo  $totalexce; ?></td>
+            <td title="<?php echo $tott2."+".$totalab."-".$creditopagado;?>"><?php
+                //echo $creditopagado."<br>";
+
+                $totaltvta+=($tott2+$totalab-$creditopagado);
+                echo $totalv=($tott2+$totalab-$creditopagado); ?></td>
+            <td style="color: red"><?php
+
+                $totalgen=$totalpp+$totalv;
+                $totalporpagar+=$credito;
+                echo $credito; ?></td>
+            <td style="color: blue">
+                <?php $totalgeneral+=$totalgen;
+                echo $totalgen ?>
+            </td>
+            <td style="color: green"><?php
+                $totalComision+=$tott*$obj->Usuario->comision;
+                echo $tott*$obj->Usuario->comision; ?></td>
+        </tr>
+    <?php endforeach;
+    if($totalabonos<$abon){
+        ?>
+        <tr>
+            <td><?php echo "Otro usuario" ?></td>
+            <td title="<?php ; ?>"></td>
+            <td><?php  echo  ($abon-$totalabonos);
+
+                ?></td>
+            <td><?php   ?></td>
+            <td title=""><?php
+                //echo $creditopagado."<br>";
+
+                $totaltvta+=($abon-$totalabonos);
+                echo $totalv=($abon-$totalabonos); ?></td>
+            <td style="color: red"><?php
+
+                $totalgen=($abon-$totalabonos);
+
+                 ?></td>
+            <td style="color: blue">
+                <?php $totalgeneral+=$totalgen;
+                echo $totalgen ?>
+            </td>
+            <td style="color: green"><?php
+
+                echo 0; ?></td>
+        </tr>
+
+    <?php
+        $totalabonos+=($abon-$totalabonos);
+    }
+
+    ?>
+
+    <tr>
+
+        <td></td>
+        <td><strong>$<?php echo number_format($totalt, 2); ?></strong></td>
+        <td><strong>$<?php echo number_format($totalabonos, 2); ?></strong></td>
+        <td><strong>$<?php echo number_format($totalrecargas, 2); ?></strong></td>
+        <td><strong>$<?php echo number_format($totalexcedente, 2); ?></strong></td>
+        <td><strong>$<?php echo number_format($totaltvta, 2); ?></strong></td>
+        <td style="color: red"><strong>$<?php echo number_format($totalporpagar, 2); ?></strong></td>
+        <td style="color: blue"><strong>$<?php echo number_format($totalgeneral+$totalporpagar, 2); ?></strong></td>
+        <td style="color: green"><strong>$<?php echo number_format($totalComision, 2); ?></strong></td>
+    </tr>
+
+</table>

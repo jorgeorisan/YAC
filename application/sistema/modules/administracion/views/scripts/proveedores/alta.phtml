@@ -1,0 +1,51 @@
+<h1>Proveedores</h1>
+<h3 class="tit">ALTA DE PROVEEDOR</h3>
+
+<form method="post" action="" class="form-horizontal">
+    <fieldset>
+        <legend>Datos Proveedor</legend>
+        <div class="control-group">
+            <label class="control-label">Nombre Corto</label>
+            <div class="controls">
+                <?php echo $this->formText("nombre_corto", $this->data["nombre_corto"],
+                    array("" => "")
+                ); ?>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Telefono</label>
+            <div class="controls">
+                <?php echo $this->formText("telefono", $this->data["telefono"],
+                    array("" => "")
+                ); ?>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">Informacion Adicional</label>
+            <div class="controls">
+                <?php echo $this->formText("info_adicional", $this->data["info_adicional"],
+                    array("" => "")
+                ); ?>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <div class="form-actions">
+        <input type="submit" value="Aceptar">
+
+    </div>
+</form>
+<script>
+    $(function () {
+        //$( "#on_hire_fecha" ).datepicker();
+        $("#fecha_nacimiento").datepicker({
+            format: 'dd-mm-yyyy'
+        });
+
+    });
+
+
+</script>

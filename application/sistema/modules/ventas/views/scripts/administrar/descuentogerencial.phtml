@@ -1,0 +1,24 @@
+<?php
+if ($this->obj): ?>
+<tr lineid="descuento-gerencial">
+    <td>
+
+    </td>
+        <td><input type="hidden" name="descripciondesc[]" id="descripciondesc" value="<?php echo "Desc. " . $this->monto . "$: " . $this->obj->id_usuario; ?>" >
+            <input type="hidden" name="usuariodesc[]" value="<?php echo $this->obj->id_usuario; ?>" >
+            <input type="hidden" name="porcentajedesc[]" value="<?php echo $this->monto; ?>" >
+            <?php echo "Descuento gerencial " . $this->monto . "$: " . $this->obj->id_usuario; ?>
+        </td>
+    <td>
+
+    </td>
+    <td>
+        <input type="hidden" name="id_producto[]"  value="0"/>
+        <input type="hidden" name="cantidad[]"     value="0"/>
+        <input type="hidden" class="totales" name="total[]" value="-<?php echo $this->monto; ?>"/>
+        <input type="hidden"  name="totaldesc[]" value="<?php echo $this->total; ?>"/>
+        <input type="hidden"  name="desc[]" value="<?php echo $this->monto; ?>"/>
+        $-<?php echo number_format($this->monto, 2); ?>
+    </td>
+</tr>
+<?php endif; ?>

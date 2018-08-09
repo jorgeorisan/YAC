@@ -1,0 +1,30 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#buscar-producto-form").submit(function (e) {
+            e.preventDefault();
+
+            $.get(_root + "/ventas/administrar/buscarproducto", $(this).serialize(), function (response) {
+                $("#table-resultados").html(response);
+            });
+        });
+        $("[barcode]").click(function (e) {
+            $("#barcode").val($(this).attr("barcode")).focus();
+            $.fancybox.close();
+        });
+
+    });
+</script>
+
+<h3 class="tit">Buscar producto</h3>
+<form id="buscar-producto-form">
+    <input type="text" name="q" id="q" onkeypress="document.getElementById('buttsub').click();"/>
+    <input type="hidden" name="id_tiendaselected" id="id_tiendaselected" value="<?php echo $this->id_tiendaselected?>"/>
+    <input type="submit" id="buttsub" value="Buscar"/>
+</form>
+
+<h3 class="tit">Resultados</h3>
+
+<div id="table-resultados"  style="width: 900px; border:1;">
+
+</div>

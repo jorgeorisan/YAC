@@ -1,0 +1,132 @@
+<h1>Entrada de Almacen</h1>
+<h3 class="tit">Ver Entrada</h3>
+<a href="<?php echo $this->baseUrl("administracion/inventarios/imprimir/id/" . $this->obj->id_entrada); ?>" target="_blank">Imprimir
+    Entrada</a>
+<style type="text/css">
+    .cancelada {
+        opacity: .5;
+    }
+</style>
+<table>
+    <tr>
+        <th>Vendedor</th>
+        <td><?php echo $this->obj->Usuario->nombre; ?></td>
+    </tr>
+    <tr>
+        <th>Fecha</th>
+        <td><?php echo $this->obj->fecha; ?></td>
+    </tr>
+    <tr>
+        <th>Referencia</th>
+        <td><?php echo $this->obj->referencia; ?></td>
+    </tr>
+    <tr>
+        <th>Folio</th>
+        <td><?php echo $this->obj->id_entrada; ?></td>
+    </tr>
+    <tr>
+        <th>Concepto</th>
+        <td><?php echo $this->obj->concepto; ?></td>
+    </tr>
+
+    <tr>
+        <th>Suma Total</th>
+        <td><?php echo number_format($this->obj->total, 0); ?></td>
+    </tr>
+    <tr>
+        <th>Costo Total</th>
+        <td>$<?php echo number_format($this->obj->costo_total, 2); ?></td>
+    </tr>
+    <?php
+    $cantexento = 0;
+    $totalexentos=0;
+    $cantiva = 0;
+    $totaliva=0;
+    $query1= Doctrine_Query::create()
+    ->from("Database_Model_EntradaProducto")
+    ->where("id_entrada=?",$this->obj->id_entrada)
+    ->execute();
+    foreach ($query1 as $obj1):
+
+        if($obj1->Producto->exento_iva>0){
+            $cantexento+=$obj1->cantidad;
+             if($obj1->Producto->exento_ieps>0) {
+
+             }else{
+                 $totalexentos += $obj1->cantidad * $obj1->costo;
+             }
+        }else{
+            $cantiva+=$obj1->cantidad;
+            $totaliva+=$obj1->totalcosto;
+        }
+
+    endforeach; ?>
+    <tr>
+        <th>IVA</th>
+        <td>$<?php echo number_format(($totaliva)*0.16, 2); ?></td>
+    </tr>
+    <tr>
+        <th>IEPS</th>
+        <td>$<?php echo number_format($totalexentos*0.08, 2); ?></td>
+    </tr>
+
+
+
+</table>
+
+<h3 class="tit">Artículos</h3>
+
+<table width="100%">
+    <tr>
+        <th>Cantidad</th>
+        <th>Cantidad Anterior</th>
+        <th>Cod Inter.</th>
+        <th>Producto</th>
+        <th>Costo</th>
+        <th>Precio</th>
+        
+        <th>Costo Total</th>
+        <th></th>
+
+
+    </tr>
+    <?php
+    $total = 0;
+    $costo = 0;
+    $totalComision = 0;
+    $query= Doctrine_Query::create()
+        ->from("Database_Model_EntradaProducto")
+        ->where("id_entrada=?",$this->obj->id_entrada)
+        ->execute();
+    foreach ($query as $obj): ?>
+        <tr <?php  if ($obj->cancelado) {
+            echo "class='cancelada'";
+        }?>
+            >
+            <td><?php echo $obj->cantidad; ?></td>
+            <td><?php echo $obj->cantidad_anterior; ?></td>
+            <td><?php echo $obj->Producto->codinter; ?></td>
+            <td><?php echo $obj->nombre; ?></td>
+
+            <td>$<?php  echo number_format($obj->costo, 2); ?></td>
+            <td>$<?php  echo number_format($obj->precio, 2); ?></td>
+            <td>$<?php $costo+=$obj->totalcosto; echo number_format($obj->totalcosto, 2); ?></td>
+            <td>
+                <?php if (!$obj->cancelado): ?>
+                    <a title="Cancelar Entrada" tooltip="true" delete="true"
+                       href="<?php echo $this->baseUrl("administracion/inventarios/cancelarproducto/id/" . $obj->id_entrada_producto); ?>">
+                        <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a>
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    <tr>
+
+        <td></td><td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><strong>Totales</strong></td>
+        <td>$ <?php echo number_format($costo, 2); ?></td>
+    </tr>
+</table>

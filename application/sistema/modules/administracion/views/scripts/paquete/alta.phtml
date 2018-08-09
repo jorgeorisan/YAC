@@ -1,0 +1,166 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        calcTotal = function () {
+
+            var totales=document.getElementsByClassName("totales");
+            var total = 0;
+            for (var i = 0, len = totales.length; i < len; i++) {
+                total = parseFloat(total);
+                total += parseFloat(totales[i].innerHTML);
+            }
+            document.getElementById("total-num").innerHTML=total;
+            document.getElementById("total-global").value=total;
+        }
+
+        $("#barcode-form").submit(function (e) {
+            e.preventDefault();
+
+            var barcode=document.getElementById("barcode").value;
+            var msj=$(this).serialize()+"&barcode="+barcode;
+            //alert(msj);
+            $.get(_root + "/administracion/paquete/getproducto", msj,
+                function (response) {
+                    $("table#productos").append(response);
+                    calcTotal();
+                });
+            $("#cantidad").val(1);
+            $("#barcode").val("").focus();
+            return false;
+        });
+
+        $("#barcode").focus(
+            function () {
+                $(this).addClass("yellow-bg");
+            }).blur(function () {
+                $(this).removeClass("yellow-bg");
+            });
+
+        $("#barcode").focus();
+
+
+        $("#send").click(function (e) {
+           // if(document.getElementById("producto").value!=""){
+                $(".borrar-td").remove();
+                $("#ticket-items").val($("#productos").html());
+                $(this).hide();
+               // calcTotal();
+                $("#main-form").submit();
+
+
+        });
+
+
+        $(".borrar-producto").live('click', function (e) {
+            e.preventDefault();
+            var id = $(this).attr("lineid");
+            $("[lineid=" + id + "]").remove();
+            calcTotal();
+        });
+    });
+    var total1=0;
+    function calculaprecio(num){
+        document.getElementById("total-num").innerHTML=0;
+        var precio2 = (document.getElementById("costo"+num).value *  1.16 *   document.getElementById("multiplicador").value);
+       var precio=precio2.toFixed(2);
+        document.getElementById("precio"+num).value=precio;
+        var importe2 = (document.getElementById("costo"+num).value * document.getElementById("cantidad"+num).innerHTML);
+        var importe=importe2.toFixed(2);
+        document.getElementById("importe"+num).innerHTML=importe;
+        document.getElementById("importe2"+num).value=importe;
+       calcTotal2();
+    }
+function calcTotal2(){
+    var totales=document.getElementsByClassName("totales");
+    var total = 0;
+    for (var i = 0, len = totales.length; i < len; i++) {
+        total = parseFloat(total);
+        total += parseFloat(totales[i].innerHTML);
+    }
+    document.getElementById("total-num").innerHTML=total;
+    document.getElementById("total-global").value=total;
+
+}
+
+</script>
+<h1>Paquetes</h1>
+<h3 class="tit">Nuevo Paquete</h3>
+
+<fieldset>
+    <legend>Introducir producto</legend>
+    <form id="barcode-form">
+        <input type="hidden" id="tipousu" value="<?php echo $this->tipousu; ?>">
+
+
+
+        <br />
+        <table class="nostyle">
+            <tr>
+                <td>   <label for="barcode">Código de barras</label>  </td>
+                <td>   <input type="text" id="barcode" name="id_producto" value="<?php echo $this->codint; ?>"/>      </td>
+                <td> <a fancybox="true" href="<?php echo $this->baseUrl("ventas/administrar/mostrarcatalogo"); ?>">Catálogo</a>  </td>
+            </tr>
+            <tr>
+                <td>       <label for="cantidad">Cantidad</label>  </td>
+                <td>    <input type="text" class="small-field" id="cantidad" name="cantidad" value="1"/>    </td>
+            </tr>
+            <tr>
+                <td>        <input type="submit" value="Agregar"/>         </td>
+            </tr>
+        </table>
+    </form>
+</fieldset>
+
+
+<form action="" id="main-form" method="post">
+    <h3 class="tit">Productos del Paquete <?php echo $this->productox->codinter." ".$this->productox->nombre;?></h3>
+
+    <table id="productos" class="full-width">
+        <tr>
+            <th>Cantidad</th>
+            <th>Codigo Interno</th>
+            <th>Producto</th>
+            <th>Costo</th>
+            <th>Precio</th>
+            <th>Precio Mayoreo</th>
+            <th>Importe</th>
+            <th class="borrar-td"></th>
+        </tr>
+    </table>
+    <div style="height: 25px;"></div>
+    <hr/>
+
+    
+
+    <div class="control-group">
+        <label class="control-label">Comentarios</label>
+        <div class="controls">
+            <?php echo $this->formText("comentarios", $this->data["comentarios"],
+                array()
+            ); ?>
+        </div>
+    </div>
+
+    <div style="height: 25px;"></div>
+    <input style="width: 100%" type="button" id="send" class="button" value="Registrar ">
+</form>
+<script>
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

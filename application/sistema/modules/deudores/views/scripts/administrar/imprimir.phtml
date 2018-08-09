@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Yo Amo Comprar</title>
+
+    <script type="text/javascript">
+        window.print();
+    </script>
+
+    <style type="text/css">
+        body {
+            font-family: Arial;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body style="text-align: center; width: 175px;">
+<table width="190px"  style="align:center">
+    <tr>
+        <td width="100%" align="left" colspan="2">
+            <img width="100%" height="90" src="<?php echo $this->baseUrl("images/logo.jpg"); ?>"/>
+        </td>
+    </tr>
+    <tr>
+        <td width="50%" colspan="2" style="align:left"><strong>Yo Amo Comprar</strong>
+        </td>
+    </tr>
+        <tr>
+            <td colspan="2">
+                <label style="font-size: 10px"> <?php echo $this->obj->Venta->Tienda->ubicacion?><br/>Zitacuaro,Mich., Mexico<br/>
+                    <strong> Tel.</strong>7151108800
+                </label>
+            </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center"><label style="font-size: 10px">
+                <strong> R.F.C:</strong>AARL921226DJ6
+        </label>
+        </td>
+    </tr>
+
+</table>
+
+
+
+<table width="190px">
+    <tr>
+        <th>Folio Abono</th>
+        <td> <strong> <u><?php echo $this->obj->id_deudores; ?></u></strong></td>
+    </tr>
+     <tr>
+        <th>Folio Venta</th>
+        <td> <strong> <u><?php echo $this->obj->Venta->folio; ?></u></strong></td>
+    </tr>
+
+    <tr>
+        <th>Fecha Abono</th>
+        <td><?php echo $this->obj->fecha_abono; ?></td>
+    </tr>
+    <tr>
+        <th>Cajero</th>
+        <td><?php            echo $this->obj->id_usuario; ?></td>
+    </tr>
+    <tr>
+        <th>Cliente</th>
+        <td><?php echo $this->obj->Persona->nombre; ?></td>
+    </tr>
+    <tr>
+        <th>Monto Abono</th>
+        <td><?php echo "$".number_format($this->obj->montoabono,2); ?></td>
+    </tr>
+      <tr>
+        <th>Monto Pagado</th>
+        <td><?php
+            $querysaldo = Doctrine_Query::create()
+                    ->select("SUM(montoabono) AS saldo")
+                    ->from("Database_Model_Deudores")
+                    ->where("id_venta =?",$this->obj->id_venta)
+                    ->andWhere("status = ?", "ACTIVA")
+                    ->execute();
+                    $saldo=0;
+                foreach($querysaldo as $s){
+                    $saldo=$s["saldo"];
+                }
+         echo  "$".number_format($saldo,2); ?></td>
+    </tr>
+    <tr>
+        <th>Monto restante</th>
+        <td><?php echo "$".number_format($this->obj->Venta->total-$saldo,2); ?></td>
+    </tr>
+    <tr>
+        <th>Comentarios</th>
+        <td><?php echo $this->obj->comentarios; ?></td>
+    </tr>
+
+</table>
+</body>
+</html>
+
+

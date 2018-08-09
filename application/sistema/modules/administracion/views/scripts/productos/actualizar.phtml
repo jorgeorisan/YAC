@@ -1,0 +1,17 @@
+
+<h3 class="tit">Actualizar</h3>
+
+<form  action="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/actualizar"); ?>" method="post">
+    <div class="control-group">
+        <label class="control-label">Existencias</label>
+        <div class="controls">
+            <input type="hidden" name="id" value="<?php echo $this->data["id_productotienda"]; ?>" >
+            <input type="text" name="existencias" value="<?php echo $this->data["existencias"]; ?>" >
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <input type="submit" value="Actualzar">
+
+    </div>
+</form>

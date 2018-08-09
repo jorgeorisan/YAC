@@ -1,0 +1,61 @@
+<style type="text/css">
+    .cancelada {
+        opacity: .5;
+    }
+</style>
+<h1>Reportes</h1>
+<h3 class="tit">Devoluciones de Productos</h3>
+<a href="<?php echo $this->baseUrl("ventas/reportes/imprimirdevolucionproducto/?from=".$_GET['from']."&to=".$_GET['to']."&id_usuario=".$_GET['id_usuario']."&id_tienda=".$_GET['id_tienda']."&Generar=Generar"); ?>" target="_blank">Imprimir
+    Devolucion por Producto</a>
+<?php echo $this->form; ?>
+<h3 class="tit">Reporte generado</h3>
+
+<table width="100%">
+    <tr>
+        <th></th>
+        <th>No Folio Venta</th>
+        <th>Vendedor</th>
+        <th>Fecha Venta</th>
+        <th>Fecha Devolucion</th>
+        <th>Cantidad</th>
+        <th>Codigo Interno</th>
+        <th>Producto</th>
+
+        <th>Total</th>
+    </tr>
+    <?php
+    $total = 0;
+    $totalComision = 0;
+    foreach ($this->query as $obj): ?>
+        <tr <?php  if ($obj->ProductosVenta->cancelado) {
+            echo "class=''";
+        }?>
+            >
+            <td><a href="<?php echo $this->baseUrl("ventas/administrar/verdevolucionproducto/id/" . $obj->id_venta_productocancelado); ?>">
+                <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a></td>
+            <td><?php echo $obj->ProductosVenta->folio; ?></td>
+            <td><?php echo $obj->Usuario->nombre; ?></td>
+            <td><?php echo $obj->ProductosVenta->Venta->fecha; ?></td>
+            <td><?php echo $obj->fecha_registro; ?></td>
+            <td><?php echo $obj->ProductosVenta->cantidad; ?></td>
+            <td><?php echo $obj->ProductosVenta->ProductoTienda->Producto->codinter; ?></td>
+            <td><?php echo $obj->ProductosVenta->nombre; ?></td>
+            <td>$<?php
+                $total += $obj->ProductosVenta->total;
+            echo number_format($obj->ProductosVenta->total, 2); ?></td>
+
+
+        </tr>
+        <?php endforeach; ?>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>   <td></td>
+        <td>$ <?php echo number_format($total, 2); ?></td>
+    </tr>
+
+</table>

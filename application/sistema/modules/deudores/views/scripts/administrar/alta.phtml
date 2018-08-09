@@ -1,0 +1,111 @@
+<script type="text/javascript">
+
+</script>
+<h1>Ventas</h1>
+<h3 class="tit">Nuevo Abono</h3>
+
+
+<form action=""  method="post">
+
+    <table class="nostyle">
+        <tr>
+            <td>
+                <label class="control-label">Folio de Venta:</label></td>
+            <td>  <?php echo " ".$this->formText("id_venta", $this->data["id_venta"],
+                    array("style"=>"width:460px","readonly" => "readonly")
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+
+            <td>
+                <label class="control-label">Cliente:</label></td>
+
+            <td> <input type="hidden" name="id_persona" value="<?php echo $this->data["id_persona"];  ?>">
+                <?php echo " ".$this->formText("nom", $this->data->Persona->nombre,
+                    array("style"=>"width:460px","readonly" => "readonly")
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Total Venta</label></td>
+            <td>  <?php echo "$".$this->formText("t", number_format($this->data->total,2),
+                        array("style"=>"width:460px","readonly" => "readonly")
+                    );
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Saldo por Pagar</label></td>
+            <td>  <?php
+                $querysaldo = Doctrine_Query::create()
+                    ->select("SUM(montoabono) AS saldo")
+                    ->from("Database_Model_Deudores")
+                    ->where("id_venta =?",$this->data->id_venta)
+                    ->andWhere("status = ?", "ACTIVA")
+                    ->execute();
+                foreach($querysaldo as $s){
+                    $saldo=$s["saldo"];
+                }
+
+                echo "$".$this->formText("t", number_format($this->data->total-$saldo,2),
+                        array("style"=>"width:460px","readonly" => "readonly")
+                    );
+                ?>
+
+
+            </td>
+        </tr>
+        <tr>
+            <td><label>Monto Del Abono</label></td>
+            <td>  <?php echo "$".$this->formText("montoabono", "",
+                    array("style"=>"width:460px","required" => "required","placeholder"=>"0.00")
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Fecha Del Abono</label></td>
+            <td>   <?php echo " ".$this->formText("fecha_abono", "",
+                    array("style"=>"width:460px","required" => "required","datepicker"=>"past")
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Comentarios</label></td>
+            <td>   <?php echo " ".$this->formText("comentarios", "",
+                        array("style"=>"width:460px")
+                    ); ?>
+            </td>
+        </tr>
+        <?php if($this->profile()->id_usuario_tipo==2){?>
+
+            <tr>
+                <td>
+                    <label>Vendedor</label>
+                </td>
+                <td> <?php
+                    $arr = array();
+                    foreach (Doctrine_Query::create()
+                                 ->from("Database_Model_Usuario")
+                                 ->where("id_usuario_tipo in(2,4)")
+                                 ->execute() as $obju) {
+                        $arr[$obju->id_usuario] = $obju->id_usuario.$obju->id_usuario_tipo;
+                    }
+
+                    echo $this->formSelect("id_usuario", $this->profile()->id_usuario,
+                        array("style"=>"width:260px"),
+                        $arr
+                    ); ?>
+                </td>
+            </tr>
+        <?php  }?>
+
+    </table>
+    <input style="width: 100%" type="submit" id="send" class="button" value="Registrar Abono">
+</form>
+<script>
+    $(function () {
+        //$( "#on_hire_fecha" ).datepicker();
+
+    });
+</script>

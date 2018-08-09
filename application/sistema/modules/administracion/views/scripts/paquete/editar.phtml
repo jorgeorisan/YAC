@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#barcodeform").submit(function (e) {
+            e.preventDefault();
+
+            var barcode = $("#barcode").val();
+            $.get(_root + "/administracion/productos/getproducto/id/" + barcode, null,
+                function (response) {
+                    $("#producto").val(response.nombre);
+                },
+                "json"
+            );
+            $("#id_producto").val(barcode);
+
+            $("#barcode").val("");
+            return false;
+        });
+
+    });
+</script>
+<h1>Inventario</h1>
+<h3 class="tit">ALTA DE INVENTARIO</h3>
+
+<form action="" id="barcodeform">
+    <input type="text" id="barcode" placeholder="Código de barras"/>
+    <input type="submit" value="Usar"/>
+</form>
+
+<fieldset>
+    <legend>Datos del producto</legend>
+    <?php echo $this->form; ?>
+</fieldset>

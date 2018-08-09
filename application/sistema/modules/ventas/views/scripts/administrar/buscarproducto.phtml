@@ -1,0 +1,115 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("[barcode]").click(function (e) {
+            $("#barcode").val($(this).attr("barcode")).focus();
+            $.fancybox.close();
+        });
+
+
+    });
+</script>
+
+<table cellspacing="0" class="full-width" id="example2" style="width: 90%">
+    <thead>
+    <tr>
+        <th>Cod Int</th>
+        <th>Nombre</th>
+        <th>Cant</th>
+        <th>Marca</th>
+        <th>Prov</th>
+        <th>Precio Mayoreo</th>
+        <th>Precio</th>
+
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->query as $obj): ?>
+        <tr>
+
+            <td  barcode="<?php echo $obj->codinter; ?> "><a href="#"><?php echo $obj->codinter; ?></a></td>
+            <td  barcode="<?php echo $obj->codinter; ?>" ><a href="#"><?php echo $obj->nombre; ?></a></td>
+
+            <td ><a href="#"><?php
+
+                    $query = Doctrine_Query::create()
+                        ->select("id_productotienda id_productotienda, ifnull(sum(existencias),0) totexistencias")
+                        ->from("Database_Model_ProductoTienda")
+                        ->where("id_producto=?",$obj->id_producto)
+                        ->andWhere("tienda_id_tienda=?",$this->id_tiendaselected);
+                    //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
+                    foreach($query->execute() as $objt){
+                        $totexistencias=$objt["totexistencias"];
+                    }
+
+
+                    $query2 = Doctrine_Query::create()
+                        ->select("id_productotienda id_productotienda")
+                        ->from("Database_Model_ProductoTienda")
+                        ->where("id_producto=?",$obj->id_producto)
+                        ->andWhere("tienda_id_tienda=?",$this->id_tiendaselected)
+                    ->fetchOne();
+                    //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
+                        $id_prodtienda=$query2->id_productotienda;
+
+                    echo $totexistencias;
+                    ?></a></td>
+            <td  barcode="<?php echo $obj->codinter; ?>"><a href="#"><?php echo $obj->Marca->nombre; ?></a></td>
+            <td  barcode="<?php echo $obj->codinter; ?>"><a href="#"><?php echo $obj->Proveedor->nombre_corto; ?></a></td>
+
+            <td >$<?php
+                $id_tienda=$this->view->id_tienda;
+                    $precioBase="";
+                    $preciodesc="";
+                $ejeprecio= Doctrine_Query::create()
+                    ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                    ->where("a.id_producto=?",$obj->id_producto)
+                    ->andWhere("b.status='ACTIVO'")
+                    ->orderBy("id_entrada_producto DESC")
+                    ->limit(1)
+                    ->fetchOne();
+
+                if($ejeprecio){
+                        $precioBase=$ejeprecio->precio;//sacamos el ultimo precio por fecha mientras no se allan vendido
+                    $preciodesc=$ejeprecio->precio_descuento;//sacamos el ultimo precio por fecha mientras no se allan vendido
+                }
+                    echo number_format($preciodesc, 2);
+                ?>
+            </a></td>
+            <td>$
+                <?php
+                echo number_format($precioBase, 2); ?>
+            </td>
+            <td  barcode="<?php echo $obj->codinter; ?>">
+                <input style="width: 100%" type="button" id="" class="button" value="Usar">
+            </td>
+            <td>
+                <a  target="_blank" title="Ver Kardex" href="<?php echo $this->baseUrl("administracion/productos/kardex/id/" .$id_prodtienda); ?>">
+                    <img src="<?php echo $this->baseUrl("css/img/view.png") ?>" border="0"/>
+                </a>
+            </td>
+        </tr>
+    <?php endforeach;?>
+    </tbody>
+</table>
+
+<script>
+
+    $(function() {
+
+        var table =	$('#example2').dataTable( {
+            "bJQueryUI": true,
+            "scrollY": 200,
+            "aaSorting": [[1, "asc"]],
+            "scrollX": true,
+            "iDisplayLength": 10,
+            "bPaginate": true,
+            "bAutoWidth": true,
+            "sPaginationType": "full_numbers",
+            "bSort": true,
+            "aLengthMenu": [[5, 10, 15, 25, 50, -1], [5, 10, 15, 25, 50, "All"]]
+        } );
+
+    });
+</script>

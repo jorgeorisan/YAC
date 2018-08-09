@@ -1,0 +1,24 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("input").attr("readonly", "readonly");
+        $("input[type=submit]").remove();
+    });
+</script>
+<h1>Facturas</h1>
+<h3 class="tit">Factura número <?php echo $this->obj->num_factura; ?></h3>
+    <p>
+        <a href="<?php echo $this->baseUrl("ventas/factura/imprimir?id=".$this->obj->id_factura); ?>">
+            Imprimir factura
+        </a>
+    </p>
+<?php echo $this->form; ?>
+<p>
+    <strong>Subtotal:</strong>
+    <?php echo $this->obj->subtotal; ?>
+</p><p>
+    <strong>IVA:</strong>
+    <?php echo $this->obj->iva; ?>
+</p><p>
+    <strong>Total:</strong>
+    <?php echo $this->obj->total; ?>
+</p>
