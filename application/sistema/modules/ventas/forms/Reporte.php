@@ -34,7 +34,7 @@ class Ventas_Form_Reporte extends Zend_Form
         $element = new Zend_Form_Element_Text("credito");
         $element->setAttrib("hidden", "true");
         $this->addElement($element);
-
+        
         $element = new Zend_Form_Element_Select("id_usuario");
         $element->setLabel("Vendedor");
         $element->setRequired(TRUE);

@@ -56,7 +56,6 @@ class Administracion_Form_Producto extends Zend_Form
         $element = new Zend_Form_Element_Text("codbarras");
         $element->setLabel("Código de barras ");
         //$element->setRequired(TRUE);
-        $element->setAttrib("readonly", "readonly");
         $this->addElement($element);
 
         $element = new Zend_Form_Element_Text("codinter");
@@ -145,6 +144,7 @@ class Administracion_Form_Producto extends Zend_Form
         $element = new Zend_Form_Element_Text("alerta_minima");
         $element->setLabel("Alerta de mínimo inventario *");
         $element->setRequired(TRUE);
+        $element->setValue(1);
         $this->addElement($element);
 
 

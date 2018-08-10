@@ -3,6 +3,7 @@
         $("#barcodeform").submit(function (e){
             e.preventDefault();
             $("#codbarras").val($("#barcode").val());
+            $("#codinter").val($("#barcode").val());
             $("#barcode").val("");
             return false;
         });
@@ -50,6 +51,7 @@
 
 
         });
+        $("#impuesto").val('IVA');
     });
 </script>
 <script type="text/javascript">

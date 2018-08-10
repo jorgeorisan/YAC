@@ -111,7 +111,7 @@
         }
 
     }
-    foreach ($this->query as $obj):
+    foreach ($this->query as $obj){
     ?>
 
         <tr <?php  if ($obj->abono==0 && $obj->tipo=="Credito") {
@@ -154,7 +154,7 @@
              ?>
             </td>
         </tr>
-    <?php endforeach;
+    <?php }
 
     $querydesc= Doctrine_Query::create()
         ->select("sum(montoabono) as montoabono")
@@ -297,20 +297,12 @@
                 </tr>
                 <tr>
                     <td>Total</td><td>$ <?php
-                        if($conbranza>0) {
-                            if ($obj->id_tienda == "6" || $obj->id_tienda == "7") {//si son bodegas no se le descuenta el iva sino se le aumenta
-                                //$conbranza += $totaliva + $totalexentos;
-                            }
-                        }
-                        echo number_format($conbranza, 2); ?></td>
+
+                        echo number_format($conbranza+$totalabonos, 2); ?></td>
                 </tr>
                 <tr>
                     <td>Venta a Credito</td><td>$ <?php
-                        if($totcredito>0) {
-                            if ($obj->id_tienda == "6" || $obj->id_tienda == "7") {//si son bodegas no se le descuenta el iva sino se le aumenta
-                                //$totcredito += $totaliva + $totalexentos;
-                            }
-                        }
+
                         echo number_format($totcredito, 2); ?></td>
                 </tr>
                 <tr>
@@ -318,18 +310,13 @@
                 </tr>
 
                 <tr>
-                    <td>Total + Vta Cred.</td><td style="color: blue">$ <?php echo number_format($conbranza+$totcredito, 2); ?></td>
+                    <td>Total + Vta Cred.</td><td style="color: blue">$ <?php echo number_format($conbranza+$totalabonos+$totcredito, 2); ?></td>
                 </tr>
             </table>
             <br>
             <table>
                 <tr>
                     <td>Cobranza</td><td>$ <?php
-                        if($totalabonos>0){
-                            if($obj->id_tienda=="6"||$obj->id_tienda=="7"){//si son bodegas no se le descuenta el iva sino se le aumenta
-                                $totalabonos+=$totaliva+$totalexentos;
-                            }
-                        }
 
                         echo number_format($totalabonos, 2); ?></td>
                 </tr>

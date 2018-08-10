@@ -41,6 +41,15 @@ class Ventas_Form_PorProveedor extends Zend_Form
         }
         $this->addElement($element);
 
+        $element = new Zend_Form_Element_Select("id_usuario");
+        $element->setLabel("Vendedor");
+        $element->setRequired(TRUE);
+        $element->addMultiOption("", "Favor de seleccionar");
+        foreach (Database_Model_Usuario::getAll() as $obj) {
+            $element->addMultiOption($obj->id_usuario, $obj->nombre);
+        }
+        $this->addElement($element);
+        
         $element = new Zend_Form_Element_Text("autocomplete");
         $element->setLabel("Selecciona un Proveedor *");
         $element->setRequired(TRUE);

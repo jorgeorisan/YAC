@@ -16,7 +16,6 @@
         <th>Vendedor</th>
         <th>Cliente</th>
         <th>Fecha Descuento</th>
-        <th>Porcentaje</th>
         <th>Descuento</th>
         <th>Total - Descuento</th>
         <th>Total Venta</th>
@@ -39,7 +38,6 @@
             <td><?php echo $obj->id_usuario; ?></td>
             <td><?php echo $obj->Venta->Persona->nombre; ?></td>
             <td><?php echo $obj->fecha_registro; ?></td>
-            <td><?php echo $obj->porcentajedesc; ?></td>
             <td><?php $desc+=$obj->montodesc; echo number_format($obj->montodesc,2); ?></td>
             <td><?php  $total+=$obj->Venta->total; echo number_format($obj->Venta->total,2); ?></td>
             <td><?php $totaldescuen+=$obj->totaldesc; echo number_format($obj->totaldesc,2); ?></td>
@@ -50,7 +48,6 @@
         </tr>
         <?php endforeach; ?>
     <tr>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>

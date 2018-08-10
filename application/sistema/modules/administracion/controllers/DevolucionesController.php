@@ -50,7 +50,7 @@ class Administracion_DevolucionesController extends jfLib_Controller
         $query = Doctrine_Query::create()
             ->from("Database_Model_Venta")
             ->where("cancelado=0")
-            ->orderBy("fecha  DESC");
+            ->orderBy("id_venta  DESC");
         if ($this->_loggedUser->id_usuario_tipo == "2" || $this->_loggedUser->id_usuario == "mariely") {
 
         }else{

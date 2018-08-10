@@ -136,11 +136,11 @@ function calcTotal2(){
     <hr/>
     <div class="control-group" id="" style="display: ">
         <div class="control-group" id="tiendaorigen" style="display: ">
-            <label class="control-label">Tienda Origen </label>
+            <label class="control-label">Destino </label>
             <div class="controls">
                 <?php
 
-                    echo $this->formSelect("id_tiendaanterior",13,
+                    echo $this->formSelect("id_tiendaanterior",14,
                         array("style"=>"width:460px","required" => "required","disabled" => "disabled"),
                         Database_Model_Tienda::getAll()
                     );
