@@ -11,7 +11,8 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Proveedor', 'doct
  * @property string $nombre_corto
  * @property string $telefono
  * @property string $info_adicional
- * @property integer $id_persona
+ * @property string $status
+ * @property Doctrine_Collection $Producto
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -57,13 +58,14 @@ abstract class Database_Model_Base_Proveedor extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('id_persona', 'integer', 8, array(
-             'type' => 'integer',
-             'length' => 8,
+        $this->hasColumn('status', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'notnull' => true,
+             'default' => 'ACTIVO',
+             'notnull' => false,
              'autoincrement' => false,
              ));
     }
@@ -71,6 +73,8 @@ abstract class Database_Model_Base_Proveedor extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasMany('Database_Model_Producto as Producto', array(
+             'local' => 'id_proveedor',
+             'foreign' => 'id_proveedor'));
     }
 }

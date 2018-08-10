@@ -12,6 +12,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Categoria', 'doct
  * @property integer $descuento_activado
  * @property string $categoria
  * @property string $status
+ * @property Doctrine_Collection $Producto
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -74,6 +75,8 @@ abstract class Database_Model_Base_Categoria extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasMany('Database_Model_Producto as Producto', array(
+             'local' => 'id_categoria',
+             'foreign' => 'id_categoria'));
     }
 }

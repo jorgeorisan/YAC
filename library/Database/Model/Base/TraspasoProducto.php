@@ -25,8 +25,8 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_TraspasoProducto'
  * @property float $precio_descuento
  * @property integer $cancelado
  * @property integer $cant_anterior
- * @property Database_Model_Tienda $Tienda
  * @property Database_Model_Producto $Producto
+ * @property Database_Model_Tienda $Tienda
  * @property Database_Model_Traspaso $Traspaso
  * 
  * @package    ##PACKAGE##
@@ -203,13 +203,13 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        $this->hasOne('Database_Model_Tienda as Tienda', array(
-             'local' => 'id_tienda',
-             'foreign' => 'id_tienda'));
-
         $this->hasOne('Database_Model_Producto as Producto', array(
              'local' => 'id_producto',
              'foreign' => 'id_producto'));
+
+        $this->hasOne('Database_Model_Tienda as Tienda', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
 
         $this->hasOne('Database_Model_Traspaso as Traspaso', array(
              'local' => 'id_traspaso',

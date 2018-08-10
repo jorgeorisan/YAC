@@ -16,6 +16,14 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Tienda', 'doctrin
  * @property integer $permiso_adicional
  * @property Doctrine_Collection $ComisionesVendedor
  * @property Doctrine_Collection $Entrada
+ * @property Doctrine_Collection $EntradaProducto
+ * @property Doctrine_Collection $ProductoTienda
+ * @property Doctrine_Collection $Salida
+ * @property Doctrine_Collection $SalidaProducto
+ * @property Doctrine_Collection $Traspaso
+ * @property Doctrine_Collection $TraspasoProducto
+ * @property Doctrine_Collection $Usuario
+ * @property Doctrine_Collection $Venta
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -101,6 +109,38 @@ abstract class Database_Model_Base_Tienda extends Doctrine_Record
              'foreign' => 'id_tienda'));
 
         $this->hasMany('Database_Model_Entrada as Entrada', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_EntradaProducto as EntradaProducto', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_ProductoTienda as ProductoTienda', array(
+             'local' => 'id_tienda',
+             'foreign' => 'tienda_id_tienda'));
+
+        $this->hasMany('Database_Model_Salida as Salida', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_SalidaProducto as SalidaProducto', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_Traspaso as Traspaso', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_TraspasoProducto as TraspasoProducto', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_Usuario as Usuario', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_Venta as Venta', array(
              'local' => 'id_tienda',
              'foreign' => 'id_tienda'));
     }

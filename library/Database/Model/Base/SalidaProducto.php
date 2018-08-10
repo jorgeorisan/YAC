@@ -24,6 +24,9 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_SalidaProducto', 
  * @property integer $id_tienda
  * @property float $precio_descuento
  * @property integer $cancelado
+ * @property Database_Model_Producto $Producto
+ * @property Database_Model_Salida $Salida
+ * @property Database_Model_Tienda $Tienda
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -189,6 +192,16 @@ abstract class Database_Model_Base_SalidaProducto extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasOne('Database_Model_Producto as Producto', array(
+             'local' => 'id_producto',
+             'foreign' => 'id_producto'));
+
+        $this->hasOne('Database_Model_Salida as Salida', array(
+             'local' => 'id_salida',
+             'foreign' => 'id_salida'));
+
+        $this->hasOne('Database_Model_Tienda as Tienda', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
     }
 }

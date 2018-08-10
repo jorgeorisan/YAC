@@ -31,8 +31,14 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Producto', 'doctr
  * @property string $imagen
  * @property integer $manual
  * @property float $precio_editable
+ * @property Database_Model_Categoria $Categoria
+ * @property Database_Model_Marca $Marca
+ * @property Database_Model_Proveedor $Proveedor
  * @property Doctrine_Collection $EntradaProducto
  * @property Doctrine_Collection $Paquete
+ * @property Doctrine_Collection $ProductoTienda
+ * @property Doctrine_Collection $SalidaProducto
+ * @property Doctrine_Collection $TraspasoProducto
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -264,11 +270,35 @@ abstract class Database_Model_Base_Producto extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
+        $this->hasOne('Database_Model_Categoria as Categoria', array(
+             'local' => 'id_categoria',
+             'foreign' => 'id_categoria'));
+
+        $this->hasOne('Database_Model_Marca as Marca', array(
+             'local' => 'id_marca',
+             'foreign' => 'id_marca'));
+
+        $this->hasOne('Database_Model_Proveedor as Proveedor', array(
+             'local' => 'id_proveedor',
+             'foreign' => 'id_proveedor'));
+
         $this->hasMany('Database_Model_EntradaProducto as EntradaProducto', array(
              'local' => 'id_producto',
              'foreign' => 'id_producto'));
 
         $this->hasMany('Database_Model_Paquete as Paquete', array(
+             'local' => 'id_producto',
+             'foreign' => 'id_producto'));
+
+        $this->hasMany('Database_Model_ProductoTienda as ProductoTienda', array(
+             'local' => 'id_producto',
+             'foreign' => 'id_producto'));
+
+        $this->hasMany('Database_Model_SalidaProducto as SalidaProducto', array(
+             'local' => 'id_producto',
+             'foreign' => 'id_producto'));
+
+        $this->hasMany('Database_Model_TraspasoProducto as TraspasoProducto', array(
              'local' => 'id_producto',
              'foreign' => 'id_producto'));
     }

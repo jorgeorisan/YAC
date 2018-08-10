@@ -11,6 +11,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Marca', 'doctrine
  * @property string $nombre
  * @property float $descuento
  * @property integer $descuento_activado
+ * @property Doctrine_Collection $Producto
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -63,6 +64,8 @@ abstract class Database_Model_Base_Marca extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasMany('Database_Model_Producto as Producto', array(
+             'local' => 'id_marca',
+             'foreign' => 'id_marca'));
     }
 }

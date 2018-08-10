@@ -21,6 +21,9 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Salida', 'doctrin
  * @property string $status
  * @property string $ticket_items
  * @property integer $id_tiendaanterior
+ * @property Database_Model_Tienda $Tienda
+ * @property Database_Model_Usuario $Usuario
+ * @property Doctrine_Collection $SalidaProducto
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -116,7 +119,7 @@ abstract class Database_Model_Base_Salida extends Doctrine_Record
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'default' => '6',
+             'default' => '14',
              'notnull' => false,
              'autoincrement' => false,
              ));
@@ -161,6 +164,16 @@ abstract class Database_Model_Base_Salida extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasOne('Database_Model_Tienda as Tienda', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasOne('Database_Model_Usuario as Usuario', array(
+             'local' => 'id_usuario',
+             'foreign' => 'id_usuario'));
+
+        $this->hasMany('Database_Model_SalidaProducto as SalidaProducto', array(
+             'local' => 'id_salida',
+             'foreign' => 'id_salida'));
     }
 }

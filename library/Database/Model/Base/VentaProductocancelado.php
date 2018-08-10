@@ -14,6 +14,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_VentaProductocanc
  * @property float $total
  * @property string $observaciones
  * @property integer $id_tienda_destino
+ * @property Database_Model_ProductosVenta $ProductosVenta
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -90,6 +91,8 @@ abstract class Database_Model_Base_VentaProductocancelado extends Doctrine_Recor
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasOne('Database_Model_ProductosVenta as ProductosVenta', array(
+             'local' => 'id_productos_venta',
+             'foreign' => 'id_productos_venta'));
     }
 }

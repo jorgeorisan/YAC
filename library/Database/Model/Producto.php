@@ -29,6 +29,10 @@ class Database_Model_Producto extends Database_Model_Base_Producto
             ->where("codbarras=?",$id)
             ->orWhere("codinter=?",$id)
             ->fetchOne();
+
+
+
+
         return $arr;
        // return Doctrine_Core::getTable("Database_Model_Producto")->findOneBy("codbarras", $id);
     }

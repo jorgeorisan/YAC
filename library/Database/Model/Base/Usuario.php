@@ -16,8 +16,13 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Usuario', 'doctri
  * @property integer $id_tienda
  * @property string $permisos
  * @property float $comision
+ * @property Database_Model_UsuarioTipo $UsuarioTipo
+ * @property Database_Model_Tienda $Tienda
  * @property Doctrine_Collection $Asistencia
  * @property Doctrine_Collection $Entrada
+ * @property Doctrine_Collection $Salida
+ * @property Doctrine_Collection $Traspaso
+ * @property Doctrine_Collection $Venta
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -116,11 +121,31 @@ abstract class Database_Model_Base_Usuario extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
+        $this->hasOne('Database_Model_UsuarioTipo as UsuarioTipo', array(
+             'local' => 'id_usuario_tipo',
+             'foreign' => 'id_usuario_tipo'));
+
+        $this->hasOne('Database_Model_Tienda as Tienda', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
         $this->hasMany('Database_Model_Asistencia as Asistencia', array(
              'local' => 'id_usuario',
              'foreign' => 'id_usuario'));
 
         $this->hasMany('Database_Model_Entrada as Entrada', array(
+             'local' => 'id_usuario',
+             'foreign' => 'id_usuario'));
+
+        $this->hasMany('Database_Model_Salida as Salida', array(
+             'local' => 'id_usuario',
+             'foreign' => 'id_usuario'));
+
+        $this->hasMany('Database_Model_Traspaso as Traspaso', array(
+             'local' => 'id_usuario',
+             'foreign' => 'id_usuario'));
+
+        $this->hasMany('Database_Model_Venta as Venta', array(
              'local' => 'id_usuario',
              'foreign' => 'id_usuario'));
     }

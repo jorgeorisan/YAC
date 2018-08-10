@@ -23,8 +23,14 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Venta', 'doctrine
  * @property integer $icredito
  * @property integer $folio
  * @property string $comentarios
+ * @property string $credencial
+ * @property Database_Model_Persona $Persona
+ * @property Database_Model_Tienda $Tienda
+ * @property Database_Model_Usuario $Usuario
  * @property Doctrine_Collection $Descuentos
  * @property Doctrine_Collection $Deudores
+ * @property Doctrine_Collection $ProductosVenta
+ * @property Doctrine_Collection $VentaCancelada
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -179,16 +185,44 @@ abstract class Database_Model_Base_Venta extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
+        $this->hasColumn('credencial', 'string', null, array(
+             'type' => 'string',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
     {
         parent::setUp();
+        $this->hasOne('Database_Model_Persona as Persona', array(
+             'local' => 'id_persona',
+             'foreign' => 'id_persona'));
+
+        $this->hasOne('Database_Model_Tienda as Tienda', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasOne('Database_Model_Usuario as Usuario', array(
+             'local' => 'id_usuario',
+             'foreign' => 'id_usuario'));
+
         $this->hasMany('Database_Model_Descuentos as Descuentos', array(
              'local' => 'id_venta',
              'foreign' => 'id_venta'));
 
         $this->hasMany('Database_Model_Deudores as Deudores', array(
+             'local' => 'id_venta',
+             'foreign' => 'id_venta'));
+
+        $this->hasMany('Database_Model_ProductosVenta as ProductosVenta', array(
+             'local' => 'id_venta',
+             'foreign' => 'id_venta'));
+
+        $this->hasMany('Database_Model_VentaCancelada as VentaCancelada', array(
              'local' => 'id_venta',
              'foreign' => 'id_venta'));
     }

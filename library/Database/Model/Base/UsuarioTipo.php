@@ -9,6 +9,8 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_UsuarioTipo', 'do
  * 
  * @property integer $id_usuario_tipo
  * @property string $usuario_tipo
+ * @property Doctrine_Collection $Persona
+ * @property Doctrine_Collection $Usuario
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -42,6 +44,12 @@ abstract class Database_Model_Base_UsuarioTipo extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasMany('Database_Model_Persona as Persona', array(
+             'local' => 'id_usuario_tipo',
+             'foreign' => 'id_usuario_tipo'));
+
+        $this->hasMany('Database_Model_Usuario as Usuario', array(
+             'local' => 'id_usuario_tipo',
+             'foreign' => 'id_usuario_tipo'));
     }
 }

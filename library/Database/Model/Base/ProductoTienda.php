@@ -13,6 +13,9 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_ProductoTienda', 
  * @property integer $tienda_id_tienda
  * @property integer $id_producto
  * @property float $alerta_minima
+ * @property Database_Model_Producto $Producto
+ * @property Database_Model_Tienda $Tienda
+ * @property Doctrine_Collection $ProductosVenta
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -83,6 +86,16 @@ abstract class Database_Model_Base_ProductoTienda extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasOne('Database_Model_Producto as Producto', array(
+             'local' => 'id_producto',
+             'foreign' => 'id_producto'));
+
+        $this->hasOne('Database_Model_Tienda as Tienda', array(
+             'local' => 'tienda_id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_ProductosVenta as ProductosVenta', array(
+             'local' => 'id_productotienda',
+             'foreign' => 'id_productotienda'));
     }
 }

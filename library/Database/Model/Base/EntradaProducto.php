@@ -28,6 +28,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_EntradaProducto',
  * @property float $precio_costo
  * @property Database_Model_Producto $Producto
  * @property Database_Model_Entrada $Entrada
+ * @property Database_Model_Tienda $Tienda
  * @property Doctrine_Collection $EntradaProductocancelado
  * 
  * @package    ##PACKAGE##
@@ -218,6 +219,10 @@ abstract class Database_Model_Base_EntradaProducto extends Doctrine_Record
         $this->hasOne('Database_Model_Entrada as Entrada', array(
              'local' => 'id_entrada',
              'foreign' => 'id_entrada'));
+
+        $this->hasOne('Database_Model_Tienda as Tienda', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
 
         $this->hasMany('Database_Model_EntradaProductocancelado as EntradaProductocancelado', array(
              'local' => 'id_entrada_producto',

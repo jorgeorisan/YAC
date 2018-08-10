@@ -14,6 +14,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_VentaCancelada', 
  * @property timestamp $fecha_registro
  * @property integer $id_tienda_destino
  * @property string $observaciones
+ * @property Database_Model_Venta $Venta
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -91,6 +92,8 @@ abstract class Database_Model_Base_VentaCancelada extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasOne('Database_Model_Venta as Venta', array(
+             'local' => 'id_venta',
+             'foreign' => 'id_venta'));
     }
 }

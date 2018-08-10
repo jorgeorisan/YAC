@@ -36,9 +36,11 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Persona', 'doctri
  * @property string $dir_cuenta
  * @property string $tiempo_credito
  * @property string $celular
+ * @property Database_Model_UsuarioTipo $UsuarioTipo
  * @property Doctrine_Collection $DatosFacturacion
  * @property Doctrine_Collection $Deudores
  * @property Doctrine_Collection $Factura
+ * @property Doctrine_Collection $Venta
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -315,6 +317,10 @@ abstract class Database_Model_Base_Persona extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
+        $this->hasOne('Database_Model_UsuarioTipo as UsuarioTipo', array(
+             'local' => 'id_usuario_tipo',
+             'foreign' => 'id_usuario_tipo'));
+
         $this->hasMany('Database_Model_DatosFacturacion as DatosFacturacion', array(
              'local' => 'id_persona',
              'foreign' => 'id_persona'));
@@ -324,6 +330,10 @@ abstract class Database_Model_Base_Persona extends Doctrine_Record
              'foreign' => 'id_persona'));
 
         $this->hasMany('Database_Model_Factura as Factura', array(
+             'local' => 'id_persona',
+             'foreign' => 'id_persona'));
+
+        $this->hasMany('Database_Model_Venta as Venta', array(
              'local' => 'id_persona',
              'foreign' => 'id_persona'));
     }

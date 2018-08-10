@@ -19,6 +19,9 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_ProductosVenta', 
  * @property integer $folio
  * @property integer $paquete
  * @property string $tipoprecio
+ * @property Database_Model_ProductoTienda $ProductoTienda
+ * @property Database_Model_Venta $Venta
+ * @property Doctrine_Collection $VentaProductocancelado
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -144,6 +147,16 @@ abstract class Database_Model_Base_ProductosVenta extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        
+        $this->hasOne('Database_Model_ProductoTienda as ProductoTienda', array(
+             'local' => 'id_productotienda',
+             'foreign' => 'id_productotienda'));
+
+        $this->hasOne('Database_Model_Venta as Venta', array(
+             'local' => 'id_venta',
+             'foreign' => 'id_venta'));
+
+        $this->hasMany('Database_Model_VentaProductocancelado as VentaProductocancelado', array(
+             'local' => 'id_productos_venta',
+             'foreign' => 'id_productos_venta'));
     }
 }
