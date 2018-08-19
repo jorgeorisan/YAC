@@ -421,7 +421,7 @@ class Administracion_ProductosController extends jfLib_Controller
                 $obj->save();
                 $this->_informSuccess();
             } catch (Exception $e) {
-                $this->_informError($e, null, true, $this->_request->getModuleName() . "/" . $this->_request->getControllerName());
+                $this->_informError($e, null, true, $this->_request->getModuleName() . "/" . $this->_request->getControllerName().);
             }
         }
 
@@ -465,7 +465,7 @@ class Administracion_ProductosController extends jfLib_Controller
                     ->where('id_producto = ?', $this->_request->getParam("id"));
                 $q->execute();
 
-                $this->_informSuccess();
+              $this->_informSuccess(null, true, "productos/alta/");
             } catch (Exception $e) {
                 $this->_informError($e);
             }

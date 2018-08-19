@@ -14,61 +14,23 @@ class Deudores_AdministrarController extends jfLib_Controller
     {
        // $this->_redirect("ventas/reportes");
         ///////////////////tipo de usuario y su tienda
-        $querytipo = Doctrine_Query::create()
-            ->from("Database_Model_Usuario")
-            ->where("id_usuario=?",$this->_loggedUser->id_usuario)
-            ->execute();
-        $tipousu="";
-        foreach($querytipo as $tipo){
-            $tipousu=$tipo["id_usuario_tipo"];
-            $tienda=$tipo->id_tienda;
-        }
+       
+        $tipousu=$this->_loggedUser->id_usuario_tipo;
+        $tienda=$this->_loggedUser->id_tienda;
+        
         $this->view->tipousu = $tipousu;
         $this->view->tienda = $tienda;
         ////////////////////////////////////////
-        $form = new jfLib_Form_Search();
-        $form->populate($this->_request->getParams());
-        // Defining initial variables
-        if ($this->_request->getParam('p')) {
-            $currentPage = $this->_request->getParam('p');
-        } else {
-            $currentPage = 1;
-        }
-
-        $resultsPerPage = 50;
-        $url = $this->view->baseUrl($this->_request->getModuleName() . "/" . $this->_request->getControllerName());
-
+    
         $query = Doctrine_Query::create()
             ->from("Database_Model_Venta v, v.Persona c")
             ->Where("icredito = '1'")
             ->orderBy("id_venta desc");
 
-        if ($q = $this->_request->getParam("q")) {//para la busqueda
-            $query->andWhere("folio LIKE '%$q%'");
-            $query->orWhere("c.nombre LIKE '%$q%'");
 
-        }
-
-        $pagerLayout = new jfLib_Paginator(
-            new Doctrine_Pager(
-                $query,
-                $currentPage,
-                $resultsPerPage
-            ),
-            new Doctrine_Pager_Range_Sliding(array(
-                'chunk' => 5
-            )),
-            $url
-        );
-        $pagerLayout->setTemplate('<a href="{%url}?p={%page_number}">{%page}</a>');
-        $pager = $pagerLayout->getPager();
-
-
-        $this->view->query = $pager->execute();
-        $this->view->paginator = $pagerLayout;
+        $this->view->query = $query->execute();
         $this->view->form = $form;
 
-        $this->view->counter = ($resultsPerPage * ($currentPage - 1)) + 1;
     }
 
     function altaAction()
