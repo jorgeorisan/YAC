@@ -25,6 +25,7 @@ class Deudores_AdministrarController extends jfLib_Controller
         $query = Doctrine_Query::create()
             ->from("Database_Model_Venta v, v.Persona c")
             ->Where("icredito = '1'")
+            ->andWhere("cancelado=0")
             ->orderBy("id_venta desc");
 
 
