@@ -107,6 +107,12 @@ function calcTotal2(){
 }
 
 </script>
+<?php
+
+
+$cadena=$_SESSION['CADENA'];
+?>
+
 <h1>Traspasos</h1>
 <h3 class="tit">Nuevo Traspaso a Almacen</h3>
 
@@ -170,7 +176,7 @@ function calcTotal2(){
             <table class="nostyle">
                 <tr>
                     <td>   <label for="barcode">Código de barras</label>  </td>
-                    <td>   <input type="text" id="barcode" name="id_producto" value="<?php echo $this->codint; ?>"/>      </td>
+                    <td>   <input type="text" id="barcode"  for='autocomplete' name="id_producto" value="<?php echo $this->codint; ?>"/>      </td>
                     <td>
                         <a fancybox="true" id="catalogo" href="<?php echo $this->baseUrl("ventas/administrar/mostrarcatalogo?id_tienda=".$this->id_tienda); ?>">Catálogo</a>
                     </td>
@@ -227,6 +233,12 @@ function calcTotal2(){
         var id=$("#id_tienda").val();
         $("#catalogo").attr('href','<?php echo $this->baseUrl("ventas/administrar/mostrarcatalogo?id_tienda="); ?>'+id);
         return false;
+    });
+      $( "#barcode" ).autocomplete({
+        source: [ <?php echo $cadena ?>],
+        select: function(res) {
+   
+        }
     });
 </script>
 
