@@ -14,10 +14,15 @@
 
         $("#agregarprod").click(function (e) {
             e.preventDefault();
+            var res =  $('#barcode').val().split("::");
+            if(res.length>0){
+                $('#barcode').val(res[0]);
+            }
             var id_tienda=document.getElementById("id_tiendaanterior").value;
             var barcode=document.getElementById("barcode").value;
             var msj="id_prod="+$("#barcode").val()+"&cantidad="+$("#cantidad").val()+"&id_tienda="+id_tienda+"&barcode="+barcode;
             //alert(msj);
+            
             $.get(_root + "/administracion/traspaso/getproducto", msj,
                 function (response) {
                     $("table#productos").append(response);
