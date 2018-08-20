@@ -9,7 +9,13 @@
     <li><a href="<?php echo $this->baseUrl("ventas/reportes/creditos/credito/1"); ?>">Ventas a Credito</a></li>
 
     <li><a href="<?php echo $this->baseUrl("ventas/reportes/abonos"); ?>">Abonos</a></li>
-   <!-- <li><a href="<?php echo $this->baseUrl("ventas/reportes/detallecorteventa"); ?>">Cortes Detalle de Venta</a></li>-->
+    <?php
+        $fecha = date('Y-m-j');
+        $nuevafecha = strtotime ( '-3 day' , strtotime ( $fecha ) ) ;
+        $nuevafecha = date ( 'Y-m-j' , $nuevafecha );
+         
+    ?>
+    <li><a href="<?php echo $this->baseUrl("ventas/reportes/porcliente?from=".$nuevafecha."&to=".$fecha); ?>">Ventas por Cliente</a></li>
     <li><a href="<?php echo $this->baseUrl("ventas/reportes/porproveedor"); ?>">Ventas por proveedor</a></li>
    <li><a href="<?php echo $this->baseUrl("ventas/reportes/pormarca"); ?>">Ventas por marca</a></li>
     <li><a href="<?php echo $this->baseUrl("ventas/reportes/porproducto"); ?>">Ventas por producto</a></li>

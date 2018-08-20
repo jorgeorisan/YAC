@@ -225,12 +225,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+       
         if($this->_loggedUser->id_usuario_tipo!=2){
             $query = Doctrine_Query::create()
                 ->from("Database_Model_Venta")
@@ -271,7 +266,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function detallescontaAction()
     {
-        //$this->_onlyAdmin();
+        $this->_onlyAdmin();
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -288,12 +283,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+      
         if($this->_loggedUser->id_usuario_tipo!=2){
             $query = Doctrine_Query::create()
                 ->from("Database_Model_Venta")
@@ -432,12 +422,7 @@ class Ventas_ReportesController extends jfLib_Controller
             }
 
         }
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+       
         if ($id_usuario = $this->_request->getParam("id_usuario")) {
         }
 
@@ -490,15 +475,12 @@ class Ventas_ReportesController extends jfLib_Controller
             $query->andWhere("v.id_tienda = ?", $id_tienda);
             $query2->andWhere("v.id_tienda = ?", $id_tienda);
         }
-//echo $query2->getSqlQuery();//imprime la consulta qu ese esta generando
+        //echo $query2->getSqlQuery();//imprime la consulta qu ese esta generando
         $this->view->vendedor=$id_usuario;
         $this->view->query = $query->execute();
         $this->view->from = $from;
         $this->view->to = $to;
         $this->view->queryvendmontos = $query2->execute();
-
-
-
 
     }
     function comisionesreporteAction()
@@ -531,7 +513,7 @@ class Ventas_ReportesController extends jfLib_Controller
         if ($id_tienda = $this->_request->getParam("id_tienda")) {
             $query->andWhere("id_tienda = ?", $id_tienda);
         }
-//echo $query2->getSqlQuery();//imprime la consulta qu ese esta generando
+        //echo $query2->getSqlQuery();//imprime la consulta qu ese esta generando
         $this->view->usu=$id_usuario;
         $this->view->query = $query->execute();
         $this->view->from = $from;
@@ -558,12 +540,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+     
         if($this->_loggedUser->id_usuario_tipo!=2){
             $query = Doctrine_Query::create()
                 ->from("Database_Model_VentaCancelada a, a.Venta v" )
@@ -616,12 +593,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+        
         if($this->_loggedUser->id_usuario_tipo!=2){
             $query = Doctrine_Query::create()
                 ->from("Database_Model_VentaProductocancelado a,a.ProductosVenta b,a.Usuario u")
@@ -674,12 +646,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+       
         ////////////////////////////////////////
         $form = new jfLib_Form_Search();
         $form->populate($this->_request->getParams());
@@ -766,12 +733,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+        
 
             $query = Doctrine_Query::create()
                 ->select("vc.tipo as tipo  ,  sum(vc.total) total,vc.id_tienda as id_tienda  ,vc.nombre  nombre, vc.abono  abono,vc.id_usuario  id_usuario, vc.fecha  fecha")
@@ -836,7 +798,7 @@ class Ventas_ReportesController extends jfLib_Controller
             $this->view->tienda=$id_tienda;
         }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////
         //echo $query->getSqlQuery();
 
         if($querydesc->execute()){
@@ -876,12 +838,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+       
         if($this->_loggedUser->id_usuario_tipo!=2&&$this->_loggedUser->id_usuario!="mariely"){
             $query = Doctrine_Query::create()
                 ->select("id_venta  id_venta,cantidad cantidad,codinter codinter,nombre nombre,exento_iva exento_iva,exento_ieps exento_ieps,total total,tipo tipo,id_tienda  id_tienda,id_usuario  id_usuario, fecha  fecha")
@@ -950,12 +907,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $this->view->from=$from;
         $this->view->to=$to;
 
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
+       
         if($this->_loggedUser->id_usuario_tipo!=2&&$this->_loggedUser->id_usuario!="mariely"){
             $query = Doctrine_Query::create()
                 ->select("tipo  tipo,  sum(total) total,id_tienda  id_tienda,nombre  nombre, abono  abono,id_usuario  id_usuario, fecha  fecha")
@@ -1063,7 +1015,7 @@ class Ventas_ReportesController extends jfLib_Controller
             $query2->andWhere("id_tienda = ?", $id_tienda);
             $query2->andWhere("id_usuario = ?", $id_usuario);
         }
-/////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
         //echo $query->getSqlQuery();
         if ($id_tienda = $this->_request->getParam("id_tienda")) {
             $querydesc->andWhere("vc.id_tienda=?",$id_tienda);
@@ -1105,12 +1057,6 @@ class Ventas_ReportesController extends jfLib_Controller
         $this->view->from=$from;
         $this->view->to=$to;
 
-        /* ?>
-         <script>
-             alert('<?Php echo $this->_loggedUser->id_usuario_tipo;  ?>');
-         </script>
- <?php
- */
         if($this->_loggedUser->id_usuario_tipo!=2&&$this->_loggedUser->id_usuario!="mariely"){
             $query = Doctrine_Query::create()
                 ->select("id_venta  id_venta,cantidad cantidad,codinter codinter,nombre nombre,exento_iva exento_iva,exento_ieps exento_ieps,total total,tipo tipo,id_tienda  id_tienda,id_usuario  id_usuario, fecha  fecha")
@@ -1259,7 +1205,7 @@ class Ventas_ReportesController extends jfLib_Controller
             ->orderBy("total_cantidad DESC")
             ->groupBy("pv.id_productotienda");
 
-	$querydesc = Doctrine_Query::create()
+	    $querydesc = Doctrine_Query::create()
 			->select("SUM(a.montodesc) AS total_descuentos")
             ->from("Database_Model_Descuentos a, a.Venta v")
             ->where("DATE(fecha_registro) >= '$from'")
@@ -1398,7 +1344,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function descuentosAction()
     {
-        $this->_onlyAdmin();
+        //$this->_onlyAdmin();
         $form = new Ventas_Form_Descuento();
 
         $from = date("Y-m-d");
@@ -1427,6 +1373,53 @@ class Ventas_ReportesController extends jfLib_Controller
             $query->andWhere("a.id_usuario = ?", $id_usuario);
         }
 
+
+        $this->view->query = $query->execute();
+        $this->view->form = $form;
+
+    }
+    function porclienteAction()
+    {
+        
+        $form = new Ventas_Form_Cliente();
+
+        $from = date("Y-m-d");
+        $to = date("Y-m-d");
+
+        if ($this->_request->getParam("from")) {
+            $from = $this->_request->getParam("from");
+        }
+        if ($this->_request->getParam("to")) {
+            $to = $this->_request->getParam("to");
+        }
+
+        $form->from->setValue($from);
+        $form->to->setValue($to);
+
+        $form->populate($this->_request->getParams());
+
+
+        $query = Doctrine_Query::create()
+            ->from("Database_Model_Venta ")
+            ->where("id_venta>0")
+            ->andWhere("DATE(fecha) <= '$to'");
+
+
+        if ($from =$this->_request->getParam("from")) {
+            $query->andWhere("DATE(fecha) >= '$from'");
+        }
+        if ($to =$this->_request->getParam("to")) {
+            $query->andWhere("DATE(fecha) <= '$to'");
+        }
+
+        if ($id = $this->_request->getParam("id_persona")) {
+            $query->andWhere("id_persona = ?", $id);
+        }
+
+       if ($codintercadena=$this->_request->getParam("autocomplete")) {
+            $codiner = explode('::', $codintercadena);
+            $query->andWhere("id_persona = ?", $codiner[0]);
+        }
 
         $this->view->query = $query->execute();
         $this->view->form = $form;

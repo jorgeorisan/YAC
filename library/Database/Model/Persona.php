@@ -17,6 +17,8 @@ class Database_Model_Persona extends Database_Model_Base_Persona
         return Doctrine_Core::getTable(get_class())
             ->findOneBy("id_persona", $id);
     }
+  
+
     public static function getAllArrCli()
     {
         $arr = array();
