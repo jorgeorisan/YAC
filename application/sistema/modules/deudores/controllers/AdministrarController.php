@@ -23,6 +23,7 @@ class Deudores_AdministrarController extends jfLib_Controller
         ////////////////////////////////////////
     
         $query = Doctrine_Query::create()
+            ->select("v.*,(TO_DAYS(v.fecha)- TO_DAYS(CURDATE())) AS dias")
             ->from("Database_Model_Venta v, v.Persona c")
             ->Where("icredito = '1'")
             ->andWhere("cancelado=0")

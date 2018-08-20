@@ -18,6 +18,7 @@
             <th>Saldo por Pagar</th>
             <th>Tienda</th>
             <th>Total</th>
+            <th>DIAS</th>
 
             <th></th>
         </tr>
@@ -56,6 +57,7 @@
             <td>$<?php if (!$obj->cancelado) {
                 $total += $obj->total;
             } echo number_format($obj->total, 2); ?></td>
+             <td><?php echo $obj->dias; ?></td>
             <td>
 
                 <?php if (!$obj->cancelado): ?>
