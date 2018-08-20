@@ -65,16 +65,22 @@ $cadenacli = substr($prod,1);
             <td><?php echo $obj->tipo; ?></td>
             <td>
                 <div style="width: 70%; float:left;"><?php
-                $querysaldo = Doctrine_Query::create()
-                    ->select("SUM(montoabono) AS saldo")
-                    ->from("Database_Model_Deudores")
-                    ->where("id_venta =?",$obj->id_venta)
-                    ->andWhere("status = ?", "ACTIVA")
-                    ->execute();
-                foreach($querysaldo as $s){
-                    $saldo=$s["saldo"];
+                $saldoppagar=0;
+                if($obj->icredito==1){
+                    $querysaldo = Doctrine_Query::create()
+                        ->select("SUM(montoabono) AS saldo")
+                        ->from("Database_Model_Deudores")
+                        ->where("id_venta =?",$obj->id_venta)
+                        ->andWhere("status = ?", "ACTIVA")
+                        ->execute();
+                    foreach($querysaldo as $s){
+                        $saldo=$s["saldo"];
+                    }
+                    $saldoppagar=number_format($obj->total-$saldo,2);
                 }
-                echo "$".number_format($obj->total-$saldo,2);
+
+                echo "$".$saldoppagar;
+
                 if($obj->tipo=='Credito'){
                     ?>
                 </div>
