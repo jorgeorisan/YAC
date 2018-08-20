@@ -421,7 +421,7 @@ class Administracion_ProductosController extends jfLib_Controller
                 $obj->save();
                 $this->_informSuccess();
             } catch (Exception $e) {
-                $this->_informError($e, null, true, $this->_request->getModuleName() . "/" . $this->_request->getControllerName().);
+                $this->_informError($e, null, true, $this->_request->getModuleName() . "/" . $this->_request->getControllerName());
             }
         }
 
