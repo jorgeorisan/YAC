@@ -1,11 +1,11 @@
-# Windows thumbnail cache files
-Thumbs.db
-ehthumbs.db
-ehthumbs_vista.db
+# IDE
+.idea/
+.ftpquota
+sftp-config.json
 
-# Folder config file
-Desktop.ini
+#
 
+<<<<<<< HEAD
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
@@ -22,3 +22,6 @@ $RECYCLE.BIN/
 # =========================
 # Operating System Files
 # =========================
+
+# Data
+public/sistema/documentos
