@@ -144,6 +144,7 @@
         ->from("Database_Model_Deudores v")
         ->where("DATE(v.fecha_abono) >= '$this->from'")
         ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
+        ->andWhere("v.status='ACTIVA'")
         //->getSqlQuery();
             ;
 
@@ -294,6 +295,7 @@
             ->where("DATE(v.fecha_abono) >= '$this->from'")
             ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
             ->andWhere("v.id_usuario=?",$obj->id_usuario)
+            ->andWhere("v.status='ACTIVA'")
             //->getSqlQuery();
             ->fetchOne();
          $queryrecag = Doctrine_Query::create()

@@ -38,7 +38,11 @@
             <td><?php echo $obj->Persona->nombre; ?></td>
             <td><?php echo $obj->fecha_abono; ?></td>
 
-            <td><?php  $tot+=$obj->montoabono; echo "$".number_format($obj->montoabono,2);  ?>
+            <td><?php 
+                if ($obj->status=='ACTIVA') {
+                    $tot+=$obj->montoabono;
+                }
+            echo "$".number_format($obj->montoabono,2);  ?>
             </td>
             <td><?php echo $obj->comentarios; ?></td>
 
