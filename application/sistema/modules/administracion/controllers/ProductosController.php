@@ -71,7 +71,7 @@ class Administracion_ProductosController extends jfLib_Controller
             ->execute();
         $tipousu="";
         foreach($querytipo as $tipo){
-            $tipousu=$tipo["id_usuario_tipo"];
+            $tipousu=$tipo->id_usuario_tipo;
             $tienda=$tipo->id_tienda;
         }
         $this->view->tipousu = $tipousu;
@@ -594,7 +594,7 @@ class Administracion_ProductosController extends jfLib_Controller
                 ->execute();//verificamos si es adminisrador
 
             foreach($query as $objt){
-                $totexistencias=$objt["totexistencias"];
+                $totexistencias=$objt->totexistencias;
             }
 
             ////////////////////////////////precio
@@ -610,8 +610,8 @@ class Administracion_ProductosController extends jfLib_Controller
             $existentes=$totexistencias;
             $precio2=null;
             foreach($ejeprecio->execute() as $ex){
-                $existentes=$ex["cantidad"]-$ex["cantvendida"];
-                $precio2=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $existentes=$ex->cantidad-$ex->cantvendida;
+                $precio2=$ex->precio;//sacamos el ultimo precio por fecha mientras no se allan vendido
             }
             if($precio2){
                 $precio=$precio2;
@@ -633,7 +633,7 @@ class Administracion_ProductosController extends jfLib_Controller
             $costoBase1=null;
             foreach($ejecosto->execute() as $excosto){
 
-                $costoBase1=$excosto["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $costoBase1=$excosto->costo;//sacamos el ultimo precio por fecha mientras no se allan vendido
             }
             if($costoBase1){
                 $costoBase=$costoBase1;
@@ -789,7 +789,7 @@ class Administracion_ProductosController extends jfLib_Controller
             //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
             // ->execute();//verificamos si es adminisrador
             foreach($query->execute() as $objt){
-                $totexistencias=$objt["totexistencias"];
+                $totexistencias=$objt->totexistencias;
             }
 
             ////////////////////////////////precio
@@ -805,8 +805,8 @@ class Administracion_ProductosController extends jfLib_Controller
             $existentes=$totexistencias;
             $precio2=null;
             foreach($ejeprecio->execute() as $ex){
-                $existentes=$ex["cantidad"]-$ex["cantvendida"];
-                $precio2=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $existentes=$ex->cantidad-$ex->cantvendida;
+                $precio2=$ex->precio;//sacamos el ultimo precio por fecha mientras no se allan vendido
             }
             if($precio2){
                 $precio=$precio2;
@@ -828,7 +828,7 @@ class Administracion_ProductosController extends jfLib_Controller
             $costoBase1=null;
             foreach($ejecosto->execute() as $excosto){
 
-                $costoBase1=$excosto["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $costoBase1=$excosto->costo;//sacamos el ultimo precio por fecha mientras no se allan vendido
             }
             if($costoBase1){
                 $costoBase=$costoBase1;
@@ -914,7 +914,7 @@ class Administracion_ProductosController extends jfLib_Controller
             // ->execute();//verificamos si es adminisrador
              $id_productotienda=$obj->id_productotienda;
             foreach($query->execute() as $objt){
-                $totexistencias=$objt["totexistencias"];
+                $totexistencias=$objt->totexistencias;
                 
             }
 
@@ -931,8 +931,8 @@ class Administracion_ProductosController extends jfLib_Controller
             $existentes=$totexistencias;
             $precio2=null;
             foreach($ejeprecio->execute() as $ex){
-                $existentes=$ex["cantidad"]-$ex["cantvendida"];
-                $precio2=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $existentes=$ex->cantidad-$ex->cantvendida;
+                $precio2=$ex->precio;//sacamos el ultimo precio por fecha mientras no se allan vendido
             }
             if($precio2){
                 $precio=$precio2;
@@ -954,7 +954,7 @@ class Administracion_ProductosController extends jfLib_Controller
             $costoBase1=null;
             foreach($ejecosto->execute() as $excosto){
 
-                $costoBase1=$excosto["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $costoBase1=$excosto->costo;//sacamos el ultimo precio por fecha mientras no se allan vendido
             }
             if($costoBase1){
                 $costoBase=$costoBase1;

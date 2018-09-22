@@ -108,18 +108,18 @@ class Administracion_SalidaController extends jfLib_Controller
                     $iObj->multiplicador=$multiplicador;
                     $iObj->iva=1.16;
                     $iObj->id_salida=$id;
-                    $iObj->save();
+                   
                     $cantproductos=$cantproductos+$iObj->cantidad;
 
                     $query = Doctrine_Query::create()
                         ->from("Database_Model_ProductoTienda")
-                        ->where("id_producto=".$producto->id_producto)
+                        ->where("id_producto=?",$producto->id_producto)
                         ->andWhere("tienda_id_tienda=14")
                         ->andWhere("status='ACTIVO'")
                         ->fetchOne();
                     //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
                     if($query){
-                        $id_productotienda = $objt["id_productotienda"];
+                        $id_productotienda = $query->id_productotienda;                       
                         try {
                             $objpti = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda",$id_productotienda);
                             $objpti->existencias+= $cantidades[$key];                           
@@ -140,6 +140,8 @@ class Administracion_SalidaController extends jfLib_Controller
                             exit();
                         }
                     }    
+                    $iObj->save();
+                    $this->_informSuccess();
                 }
             }//end foreach
         }
@@ -253,7 +255,7 @@ class Administracion_SalidaController extends jfLib_Controller
             ;
             //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generand
             foreach($ejeexiste1->execute() as $ex1){
-                $idproductoti=$ex1["id_productotienda"];
+                $idproductoti=$ex1->id_productotienda;
 
             }
             $producto = Database_Model_ProductoTienda::getById($idproductoti);
@@ -315,7 +317,7 @@ class Administracion_SalidaController extends jfLib_Controller
                         ->andWhere("tienda_id_tienda=?",$obj->id_tienda);
                     //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
                     foreach($ejeexiste->execute() as $ex){
-                        $identr=$ex["id_productotienda"];//si tiene id si existe esta relacion entre el producto y la tienda
+                        $identr=$ex->id_productotienda;//si tiene id si existe esta relacion entre el producto y la tienda
                     }
                     $objpt = Database_Model_ProductoTienda::getById($identr);
                     $objpt->existencias+= $prodVenta->cantidad;

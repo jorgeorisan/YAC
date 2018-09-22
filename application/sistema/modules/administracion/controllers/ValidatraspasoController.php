@@ -86,7 +86,7 @@ class Administracion_ValidatraspasoController extends jfLib_Controller
                         ->andWhere("status='ACTIVO'");
                     //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
                     foreach($ejeexiste->execute() as $ex){
-                         $identr=$ex["id_productotienda"];//si tiene id si existe esta relacion entre el producto y la tienda
+                         $identr=$ex->id_productotienda;//si tiene id si existe esta relacion entre el producto y la tienda
                     }
                     $objpt = Database_Model_ProductoTienda::getById($identr);
                      $objpt->existencias+= $prodVenta->cantidad;
@@ -107,7 +107,7 @@ class Administracion_ValidatraspasoController extends jfLib_Controller
                                 ->andWhere("tienda_id_tienda=".$obj->id_tienda)
                                 ->andWhere("status='ACTIVO'");
                             foreach($querypaquetetienda->execute() as $objtpq){
-                               echo  $id_productopqtienda=$objtpq["id_productotienda"];
+                               echo  $id_productopqtienda=$objtpq->id_productotienda;
                             }
                             if($id_productopqtienda){
                                 $id_productopqtienda=$id_productopqtienda;
@@ -146,7 +146,7 @@ class Administracion_ValidatraspasoController extends jfLib_Controller
                         ->andWhere("tienda_id_tienda=?",$obj->id_tiendaanterior);
                     //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
                     foreach($ejeexiste2->execute() as $ex2){
-                        $identr2=$ex2["id_productotienda"];//si tiene id si existe esta relacion entre el producto y la tienda
+                        $identr2=$ex2->id_productotienda;//si tiene id si existe esta relacion entre el producto y la tienda
                     }
                     if($identr2){
                         $identr2=$identr2;
@@ -182,7 +182,7 @@ class Administracion_ValidatraspasoController extends jfLib_Controller
                                 ->andWhere("tienda_id_tienda=".$obj->id_tiendaanterior)
                                 ->andWhere("status='ACTIVO'");
                             foreach($querypaquetetienda2->execute() as $objtpq2){
-                                $id_productopqtienda2=$objtpq2["id_productotienda"];
+                                $id_productopqtienda2=$objtpq2->id_productotienda;
                             }
                             $productotiendapq2 = Database_Model_ProductoTienda::getById($id_productopqtienda2);
                             $productotiendapq2->existencias-=$objpaquete2->cantidad;//decrementamos las existencias

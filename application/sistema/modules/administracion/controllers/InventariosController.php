@@ -130,19 +130,19 @@ class Administracion_InventariosController extends jfLib_Controller
                 $producto = Database_Model_Producto::getById($val);
                 if ($producto) {
                     $iObj = new Database_Model_EntradaProducto();
-                    $iObj->cantidad = $cantidades[$key];
-                    $iObj->precio = $precio[$key];
+                    $iObj->cantidad         = $cantidades[$key];
+                    $iObj->precio           = $precio[$key];
                     $iObj->precio_descuento = $preciodescuento[$key];
-                    $iObj->precio_costo = $preciocosto[$key];
-                    $iObj->costo = $costo[$key];
-                    $iObj->totalcosto = $totales[$key];
-                    $iObj->id_entrada = $id;
-                    $iObj->nombre = $producto->nombre;
-                    $iObj->id_producto = $val;
-                     $iObj->id_tienda=$obj->id_tienda;
-                    $iObj->multiplicador=$multiplicador;
-                    $iObj->iva=1.16;
-                    $cantproductos=$cantproductos+$iObj->cantidad;
+                    $iObj->precio_costo     = $preciocosto[$key];
+                    $iObj->costo            = $costo[$key];
+                    $iObj->totalcosto       = $totales[$key];
+                    $iObj->id_entrada       = $id;
+                    $iObj->nombre           = $producto->nombre;
+                    $iObj->id_producto      = $val;
+                     $iObj->id_tienda       = $obj->id_tienda;
+                    $iObj->multiplicador    = $multiplicador;
+                    $iObj->iva              = 1.16;
+                    $cantproductos          = $cantproductos+$iObj->cantidad;
 
                     $query = Doctrine_Query::create()
                         ->from("Database_Model_ProductoTienda")
@@ -152,8 +152,8 @@ class Administracion_InventariosController extends jfLib_Controller
                     //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
                     $cantanterior=0;
                     foreach($query->execute() as $objt){
-                        $id_productotienda=$objt["id_productotienda"];
-                        $cantanterior=$objt["existencias"];
+                        $id_productotienda = $objt->id_productotienda;
+                        $cantanterior      = $objt->existencias;
                     }
                     $iObj->cantidad_anterior=$cantanterior;
                     if($id_productotienda>0){//el producto en esta tienda si existe

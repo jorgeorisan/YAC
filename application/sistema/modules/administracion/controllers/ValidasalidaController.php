@@ -77,49 +77,47 @@ class Administracion_ValidasalidaController extends jfLib_Controller
 
         if($obj->status=="POR AUTORIZAR"){
             $obj->status = "ACTIVO";
-            $querysalidapro= Doctrine_Query::create()
+            try {
+                $obj->save();
+                exit;
+                $querysalidapro= Doctrine_Query::create()
                 ->from("Database_Model_SalidaProducto")
                 ->where("id_salida=?",$id)
                 ->execute();
-            foreach ($querysalidapro as $prodVenta) {
-                $ejeexiste= Doctrine_Query::create()
-                    ->from("Database_Model_ProductoTienda")
-                    ->where("id_producto=?",$prodVenta->id_producto)
-                    ->andWhere("tienda_id_tienda=?",$prodVenta->Salida->id_tiendaanterior)
-                    ->execute();
-                //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
-                $identr = "";
-                foreach($ejeexiste as $ex){
-                    $identr = $ex->id_productotienda;
-                }
-           
-                $objpt = Database_Model_ProductoTienda::getById($identr);
-                $objpt->existencias-= $prodVenta->cantidad;
-
-                try {
-                    $objpt->save();
-                } catch (Exception $e) {
-                   // $this->_informError($e, null, true, "administracion/salida");
-                    echo "error 128";
+                if(count($querysalidapro)>0){
+                    foreach ($querysalidapro as $prodVenta) {
+                        $ejeexiste= Doctrine_Query::create()
+                            ->from("Database_Model_ProductoTienda")
+                            ->where("id_producto=?",$prodVenta->id_producto)
+                            ->andWhere("tienda_id_tienda=?",$prodVenta->Salida->id_tiendaanterior)
+                            ->fetchOne();
+                        if($ejeexiste){
+                            $objpt = Database_Model_ProductoTienda::getById($ejeexiste->id_productotienda);
+                            $objpt->existencias-= $prodVenta->cantidad;
+                            try {
+                                $objpt->save();
+                            } catch (Exception $e) {
+                               // $this->_informError($e, null, true, "administracion/salida");
+                                echo "error ".$e;
+                                exit;
+                            }
+                        }else{
+                            echo "no se encontro idproductotienda produto=".$prodVenta->id_producto."  tienda=".$prodVenta->Salida->id_tiendaanterior;
+                            exit;
+                        }
+                       
+                    }
+                    $this->_informSuccess("",true,"administracion/salida/");//redireccionamosa la vista
+                }else{
+                    echo "no hay productos";
                     exit;
-                }
-            }
-            try {
-                $obj->save();
-                $obj3 = new Database_Model_Validasalida();
-                $obj3->id_salida  = $id;
-                $obj3->id_usuario = $this->_loggedUser->id_usuario;
-                // $obj3->cantidad=$cantidad;
-                try{
-                    $obj3->save();
-                    $this->_informSuccess("",true,"administracion/salida/");//redireccionamosa la vista que queremos
-
-                } catch (Exception $e) {
-                    $this->_informError($e);
                 }
             } catch (Exception $e) {
                 $this->_informError();
             }
+        }else{
+            echo "no etro a validar";
+            exit;
         }
 
     }

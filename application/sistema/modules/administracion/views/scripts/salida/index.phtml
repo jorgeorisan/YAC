@@ -34,7 +34,9 @@
         $total = 0;
         $costo = 0;
         $totalComision = 0;
-        foreach ($this->query as $obj): ?>
+        foreach ($this->query as $obj):
+            $objtiendaant = Doctrine_Core::getTable("Database_Model_Tienda")->findOneBy("id_tienda",$obj->id_tiendaanterior);
+         ?>
             <tr <?php  if ($obj->cancelado) {
                 echo "class='cancelada'";
             }?>
@@ -46,7 +48,7 @@
                 <td><?php echo $obj->referencia; ?></td>
 
                 <td><?php echo $obj->fecha; ?></td>
-                <td><?php echo $obj->Tienda->nombre; ?></td>
+                <td><?php echo $objtiendaant->nombre; ?></td>
                 <td><?php echo $obj->concepto; ?></td>
 
                 <td>$<?php if (!$obj->cancelado) {

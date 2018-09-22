@@ -102,7 +102,7 @@ class Administracion_TraspasoController extends jfLib_Controller
                     //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
                     $id_productotienda=0;
                     foreach($query->execute() as $objt){
-                        $id_productotienda=$objt["id_productotienda"];
+                        $id_productotienda = $objt->id_productotienda;
                     }
                     if($id_productotienda>0){//el producto en esta tienda si existe
                         try {

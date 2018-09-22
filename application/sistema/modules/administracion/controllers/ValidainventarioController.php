@@ -86,7 +86,7 @@ class Administracion_ValidainventarioController extends jfLib_Controller
                     //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
                     $identr=0;
                     foreach($ejeexiste->execute() as $ex){
-                         $identr=$ex["id_productotienda"];//si tiene id si existe esta relacion entre el producto y la tienda
+                         $identr=$ex->id_productotienda;//si tiene id si existe esta relacion entre el producto y la tienda
                     }
                     $error=1;
                     if($identr>0){
