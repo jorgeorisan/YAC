@@ -78,14 +78,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             Doctrine::ATTR_MODEL_LOADING,
             $doctrineConfig['model_autoloading']
         );
+
         $manager->setCollate('utf8_unicode_ci');
         $manager->setCharset('utf8');
         //$manager->setAttribute(Doctrine::ATTR_VALIDATE, Doctrine::VALIDATE_ALL);
 
         $conn = Doctrine_Manager::connection($doctrineConfig['dsn'], 'doctrine');
+
         $conn->setCharset('utf8');
         $conn->setAttribute(Doctrine::ATTR_USE_NATIVE_ENUM, true);
-
 
         return $conn;
     }

@@ -11,6 +11,7 @@ class Login_IndexController extends Zend_Controller_Action
     //TODO - Insert your code here
     public function indexAction()
     {
+       
 
 
         $loginAttempts = new Zend_Session_Namespace('loginAtempts');
