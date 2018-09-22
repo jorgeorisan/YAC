@@ -37,7 +37,7 @@
     foreach ($this->query as $obj):
   
         ?>
-        <tr <?php  if ($obj->Venta->cancelado) {
+        <tr <?php  if ($obj->status=='CANCELADO') {
             echo "class='cancelada'";
         }?> >
 
@@ -57,7 +57,7 @@
                 ?></td>
 
             <td><?php echo $obj->Venta->Tienda->nombre; ?></td>
-            <td>$<?php if (!$obj->Venta->cancelado) {
+            <td>$<?php if ($obj->status=='ACTIVA') {
                 $total += $obj->montoabono;
             } echo number_format($obj->montoabono, 2); ?></td>
             <td><?php echo $obj->comentarios; ?></td>
