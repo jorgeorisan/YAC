@@ -210,9 +210,10 @@
                  $id_tienda=$this->profile()->id_tienda;
                 foreach($queryproductos as $tipo){   
                     $ejeprecio= Doctrine_Query::create()
-                        ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                        ->from("Database_Model_EntradaProducto a, a.Entrada b, a.Producto p")
                         ->where("a.id_producto=?",$tipo->id_producto)
                         ->andWhere("b.status='ACTIVO'")
+                        ->andWhere("p.status='ACTIVO'")
                         ->orderBy("id_entrada_producto DESC")
                         ->limit(1);
 
