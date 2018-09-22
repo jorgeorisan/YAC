@@ -24,23 +24,19 @@ class Ventas_ReportesController extends jfLib_Controller
     }
 
     function indexAction()
-{
+    {
     //$this->_onlyAdmin();
     $form = new Ventas_Form_Reporte();
 
     $from = date("Y-m-d");
-    $to = date("Y-m-d");
+    $to   = date("Y-m-d");
 
-    if ($this->_request->getParam("from")) {
-        $from = $this->_request->getParam("from");
+    if ($this->_request->getParam("from")) $from = $this->_request->getParam("from");
 
-    }
-    if ($this->_request->getParam("to")) {
-        $to = $this->_request->getParam("to");
+    if ($this->_request->getParam("to"))   $to = $this->_request->getParam("to");
 
-    }
-    $this->view->to=$to;
-    $this->view->from=$from;
+    $this->view->to   = $to;
+    $this->view->from = $from;
     $form->from->setValue($from);
     $form->to->setValue($to);
 
@@ -66,6 +62,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $querycomi->andWhere("tipo='Credito'");
     }
     if($this->_loggedUser->id_usuario_tipo!=2){
+        $this->view->id_tienda=$this->_loggedUser->id_tienda;
         $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
         $querycomi->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
     }
@@ -77,6 +74,7 @@ class Ventas_ReportesController extends jfLib_Controller
         $this->view->id_usuario=$id_usuario;
     }
     if ($id_tienda = $this->_request->getParam("id_tienda")) {
+        $this->view->id_tienda = $id_tienda;
         $query->andWhere("id_tienda = ?", $id_tienda);
         $querycomi->andWhere("id_tienda = ?", $id_tienda);
     }

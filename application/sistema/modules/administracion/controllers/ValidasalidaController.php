@@ -79,7 +79,6 @@ class Administracion_ValidasalidaController extends jfLib_Controller
             $obj->status = "ACTIVO";
             try {
                 $obj->save();
-                exit;
                 $querysalidapro= Doctrine_Query::create()
                 ->from("Database_Model_SalidaProducto")
                 ->where("id_salida=?",$id)

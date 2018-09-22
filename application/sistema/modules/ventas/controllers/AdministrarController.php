@@ -40,10 +40,10 @@ class Ventas_AdministrarController extends jfLib_Controller
             $obj->fromArray($this->_request->getPost());
             $obj->total = $this->_request->getPost("total-global");
             $obj->id_usuario = $this->_loggedUser->id_usuario;
-            $obj->fecha =date('Y-m-d h:i:s');
+            $obj->fecha =date('Y-m-d H:i:s');
             if($this->_loggedUser->id_usuario_tipo==2){
                 $obj->id_usuario = $this->_request->getPost("id_usuario");
-                $obj->fecha = $this->_request->getPost("fecha")." ".date('h:i:s');
+                $obj->fecha = $this->_request->getPost("fecha")." ".date('H:i:s');
             }
             $obj->id_persona = $this->_request->getPost("id_persona");
             $obj->id_tienda = $this->_request->getPost("id_tienda");

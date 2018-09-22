@@ -6,7 +6,8 @@
 <h1>Reportes</h1>
 <h3 class="tit">Ventas</h3>
 
-<?php echo $this->form; ?>
+<?php
+ echo $this->form;  ?>
 
 <h3 class="tit">Reporte generado</h3>
 <table width="100%">
@@ -22,21 +23,23 @@
         <th></th>
     </tr>
     <?php
-    $total = 0;
+    $total         = 0;
     $totalComision = 0;
-    $totdesc=0;
-    $totalcancel=0;
-    $totalsincom=0;
-     $totalrecarga=0;
-    $mayoreo=0;
+    $totdesc       = 0;
+    $totalcancel   = 0;
+    $totalsincom   = 0;
+    $totalrecarga  = 0;
+    $mayoreo       = 0;
     $querycancel= Doctrine_Query::create()
         ->from("Database_Model_VentaProductocancelado vpc, vpc.ProductosVenta pv, pv.Venta v")
         ->where("DATE(vpc.fecha_registro) >= '$this->from'")
         ->andWhere("DATE(vpc.fecha_registro) <= '$this->to'")
-        ->andWhere("v.cancelado=0")
-    ;
+        ->andWhere("v.cancelado=0") ;
     if($this->id_usuario){
         $querycancel->andWhere("v.id_usuario=?",$this->id_usuario);
+    }
+    if($this->id_tienda){
+        $querycancel->andWhere("v.id_tienda=?",$this->id_tienda);
     }
     $msj2="";
 
@@ -144,9 +147,10 @@
         ->from("Database_Model_Deudores v")
         ->where("DATE(v.fecha_abono) >= '$this->from'")
         ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
-        ->andWhere("v.status='ACTIVA'")
-        //->getSqlQuery();
-            ;
+        ->andWhere("v.status='ACTIVA'");
+    if($this->id_tienda){
+        $queryabono->andWhere("v.id_tienda=?",$this->id_tienda);
+    }
 
     $abon=0;
     foreach ($queryabono->execute() as $objabon){
@@ -223,35 +227,45 @@
             ->andWhere("pv.cancelado=0")
             ->andWhere("v.id_usuario=?",$obj->id_usuario)
             ->andWhere("v.icredito=0")
-            ->groupBy("v.id_usuario")
-        ->fetchOne();
+            ->groupBy("v.id_usuario");
+        if($this->id_tienda){
+            $querycomi->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        $querycomi = $querycomi->fetchOne();
         $querycancel= Doctrine_Query::create()
             ->from("Database_Model_VentaProductocancelado vpc, vpc.ProductosVenta pv, pv.Venta v")
             ->where("DATE(vpc.fecha_registro) >= '$this->from'")
             ->andWhere("DATE(vpc.fecha_registro) <= '$this->to'")
             ->andWhere("v.icredito=0")
-            ->andWhere("v.id_usuario=?",$obj->id_usuario)
-        ;
+            ->andWhere("v.id_usuario=?",$obj->id_usuario);
 
+        if($this->id_tienda){
+            $querycancel->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        
         foreach ($querycancel->execute() as $objdesc2){
              $totalcancel2+=$objdesc2->total;
-
         }
-        $querymayo= Doctrine_Query::create()
+        $querymayo = Doctrine_Query::create()
             ->from("Database_Model_ProductosVenta pv, pv.Venta v,pv.ProductoTienda pt")
             ->where("DATE(v.fecha) >= '$this->from'")
             ->andWhere("DATE(v.fecha) <= '$this->to'")
             ->andWhere("v.cancelado=0")
             ->andWhere("pv.cancelado=0")
-            ->andWhere("v.id_usuario=?",$obj->id_usuario)
-            ->execute();
-        $querydescv= Doctrine_Query::create()
+            ->andWhere("v.id_usuario=?",$obj->id_usuario);
+        if($this->id_tienda){
+            $querymayo->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        $querymayo = $querymayo->execute();
+        $querydescv = Doctrine_Query::create()
             ->from("Database_Model_Venta v")
             ->where("DATE(v.fecha) >= '$this->from'")
             ->andWhere("DATE(v.fecha) <= '$this->to'")
-            ->andWhere("v.id_usuario=?",$obj->id_usuario)
-            ->execute();
-
+            ->andWhere("v.id_usuario=?",$obj->id_usuario);
+        if($this->id_tienda){
+            $querydescv->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        $querydescv = $querydescv->execute();
 
         foreach ($querydescv as $objSINCc):
             $querydesc= Doctrine_Query::create()
@@ -280,25 +294,30 @@
             ->where("DATE(v.fecha) >= '$this->from'")
             ->andWhere("DATE(v.fecha) <= '$this->to'")
             ->andWhere("v.cancelado=0")
-            ->andWhere("v.id_usuario=?",$obj->id_usuario)
-            ->execute();
-        $creditopagado=0;
+            ->andWhere("v.id_usuario=?",$obj->id_usuario);
+        if($this->id_tienda){
+            $querycredpag->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        $querycredpag = $querycredpag->execute();
+        $creditopagado = 0;
         foreach ($querycredpag as $objcred):
             if($objcred->tipo=='Credito'&&$objcred->icredito==0){
                 $creditopagado+=$objcred->total;
             }
 
         endforeach;
-         $queryabono = Doctrine_Query::create()
+        $queryabono = Doctrine_Query::create()
             ->select("sum(v.montoabono) as total")
             ->from("Database_Model_Deudores v")
             ->where("DATE(v.fecha_abono) >= '$this->from'")
             ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
             ->andWhere("v.id_usuario=?",$obj->id_usuario)
-            ->andWhere("v.status='ACTIVA'")
-            //->getSqlQuery();
-            ->fetchOne();
-         $queryrecag = Doctrine_Query::create()
+            ->andWhere("v.status='ACTIVA'") ;
+        if($this->id_tienda){
+            $queryabono->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        $queryabono = $queryabono->fetchOne();
+        $queryrecag = Doctrine_Query::create()
             ->select("sum(pv.total) as total")
             ->from("Database_Model_ProductosVenta pv, pv.Venta v,pv.ProductoTienda pt, pt.Producto pr")
             ->where("DATE(v.fecha) >= '$this->from'")
@@ -308,9 +327,11 @@
             ->andWhere("v.cancelado=0")
             ->andWhere("v.id_usuario=?",$obj->id_usuario)
             ->andWhere("v.icredito=0")
-            ->groupBy("v.id_usuario")
-
-            ->fetchOne();
+            ->groupBy("v.id_usuario");
+        if($this->id_tienda){
+            $queryrecag->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        $queryrecag = $queryrecag->fetchOne();
         $queryexcedente = Doctrine_Query::create()
             ->select("sum(pv.total) as total")
             ->from("Database_Model_ProductosVenta pv, pv.Venta v,pv.ProductoTienda pt, pt.Producto pr")
@@ -321,8 +342,11 @@
             ->andWhere("v.cancelado=0")
             ->andWhere("v.id_usuario=?",$obj->id_usuario)
             ->andWhere("v.icredito=0")
-            ->groupBy("v.id_usuario")
-            ->fetchOne();
+            ->groupBy("v.id_usuario");
+        if($this->id_tienda){
+            $queryexcedente->andWhere("v.id_tienda=?",$this->id_tienda);
+        }
+        $queryexcedente = $queryexcedente->fetchOne();
         if($queryabono){
             $totalab= $queryabono->total;
             $totalabonos+=$queryabono->total;
@@ -331,7 +355,7 @@
             $totalrec= $queryrecag->total;
             $totalrecargas+=$queryrecag->total;
         }
-          if($queryexcedente){
+        if($queryexcedente){
             $totalexce= $queryexcedente->total;
             $totalexcedente+=$queryexcedente->total;
         }
