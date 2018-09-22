@@ -108,58 +108,40 @@ class Administracion_SalidaController extends jfLib_Controller
                     $iObj->multiplicador=$multiplicador;
                     $iObj->iva=1.16;
                     $iObj->id_salida=$id;
+                    $iObj->save();
                     $cantproductos=$cantproductos+$iObj->cantidad;
 
                     $query = Doctrine_Query::create()
                         ->from("Database_Model_ProductoTienda")
                         ->where("id_producto=".$producto->id_producto)
                         ->andWhere("tienda_id_tienda=14")
-                        ->andWhere("status='ACTIVO'");
+                        ->andWhere("status='ACTIVO'")
+                        ->fetchOne();
                     //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
-                    $id_productotienda=0;
-                    foreach($query->execute() as $objt){
-                        $id_productotienda=$objt["id_productotienda"];
-                    }
-                    if($id_productotienda>0){//el producto en esta tienda si existe
+                    if($query){
+                        $id_productotienda = $objt["id_productotienda"];
                         try {
                             $objpti = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda",$id_productotienda);
-                            $objpti->existencias+=$iObj->cantidad;
-                               // $obj->SalidaProducto->add($iObj);
-                            $iObj->save();
+                            $objpti->existencias+= $cantidades[$key];                           
                             $objpti->save();
                         } catch (Exception $e) {
-                           // $this->sendErrorMail("VENTA ALTA LINEA 48  (INVENTARIO):" . $e);
                             echo "error en salida de producto cuando el producto si existe". $e;
                             exit();
-                          //  $this->_informError($e);
                         }
                     }else{
                         $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
-                        $objpti->id_producto=$producto->id_producto;
-                        $objpti->tienda_id_tienda=14;
-                        $objpti->existencias=$iObj->cantidad;
+                        $objpti->id_producto      = $producto->id_producto;
+                        $objpti->tienda_id_tienda = 14;
+                        $objpti->existencias      = $cantidades[$key];
                         try {
-
-                            //$obj->SalidaProducto->add($iObj);
-                            $iObj->save();
                             $objpti->save();
                         } catch (Exception $e) {
                             echo "error en Salida de producto cuando el producto no existe". $e;
                             exit();
-                           // $this->sendErrorMail("VENTA ALTA LINEA 48  (INVENTARIO):" . $e);
-                           // $this->_informError($e);
                         }
-                    }
+                    }    
                 }
             }//end foreach
-            try {
-
-                  //  $obj->total=$cantproductos;
-                //    $obj->save();
-                  //  $id = $obj->getIncremented();
-            } catch (Exception $e) {
-                $this->_informError($e);
-            }
         }
     }
     function getproductoAction(){

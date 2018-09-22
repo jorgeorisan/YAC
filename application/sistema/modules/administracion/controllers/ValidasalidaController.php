@@ -80,55 +80,24 @@ class Administracion_ValidasalidaController extends jfLib_Controller
             $querysalidapro= Doctrine_Query::create()
                 ->from("Database_Model_SalidaProducto")
                 ->where("id_salida=?",$id)
-               ;
-            foreach ($querysalidapro->execute() as $prodVenta) {
-
-                    $ejeexiste= Doctrine_Query::create()
-                        ->from("Database_Model_ProductoTienda")
-                        ->where("id_producto=?",$prodVenta->id_producto)
-                        ->andWhere("tienda_id_tienda=?",$prodVenta->Salida->id_tiendaanterior);
-                    //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
-                    foreach($ejeexiste->execute() as $ex){
-                        echo $identr=$ex["id_productotienda"];//si tiene id si existe esta relacion entre el producto y la tienda
-                    }
-               
-                    $objpt = Database_Model_ProductoTienda::getById($identr);
-                   echo  $objpt->existencias-= $prodVenta->cantidad;
+                ->execute();
+            foreach ($querysalidapro as $prodVenta) {
+                $ejeexiste= Doctrine_Query::create()
+                    ->from("Database_Model_ProductoTienda")
+                    ->where("id_producto=?",$prodVenta->id_producto)
+                    ->andWhere("tienda_id_tienda=?",$prodVenta->Salida->id_tiendaanterior)
+                    ->execute();
+                //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
+                $identr = "";
+                foreach($ejeexiste as $ex){
+                    $identr = $ex->id_productotienda;
+                }
+           
+                $objpt = Database_Model_ProductoTienda::getById($identr);
+                $objpt->existencias-= $prodVenta->cantidad;
 
                 try {
                     $objpt->save();
-                   /* $ejeexiste2= Doctrine_Query::create()
-                        ->from("Database_Model_ProductoTienda")
-                        ->where("id_producto=?",$prodVenta->id_producto)
-                        ->andWhere("tienda_id_tienda=?",$obj->id_tiendaanterior);
-                    //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
-                    foreach($ejeexiste2->execute() as $ex2){
-                        $identr2=$ex2["id_productotienda"];//si tiene id si existe esta relacion entre el producto y la tienda
-                    }
-                    if($identr2){
-                        $identr2=$identr2;
-                    }else{
-                        $objptiant = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
-                        $objptiant->id_producto=$prodVenta->id_producto;
-                        $objptiant->tienda_id_tienda=$obj->id_tiendaanterior;
-                        try {
-                            $objptiant->save();//guardamos la nueva relacion
-                            $identr2=$objptiant->getIncremented();
-                        } catch (Exception $e) {
-                           // $this->sendErrorMail("VENTA ALTA LINEA 48  (INVENTARIO):" . $e);
-                            echo "error al crear la relacion";
-                            exit;
-                        }
-                    }
-                    $objpt2 = Database_Model_ProductoTienda::getById($identr2);
-                    $objpt2->existencias-= $prodVenta->cantidad;
-                    try {
-                        $objpt2->save();
-                    } catch (Exception $e) {
-                        echo "error 123";
-                       exit;
-                    }
-                   */
                 } catch (Exception $e) {
                    // $this->_informError($e, null, true, "administracion/salida");
                     echo "error 128";
@@ -138,8 +107,8 @@ class Administracion_ValidasalidaController extends jfLib_Controller
             try {
                 $obj->save();
                 $obj3 = new Database_Model_Validasalida();
-                $obj3->id_salida=$this->_request->getParam("id");
-                $obj3->id_usuario=$this->_loggedUser->id_usuario;
+                $obj3->id_salida  = $id;
+                $obj3->id_usuario = $this->_loggedUser->id_usuario;
                 // $obj3->cantidad=$cantidad;
                 try{
                     $obj3->save();
