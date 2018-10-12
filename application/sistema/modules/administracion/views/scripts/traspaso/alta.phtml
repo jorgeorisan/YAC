@@ -16,7 +16,7 @@
             e.preventDefault();
             var res =  $('#barcode').val().split("::");
             if(res.length>0){
-                $('#barcode').val(res[0]);
+                $('#barcode').val(res[0].trim());
             }
             var id_tienda=document.getElementById("id_tiendaanterior").value;
             var barcode=document.getElementById("barcode").value;
@@ -38,7 +38,7 @@
                 e.preventDefault();
                 var id_tienda=document.getElementById("id_tiendaanterior").value;
                 var barcode=document.getElementById("barcode").value;
-                var msj="id_prod="+$("#barcode").val()+"&cantidad="+$("#cantidad").val()+"&id_tienda="+id_tienda+"&barcode="+barcode;
+                var msj="id_prod="+$("#barcode").val().trim()+"&cantidad="+$("#cantidad").val()+"&id_tienda="+id_tienda+"&barcode="+barcode;
                 //alert(msj);
                 $.get(_root + "/administracion/traspaso/getproducto", msj,
                     function (response) {
@@ -99,17 +99,17 @@
         document.getElementById("importe2"+num).value=importe;
        calcTotal2();
     }
-function calcTotal2(){
-    var totales=document.getElementsByClassName("totales");
-    var total = 0;
-    for (var i = 0, len = totales.length; i < len; i++) {
-        total = parseFloat(total);
-        total += parseFloat(totales[i].innerHTML);
-    }
-    document.getElementById("total-num").innerHTML=total;
-    document.getElementById("total-global").value=total;
+    function calcTotal2(){
+        var totales=document.getElementsByClassName("totales");
+        var total = 0;
+        for (var i = 0, len = totales.length; i < len; i++) {
+            total = parseFloat(total);
+            total += parseFloat(totales[i].innerHTML);
+        }
+        document.getElementById("total-num").innerHTML=total;
+        document.getElementById("total-global").value=total;
 
-}
+    }
 
 </script>
 <?php
@@ -239,7 +239,7 @@ $cadena=$_SESSION['CADENA'];
         $("#catalogo").attr('href','<?php echo $this->baseUrl("ventas/administrar/mostrarcatalogo?id_tienda="); ?>'+id);
         return false;
     });
-      $( "#barcode" ).autocomplete({
+    $( "#barcode" ).autocomplete({
         source: [ <?php echo $cadena ?>],
         select: function(res) {
    

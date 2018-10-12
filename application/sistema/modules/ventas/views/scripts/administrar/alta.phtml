@@ -25,7 +25,7 @@
             e.preventDefault();
               var res =  $('#barcode').val().split("::");
              if(res.length>0){
-                $('#barcode').val(res[0]);
+                $('#barcode').val(res[0].trim());
              }
             $.get(_root + "/ventas/administrar/getproducto", $(this).serialize(),
                 function (response) {

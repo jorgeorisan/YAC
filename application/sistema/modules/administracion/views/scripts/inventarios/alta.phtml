@@ -14,7 +14,7 @@
 
         $("#agregarprod").click(function (e) {
             e.preventDefault();
-            var msj="id_prod="+$("#barcode").val()+"&cantidad="+$("#cantidad").val();
+            var msj="id_prod="+$("#barcode").val().trim()+"&cantidad="+$("#cantidad").val();
            // alert(msj);
             $.get(_root + "/administracion/inventarios/getproducto", msj,
                 function (response) {
@@ -28,7 +28,7 @@
         $("#barcode").keypress(function(e) {
             if (e.which == 13) {
                 e.preventDefault();
-                var msj="id_prod="+$("#barcode").val()+"&cantidad="+$("#cantidad").val();
+                var msj="id_prod="+$("#barcode").val().trim()+"&cantidad="+$("#cantidad").val();
                 // alert(msj);
                 $.get(_root + "/administracion/inventarios/getproducto", msj,
                     function (response) {
@@ -84,19 +84,22 @@
         document.getElementById("importe2"+num).value=importe;
        calcTotal2();
     }
-function calcTotal2(){
-    var totales=document.getElementsByClassName("totales");
-    var total = 0;
-    for (var i = 0, len = totales.length; i < len; i++) {
-        total = parseFloat(total);
-        total += parseFloat(totales[i].innerHTML);
-    }
-    document.getElementById("total-num").innerHTML=total.toFixed(2);
-    document.getElementById("total-global").value=total.toFixed(2);
+    function calcTotal2(){
+        var totales=document.getElementsByClassName("totales");
+        var total = 0;
+        for (var i = 0, len = totales.length; i < len; i++) {
+            total = parseFloat(total);
+            total += parseFloat(totales[i].innerHTML);
+        }
+        document.getElementById("total-num").innerHTML=total.toFixed(2);
+        document.getElementById("total-global").value=total.toFixed(2);
 
-}
+    }
 
 </script>
+<?php
+    $cadena=$_SESSION['CADENA'];
+?>
 <h1>Entradas</h1>
 <h3 class="tit">Nueva Entrada de Almacen</h3>
 
@@ -148,8 +151,10 @@ function calcTotal2(){
             <table class="nostyle">
                 <tr>
                     <td>   <label for="barcode">Código de barras</label>  </td>
-                    <td>   <input type="text" id="barcode" name="id_prod" value="<?php echo $this->codint; ?>"/>      </td>
-                    <td> <a fancybox="true" href="<?php echo $this->baseUrl("ventas/administrar/mostrarcatalogo"); ?>">Catálogo</a>  </td>
+                    <td>   <input type="text" id="barcode"  for='autocomplete' name="id_producto" value="<?php echo $this->codint; ?>"/>      </td>
+                    <td>
+                        <a fancybox="true" id="catalogo" href="<?php echo $this->baseUrl("ventas/administrar/mostrarcatalogo?id_tienda=".$this->id_tienda); ?>">Catálogo</a>
+                    </td>
                 </tr>
                 <tr>
                     <td>       <label for="cantidad">Cantidad</label>  </td>
@@ -196,7 +201,12 @@ function calcTotal2(){
     <input style="width: 100%" type="button" id="send" class="button" value="Registrar Entrada">
 </form>
 <script>
-
+    $( "#barcode" ).autocomplete({
+        source: [ <?php echo $cadena ?>],
+        select: function(res) {
+   
+        }
+    });
 </script>
 
 

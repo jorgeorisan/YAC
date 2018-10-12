@@ -321,7 +321,7 @@ class Ventas_AdministrarController extends jfLib_Controller
 
             $this->_disableLayout();
 
-            $id = $this->_request->getParam("id_producto");
+            $id = trim($this->_request->getParam("id_producto"));
             if(!$id){
                 return false;
             }
