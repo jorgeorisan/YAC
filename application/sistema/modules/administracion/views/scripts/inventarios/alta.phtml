@@ -14,6 +14,10 @@
 
         $("#agregarprod").click(function (e) {
             e.preventDefault();
+            var res =  $('#barcode').val().split("::");
+            if(res.length>0){
+                $('#barcode').val(res[0].trim());
+            }
             var msj="id_prod="+$("#barcode").val().trim()+"&cantidad="+$("#cantidad").val();
            // alert(msj);
             $.get(_root + "/administracion/inventarios/getproducto", msj,
