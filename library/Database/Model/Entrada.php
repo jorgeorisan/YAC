@@ -16,4 +16,26 @@ class Database_Model_Entrada extends Database_Model_Base_Entrada
     {
         return Doctrine_Core::getTable("Database_Model_Entrada")->findOneBy("id_entrada", $id);
     }
+    public function gettotales(){
+        $qryep= Doctrine_Query::create()
+            ->from("Database_Model_EntradaProducto")
+            ->where("id_entrada = ?", $this->id_entrada)
+            ->execute();
+        $totalcantidad = 0;
+        $totalcosto    = 0;
+        $totalprecio    = 0;
+        $array = [];
+        foreach($qryep as $objep){
+            if ($objep->cancelado==0) {
+                $totalcantidad += $objep->cantidad;
+                $totalcosto    += $objep->cantidad* $objep->costo;
+                $totalprecio   += $objep->cantidad* $objep->precio;
+            }
+        }
+        $array[0] = $totalcantidad;
+        $array[1] = $totalcosto;
+        $array[2] = $totalprecio;
+        return $array;
+    }
+   
 }

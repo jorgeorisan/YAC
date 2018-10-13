@@ -5,19 +5,16 @@
 <div style="overflow: auto">
 <table style="width: 100%"  >
     <tr>
-        <th >Ver</th>
-        <th >ID</th>
-        <th  >Referencia</th>
+        <th>Ver</th>
+        <th>ID</th>
+        <th>Referencia</th>
         <th>Fecha</th>
-        <th >Bodega</th>
-
-        <th >Cantidad Total</th>
-        <th >Costo Total(S/IVA y IEPS)</th>
-        <th >Costo Total(C/IVA Y IEPS)</th>
-        <th >Precio Publico</th>
-        <th >Precio Total</th>
-         <th>Comentarios</th>
-        <th >Usuario</th>
+        <th>Tienda</th>
+        <th>Cantidad Total</th>
+        <th>Costo Total</th>
+        <th>Precio Total</th>
+        <th>Comentarios</th>
+        <th>Usuario</th>
 
         <th  ></th>
     </tr>
@@ -36,30 +33,6 @@
     $preciot=0;
     foreach ($this->query as $obj): ?>
         <tr <?php
-        $qryep= Doctrine_Query::create()
-            ->from("Database_Model_EntradaProducto")
-            ->where("id_entrada = ?", $obj->id_entrada)
-            ->execute();
-        $costo=0;
-        $ieps=0;
-        $iva=0;
-        $precio=0;
-        $preciop=0;
-        foreach($qryep as $objep){
-            if ($objep->cancelado==0) {
-                $precio+=$objep->cantidad* $objep->precio;
-                $preciop+=$objep->precio;
-                if($objep->Producto->exento_iva>0){
-                    if($objep->Producto->exento_ieps==1) {
-                        $ieps+= (($objep->cantidad * $objep->costo)) * 1.08;
-                    }
-                }else{
-                    $iva+=(($objep->cantidad* $objep->costo))*1.16;
-                }
-                $costo+=$objep->totalcosto;
-            }
-        }
-        $costoiva=$iva+$ieps;
         if ($obj->cancelado) {
             echo "class='cancelada'";
         }?>
@@ -73,21 +46,18 @@
             <td><?php echo $obj->fecha; ?></td>
             <td><?php echo $obj->Tienda->nombre; ?></td>
             <td><?php if (!$obj->cancelado) {
-                    $total += $obj->total;
-                } echo number_format($obj->total, 0); ?>
+                    $total += $obj->gettotales()[0];
+                } echo number_format($obj->gettotales()[0], 0); ?>
             </td>
             <td>$<?php if (!$obj->cancelado) {
                    // $costo += $obj->costo_total;
-                }$costot+=$costo; echo number_format($costo, 2); ?>
+                }
+                $costot+=$obj->gettotales()[1]; echo number_format($obj->gettotales()[1], 2); ?>
             </td>
-            <td>$<?php if (!$obj->cancelado) {
-
-                } $costoivat+=$costoiva;  echo number_format($costoiva, 2); ?>
+            
+            <td>$<?php $preciopt+=$obj->gettotales()[2];  echo number_format($obj->gettotales()[2], 2); ?>
             </td>
-            <td>$<?php $preciopt+=$preciop;  echo number_format($preciop, 2); ?>
-            </td>
-            <td>$<?php  $preciot+=$precio; echo number_format($precio, 2); ?>
-            </td>
+           
 
             <td><?php echo $obj->comentarios; ?></td>
             <td><?php echo $obj->Usuario->nombre; ?></td>
@@ -113,11 +83,11 @@
         <td><strong>Totales</strong></td>
         <td> <?php echo number_format($total, 0); ?></td>
         <td>$<?php echo number_format($costot, 2); ?></td>
-        <td>$<?php echo number_format($costoivat, 2); ?></td>
-
         <td>$<?php echo number_format($preciopt, 2); ?></td>
-        <td>$<?php echo number_format($preciot, 2); ?></td>
-        <td></td><td></td><td></td>
+
+        <td></td>
+        <td></td>
+        <td></td>
     </tr>
 </table>
     </div>

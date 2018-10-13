@@ -110,36 +110,35 @@ class Administracion_InventariosController extends jfLib_Controller
              $obj->id_tienda = $this->_request->getPost("id_tienda");
             $obj->status="POR AUTORIZAR";
             $obj->concepto="ENTRADA DE ALMACEN";
-//recibimos los arrays
+            //recibimos los arrays
             $cantidades = $this->_request->getPost("cantidad");
+            $cantidades_zaragoza = $this->_request->getPost("cantidad_zaragoza");
             $productos = $this->_request->getPost("id_producto");
             $totales = $this->_request->getPost("total");
             $precio = $this->_request->getPost("precio");
             $preciodescuento=$this->_request->getPost("precio_descuento");
-            $preciocosto=$this->_request->getPost("precio_costo");
             $costo = $this->_request->getPost("costo");
 
-            $multiplicador = $this->_request->getPost("multiplicador");//no es un array
 
             $error=0;
             $cantproductos=0;
             $obj->total=$cantproductos;
             $obj->save();
             $id = $obj->getIncremented();
+            
             foreach ($productos as $key => $val) {
                 $producto = Database_Model_Producto::getById($val);
-                if ($producto) {
+                if ($producto && $cantidades[$key]>0) {
                     $iObj = new Database_Model_EntradaProducto();
                     $iObj->cantidad         = $cantidades[$key];
                     $iObj->precio           = $precio[$key];
                     $iObj->precio_descuento = $preciodescuento[$key];
-                    $iObj->precio_costo     = $preciocosto[$key];
                     $iObj->costo            = $costo[$key];
-                    $iObj->totalcosto       = $totales[$key];
+                    $iObj->totalcosto       = $cantidades_zaragoza[$key]*$costo[$key];
                     $iObj->id_entrada       = $id;
                     $iObj->nombre           = $producto->nombre;
                     $iObj->id_producto      = $val;
-                     $iObj->id_tienda       = $obj->id_tienda;
+                    $iObj->id_tienda       = $obj->id_tienda;
                     $iObj->multiplicador    = $multiplicador;
                     $iObj->iva              = 1.16;
                     $cantproductos          = $cantproductos+$iObj->cantidad;
@@ -189,41 +188,87 @@ class Administracion_InventariosController extends jfLib_Controller
                     exit();
                 }
             }//end foreach
-            try {
-                if($error==0){
-
-                    //ENVIA MAIL de entrada
-                    $mail = new Zend_Mail("UTF-8");
-                    $mail->setSubject("¡Nueva Entrada de Producto! Tienda Trepsi");
-                    $message = "<html><style>";
-                    $message .= "table {border-collapse: collapse; border-spacing: 0px;} body, html { margin:0;      padding:0; width:100%; height:100%; font-family:Verdana, Geneva,sans-serif; font-size:12px;}";
-                    $message .="</style>";
-                    $message .="<body>";
-                    $message .= 'Se ha solicitado una nueva entrada de producto con el Codigo de Entrada: <strong>'.$id."</strong>";
-
-                    $mail->addTo("aaron@trepsi.com.mx");
-                    // $mail->addTo("jorge.orihuela@tigears.com");
-                    $mail->addCc("guillermo@trepsi.com.mx");//compia
-
-                    $mail->setBodyHtml($message);
-                    $mail->setFrom("noreply@789.mx", "Notificaciones 789.MX");
-                    try {
-                         //$mail->send();
-                        $this->_informSuccess(null, true, "administracion/inventarios/ver/id/" . $id);
-                    } catch (Exception $e) {
-                        // $this->_informError($e);
-                        echo $e;
-
+            if (count($cantidades_zaragoza)>0) {
+                $objzaragoza = new Database_Model_Entrada();
+                $objzaragoza->fromArray($this->_request->getPost());
+                $objzaragoza->costo_total = $this->_request->getPost("total-global");
+                $objzaragoza->id_usuario  = $this->_loggedUser->id_usuario;
+                $objzaragoza->id_tienda   = 15;
+                $objzaragoza->status      = "POR AUTORIZAR";
+                $objzaragoza->concepto    = "ENTRADA DE ALMACEN";
+                //recibimos los arrays
+                $cantidades_zaragoza = $this->_request->getPost("cantidad_zaragoza");
+                $productos           = $this->_request->getPost("id_producto");
+                $totales             = $this->_request->getPost("total");
+                $precio              = $this->_request->getPost("precio");
+                $preciodescuento     = $this->_request->getPost("precio_descuento");
+                $costo               = $this->_request->getPost("costo");    
+                $error=0;
+                $objzaragoza->save();
+                $id = $objzaragoza->getIncremented();
+                foreach ($productos as $key => $val) {
+                    $producto = Database_Model_Producto::getById($val);
+                    if ($producto && $cantidades_zaragoza[$key]>0) {
+                        $iObj = new Database_Model_EntradaProducto();
+                        $iObj->cantidad         = $cantidades_zaragoza[$key];
+                        $iObj->precio           = $precio[$key];
+                        $iObj->precio_descuento = $preciodescuento[$key];
+                        $iObj->costo            = $costo[$key];
+                        $iObj->totalcosto       = $cantidades_zaragoza[$key]*$costo[$key];
+                        $iObj->id_entrada       = $id;
+                        $iObj->nombre           = $producto->nombre;
+                        $iObj->id_producto      = $val;
+                        $iObj->id_tienda        = $objzaragoza->id_tienda;
+                        $iObj->multiplicador    = $multiplicador;
+                        $iObj->iva              = 1.16;
+                        $cantproductos          = $cantproductos+$iObj->cantidad;
+    
+                        $query = Doctrine_Query::create()
+                            ->from("Database_Model_ProductoTienda")
+                            ->where("id_producto=".$producto->id_producto)
+                            ->andWhere("tienda_id_tienda=".$objzaragoza->id_tienda)
+                            ->andWhere("status='ACTIVO'");
+                        //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
+                        $cantanterior=0;
+                        foreach($query->execute() as $objt){
+                            $id_productotienda = $objt->id_productotienda;
+                            $cantanterior      = $objt->existencias;
+                        }
+                        $iObj->cantidad_anterior=$cantanterior;
+                        if($id_productotienda>0){//el producto en esta tienda si existe
+                            try {
+                                //$obj->EntradaProducto->add($iObj);
+                                $iObj->save();
+                            } catch (Exception $e) {
+                                $error=1;
+                                echo "no se metio en entrada producto";
+                                exit();
+                            }
+                        }else{
+                            $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                            $objpti->id_producto      = $producto->id_producto;
+                            $objpti->tienda_id_tienda = $objzaragoza->id_tienda;
+                            $objpti->existencias      = 0;//solo asta que se valide
+                            
+                            try {
+                                $objpti->save();//guardamos la nueva relacion
+                                //$obj->EntradaProducto->add($iObj);
+                                $iObj->save();
+                            } catch (Exception $e) {
+                                $error=1;
+                                echo "no se genero la relacion";
+                                exit();
+                            }
+    
+                        }
+                    }else{
+                        echo "no existe el producto";
+                        $error=1;
+                        exit();
                     }
-
-                }
-            } catch (Exception $e) {
-                $this->_informError($e);
+                }//end foreach
             }
         }
-
-
-
     }
     function getproductoAction(){
         $this->_disableLayout();

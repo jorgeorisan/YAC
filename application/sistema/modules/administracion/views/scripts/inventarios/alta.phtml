@@ -5,7 +5,7 @@
             var total = 0;
             for (var i = 0, len = totales.length; i < len; i++) {
                 total = parseFloat(total);
-                total += parseFloat(totales[i].innerHTML);
+                total += parseFloat(totales[i].value);
             }
             document.getElementById("total-num").innerHTML=total.toFixed(2);
             document.getElementById("total-global").value=total.toFixed(2);
@@ -79,13 +79,10 @@
     var total1=0;
     function calculaprecio(num){
         document.getElementById("total-num").innerHTML=0;
-        var precio2 = (document.getElementById("costo"+num).value *  1.16 *   document.getElementById("multiplicador").value);
-       var precio=precio2.toFixed(2);
-        document.getElementById("precio"+num).value=precio;
-        var importe2 = (document.getElementById("costo"+num).value * document.getElementById("cantidad"+num).innerHTML);
-        var importe=importe2.toFixed(2);
-        document.getElementById("importe"+num).innerHTML=importe;
-        document.getElementById("importe2"+num).value=importe;
+        if($("#cantidad_zaragoza"+num).val()<0){ $("#cantidad_zaragoza"+num).val(0); return alert('No se aceptan cantidades menores a 0');  }
+   
+        var cantidadyac = $("#cantidad_original"+num).val() - $("#cantidad_zaragoza"+num).val();
+        $("#cantidad"+num).val(cantidadyac);
        calcTotal2();
     }
     function calcTotal2(){
@@ -93,7 +90,7 @@
         var total = 0;
         for (var i = 0, len = totales.length; i < len; i++) {
             total = parseFloat(total);
-            total += parseFloat(totales[i].innerHTML);
+            total += parseFloat(totales[i].value);
         }
         document.getElementById("total-num").innerHTML=total.toFixed(2);
         document.getElementById("total-global").value=total.toFixed(2);
@@ -114,7 +111,7 @@
         <div class="control-group">
             <label class="control-label">Fecha Entrada</label>
             <div class="controls">
-                <input type="text" required="required" class="small-input" datepicker="past" id="fecha" name="fecha" placeholder="Fecha entrada"/>
+                <input type="text" required="required" autocomplete='off' class="small-input" datepicker="past" id="fecha" name="fecha" placeholder="Fecha entrada"/>
 
             </div>
         </div>
@@ -179,13 +176,13 @@
     <h3 class="total">Costo Total: $<span id="total-num"></span></h3>
     <table id="productos" class="full-width" style="overflow: auto">
         <tr>
-            <th>Cantidad</th>
+            <th>Cantidad YAC</th>
+            <th>Cantidad Zaragoza</th>
             <th>Codigo Interno</th>
             <th>Producto</th>
             <th>Costo</th>
             <th>Precio</th>
             <th>Precio Mayoreo</th>
-            <th>Precio Costo</th>
             <th>Importe</th>
             <th class="borrar-td"></th>
         </tr>
@@ -197,7 +194,7 @@
         <label class="control-label">Comentarios</label>
         <div class="controls">
             <?php echo $this->formTextarea("comentarios", $this->data["comentarios"],
-                array()
+                array("style"=>"height:100px !important")
             ); ?>
         </div>
     </div>

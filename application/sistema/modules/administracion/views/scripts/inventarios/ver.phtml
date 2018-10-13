@@ -30,12 +30,12 @@
     </tr>
 
     <tr>
-        <th>Suma Total</th>
-        <td><?php echo number_format($this->obj->total, 0); ?></td>
+        <th>Cantidad Total</th>
+        <td><?php echo number_format($this->obj->gettotales()[0], 0); ?></td>
     </tr>
     <tr>
         <th>Costo Total</th>
-        <td>$<?php echo number_format($this->obj->costo_total, 2); ?></td>
+        <td>$<?php echo number_format($this->obj->gettotales()[1], 2); ?></td>
     </tr>
     <?php
     $cantexento = 0;
