@@ -191,7 +191,9 @@ class Administracion_DevolucionesController extends jfLib_Controller
             try{
                 $obj3->save();
                 $obj->save();
-              
+                $objventa = Database_Model_Venta::getById($obj->id_venta);
+                $objventa->total-=$obj3->total;
+                $objventa->save();
                 echo 1;
                 //  $this->_informSuccess(null, true, "administracion/devoluciones/ver/id/".$obj->id_venta);
 
