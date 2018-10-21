@@ -32,15 +32,7 @@
         $("#barcode").keypress(function(e) {
             if (e.which == 13) {
                 e.preventDefault();
-                var msj="id_prod="+$("#barcode").val().trim()+"&cantidad="+$("#cantidad").val();
-                // alert(msj);
-                $.get(_root + "/administracion/inventarios/getproducto", msj,
-                    function (response) {
-                        $("table#productos").append(response);
-                        calcTotal();
-                    });
-                $("#cantidad").val(1);
-                $("#barcode").val("").focus();
+                $("#agregarprod").click();
                 return false;
             }
         });

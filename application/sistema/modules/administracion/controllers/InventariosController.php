@@ -105,24 +105,36 @@ class Administracion_InventariosController extends jfLib_Controller
 
             $obj = new Database_Model_Entrada();
             $obj->fromArray($this->_request->getPost());
-            $obj->costo_total = $this->_request->getPost("total-global");
-            $obj->id_usuario = $this->_loggedUser->id_usuario;
-             $obj->id_tienda = $this->_request->getPost("id_tienda");
-            $obj->status="POR AUTORIZAR";
-            $obj->concepto="ENTRADA DE ALMACEN";
+            $obj->id_usuario     = $this->_loggedUser->id_usuario;
+            $obj->id_tienda      = $this->_request->getPost("id_tienda");
+            $obj->status         = "POR AUTORIZAR";
+            $obj->concepto       = "ENTRADA";
             //recibimos los arrays
-            $cantidades = $this->_request->getPost("cantidad");
+            $cantidades          = $this->_request->getPost("cantidad");
             $cantidades_zaragoza = $this->_request->getPost("cantidad_zaragoza");
-            $productos = $this->_request->getPost("id_producto");
-            $totales = $this->_request->getPost("total");
-            $precio = $this->_request->getPost("precio");
-            $preciodescuento=$this->_request->getPost("precio_descuento");
-            $costo = $this->_request->getPost("costo");
+            $productos           = $this->_request->getPost("id_producto");
+            $totales             = $this->_request->getPost("total");
+            $precio              = $this->_request->getPost("precio");
+            $preciodescuento     = $this->_request->getPost("precio_descuento");
+            $costo               = $this->_request->getPost("costo");
+            $productoszaragoza   = 0;
+            $totcostienda        = 0;
+            $totcosyaczaragoza   = 0;
+            $tottienda           = 0;
+            $totyaczaragoza      = 0;
+            $error               = 0;
+            $cantproductos       = 0;
+            foreach ($productos as $key => $val) {
+                $producto = Database_Model_Producto::getById($val);
+                $productoszaragoza += $cantidades_zaragoza[$key];
+                $totyaczaragoza    += $cantidades_zaragoza[$key]*$precio[$key];
+                $tottienda         += $cantidades[$key]*$precio[$key];
+                $totcosyaczaragoza += $cantidades_zaragoza[$key]*$costo[$key];
+                $totcostienda      += $cantidades[$key]*$costo[$key];
 
-
-            $error=0;
-            $cantproductos=0;
-            $obj->total=$cantproductos;
+            }
+            $obj->costo_total    = $totcostienda ;
+            $obj->total          = $tottienda ;
             $obj->save();
             $id = $obj->getIncremented();
             
@@ -134,13 +146,11 @@ class Administracion_InventariosController extends jfLib_Controller
                     $iObj->precio           = $precio[$key];
                     $iObj->precio_descuento = $preciodescuento[$key];
                     $iObj->costo            = $costo[$key];
-                    $iObj->totalcosto       = $cantidades_zaragoza[$key]*$costo[$key];
+                    $iObj->totalcosto       = $cantidades[$key]*$costo[$key];
                     $iObj->id_entrada       = $id;
                     $iObj->nombre           = $producto->nombre;
                     $iObj->id_producto      = $val;
-                    $iObj->id_tienda       = $obj->id_tienda;
-                    $iObj->multiplicador    = $multiplicador;
-                    $iObj->iva              = 1.16;
+                    $iObj->id_tienda        = $obj->id_tienda;
                     $cantproductos          = $cantproductos+$iObj->cantidad;
 
                     $query = Doctrine_Query::create()
@@ -188,22 +198,16 @@ class Administracion_InventariosController extends jfLib_Controller
                     exit();
                 }
             }//end foreach
-            if (count($cantidades_zaragoza)>0) {
+
+            if ($productoszaragoza>0) {
                 $objzaragoza = new Database_Model_Entrada();
                 $objzaragoza->fromArray($this->_request->getPost());
-                $objzaragoza->costo_total = $this->_request->getPost("total-global");
                 $objzaragoza->id_usuario  = $this->_loggedUser->id_usuario;
                 $objzaragoza->id_tienda   = 15;
                 $objzaragoza->status      = "POR AUTORIZAR";
-                $objzaragoza->concepto    = "ENTRADA DE ALMACEN";
-                //recibimos los arrays
-                $cantidades_zaragoza = $this->_request->getPost("cantidad_zaragoza");
-                $productos           = $this->_request->getPost("id_producto");
-                $totales             = $this->_request->getPost("total");
-                $precio              = $this->_request->getPost("precio");
-                $preciodescuento     = $this->_request->getPost("precio_descuento");
-                $costo               = $this->_request->getPost("costo");    
-                $error=0;
+                $objzaragoza->concepto    = "ENTRADA";
+                $objzaragoza->costo_total = $totcosyaczaragoza ;
+                $objzaragoza->total       = $totyaczaragoza ;
                 $objzaragoza->save();
                 $id = $objzaragoza->getIncremented();
                 foreach ($productos as $key => $val) {
@@ -219,8 +223,6 @@ class Administracion_InventariosController extends jfLib_Controller
                         $iObj->nombre           = $producto->nombre;
                         $iObj->id_producto      = $val;
                         $iObj->id_tienda        = $objzaragoza->id_tienda;
-                        $iObj->multiplicador    = $multiplicador;
-                        $iObj->iva              = 1.16;
                         $cantproductos          = $cantproductos+$iObj->cantidad;
     
                         $query = Doctrine_Query::create()
@@ -262,7 +264,7 @@ class Administracion_InventariosController extends jfLib_Controller
     
                         }
                     }else{
-                        echo "no existe el producto";
+                        echo "no existe el producto zaragoza";
                         $error=1;
                         exit();
                     }
