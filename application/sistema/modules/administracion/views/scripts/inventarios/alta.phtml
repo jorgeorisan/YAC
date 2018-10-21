@@ -18,7 +18,7 @@
             if(res.length>0){
                 $('#barcode').val(res[0].trim());
             }
-            var msj="id_prod="+$("#barcode").val().trim()+"&cantidad="+$("#cantidad").val();
+            var msj="id_prod="+$("#barcode").val().trim()+"&id_tienda="+$("#id_tienda").val().trim()+"&cantidad="+$("#cantidad").val();
            // alert(msj);
             $.get(_root + "/administracion/inventarios/getproducto", msj,
                 function (response) {
@@ -27,6 +27,16 @@
                 });
             $("#cantidad").val(1);
             $("#barcode").val("").focus();
+            return false;
+        });
+        $("#id_tienda").change(function (e) {
+            e.preventDefault();
+            var res =  $('#id_tienda').val();
+            $('.zaragoza').hide();
+            if(res != 15){ //zaragoza
+                $('.zaragoza').show();
+            }
+           
             return false;
         });
         $("#barcode").keypress(function(e) {
@@ -117,7 +127,7 @@
 
 
         <div class="control-group" id="" style="display: ">
-            <label class="control-label">Almacen </label>
+            <label class="control-label">Tienda </label>
             <div class="controls">
                 <?php echo $this->formSelect("id_tienda", 13,
                     array("class" => "chzn-select"),
@@ -168,8 +178,8 @@
     <h3 class="total">Costo Total: $<span id="total-num"></span></h3>
     <table id="productos" class="full-width" style="overflow: auto">
         <tr>
-            <th>Cantidad YAC</th>
-            <th>Cantidad Zaragoza</th>
+            <th>Cantidad</th>
+            <th class='zaragoza'>Cantidad Zaragoza</th>
             <th>Codigo Interno</th>
             <th>Producto</th>
             <th>Costo</th>

@@ -124,6 +124,7 @@ class Administracion_InventariosController extends jfLib_Controller
             $totyaczaragoza      = 0;
             $error               = 0;
             $cantproductos       = 0;
+            //calculamos totales
             foreach ($productos as $key => $val) {
                 $producto = Database_Model_Producto::getById($val);
                 $productoszaragoza += $cantidades_zaragoza[$key];
@@ -137,7 +138,7 @@ class Administracion_InventariosController extends jfLib_Controller
             $obj->total          = $tottienda ;
             $obj->save();
             $id = $obj->getIncremented();
-            
+            //productos tienda
             foreach ($productos as $key => $val) {
                 $producto = Database_Model_Producto::getById($val);
                 if ($producto && $cantidades[$key]>0) {
@@ -197,8 +198,8 @@ class Administracion_InventariosController extends jfLib_Controller
                     $error=1;
                     exit();
                 }
-            }//end foreach
-
+            }
+            //productos zaragoza
             if ($productoszaragoza>0) {
                 $objzaragoza = new Database_Model_Entrada();
                 $objzaragoza->fromArray($this->_request->getPost());
@@ -276,17 +277,18 @@ class Administracion_InventariosController extends jfLib_Controller
         $this->_disableLayout();
         $tipousu=$this->_loggedUser->id_usuario_tipo;
         $usu=$this->_loggedUser->id_usuario;
+        
         if($tipousu){
-            $id = $this->_request->getParam("id_prod");
+            $id = trim($this->_request->getParam("id_prod"));
 
             if($id!=""&&$id!=" "){
                 $cantidad = $this->_request->getParam("cantidad");
-                $obj = Database_Model_Producto::getByCodbar($id);
-                    $tienda= $this->_loggedUser->id_tienda;
+                $obj      = Database_Model_Producto::getByCodbar($id);
+                $tienda = ($this->_request->getParam("cantidad")) ? $this->_request->getParam("cantidad")  : $this->_loggedUser->id_tienda ;
 
                 if ($obj) {
-                    $this->view->tipousu=$tipousu;
-                    $this->view->usu=$this->_loggedUser->id_usuario;
+                    $this->view->tipousu =$tipousu;
+                    $this->view->usu     =$this->_loggedUser->id_usuario;
                     $this->view->obj = $obj;
                     $this->view->id_tienda=$tienda;
                     $this->view->cantidad = $cantidad;

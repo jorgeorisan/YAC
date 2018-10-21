@@ -37,38 +37,12 @@
         <th>Costo Total</th>
         <td>$<?php echo number_format($this->obj->gettotales()[1], 2); ?></td>
     </tr>
-    <?php
-    $cantexento = 0;
-    $totalexentos=0;
-    $cantiva = 0;
-    $totaliva=0;
-    $query1= Doctrine_Query::create()
-    ->from("Database_Model_EntradaProducto")
-    ->where("id_entrada=?",$this->obj->id_entrada)
-    ->execute();
-    foreach ($query1 as $obj1):
-
-        if($obj1->Producto->exento_iva>0){
-            $cantexento+=$obj1->cantidad;
-             if($obj1->Producto->exento_ieps>0) {
-
-             }else{
-                 $totalexentos += $obj1->cantidad * $obj1->costo;
-             }
-        }else{
-            $cantiva+=$obj1->cantidad;
-            $totaliva+=$obj1->totalcosto;
-        }
-
-    endforeach; ?>
     <tr>
-        <th>IVA</th>
-        <td>$<?php echo number_format(($totaliva)*0.16, 2); ?></td>
+        <th>Precio Total</th>
+        <td>$<?php echo number_format($this->obj->gettotales()[2], 2); ?></td>
     </tr>
-    <tr>
-        <th>IEPS</th>
-        <td>$<?php echo number_format($totalexentos*0.08, 2); ?></td>
-    </tr>
+   
+   
 
 
 
