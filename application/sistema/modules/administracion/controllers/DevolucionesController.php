@@ -193,6 +193,10 @@ class Administracion_DevolucionesController extends jfLib_Controller
                 $obj->save();
                 $objventa = Database_Model_Venta::getById($obj->id_venta);
                 $objventa->total-=$obj3->total;
+               
+                if( $objventa->total == 0){
+                    $objventa->cancelado=1;
+                }
                 $objventa->save();
                 echo 1;
                 //  $this->_informSuccess(null, true, "administracion/devoluciones/ver/id/".$obj->id_venta);
