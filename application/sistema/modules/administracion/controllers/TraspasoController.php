@@ -9,7 +9,12 @@
 
 class Administracion_TraspasoController extends jfLib_Controller
 {
+    function init()
+    {
+        parent::init();
+        $this->view->datauserlogged=$this->_loggedUser;
 
+    }
     function indexAction(){
         $form = new Administracion_Form_Traspaso();
 

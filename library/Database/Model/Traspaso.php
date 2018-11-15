@@ -24,4 +24,25 @@ class Database_Model_Traspaso extends Database_Model_Base_Traspaso
             'local' => 'id_tiendaanterior',
             'foreign' => 'id_tienda'));
     }
+    public function gettotales(){
+        $qryep= Doctrine_Query::create()
+            ->from("Database_Model_TraspasoProducto")
+            ->where("id_traspaso = ?", $this->id_traspaso)
+            ->execute();
+        $totalcantidad = 0;
+        $totalcosto    = 0;
+        $totalprecio    = 0;
+        $array = [];
+        foreach($qryep as $objep){
+            if ($objep->cancelado==0) {
+                $totalcantidad += $objep->cantidad;
+                $totalcosto    += $objep->cantidad* $objep->costo;
+                $totalprecio   += $objep->cantidad* $objep->precio;
+            }
+        }
+        $array[0] = $totalcantidad;
+        $array[1] = $totalcosto;
+        $array[2] = $totalprecio;
+        return $array;
+    }
 }

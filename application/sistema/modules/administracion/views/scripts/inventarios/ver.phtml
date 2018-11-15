@@ -56,10 +56,12 @@
         <th>Cantidad Anterior</th>
         <th>Cod Inter.</th>
         <th>Producto</th>
-        <th>Costo</th>
         <th>Precio</th>
-        
-        <th>Costo Total</th>
+        <?php
+            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+                echo "<th>Costo</th>";
+            }
+        ?>
         <th></th>
 
 
@@ -67,12 +69,18 @@
     <?php
     $total = 0;
     $costo = 0;
+    $precio = 0;
     $totalComision = 0;
     $query= Doctrine_Query::create()
         ->from("Database_Model_EntradaProducto")
         ->where("id_entrada=?",$this->obj->id_entrada)
         ->execute();
-    foreach ($query as $obj): ?>
+    foreach ($query as $obj): 
+        if (!$obj->cancelado) {
+            $costo+=$obj->totalcosto; 
+            $precio+=$obj->cantidad*$obj->precio;
+        }
+        ?>
         <tr <?php  if ($obj->cancelado) {
             echo "class='cancelada'";
         }?>
@@ -81,10 +89,14 @@
             <td><?php echo $obj->cantidad_anterior; ?></td>
             <td><?php echo $obj->Producto->codinter; ?></td>
             <td><?php echo $obj->nombre; ?></td>
-
-            <td>$<?php  echo number_format($obj->costo, 2); ?></td>
-            <td>$<?php  echo number_format($obj->precio, 2); ?></td>
-            <td>$<?php $costo+=$obj->totalcosto; echo number_format($obj->totalcosto, 2); ?></td>
+            <td>$<?php  echo number_format($obj->cantidad*$obj->precio, 2); ?></td>
+            <?php
+            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+              
+                echo "<td>$".number_format($obj->totalcosto, 2)."</td>";
+            }
+            ?>
+            
             <td>
                 <?php if (!$obj->cancelado): ?>
                     <a title="Cancelar Entrada" tooltip="true" delete="true"
@@ -98,9 +110,12 @@
 
         <td></td><td></td>
         <td></td>
-        <td></td>
-        <td></td>
         <td><strong>Totales</strong></td>
-        <td>$ <?php echo number_format($costo, 2); ?></td>
+        <td>$<?php  echo number_format($precio, 2); ?></td>
+        <?php
+        if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            echo "<td>$".number_format($costo, 2)."</td>";
+        }
+        ?><td></td>
     </tr>
 </table>

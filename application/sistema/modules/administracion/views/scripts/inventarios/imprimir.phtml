@@ -16,7 +16,7 @@
     </style>
 </head>
 <body style="text-align: center; width: 175px;">
-<table width="190px"  style="align:center">
+<table width="200px"  style="align:center">
     <tr>
         <td width="50%" colspan="2" style="align:left"><strong>Yo Amo Comprar</strong>
         </td>
@@ -26,7 +26,7 @@
 
 
 
-<table width="190px">
+<table width="200px">
     <tr>
         <th>Folio Entrada</th>
         <td> <strong> <u><?php echo $this->obj->id_entrada; ?></u></strong></td>
@@ -48,54 +48,63 @@
 </table>
 
 <h3>Artículos</h3>
-<table width="190px">
-    <tbody>
+<table width="200px">
+
     <tr>
         <th>Cant.</th>
-       <!-- <th>Codigo Interno</th>  -->
-        <th style="width: 80px">&nbsp;&nbsp;&nbsp;&nbsp;Producto&nbsp;&nbsp;&nbsp;&nbsp;</th>
-        <th>Subt.</th>
-        <th>Total</th>
+        <th>Cod Inter.</th>
+        <th>Prod.</th>
+        
+        <th>Precio</th>
+        <?php
+            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+                echo "<th>Costo</th>";
+            }
+        ?>
+        
+        
 
     </tr>
     <?php
     $total = 0;
     $costo = 0;
+    $precio = 0;
     $totalComision = 0;
     $query= Doctrine_Query::create()
         ->from("Database_Model_EntradaProducto")
         ->where("id_entrada=?",$this->obj->id_entrada)
+        ->andwhere("cancelado=0")
         ->execute();
-    $totalieps=0;
-    $totaliva=0;
-    $show=0;
     foreach ($query as $obj):
-
-        ?>
-
-        <tr  style="font-size: 12px" >
-            <td><?php echo $obj->cantidad; ?></td>
-           <!-- <td><?php echo $obj->Producto->codinter; ?></td>-->
-            <td><?php echo ucwords(strtolower($obj->Producto->nombre)); ?></td>
-
-            <td>$<?php  echo number_format($obj->costo, 2); ?></td>
-            <td>$<?php  echo number_format($obj->costo*$obj->cantidad, 2); ?></td>
-
-        </tr>
-    <?php endforeach;
+        $costo+=$obj->totalcosto; 
+        $precio+=$obj->cantidad*$obj->precio;
     ?>
+        <tr >
+            <td><?php echo $obj->cantidad; ?></td>
+            <td><?php echo $obj->Producto->codinter; ?></td>
+            <td><?php echo $obj->nombre; ?></td>
+            <td>$<?php  echo number_format($obj->cantidad*$obj->precio, 2); ?></td>
+            <?php
+            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+              
+                echo "<td>$".number_format($obj->totalcosto, 2)."</td>";
+            }
+            ?>
 
-    </tbody>
-   
-        <tr>
-            <td colspan="4" align="left"><strong>Referencia: <?php echo $this->obj->referencia; ?></strong></td>
         </tr>
-  
+    <?php endforeach; ?>
     <tr>
-        <td colspan="4" align="right"><strong>Total Costo $<?php echo number_format($this->obj->gettotales()[1], 2); ?></strong></td>
+
+        <td></td>
+        <td></td>
+        <td><strong>Totales</strong></td>
+        <td>$<?php  echo number_format($precio, 2); ?></td>
+        <?php
+        if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            echo "<td>$".number_format($costo, 2)."</td>";
+        }
+        ?>
     </tr>
-
-
 </table>
 </body>
 </html>

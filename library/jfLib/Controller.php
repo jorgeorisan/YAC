@@ -18,6 +18,7 @@ class jfLib_Controller extends Zend_Controller_Action
         if ($this->_loggedUser = $this->_helper->profile()) {
             //DO SOMETHING
         }
+        
         $this->view->request = Zend_Controller_Front::getInstance()->getRequest();
     }
 

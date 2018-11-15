@@ -11,7 +11,11 @@
         <th>Fecha</th>
         <th>Tienda</th>
         <th>Cantidad Total</th>
-        <th>Costo Total</th>
+        <?php
+            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            echo "<th>Costo Total</th>";
+            }
+        ?>
         <th>Precio Total</th>
         <th>Comentarios</th>
         <th>Usuario</th>
@@ -49,11 +53,17 @@
                     $total += $obj->gettotales()[0];
                 } echo number_format($obj->gettotales()[0], 0); ?>
             </td>
-            <td>$<?php if (!$obj->cancelado) {
-                   // $costo += $obj->costo_total;
+            <?php
+                if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){  
+            ?>
+                        <td>$ 
+                            <?php $costot+=$obj->gettotales()[1]; 
+                                echo number_format($obj->gettotales()[1], 2);
+                            ?>
+                        </td>
+                <?php
                 }
-                $costot+=$obj->gettotales()[1]; echo number_format($obj->gettotales()[1], 2); ?>
-            </td>
+                ?>
             
             <td>$<?php $preciopt+=$obj->gettotales()[2];  echo number_format($obj->gettotales()[2], 2); ?>
             </td>
@@ -82,7 +92,11 @@
 
         <td><strong>Totales</strong></td>
         <td> <?php echo number_format($total, 0); ?></td>
-        <td>$<?php echo number_format($costot, 2); ?></td>
+        <?php
+        if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            echo "<td>$".number_format($costot, 2)."</td>";
+        }
+        ?>
         <td>$<?php echo number_format($preciopt, 2); ?></td>
 
         <td></td>
