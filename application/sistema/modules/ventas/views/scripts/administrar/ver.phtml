@@ -41,6 +41,26 @@ if($this->obj->icredito==1){
         <td>$<?php echo number_format($this->obj->total, 2); ?></td>
     </tr>
     <?php
+    if($this->obj->tipo=='Credito'){
+        $querysaldo = Doctrine_Query::create()
+        ->select("SUM(montoabono) AS saldo")
+        ->from("Database_Model_Deudores")
+        ->where("id_venta =?",$this->obj->id_venta)
+        ->andWhere("status = ?", "ACTIVA")
+        ->execute();
+        $saldo=0;
+        foreach($querysaldo as $s){
+            $saldo=$s["saldo"];
+        }
+       
+    ?>
+    <tr>
+        <th>Por Pagar</th>
+        <td>$<?php echo number_format($this->obj->total-$saldo, 2); ?></td>
+    </tr>
+    <?php }
+    ?>
+    <?php
     $queryt= Doctrine_Query::create()
         ->from("Database_Model_ProductosVenta")
         ->where("id_venta=?",$this->obj->id_venta)
