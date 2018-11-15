@@ -47,10 +47,18 @@
                     ->where("id_venta =?",$obj->id_venta)
                     ->andWhere("status = ?", "ACTIVA")
                     ->execute();
+                $saldo=0;
                 foreach($querysaldo as $s){
                     $saldo=$s["saldo"];
                 }
-                echo "$".number_format($obj->total-$saldo,2);
+                echo number_format($obj->total-$saldo,2);
+                if($obj->total-$saldo==0){
+                    $doc = Doctrine_Query::create()
+                    ->update('Database_Model_Venta')
+                    ->set('icredito', '?', 0)
+                    ->where('id_venta = ?',$obj->id_venta)
+                    ->execute();
+                }
                 ?>
            </td>
             <td><?php echo $obj->Tienda->nombre; ?></td>
