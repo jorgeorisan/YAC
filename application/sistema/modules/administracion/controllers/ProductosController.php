@@ -20,8 +20,93 @@ class Administracion_ProductosController extends jfLib_Controller
         $this->view->DB_MODEL_ID = $this->DB_MODEL_ID;
 
     }
+    public function indexAction()
+    {
+        ///////////////////tipo de usuario y su tienda
 
-    function indexAction()
+        $tipousu=$this->_loggedUser->id_usuario_tipo;
+        $tienda=$this->_loggedUser->id_tienda;
+
+        $this->view->tipousu = $tipousu;
+        $this->view->usu = $this->_loggedUser->id_usuario;
+        $this->view->tienda = $tienda;
+        ////////////////////////////////////////
+       
+
+        $querybkp = "
+            SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+            ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+            ,SUM(EXISTENCIAS.existencias) existencias
+            FROM(
+            SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+            FROM producto p
+            LEFT JOIN marca m on p.id_marca=m.id_marca
+            LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+            LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+            WHERE p.status='ACTIVO'
+            ) AS PRODUCTO LEFT JOIN (
+            SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
+            FROM(
+                SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
+                FROM xqwmrfeeug.entrada_producto
+                WHERE status='ACTIVO'
+                group by id_producto
+            )ULTIMAENTRADA  
+            JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
+            )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
+            LEFT JOIN(
+            SELECT id_producto, existencias, tienda_id_tienda id_tienda
+            FROM producto_tienda 
+            WHERE tienda_id_tienda!='14'
+            group by id_producto,tienda_id_tienda
+            )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+            group by 
+            PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+            ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+        ";
+
+        $resbkp = Sistema_Class_Controller::conect()->query($querybkp);
+
+        if ( ! $resbkp )
+            return $this->_informError(null, 'Oops! There was an error retrieving the data.');
+
+        $array = array();
+        while ( $objasas = $resbkp->fetch_object() ) {
+            $exixtenciastienda = 0;
+            $quuerytienda ="
+                SELECT id_producto, existencias, tienda_id_tienda id_tienda
+                FROM producto_tienda 
+                WHERE id_producto=".$objasas->id_producto."
+                and tienda_id_tienda=".$tienda."
+                group by id_producto,tienda_id_tienda";
+                $resbkp2 = Sistema_Class_Controller::conect()->query($quuerytienda);
+
+                if ( ! $resbkp2 )
+                    return $this->_informError(null, 'Oops! There was an error retrieving the data.');
+    
+                while ( $objasas2 = $resbkp2->fetch_object() ) {
+                    $exixtenciastienda = $objasas2->existencias;
+                }
+            array_push($array,
+                array(
+                    'id_producto' => $objasas->id_producto,
+                    'codinter' => $objasas->codinter,
+                    'nombre' => $objasas->nombre,
+                    'marca' => $objasas->marca,
+                    'categoria' => $objasas->categoria,
+                    'proveedor' => $objasas->proveedor,
+                    'paquete' => $objasas->paquete,
+                    'costo' => $objasas->costo,
+                    'precio' => $objasas->precio,
+                    'preciomayoreo' => $objasas->preciomayoreo,
+                    'existencias' => $objasas->existencias,
+                    'existenciastienda' => $exixtenciastienda
+                ));
+        }
+       
+        $this->view->query = $array;
+    }
+    function index2Action()
     {
         ///////////////////tipo de usuario y su tienda
 

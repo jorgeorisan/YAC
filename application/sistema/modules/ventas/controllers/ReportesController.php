@@ -1391,11 +1391,10 @@ class Ventas_ReportesController extends jfLib_Controller
             $to = $this->_request->getParam("to");
         }
 
-        $form->from->setValue($from);
-        $form->to->setValue($to);
+        $this->view->from = $from;
+        $this->view->to = $to;
 
-        $form->populate($this->_request->getParams());
-
+        
 
         $query = Doctrine_Query::create()
             ->from("Database_Model_Venta ")

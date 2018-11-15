@@ -63,8 +63,8 @@
             ->from("Database_Model_Descuentos")
             ->where("id_venta=?",$obj->id_venta)
             ->execute();
-        $msj="";
-
+        $msj   = "";
+        $class = '';
         foreach ($querydesc as $objdesc):
              if ($objdesc->Venta->cancelado) {
               $class="class='cancelada'";

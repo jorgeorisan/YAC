@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 $querytipo = Doctrine_Query::create()
                      ->from("Database_Model_Persona")
                      ->where("id_usuario_tipo='1'")
@@ -24,9 +20,22 @@ $cadenacli = substr($prod,1);
     }
 </style>
 <h1>Reportes</h1>
-<h3 class="tit">Devoluciones de Ventas</h3>
-
-<?php echo $this->form; ?>
+<h3 class="tit">Ventas por Cliente</h3>
+<form method="get" action="">
+<dl class="zend_form">
+<dt id="from-label"><label for="from" class="required">Desde *</label></dt>
+<dd id="from-element">
+<input type="text" name="from" id="from" value="<?php echo $this->from; ?>" autocomplete='off' class="small-input datepicker" datepicker="past"></dd>
+<dt id="to-label"><label for="to" class="required">Hasta *</label></dt>
+<dd id="to-element">
+<input type="text" name="to" id="to" value="<?php echo $this->to; ?>"  autocomplete='off' class="small-input datepicker" datepicker="past"></dd>
+<dt id="autocomplete-label"><label for="autocomplete" class="required">Nombre del Cliente *</label></dt>
+<dd id="autocomplete-element">
+    <input type="text" name="autocomplete" id="autocomplete" value="" class="small-input ui-autocomplete-input" for="autocomplete" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+    <input type="checkbox" onclick="$('.datepicker').val('')">Mostrar todo
+</dd>
+<dt id="Aceptar-label">&nbsp;</dt><dd id="Aceptar-element">
+<input type="submit" name="Aceptar" id="Aceptar" value="Aceptar" class="ui-button ui-widget ui-state-default ui-corner-all" role="button" aria-disabled="false"></dd></dl></form>
 
 <h3 class="tit">Reporte generado</h3>
 <table width="100%">
@@ -117,6 +126,6 @@ $cadenacli = substr($prod,1);
 
 <script>
     $( "#autocomplete" ).autocomplete({
-        source: [ <?php echo $cadenacli ?>]
+        source: [ <?php echo TRIM($cadenacli) ?>]
     });
 </script>

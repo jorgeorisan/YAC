@@ -94,22 +94,22 @@
         <ul class="box">
             <?php
 
-                $profile = $this->profile();
+            $profile = $this->profile();
             if($profile->permisos=="TODO"||$profile->permisos=="VENDEDOR" ) {  ?>
                 <li><a href="<?php echo $this->baseUrl("ventas/administrar/alta"); ?>"><span>Nueva Venta</span></a></li>
-            <?php } if($profile->permisos=="TODO"||$profile->permisos=="VENDEDOR" ||$profile->permisos=="REPORTES") {  ?>
+            <?php }
+            if($profile->permisos=="TODO"||$profile->permisos=="VENDEDOR" ||$profile->permisos=="REPORTES") {  ?>
                 <li><a href="<?php echo $this->baseUrl("reportes"); ?>"><span>Reportes</span></a></li>
-
-              <!--  <li><a href="<?php echo $this->baseUrl("facturas/administrar"); ?>"><span>Facturas</span></a></li>
-              -->
             <?php
-            } if($profile->permisos=="TODO") {  ?>
-            <li><a href="<?php echo $this->baseUrl("administracion/usuario"); ?>"><span>Usuarios</span></a></li>
+            } 
+            if($profile->id_usuario_tipo==5) {  ?>
+                <li><a href="<?php echo $this->baseUrl("administracion/usuario"); ?>"><span>Usuarios</span></a></li>
             <?php
-            } if($profile->permisos=="TODO"||$profile->permisos=="VENDEDOR") {  ?>
-            <li><a href="<?php echo $this->baseUrl("administracion/clientes2"); ?>"><span>Clientes</span></a></li>
-            <li><a href="<?php echo $this->baseUrl("administracion/validainventario"); ?>"><span>Valida Inventario</span></a></li>
-            <li><a href="<?php echo $this->baseUrl("administracion/validatraspaso"); ?>"><span>Valida Traspasos</span></a></li>
+            } 
+            if($profile->permisos=="TODO"||$profile->permisos=="VENDEDOR") {  ?>
+                <li><a href="<?php echo $this->baseUrl("administracion/clientes2"); ?>"><span>Clientes</span></a></li>
+                <li><a href="<?php echo $this->baseUrl("administracion/validainventario"); ?>"><span>Valida Inventario</span></a></li>
+                <li><a href="<?php echo $this->baseUrl("administracion/validatraspaso"); ?>"><span>Valida Traspasos</span></a></li>
                 <li><a href="<?php echo $this->baseUrl("asistencia/registro"); ?>"><span>Asistencia</span></a></li>
             <?php
             }   ?>
@@ -141,22 +141,21 @@
                         </li>
                         <li><a href="<?php echo $this->baseUrl("administracion/traspaso"); ?>"><span>Traspaso de Productos</span></a>
                         </li>
-                     <!--   <li><a href="<?php echo $this->baseUrl("administracion/traspasos"); ?>"><span>Traspaso de Productos 1x1</span></a>
-                        </li>
-                        -->
-                        <li><a
-                            href="<?php echo $this->baseUrl("administracion/proveedores"); ?>"><span>Proveedores</span></a>
-                        </li>
+                    
+                    <?php
+                    if($profile->id_usuario_tipo==5){?>
+                        <li><a href="<?php echo $this->baseUrl("administracion/proveedores"); ?>"><span>Proveedores</span></a></li>
+                    <?php
+                    }
+                    ?>
 
-                        <li><a
-                                href="<?php echo $this->baseUrl("deudores/administrar"); ?>"><span>Ventas a Credito</span></a>
-                        </li>
+                    <li><a
+                            href="<?php echo $this->baseUrl("deudores/administrar"); ?>"><span>Ventas a Credito</span></a>
+                    </li>
 
                     <?php
                     }  if($profile->permisos=="TODO"||$profile->permisos=="VENDEDOR") {  ?>
-                        <li><a
-                                href="<?php echo $this->baseUrl("administracion/devoluciones"); ?>"><span>Devoluciones</span></a>
-                        </li>
+                        
                         <li><a
                                 href="<?php echo $this->baseUrl("administracion/catalogos"); ?>"><span>Catalogos</span></a>
                         </li>
@@ -168,15 +167,6 @@
                         </li>
                     <?php
                     }?>
-
-                  <!--  <li>
-                        <a href="<?php echo $this->baseUrl("settings/backoffice/manage/table/usuario"); ?>"><span>Usuarios</span></a>
-                    </li>
- -->
-                   
-
-
-
                 </ul>
 
             </div>
@@ -193,10 +183,7 @@
 
                 if ($profile) {
                     echo "Usuario: <strong>" . $profile->id_usuario . " (" . $profile->nombre . ")" .$profile->Tienda->nombre." Tipo:".$profile->UsuarioTipo->usuario_tipo. "</strong>";
-
-                    if ($profile->super_secure) {
-                        echo ' <a href="' . $this->baseUrl("supersecure") . '">ACCESO A FUNCIONES DE USUARIO SUPERSERCURE</a>';
-                    }
+   
                 }
                 ?>
             </p>
