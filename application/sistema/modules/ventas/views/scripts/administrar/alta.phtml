@@ -62,7 +62,7 @@
             var idusu=document.getElementById("id_usuariodesc").value;
             var pass=document.getElementById("passworddesc").value;
             var msj=$("#main-form").serialize()+"&id_usuario="+idusu+"&password="+pass;
-            if (parseFloat(idusu)==2 ) {
+            if (idusu==2 ) {
                 alert("Selecciona un cliente");
             }else{
 
@@ -148,7 +148,7 @@ $cadena=$_SESSION['CADENA'];
                 </td>
                 <td>
                  <input type="hidden" id="tipousu" value="<?php echo $this->tipousu; ?>">
-                <?php if($this->tipousu==2){?>
+                <?php if($this->tipousu==2 || $this->tipousu==5){?>
                     <div class="control-group" id="tiendaorigen" style="display: ">
                         <div class="controls">
                             <?php echo $this->formSelect("id_tienda",$this->id_tienda,
@@ -326,7 +326,7 @@ $cadena=$_SESSION['CADENA'];
                 <input type="text" class="" id="comentarios" name="comentarios"  placeholder=""/>
             </td>
         </tr>
-        <?php if($this->profile()->id_usuario_tipo==2){?>
+        <?php if($this->profile()->id_usuario_tipo==2 || $this->profile()->id_usuario_tipo==5){?>
             <tr>
                 <td>
                     <label>Fecha Venta</label>
@@ -363,7 +363,7 @@ $cadena=$_SESSION['CADENA'];
     <input style="width: 100%" type="button" id="send" class="button" value="Registrar ">
 </form>
 <script>
-    if(document.getElementById("tipousu").value=="2"){
+    if(document.getElementById("tipousu").value==2 || document.getElementById("tipousu").value==5 ){
         document.getElementById("tiendaorigen").style.display="Inherit";
     }
     $(".selectnvo").multiselect({
