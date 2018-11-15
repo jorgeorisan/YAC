@@ -52,7 +52,7 @@
                     $saldo=$s["saldo"];
                 }
                 echo number_format($obj->total-$saldo,2);
-                if($obj->total-$saldo==0){
+                if($obj->total-$saldo<=0){
                     $doc = Doctrine_Query::create()
                     ->update('Database_Model_Venta')
                     ->set('icredito', '?', 0)
