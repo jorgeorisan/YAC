@@ -25,73 +25,73 @@ class Ventas_ReportesController extends jfLib_Controller
 
     function indexAction()
     {
-    //$this->_onlyAdmin();
-    $form = new Ventas_Form_Reporte();
+        //$this->_onlyAdmin();
+        $form = new Ventas_Form_Reporte();
 
-    $from = date("Y-m-d");
-    $to   = date("Y-m-d");
+        $from = date("Y-m-d");
+        $to   = date("Y-m-d");
 
-    if ($this->_request->getParam("from")) $from = $this->_request->getParam("from");
+        if ($this->_request->getParam("from")) $from = $this->_request->getParam("from");
 
-    if ($this->_request->getParam("to"))   $to = $this->_request->getParam("to");
+        if ($this->_request->getParam("to"))   $to = $this->_request->getParam("to");
 
-    $this->view->to   = $to;
-    $this->view->from = $from;
-    $form->from->setValue($from);
-    $form->to->setValue($to);
+        $this->view->to   = $to;
+        $this->view->from = $from;
+        $form->from->setValue($from);
+        $form->to->setValue($to);
 
-    $form->populate($this->_request->getParams());
-  
-    $query = Doctrine_Query::create()
-        ->from("Database_Model_Venta")
-        ->where("DATE(fecha) >= '$from'")
-       // ->andWhere("folio>1")
-        ->andWhere("DATE(fecha) <= '$to'")
-        ->orderBy("fecha asc");
-    $querycomi = Doctrine_Query::create()
-        ->select("SUM(v.total) as total, v.id_usuario id_usuario")
-        ->from("Database_Model_Venta v")
-        ->where("DATE(v.fecha) >= '$from'")
-        //->andWhere("folio>1")
-        ->andWhere("DATE(v.fecha) <= '$to'")
-        ->groupBy("v.id_usuario");
-    //echo $querycomi->getSqlQuery();
-    if ($this->_request->getParam("credito")) {
-        $form->credito->setValue(1);
-        $this->view->credito=1;
-        $query->andWhere("tipo='Credito'");
-        $querycomi->andWhere("tipo='Credito'");
-    }
-   
-    if ($id_usuario = $this->_request->getParam("id_usuario")) {
-        $query->andWhere("id_usuario = ?", $id_usuario);
-        $querycomi->andWhere("id_usuario = ?", $id_usuario);
-        $this->view->id_usuario=$id_usuario;
-    }
-    $id_tienda = $this->_request->getParam("id_tienda");
-    if($this->_loggedUser->id_usuario_tipo == 2 || $this->_loggedUser->id_usuario_tipo == 5  ){
-        if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario_tipo == 5)) {
-            if( $id_tienda ){
-                $this->view->id_tienda = $id_tienda;
-                $query->andWhere("id_tienda = ?", $id_tienda);
-                $querycomi->andWhere("id_tienda = ?", $id_tienda);
-            }
-           
-        }else{
-            $this->view->id_tienda=$this->_loggedUser->id_tienda;
-            $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
-            $querycomi->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+        $form->populate($this->_request->getParams());
+    
+        $query = Doctrine_Query::create()
+            ->from("Database_Model_Venta")
+            ->where("DATE(fecha) >= '$from'")
+        // ->andWhere("folio>1")
+            ->andWhere("DATE(fecha) <= '$to'")
+            ->orderBy("fecha asc");
+        $querycomi = Doctrine_Query::create()
+            ->select("SUM(v.total) as total, v.id_usuario id_usuario")
+            ->from("Database_Model_Venta v")
+            ->where("DATE(v.fecha) >= '$from'")
+            //->andWhere("folio>1")
+            ->andWhere("DATE(v.fecha) <= '$to'")
+            ->groupBy("v.id_usuario");
+        //echo $querycomi->getSqlQuery();
+        if ($this->_request->getParam("credito")) {
+            $form->credito->setValue(1);
+            $this->view->credito=1;
+            $query->andWhere("tipo='Credito'");
+            $querycomi->andWhere("tipo='Credito'");
         }
-        
+    
+        if ($id_usuario = $this->_request->getParam("id_usuario")) {
+            $query->andWhere("id_usuario = ?", $id_usuario);
+            $querycomi->andWhere("id_usuario = ?", $id_usuario);
+            $this->view->id_usuario=$id_usuario;
+        }
+        $id_tienda = $this->_request->getParam("id_tienda");
+        if($this->_loggedUser->id_usuario_tipo == 2 || $this->_loggedUser->id_usuario_tipo == 5  ){
+            if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario_tipo == 5)) {
+                if( $id_tienda ){
+                    $this->view->id_tienda = $id_tienda;
+                    $query->andWhere("id_tienda = ?", $id_tienda);
+                    $querycomi->andWhere("id_tienda = ?", $id_tienda);
+                }
+            
+            }else{
+                $this->view->id_tienda=$this->_loggedUser->id_tienda;
+                $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+                $querycomi->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+            }
+            
+        }
+    
+
+        $this->view->usu=$this->_loggedUser->id_usuario;
+        $this->view->query = $query->execute();
+        $this->view->querycomisiones = $querycomi->execute();
+        $this->view->form = $form;
+
     }
-   
-
-    $this->view->usu=$this->_loggedUser->id_usuario;
-    $this->view->query = $query->execute();
-    $this->view->querycomisiones = $querycomi->execute();
-    $this->view->form = $form;
-
-}
     function creditosAction()
     {
         //$this->_onlyAdmin();
@@ -230,20 +230,12 @@ class Ventas_ReportesController extends jfLib_Controller
         $form->to->setValue($to);
 
         $form->populate($this->_request->getParams());
-       
-        if($this->_loggedUser->id_usuario_tipo!=2){
-            $query = Doctrine_Query::create()
-                ->from("Database_Model_Venta")
-                ->where("DATE(fecha) >= '$from'")
-                ->andWhere("DATE(fecha) <= '$to'")
-                ->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
-
-        }else{
-            $query = Doctrine_Query::create()
-                ->from("Database_Model_Venta")
-                ->where("DATE(fecha) >= '$from'")
-                ->andWhere("DATE(fecha) <= '$to'");
-        }
+     
+        $query = Doctrine_Query::create()
+            ->from("Database_Model_Venta")
+            ->where("DATE(fecha) >= '$from'")
+            ->andWhere("DATE(fecha) <= '$to'");
+        
         $queryabono = Doctrine_Query::create()
             ->select("sum(v.montoabono) as total")
             ->from("Database_Model_Deudores v")
@@ -259,8 +251,19 @@ class Ventas_ReportesController extends jfLib_Controller
             $queryabono->andWhere("v.id_usuario=?",$id_usuario);
             $this->view->id_usuario=$id_usuario;
         }
-        if ($id_tienda = $this->_request->getParam("id_tienda")) {
-            $query->andWhere("id_tienda = ?", $id_tienda);
+        $id_tienda = $this->_request->getParam("id_tienda");
+        if($this->_loggedUser->id_usuario_tipo == 2 || $this->_loggedUser->id_usuario_tipo == 5  ){
+            if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario_tipo == 5)) {
+                if( $id_tienda ){
+                    $this->view->id_tienda = $id_tienda;
+                    $query->andWhere("id_tienda = ?", $id_tienda);
+                }
+            
+            }else{
+                $this->view->id_tienda=$this->_loggedUser->id_tienda;
+                $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+            }
+            
         }
 
         $this->view->queryabono=$queryabono->fetchOne();

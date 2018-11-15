@@ -23,7 +23,7 @@
         <th>Precio Unit.</th>
         <th>Total</th>
 
-        <th>Proveedor</th>
+        <th>Tienda</th>
         <th>Fecha</th>
         <th>Tipo Precio</th>
         <th></th>
@@ -112,7 +112,7 @@
                     }
                     echo number_format($obj->total, 2); ?></td>
 
-                <td><?php echo $obj->ProductoTienda->Producto->Proveedor->nombre_corto; ?></td>
+                <td><?php echo $obj->Venta->Tienda->nombre; ?></td>
                 <td><?php echo $obj->Venta->fecha; ?></td>
                 <td><?php echo $obj->tipoprecio;
             if ($querycancelado){
