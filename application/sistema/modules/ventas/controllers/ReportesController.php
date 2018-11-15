@@ -46,7 +46,8 @@ class Ventas_ReportesController extends jfLib_Controller
         ->from("Database_Model_Venta")
         ->where("DATE(fecha) >= '$from'")
        // ->andWhere("folio>1")
-        ->andWhere("DATE(fecha) <= '$to'");
+        ->andWhere("DATE(fecha) <= '$to'")
+        ->orderBy("fecha asc");
     $querycomi = Doctrine_Query::create()
         ->select("SUM(v.total) as total, v.id_usuario id_usuario")
         ->from("Database_Model_Venta v")
@@ -61,23 +62,29 @@ class Ventas_ReportesController extends jfLib_Controller
         $query->andWhere("tipo='Credito'");
         $querycomi->andWhere("tipo='Credito'");
     }
-    if($this->_loggedUser->id_usuario_tipo!=2){
-        $this->view->id_tienda=$this->_loggedUser->id_tienda;
-        $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
-        $querycomi->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
-    }
-
-
+   
     if ($id_usuario = $this->_request->getParam("id_usuario")) {
         $query->andWhere("id_usuario = ?", $id_usuario);
         $querycomi->andWhere("id_usuario = ?", $id_usuario);
         $this->view->id_usuario=$id_usuario;
     }
-    if ($id_tienda = $this->_request->getParam("id_tienda")) {
-        $this->view->id_tienda = $id_tienda;
-        $query->andWhere("id_tienda = ?", $id_tienda);
-        $querycomi->andWhere("id_tienda = ?", $id_tienda);
+    $id_tienda = $this->_request->getParam("id_tienda");
+    if($this->_loggedUser->id_usuario_tipo == 2 || $this->_loggedUser->id_usuario_tipo == 5  ){
+        if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario_tipo == 5)) {
+            if( $id_tienda ){
+                $this->view->id_tienda = $id_tienda;
+                $query->andWhere("id_tienda = ?", $id_tienda);
+                $querycomi->andWhere("id_tienda = ?", $id_tienda);
+            }
+           
+        }else{
+            $this->view->id_tienda=$this->_loggedUser->id_tienda;
+            $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+            $querycomi->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+        }
+        
     }
+   
 
     $this->view->usu=$this->_loggedUser->id_usuario;
     $this->view->query = $query->execute();
