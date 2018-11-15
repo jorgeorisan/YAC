@@ -90,7 +90,7 @@
 
 
             ?> >
-                <td><?php echo $obj->Venta->folio; ?></td>
+                <td><a href="<?php echo $this->baseUrl("ventas/administrar/ver/id/" . $obj->id_venta); ?>"><?php echo $obj->Venta->folio; ?></a></td>
                 <td><?php echo $obj->cantidad; ?></td>
                 <td><?php echo $obj->ProductoTienda->Producto->codinter; ?></td>
                 <td><?php echo $obj->nombre; ?></td>
