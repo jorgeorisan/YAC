@@ -391,8 +391,13 @@
                 echo $totalgen ?>
             </td>
             <td style="color: green"><?php
-                $totalComision+=$tott*$obj->Usuario->comision;
-                echo $tott*$obj->Usuario->comision; ?></td>
+                
+                $totcomm=$tott*$obj->Usuario->comision;
+                if($obj->Usuario->id_usuario_tipo==4){
+                    $totcomm=$totalv*$obj->Usuario->comision;
+                }
+                $totalComision+=$totcomm;
+                echo $totcomm; ?></td>
         </tr>
     <?php endforeach;
     if($totalabonos<$abon){
