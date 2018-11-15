@@ -768,6 +768,7 @@ class Ventas_AdministrarController extends jfLib_Controller
             $obj3->id_venta=$this->_request->getParam("id");
             $obj3->observaciones=$this->_request->getParam("observaciones");
             $obj3->id_tienda_destino=$this->_request->getParam("id_tienda_destino");
+            $obj3->fecha_registro=$this->_request->getParam("fechadevolucion");
             $obj3->id_usuario=$this->_loggedUser->id_usuario;
             $obj3->total=$total;
 

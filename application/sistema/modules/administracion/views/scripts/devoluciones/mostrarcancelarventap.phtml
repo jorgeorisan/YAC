@@ -41,28 +41,38 @@
                 <th>Tienda Origen Venta</th>
                 <td> <label class="control-label"><?php echo $this->obj->Venta->Tienda->nombre; ?></label></td>
             </tr>
-            <tr>
-                <th>Tienda Destino Devolucion</th>
-                <td>
-                    <?php if($this->tipousu==2||$this->usu=="mariely"){
-                       ?>
+            <?php
+            if($this->usu=='anny'||$this->usu=='Elena'||$this->tipousu==5){
+            ?>
+                <tr>
+                    <th>Tienda Destino Devolucion</th>
+                    <td>
                         <div class="controls">
                             <?php echo $this->formSelect("id_tienda_destino",$this->obj->Venta->id_tienda,
                                 array("style"=>"width:460px","required" => "required"),
                                 Database_Model_Tienda::getAllT()
                             ); ?>
                         </div>
-<?php                    }else{
-                    ?>
-                 <label class="control-label"><?php echo $this->tiendausu; ?></label>
-                <input type="hidden" name="id_tienda_destino" id="id_tienda_destino" value="<?php echo $this->id_tiendausu; ?>">
-                </td>
-<?php
-                    }
-                    ?>
-
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <th>Fecha Devolucion</th>
+                    <td>
+                        <div class="controls">
+                            <input type="text" class="small-input" datepicker='past' name="fechadevolucion" id="fechadevolucion" value='<?php echo date('Y-m-d')?>'/>
+                        </div>
+                    </td>
+                </tr>
+            <?php  
+                }else{
+                ?>
+                    <input type="hidden" name="id_tienda_destino" id="id_tienda_destino" value="<?php echo $this->id_tiendausu; ?>">
+                    <input type="hidden" name="fechadevolucion" id="fechadevolucion" value="<?php echo date('Y-m-d')?>">
+            
+                <?php
+                }
+            ?>
 
             <tr>
                 <th>Observaciones</th>
