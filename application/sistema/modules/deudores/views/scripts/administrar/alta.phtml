@@ -87,7 +87,7 @@
                     $arr = array();
                     foreach (Doctrine_Query::create()
                                  ->from("Database_Model_Usuario")
-                                 ->where("id_usuario_tipo in(2,4)")
+                                 ->where("id_usuario_tipo in(2,4,5)")
                                  ->execute() as $obju) {
                         $arr[$obju->id_usuario] = $obju->id_usuario.$obju->id_usuario_tipo;
                     }
