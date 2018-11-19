@@ -47,10 +47,16 @@ if($this->obj->icredito==1){
         ->from("Database_Model_Deudores")
         ->where("id_venta =?",$this->obj->id_venta)
         ->andWhere("status = ?", "ACTIVA")
-        ->execute();
-        $saldo=0;
-        foreach($querysaldo as $s){
-            $saldo=$s["saldo"];
+        ->fetchOne();
+        $saldo = ($querysaldo->saldo)? $querysaldo->saldo : 0 ;
+        
+        echo number_format($obj->total-$saldo,2);
+        if($this->obj->total-$saldo>0){
+            $doc = Doctrine_Query::create()
+            ->update('Database_Model_Venta')
+            ->set('icredito', '?', 1)
+            ->where('id_venta = ?',$this->obj->id_venta)
+            ->execute();
         }
        
     ?>
