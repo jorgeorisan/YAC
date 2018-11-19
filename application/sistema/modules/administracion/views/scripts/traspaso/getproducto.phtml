@@ -57,7 +57,7 @@ if ($this->obj): ?>
     <td>
         <?php
 
-        if($this->tipousu==2){
+        if($this->tipousu==2 || $this->tipousu==5){
             echo "<input type='text' name='precio_descuento[]' readonly class='small-field' id='precio_descuento".$lineId."' style='width: 30' pattern='[0-9]+([\.|,][0-9]+)?>$' placeholder='$0.00'  value='".$precio."' >";
         }
         ?>
