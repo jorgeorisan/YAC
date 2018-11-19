@@ -3,7 +3,27 @@
 <a href="<?php echo $this->baseUrl("ventas/administrar/imprimir/id/" . $this->obj->id_venta); ?>" target="_blank">Imprimir
     ticket</a> 
 <?php
-if($this->obj->icredito==1){
+$icredito=$this->obj->icredito; 
+    if($this->obj->tipo=='Credito'){
+        $querysaldo = Doctrine_Query::create()
+        ->select("SUM(montoabono) AS saldo")
+        ->from("Database_Model_Deudores")
+        ->where("id_venta =?",$this->obj->id_venta)
+        ->andWhere("status = ?", "ACTIVA")
+        ->fetchOne();
+        $saldo = ($querysaldo->saldo)? $querysaldo->saldo : 0 ;
+        
+        if($this->obj->total-$saldo>0){
+            $doc = Doctrine_Query::create()
+            ->update('Database_Model_Venta')
+            ->set('icredito', '?', 1)
+            ->where('id_venta = ?',$this->obj->id_venta)
+            ->execute();
+            $icredito=1;
+        }
+        
+    }
+if($icredito==1){
 ?>
 
 <fieldset>
@@ -42,23 +62,7 @@ if($this->obj->icredito==1){
     </tr>
     <?php
     if($this->obj->tipo=='Credito'){
-        $querysaldo = Doctrine_Query::create()
-        ->select("SUM(montoabono) AS saldo")
-        ->from("Database_Model_Deudores")
-        ->where("id_venta =?",$this->obj->id_venta)
-        ->andWhere("status = ?", "ACTIVA")
-        ->fetchOne();
-        $saldo = ($querysaldo->saldo)? $querysaldo->saldo : 0 ;
-        
-        echo number_format($obj->total-$saldo,2);
-        if($this->obj->total-$saldo>0){
-            $doc = Doctrine_Query::create()
-            ->update('Database_Model_Venta')
-            ->set('icredito', '?', 1)
-            ->where('id_venta = ?',$this->obj->id_venta)
-            ->execute();
-        }
-       
+      
     ?>
     <tr>
         <th>Por Pagar</th>
