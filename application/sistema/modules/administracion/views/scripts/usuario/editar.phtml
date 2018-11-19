@@ -34,16 +34,11 @@
                     </div>
                     <label class="control-label">Password</label>
                     <div class="controls">
-                        <?php echo $this->formPassword("password",$this->data["password"],
-                            array("style"=>"width:460px","required" => "required")
+                        <?php echo $this->formText("password",$this->data["password"],
+                            array("style"=>"width:460px")
                         ); ?>
                     </div>
-                    <label class="control-label">Confirmar Password</label>
-                    <div class="controls">
-                        <?php echo $this->formPassword("confpassword", $this->data["password"],
-                            array("style"=>"width:460px","onblur"=>"valida()","required" => "required")
-                        ); ?>
-                    </div>
+                   
                 </div>
                 <div class="control-group">
                     <label class="control-label">Nombre</label>
@@ -77,17 +72,6 @@
     </div>
 </form>
 <script>
-    function valida(){
-        var pass = document.getElementById('password').value;
-        var conf = document.getElementById('confpassword').value;
-        //Verificar si la contraseña es de al menos 8 caracteres
-        if ((pass.length) < 6) {
-            alert('Las contraseña debe tener al menos 6 caracteres');
-        }
-        // Verifica si las contraseñas coinciden
-        if (pass != conf) {
-            alert('Las contraseñas no coinciden');
-        }
-    }
+  
 
 </script>
