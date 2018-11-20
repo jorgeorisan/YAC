@@ -85,10 +85,6 @@
             <td><?php echo $obj->comentarios; ?></td>
             <td><?php echo $obj->Usuario->nombre; ?></td>
             <td>
-
-                <a title="Validar Entrada" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/alta/id/" . $obj->id_entrada); ?>">
-                    <img src="<?php echo $this->baseUrl("css/img/check.png") ?>" border="0" width="25" height="25"/>
-                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?php if (!$obj->cancelado): ?>
                     <a title="Cancelar Entrada" tooltip="true" delete="true"
                        href="<?php echo $this->baseUrl("administracion/inventarios/cancelar/id/" . $obj->id_entrada); ?>">
