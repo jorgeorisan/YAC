@@ -37,7 +37,7 @@
                 <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a></td>
             <td><?php echo $obj->folio; ?></td>
             <td><?php echo $obj->Usuario->nombre; ?></td>
-            <td><?php echo $obj->Persona->nombre; ?></td>
+            <td><?php echo $obj->Persona->nombre." ".$obj->Persona->ap_paterno." ".$obj->Persona->ap_materno; ?></td>
             <td><?php echo $obj->fecha; ?></td>
             <td>Por Pagar<?php //echo $obj->tipo; ?></td>
             <td><?php
