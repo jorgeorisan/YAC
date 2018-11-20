@@ -10,6 +10,12 @@
 class Administracion_InventariosController extends jfLib_Controller
 {
 
+    function init()
+    {
+        parent::init();
+        $this->view->datauserlogged=$this->_loggedUser;
+
+    }
     function indexAction(){
         if ($this->_loggedUser->id_usuario_tipo) {
             $form = new Administracion_Form_Entrada();
