@@ -9,13 +9,13 @@
 
 class Ventas_ReportesController extends jfLib_Controller
 {
+   
     function init()
     {
         parent::init();
-
+        $this->view->datauserlogged=$this->_loggedUser;
 
     }
-
     function _onlyAdmin()
     {
         if ($this->_loggedUser->id_usuario_tipo != "2") {

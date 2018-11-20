@@ -9,6 +9,12 @@
 
 class Administracion_ValidainventarioController extends jfLib_Controller
 {
+    function init()
+    {
+        parent::init();
+        $this->view->datauserlogged=$this->_loggedUser;
+
+    }
     function _onlyAdmin()
     {
         if ($this->_loggedUser->id_usuario_tipo != "2" || $this->_loggedUser->id_usuario_tipo != "5") {

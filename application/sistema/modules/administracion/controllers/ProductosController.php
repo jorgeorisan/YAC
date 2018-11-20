@@ -18,8 +18,9 @@ class Administracion_ProductosController extends jfLib_Controller
         $this->view->TITLE = $this->TITLE;
         $this->view->TITLE2 = $this->TITLE2;
         $this->view->DB_MODEL_ID = $this->DB_MODEL_ID;
-
+        $this->view->datauserlogged=$this->_loggedUser;
     }
+   
     public function indexAction()
     {
         ///////////////////tipo de usuario y su tienda

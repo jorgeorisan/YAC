@@ -277,6 +277,7 @@ class Administracion_InventariosController extends jfLib_Controller
                     }
                 }//end foreach
             }
+            $this->_informSuccess(null, true, "administracion/inventarios/ver/id/" . $id);
         }
     }
     function getproductoAction(){

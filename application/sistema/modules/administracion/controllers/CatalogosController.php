@@ -10,6 +10,12 @@
 class Administracion_CatalogosController extends jfLib_Controller
 {
 
+    function init()
+    {
+        parent::init();
+        $this->view->datauserlogged=$this->_loggedUser;
+
+    }
 
     function indexAction()
     {

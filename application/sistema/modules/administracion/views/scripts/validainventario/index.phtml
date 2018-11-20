@@ -12,7 +12,7 @@
         <th>Tienda</th>
         <th>Cantidad Total</th>
         <?php
-            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            if($this->datauserlogged->id_usuario=='anny'|| $this->datauserlogged->id_usuario=='Elena'|| $this->datauserlogged->id_usuario_tipo==5){
             echo "<th>Costo Total</th>";
             }
         ?>
@@ -49,18 +49,19 @@
 
             <td><?php echo $obj->fecha; ?></td>
             <td><?php echo $obj->Tienda->nombre; ?></td>
-            <td><?php if (!$obj->cancelado) {
+            <td><?php
+             if (!$obj->cancelado) {
                     $total += $obj->gettotales()[0];
                 } echo number_format($obj->gettotales()[0], 0); ?>
             </td>
             <?php
                 if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){  
             ?>
-                        <td>$ 
-                            <?php $costot+=$obj->gettotales()[1]; 
-                                echo number_format($obj->gettotales()[1], 2);
-                            ?>
-                        </td>
+                    <td>$ 
+                        <?php $costot+=$obj->gettotales()[1]; 
+                            echo number_format($obj->gettotales()[1], 2);
+                        ?>
+                    </td>
                 <?php
                 }
                 ?>

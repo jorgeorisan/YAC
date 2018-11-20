@@ -10,6 +10,12 @@
 class Deudores_AdministrarController extends jfLib_Controller
 {
 
+    function init()
+    {
+        parent::init();
+        $this->view->datauserlogged=$this->_loggedUser;
+
+    }
     function indexAction()
     {
        // $this->_redirect("ventas/reportes");
