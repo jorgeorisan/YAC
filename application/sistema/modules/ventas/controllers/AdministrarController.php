@@ -47,7 +47,7 @@ class Ventas_AdministrarController extends jfLib_Controller
             $obj->total = $this->_request->getPost("total-global");
             $obj->id_usuario = $this->_loggedUser->id_usuario;
             $obj->fecha =date('Y-m-d H:i:s');
-            if($this->_loggedUser->id_usuario_tipo==2){
+            if($this->_loggedUser->id_usuario_tipo==2 || $this->_loggedUser->id_usuario_tipo==5){
                 $obj->id_usuario = $this->_request->getPost("id_usuario");
                 $obj->fecha = $this->_request->getPost("fecha")." ".date('H:i:s');
             }
