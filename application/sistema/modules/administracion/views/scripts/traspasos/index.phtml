@@ -18,7 +18,7 @@
         <th>Categoría</th>
         <th>Proveedor</th>
         <?php
-        if($this->tipousu=="2"){
+        if($this->tipousu=="2"  || $this->tipousu=="5"){
             ?>
             <th>Costo</th>
         <?php
@@ -42,7 +42,7 @@
             <td><?php echo $obj->Categoria->categoria; ?></td>
             <td><?php echo $obj->Proveedor->nombre_corto; ?></td>
             <?php
-            if($this->tipousu=="2"){
+            if($this->tipousu=="2"  || $this->tipousu=="5"){
                 ?>
                 <td>$<?php echo number_format($obj->costo, 2); ?></td>
             <?php

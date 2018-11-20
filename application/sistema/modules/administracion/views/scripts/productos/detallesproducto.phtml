@@ -11,7 +11,7 @@
         <th>Proveedor</th>
         <th>Cantidad</th>
         <?php
-        if($this->tipousu=="2"){
+        if($this->tipousu=="2" || $this->tipousu=="5" ){
             ?>
             <th>Costo</th>
         <?php
@@ -39,7 +39,7 @@
             <td><?php echo $obj->Producto->Proveedor->nombre_corto; ?></td>
             <td><?php echo $obj->existencias; ?></td>
             <?php
-            if($this->tipousu=="2"){
+            if($this->tipousu=="2" || $this->tipousu=="2"){
                 ?>
                 <td>$<?php echo number_format($obj->Producto->costo, 2); ?></td>
             <?php

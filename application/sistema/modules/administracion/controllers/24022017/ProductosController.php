@@ -203,7 +203,7 @@ class Administracion_ProductosController extends jfLib_Controller
     }
     function borrarentradaprodAction()
     {
-        if ($this->_loggedUser->id_usuario_tipo != "2") {
+        if ($this->_loggedUser->id_usuario_tipo != "2" || $this->_loggedUser->id_usuario_tipo != "5") {
             $this->_informError(null, "Usted no tiene permisos para ingresar.", TRUE, "/");
         }else{
             $obj = Database_Model_EntradaProducto::getById($this->_request->getParam("id"));
@@ -428,7 +428,7 @@ class Administracion_ProductosController extends jfLib_Controller
 
     function borrarAction()
     {
-        if ($this->_loggedUser->id_usuario_tipo != "2") {
+        if ($this->_loggedUser->id_usuario_tipo != "2" || $this->_loggedUser->id_usuario_tipo != "5") {
             $this->_informError(null, "Usted no tiene permisos para ingresar.", TRUE, "/");
         }else{
             $obj = Database_Model_Producto::getById($this->_request->getParam("id"));

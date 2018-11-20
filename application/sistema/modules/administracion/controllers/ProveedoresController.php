@@ -97,7 +97,7 @@ class Administracion_ProveedoresController extends jfLib_Controller
 
     function borrarAction()
     {
-        if ($this->_loggedUser->id_usuario_tipo != "2") {
+        if ($this->_loggedUser->id_usuario_tipo != "2" || $this->_loggedUser->id_usuario_tipo != "5") {
             $this->_informError(null, "Usted no tiene permisos para ingresar.", TRUE, "/");
         }else{
             $obj = Database_Model_Proveedor::getById($this->_request->getParam("id"));

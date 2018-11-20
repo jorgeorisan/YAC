@@ -76,7 +76,7 @@
             <td><?php echo $obj->Proveedor->nombre_corto; ?></td>
             <?php
             ////////////////////existencias
-            if($this->tipousu=="2" ){//administrador
+            if($this->tipousu=="2"  || $this->tipousu=="5"){//administrador
                 $query = Doctrine_Query::create()
                     ->select("ifnull(sum(existencias),0) totexistencias")
                     ->from("Database_Model_ProductoTienda")
@@ -119,7 +119,7 @@
             }
             ?>
             <?php
-            if($this->tipousu=="2"){
+            if($this->tipousu=="2"  || $this->tipousu=="5"){
                 $ejecosto= Doctrine_Query::create()
                     ->from("Database_Model_EntradaProducto a, a.Entrada b")
                     ->where("a.id_producto=?",$obj->id_producto)

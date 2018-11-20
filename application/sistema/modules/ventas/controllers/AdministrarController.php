@@ -336,7 +336,7 @@ class Ventas_AdministrarController extends jfLib_Controller
             $tipoprecio=$this->_request->getParam("tipoprecio");
             foreach($querytipo as $tipo){
                 $tipousu=$tipo["id_usuario_tipo"];
-                if($tipousu=="2" ){
+                if($tipousu=="2" || $tipousu=="5" ){
                     if($this->_request->getParam("id_tienda")!=""){
                         $tienda= $this->_request->getParam("id_tienda");
 

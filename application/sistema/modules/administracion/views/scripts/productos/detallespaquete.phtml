@@ -13,7 +13,7 @@ echo $objpqt->nombre."  ".$objpqt->comentarios;
         <th>Proveedor</th>
         <th>Cantidad</th>
         <?php
-        if($this->tipousu=="2"){
+        if($this->tipousu=="5" ){
             ?>
             <th>Costo</th>
         <?php
@@ -42,7 +42,7 @@ echo $objpqt->nombre."  ".$objpqt->comentarios;
             <td><?php echo $obj2->Proveedor->nombre_corto; ?></td>
             <td><?php echo $obj->cantidad; ?></td>
             <?php
-            if($this->tipousu=="2"){
+            if($this->tipousu=="2" || $this->tipousu=="5"){
                 ?>
                 <td>$<?php echo number_format($obj->Producto->costo, 2); ?></td>
             <?php

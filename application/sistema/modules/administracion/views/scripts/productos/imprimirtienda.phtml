@@ -47,7 +47,7 @@
         <th>Categoría</th>
         <th>Proveedor</th>
         <?php
-        if($this->tipousu=="2"){
+        if($this->tipousu=="2"  || $this->tipousu=="5"){
             ?>
             <th>Costo</th>
         <?php
@@ -113,7 +113,7 @@
 
             ?>
             <?php
-            if($this->tipousu=="2"){
+            if($this->tipousu=="2"  || $this->tipousu=="5"){
 
                 $ejecosto= Doctrine_Query::create()
                     ->from("Database_Model_EntradaProducto a, a.Entrada b")

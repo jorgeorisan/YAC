@@ -12,7 +12,7 @@ class Administracion_PaqueteController extends jfLib_Controller
 
     function _onlyAdmin()
     {
-        if ($this->_loggedUser->id_usuario_tipo != "2" && $this->_loggedUser->id_usuario != "mariely") {
+        if ($this->_loggedUser->id_usuario_tipo != "2" || $this->_loggedUser->id_usuario_tipo != "5") {
             $this->_informError(null, "Usted no tiene permisos para ingresar.", TRUE, "/");
         }
     }
