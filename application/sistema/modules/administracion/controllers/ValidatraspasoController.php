@@ -15,16 +15,9 @@ class Administracion_ValidatraspasoController extends jfLib_Controller
         $this->view->datauserlogged=$this->_loggedUser;
 
     }
-    function _onlyAdmin()
-    {
-        if ($this->_loggedUser->id_usuario_tipo != "2" || $this->_loggedUser->id_usuario_tipo != "5") {
-            $this->_informError(null, "Usted no tiene permisos para ingresar.", TRUE, "/");
-        }
-    }
-
+   
     function indexAction()
     {
-        $this->_onlyAdmin();
         $form = new jfLib_Form_Search();
         $form->populate($this->_request->getParams());
 

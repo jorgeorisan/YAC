@@ -15,96 +15,108 @@
     <?php echo $this->form; ?>
 
     <h3 class="tit">Reporte generado</h3>
-    <table width="100%">
-        <tr>
-            <th >Ver</th>
-            <th>FOLIO</th>
-            <th>Referencia</th>
-            <th>Fecha</th>
-            <th>Origen</th>
-            <th>Destino</th>
-            <th>Concepto</th>
-            <th>Cantidad Total</th>
-            <?php
-                if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
-                echo "<th>Costo Total</th>";
-                }
-            ?>
-            <th>Status</th>
-            <th>Usuario</th>
-            <th>Comentarios</th>
-            <th ></th>
-        </tr>
+    <table style="width: 100%"  >
+    <tr>
+        <th>Ver</th>
+        <th>ID</th>
+        <th>Referencia</th>
+        <th>Fecha</th>
+        <th>Origen</th>
+        <th>Destino</th>
+        <th>Cantidad Total</th>
         <?php
-        $total = 0;
-        $costo = 0;
-        $totalComision = 0;
-        foreach ($this->query as $obj): ?>
-            <tr <?php echo ";"; if ($obj->cancelado) {
-                echo "class='cancelada'";
-            }?>
-                >
+            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            echo "<th>Costo Total</th>";
+            }
+        ?>
+        <th>Precio Total</th>
+        <th>Comentarios</th>
+        <th>Usuario</th>
 
-                <td><a href="<?php echo $this->baseUrl("administracion/traspaso/ver/id/" . $obj->id_traspaso); ?>">
-                        <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a></td>
-                <td><?php echo $obj->id_traspaso; ?></td>
-                <td><?php echo $obj->referencia; ?></td>
-                <td><?php echo date('Y-m-d',strtotime($obj->fecha)); ?></td>
+        <th  ></th>
+    </tr>
+    <?php
+    $total = 0;
 
-                <td><?php
-                    $objt = Doctrine_Core::getTable("Database_Model_Tienda")->findOneBy("id_tienda", $obj->id_tiendaanterior);
-                    echo strtoupper($objt->nombre); ?></td>
+    $costot = 0;
 
+    $costoieps=0;
+    $costoiva=0;
+    $costoivat=0;
+    $totalComision = 0;
 
-                <td><?php echo strtoupper($obj->Tienda->nombre); ?></td>
-                <td><?php echo $obj->concepto; ?></td>
+    $preciop=0;
+    $preciopt=0;
+    $preciot=0;
+    foreach ($this->query as $obj): ?>
+        <tr <?php
+        if ($obj->cancelado) {
+            echo "class='cancelada'";
+        }?>
+            >
 
-                <td><?php if (!$obj->cancelado) {
-                        $total += $obj->total;
-                    } echo number_format($obj->total, 0); ?></td>
-                <?php
-                 if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
-                ?>
-                    <td>$
-                        <?php if (!$obj->cancelado) {
-                            $costo += $obj->costo_total;
-                        } 
-                        echo number_format($obj->costo_total, 2); ?>
-                    </td>
+            <td><a href="<?php echo $this->baseUrl("administracion/traspaso/ver/id/" . $obj->id_traspaso); ?>">
+                    <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a></td>
+            <td><?php echo $obj->id_traspaso; ?></td>
+            <td><?php echo $obj->referencia; ?></td>
+
+            <td><?php echo $obj->fecha; ?></td>
+            <td><?php
+                $objtie = Doctrine_Core::getTable("Database_Model_Tienda")->findOneBy("id_tienda", $obj->id_tiendaanterior);
+                echo $objtie->nombre; ?></td>
+            <td><?php echo $obj->Tienda->nombre; ?></td>
+            <td><?php if (!$obj->cancelado) {
+                    $total += $obj->gettotales()[0];
+                } echo number_format($obj->gettotales()[0], 0); ?>
+            </td>
+            <?php
+                if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){  
+            ?>
+                        <td>$ 
+                            <?php $costot+=$obj->gettotales()[1]; 
+                                echo number_format($obj->gettotales()[1], 2);
+                            ?>
+                        </td>
                 <?php
                 }
                 ?>
-                <td><?php echo $obj->status; ?></td>
-                <td><?php echo $obj->Usuario->nombre; ?></td>
-                <td><?php echo $obj->comentarios; ?></td>
-                <td>
-                    <?php if (!$obj->cancelado): ?>
-                        <a title="Cancelar Traspaso" tooltip="true" delete="true"
-                           href="<?php echo $this->baseUrl("administracion/traspaso/cancelar/id/" . $obj->id_traspaso); ?>">
-                            <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a>
-                    <?php endif; ?>
-                </td>
-
-            </tr>
-        <?php endforeach; ?>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
             
-            <td><strong>Totales</strong></td>
-            <td><?php echo number_format($total, 0); ?></td>
-            <?php
-            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
-                echo "<td>$".number_format($costo, 2)."</td>";
-            }
-            ?>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>$<?php $preciopt+=$obj->gettotales()[2];  echo number_format($obj->gettotales()[2], 2); ?>
+            </td>
+           
+
+            <td><?php echo $obj->comentarios; ?></td>
+            <td><?php echo $obj->Usuario->nombre; ?></td>
+            <td>
+
+                <a title="Validar Traspaso" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/alta/id/" . $obj->id_traspaso); ?>">
+                    <img src="<?php echo $this->baseUrl("css/img/check.png") ?>" border="0" width="25" height="25"/>
+                </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <?php if (!$obj->cancelado): ?>
+                    <a title="Cancelar Traspaso" tooltip="true" delete="true"
+                       href="<?php echo $this->baseUrl("administracion/traspaso/cancelar/id/" . $obj->id_traspaso); ?>">
+                        <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a>
+                <?php endif; ?>
+            </td>
         </tr>
-    </table>
+    <?php endforeach; ?>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><strong>Totales</strong></td>
+        <td> <?php echo number_format($total, 0); ?></td>
+        <?php
+        if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            echo "<td>$".number_format($costot, 2)."</td>";
+        }
+        ?>
+        <td>$<?php echo number_format($preciopt, 2); ?></td>
+
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
