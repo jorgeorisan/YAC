@@ -23,7 +23,7 @@ class Administracion_SalidaController extends jfLib_Controller
         }
     }
     function indexAction(){
-        //$this->_onlyAdmin();
+        //
         $form = new Administracion_Form_Salida();
 
         $from = date("Y-m-d");
@@ -60,7 +60,7 @@ class Administracion_SalidaController extends jfLib_Controller
 
 
     function altaAction(){
-        $this->_onlyAdmin();
+        
         if($this->_request->getParam("id")){
             $obj = Doctrine_Core::getTable("Database_Model_Producto")->findOneBy("id_producto", $this->_request->getParam("id"));
             $this->view->codint=$obj->codinter;

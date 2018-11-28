@@ -18,14 +18,14 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function _onlyAdmin()
     {
-        if ($this->_loggedUser->id_usuario_tipo != "2") {
+        if ($this->_loggedUser->id_usuario_tipo != "2" || $this->_loggedUser->id_usuario_tipo != "5") {
             $this->_informError(null, "Usted no tiene permisos para ingresar.", TRUE, "/");
         }
     }
 
     function indexAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -94,7 +94,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function creditosAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -156,7 +156,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function abonosAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -212,7 +212,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function detallesAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -274,7 +274,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function detallescontaAction()
     {
-        $this->_onlyAdmin();
+        
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -336,7 +336,7 @@ class Ventas_ReportesController extends jfLib_Controller
 
     function comisionesAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -493,7 +493,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function comisionesreporteAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -531,7 +531,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function devolucionesAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -584,7 +584,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function devolucionesproductoAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -637,7 +637,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function alertaminimainventarioAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -721,7 +721,7 @@ class Ventas_ReportesController extends jfLib_Controller
 
     }
     function corteventaAction(){
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -829,7 +829,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
 
     function detallecorteventaAction(){
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Reporte();
 
         $from = date("Y-m-d");
@@ -901,7 +901,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
 
     function imprimircorteventaAction(){
-        //$this->_onlyAdmin();
+        //
         $this->_disableLayout();
         $from = date("Y-m-d");
         $to = date("Y-m-d");
@@ -1051,7 +1051,7 @@ class Ventas_ReportesController extends jfLib_Controller
 
     }
     function imprimirdetallecorteventaAction(){
-        //$this->_onlyAdmin();
+        //
         $this->_disableLayout();
         $from = date("Y-m-d");
         $to = date("Y-m-d");
@@ -1120,7 +1120,7 @@ class Ventas_ReportesController extends jfLib_Controller
     {
 
         $this->_disableLayout();
-        //$this->_onlyAdmin();
+        //
 
 
         $from = date("Y-m-d");
@@ -1169,7 +1169,7 @@ class Ventas_ReportesController extends jfLib_Controller
 
     function porproveedorAction()
     {
-        $this->_onlyAdmin();
+        
         $form = new Ventas_Form_PorProveedor();
 
         $from = date("Y-m-d");
@@ -1263,7 +1263,6 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function porproductoAction()
     {
-        $this->_onlyAdmin();
         $form = new Ventas_Form_PorProducto();
 
         $from = date("Y-m-d");
@@ -1311,7 +1310,6 @@ class Ventas_ReportesController extends jfLib_Controller
 
     function pormarcaAction()
     {
-        $this->_onlyAdmin();
         $form = new Ventas_Form_PorMarca();
 
         $from = date("Y-m-d");
@@ -1352,7 +1350,7 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function descuentosAction()
     {
-        //$this->_onlyAdmin();
+        //
         $form = new Ventas_Form_Descuento();
 
         $from = date("Y-m-d");
@@ -1434,7 +1432,6 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function validacionentradasAction()
     {
-        $this->_onlyAdmin();
         $form = new Administracion_Form_Entrada();
 
         $from = date("Y-m-d");
@@ -1471,7 +1468,6 @@ class Ventas_ReportesController extends jfLib_Controller
     }
     function validaciontraspasoAction()
     {
-        $this->_onlyAdmin();
         $form = new Administracion_Form_Entrada();
 
         $from = date("Y-m-d");
