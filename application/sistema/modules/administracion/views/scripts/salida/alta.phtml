@@ -84,6 +84,9 @@ function calcTotal2(){
 }
 
 </script>
+<?php
+    $cadena=$_SESSION['CADENA'];
+?>
 <h1>Salidas</h1>
 <h3 class="tit">Nueva Salida de Almacen</h3>
 
@@ -174,7 +177,7 @@ function calcTotal2(){
         <tr>
             <td><label>Fecha Salida</label></td>
             <td>
-                <input type="text" class="small-input" datepicker="past" id="fecha"  name="fecha" placeholder="Fecha Salida"/>
+                <input type="text" class="small-input" datepicker="past" id="fecha" value='<?php echo date('Y-m-d')?>' name="fecha" placeholder="Fecha Salida"/>
             </td>
 
         </tr>
@@ -184,10 +187,13 @@ function calcTotal2(){
     <input style="width: 100%" type="button" id="send" class="button" value="Registrar Salida">
 </form>
 <script>
-
+    $( "#barcode" ).autocomplete({
+        source: [ <?php echo $cadena ?>],
+        select: function(res) {
+   
+        }
+    });
 </script>
-
-
 
 
 

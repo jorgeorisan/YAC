@@ -147,9 +147,11 @@ class Administracion_SalidaController extends jfLib_Controller
                         }
                     }    
                     $iObj->save();
-                    $this->_informSuccess();
+                    
                 }
+
             }//end foreach
+            $this->_informSuccess();
         }
     }
     function getproductoAction(){
