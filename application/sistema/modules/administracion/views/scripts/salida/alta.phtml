@@ -14,7 +14,11 @@
 
         $("#barcode-form").submit(function (e) {
             e.preventDefault();
-            var id_tienda=document.getElementById("id_tiendaanterior").value;
+            var res =  $('#barcode').val().split("::");
+            if(res.length>0){
+                $('#barcode').val(res[0].trim());
+            }
+            var id_tienda=document.getElementById("id_tienda").value;
             var barcode=document.getElementById("barcode").value;
             var msj=$(this).serialize()+"&id_tienda="+id_tienda+"&barcode="+barcode;
             //alert(msj);
@@ -139,7 +143,24 @@ function calcTotal2(){
     <hr/>
     <div class="control-group" id="" style="display: ">
         <div class="control-group" id="tiendaorigen" style="display: ">
-            <label class="control-label">Destino </label>
+            <label class="control-label">ORIGEN </label>
+            <div class="controls">
+                <?php
+
+                    echo $this->formSelect("id_tienda",$this->idtienda,
+                        array("style"=>"width:460px","required" => "required"),
+                        Database_Model_Tienda::getAll()
+                    );
+
+                ?>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="control-group" id="" style="display: ">
+        <div class="control-group" id="tiendaorigen" style="display: ">
+            <label class="control-label">DESTINO </label>
             <div class="controls">
                 <?php
 

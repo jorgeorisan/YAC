@@ -76,10 +76,10 @@ class Administracion_SalidaController extends jfLib_Controller
             $obj->id_usuario = $this->_loggedUser->id_usuario;
             $obj->id_tienda = $this->_request->getPost("id_tiendaanterior");
 
-                $obj->id_tiendaanterior = $this->_loggedUser->id_tienda;
+            $obj->id_tiendaanterior = $this->_request->getPost("id_tienda");
             $obj->status="POR AUTORIZAR";
             $obj->concepto="SALIDA DE ALMACEN";
-//recibimos los arrays
+            //recibimos los arrays
             $cantidades = $this->_request->getPost("cantidad");
             $productos = $this->_request->getPost("id_producto");
             $totales = $this->_request->getPost("total");
@@ -160,7 +160,7 @@ class Administracion_SalidaController extends jfLib_Controller
         $id = $this->_request->getParam("barcode");
 
 
-        $idtienda = $this->_loggedUser->id_tienda;
+        $idtienda = $this->_request->getParam("id_tienda");
 
 
         if($id!=""){
