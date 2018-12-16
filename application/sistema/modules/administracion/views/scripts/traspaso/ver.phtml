@@ -83,6 +83,13 @@
                 echo "<td>$".number_format($obj->totalcosto, 2)."</td>";
             }
             ?>
+            <td>
+                <?php if (!$obj->cancelado): ?>
+                    <a title="Cancelar Traspaso" tooltip="true" delete="true"
+                       href="<?php echo $this->baseUrl("administracion/traspaso/cancelarproducto/id/" . $obj->id_traspaso_producto); ?>">
+                        <img src="<?php echo $this->baseUrl("css/img/delete.png"); ?>" border="0"/> </a>
+                <?php endif; ?>
+            </td>
 
         </tr>
     <?php endforeach; ?>

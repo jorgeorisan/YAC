@@ -70,7 +70,7 @@ class Administracion_TraspasoController extends jfLib_Controller
 
             $obj->status="POR AUTORIZAR";
             $obj->concepto="TRASPASO A ALMACEN";
-//recibimos los arrays
+            //recibimos los arrays
             $cantidades = $this->_request->getPost("cantidad");
             $productos = $this->_request->getPost("id_producto");
             $totales = $this->_request->getPost("total");
@@ -388,5 +388,50 @@ class Administracion_TraspasoController extends jfLib_Controller
         }
 
     }
+    function cancelarproductoAction()
+    {
+        $this->_disableView();
+        $id = $this->_request->getParam("id");
 
+        if (!$id) {
+            $this->_informError();
+        }
+
+        $obj = Database_Model_TraspasoProducto::getById($id);
+
+        if (!$obj) {
+            $this->_informError();
+        }
+        $obj->cancelado = 1;
+
+        if($obj->Traspaso->status=="ACTIVO"){
+            if ($obj->status=="ACTIVO") {
+                if ($obj->Producto) {
+                    $ejeexiste= Doctrine_Query::create()
+                        ->from("Database_Model_ProductoTienda")
+                        ->where("id_producto=?",$obj->id_producto)
+                        ->andWhere("tienda_id_tienda=?",$obj->Traspaso->id_tienda);
+                    //  echo $ejeexiste->getSqlQuery();//imprime la consulta qu ese esta generando
+                    foreach($ejeexiste->execute() as $ex){
+                        $identr=$ex["id_productotienda"];//si tiene id si existe esta relacion entre el producto y la tienda
+                    }
+                    $objpt = Database_Model_ProductoTienda::getById($identr);
+                    $objpt->existencias-= $obj->cantidad;
+                }
+                try {
+                    $objpt->save();
+                } catch (Exception $e) {
+                    $this->_informError($e, null, true, "ventas/administrar");
+                }
+            }
+        }
+        try {
+            $obj->status = "BAJA";
+            $obj->save();
+            $this->_informSuccess();
+        } catch (Exception $e) {
+            $this->_informError();
+        }
+
+    }
 }

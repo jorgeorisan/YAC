@@ -82,8 +82,12 @@ class Administracion_ValidainventarioController extends jfLib_Controller
         }
 
         if($obj->status=="POR AUTORIZAR"){
+            $productosquery= Doctrine_Query::create()
+            ->from("Database_Model_EntradaProducto")
+            ->where("id_entrada=?",$obj->id_entrada)
+            ->andWhere("status='ACTIVO'");
 
-            foreach ($obj->EntradaProducto as $prodVenta) {
+            foreach ($productosquery->execute() as $prodVenta) {
                 if ($prodVenta->Producto) {
                     $ejeexiste= Doctrine_Query::create()
                         ->from("Database_Model_ProductoTienda")

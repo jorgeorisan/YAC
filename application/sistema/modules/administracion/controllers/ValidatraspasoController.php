@@ -76,7 +76,12 @@ class Administracion_ValidatraspasoController extends jfLib_Controller
 
         if($obj->status=="POR AUTORIZAR"){
             $obj->status = "ACTIVO";
-            foreach ($obj->TraspasoProducto as $prodVenta) {
+            $productosquery= Doctrine_Query::create()
+            ->from("Database_Model_TraspasoProducto")
+            ->where("id_traspaso=?",$obj->id_traspaso)
+            ->andWhere("status='ACTIVO'");
+
+            foreach ($productosquery->execute() as $prodVenta) {
                 if ($prodVenta->Producto) {
                     $ejeexiste= Doctrine_Query::create()
                         ->from("Database_Model_ProductoTienda")
