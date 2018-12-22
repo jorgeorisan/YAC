@@ -19,23 +19,45 @@
                 event.preventDefault();
             }
         });
-      
-        $("#barcode-form").submit(function (e) {
+        addproducto = function(form){
+            $.get(_root + "/ventas/administrar/addproducto", form,
+            function (response) {
+                if(response==1){
+                    getproducto(form);
+                }else{
+                    alert('Ocurrio un error en el proceso');
+                } 
+            });
+            return false;
+        }
 
-            e.preventDefault();
-              var res =  $('#barcode').val().split("::");
-             if(res.length>0){
-                $('#barcode').val(res[0].trim());
-             }
-            $.get(_root + "/ventas/administrar/getproducto", $(this).serialize(),
+        getproducto = function(form){
+            $.get(_root + "/ventas/administrar/getproducto", form,
                 function (response) {
-                    $("table#productos").append(response);
-                    calcTotal();
+                    console.log(response);
+                    if(response.trim()=='SIN EXISTENCIA'){
+                        if (confirm("No hay existencia de este producto, deseas agregarlo al inventario?") == true) {
+                            addproducto(form);
+                        }
+                    }else{
+                        $("table#productos").append(response);
+                        calcTotal();
+                    }
+                    
                 });
-
-
             $("#cantidad").val(1);
             $("#barcode").val("").focus();
+            return false;
+        }
+        
+        
+        $("#barcode-form").submit(function (e) {
+            e.preventDefault();
+            var res =  $('#barcode').val().split("::");
+            if(res.length>0){
+               $('#barcode').val(res[0].trim());
+            }
+            getproducto($(this).serialize());
             return false;
         });
 

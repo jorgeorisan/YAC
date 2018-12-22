@@ -51,6 +51,7 @@
                 echo "<th>Costo</th><th>Costo Total</th>";
             }
         ?>
+        <th></th>
         
         
 
@@ -98,11 +99,17 @@
         <td></td>
         <td></td>
         <td><strong>Totales</strong></td>
-        <td>$<?php  echo number_format($precio, 2); ?></td>
+        <td></td>
+        <?php
+        if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            echo "<td></td>";
+        }
+        ?>
         <?php
         if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
             echo "<td>$".number_format($costo, 2)."</td>";
         }
         ?>
+        <td></td>
     </tr>
 </table>

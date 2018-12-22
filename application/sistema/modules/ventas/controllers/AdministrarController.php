@@ -319,6 +319,97 @@ class Ventas_AdministrarController extends jfLib_Controller
         }
         $this->view->obj = $obj;
     }
+    function addproductoAction()
+    {
+        if($this->_loggedUser->id_usuario){
+
+
+            $this->_disableAllLayouts();
+
+            $id = trim($this->_request->getParam("id_producto"));
+            if(!$id){
+                return false;
+            }
+            $tipoprecio = $this->_request->getParam("tipoprecio");
+            $cantidad   = $this->_request->getParam("cantidad");
+            $obj = Database_Model_Producto::getByCodbar($id);         
+            
+            $tipousu=$this->_loggedUser->id_usuario_tipo;
+            if($tipousu=="2" || $tipousu=="5" ){
+                if($this->_request->getParam("id_tienda")!=""){
+                    $tienda= $this->_request->getParam("id_tienda");
+
+                }else{
+                    echo "<script>alert('No se ha seleccionado Ninguna Tienda');   </script>";
+                    $error=1;
+                }
+            }else{
+                $tienda=$tipo["id_tienda"];
+            }
+            $existe=0;
+            $idpt=0;
+            $qryexisteentienda = Doctrine_Query::create()
+                ->from("Database_Model_ProductoTienda")
+                ->where("id_producto=?",$obj->id_producto)
+                ->andwhere("tienda_id_tienda=?",$tienda)
+                ->execute();
+            foreach($qryexisteentienda as $existe){
+                $idpt=$existe["id_productotienda"];
+                $existe=1;
+            }
+            $objpt = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $idpt);
+
+            if (!$objpt) {
+                $this->_informError();
+            }
+            $objpt->existencias = $cantidad;
+            $objpt->save();
+
+            $preciodesc = 0;
+            $precio     = 0;
+            $costo      = 0;
+            $ejeprecio= Doctrine_Query::create()
+                ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                ->where("a.id_producto=?",$obj->id_producto)
+                ->andWhere("b.status='ACTIVO'")
+                ->orderBy("id_entrada_producto DESC")
+                ->limit(1);
+            
+            foreach($ejeprecio->execute() as $ex){
+                $precio    = $ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $costo     = $ex["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $preciodesc= $ex["precio_descuento"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+            }
+
+            $obje = new Database_Model_Entrada();
+            $obje->id_usuario     = $this->_loggedUser->id_usuario;
+            $obje->id_tienda      = $tienda;
+            $obje->fecha          = date('Y-m-d H:i:s');
+            $obje->status         = "ACTIVO";
+            $obje->concepto       = "ENTRADA DIRECTA EN VENTA";
+            $obje->referencia       = "ENTRADA DIRECTA EN VENTA";
+            $obje->save();
+            $id = $obje->getIncremented();
+
+            $iObj = new Database_Model_EntradaProducto();
+            $iObj->cantidad         = $cantidad;
+            $iObj->precio           = $precio;
+            $iObj->precio_descuento = $preciodesc;
+            $iObj->costo            = $costo;
+            
+            $iObj->totalcosto       = $cantidad*$costo;
+            $iObj->id_entrada       = $id;
+            $iObj->nombre           = $obj->nombre;
+            $iObj->id_producto      = $obj->id_producto;
+            $iObj->id_tienda        = $tienda;
+            $iObj->save();
+            echo 1;
+              
+        }else{
+            echo "<script>alert('su tiempo de sesion ha expirado favor de actualizar su pagina');   </script>";
+        }
+
+    }
 
     function getproductoAction()
     {
@@ -366,10 +457,10 @@ class Ventas_AdministrarController extends jfLib_Controller
                     $idpt=$existe["id_productotienda"];
                     $existe=1;
                 }
-                ?><script>  </script>
+                ?>
             <?php
             }
-            if($obj->manual){//recargas y excedentes
+            if($obj->manual){ //recargas y excedentes
                 $existe=1;
             }
 
@@ -421,7 +512,6 @@ class Ventas_AdministrarController extends jfLib_Controller
                         $this->view->obj = $obj;
                         $this->view->id_tienda=$tienda;
                         $this->view->tipoprecio=$tipoprecio;
-
                         $this->view->cantidad = $cantidad;
                     }else{
                         echo "<script>alert('No cuenta con todos los productos del paquete' )</script>";
@@ -429,7 +519,7 @@ class Ventas_AdministrarController extends jfLib_Controller
 
                 }
             }else{
-                echo "<script>alert('El producto no se encuentra o las existencias son insuficientes en esta  Tienda');   </script>";
+                echo "SIN EXISTENCIA";
             }
         }else{
             echo "<script>alert('su tiempo de sesion ha expirado favor de actualizar su pagina');   </script>";
