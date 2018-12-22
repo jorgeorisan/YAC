@@ -360,10 +360,21 @@ class Ventas_AdministrarController extends jfLib_Controller
             $objpt = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $idpt);
 
             if (!$objpt) {
-                $this->_informError();
+                $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                $objpti->id_producto      = $obj->id_producto;
+                $objpti->tienda_id_tienda = $tienda;
+                $objpti->existencias      = $cantidad;//solo asta que se valide
+                try {
+                    $objpti->save();//guardamos la nueva relacion
+                } catch (Exception $e) {
+                    echo "no se genero la relacion";
+                    exit();
+                }
+            }else{
+                $objpt->existencias = $cantidad;
+                $objpt->save();
             }
-            $objpt->existencias = $cantidad;
-            $objpt->save();
+            
 
             $preciodesc = 0;
             $precio     = 0;
