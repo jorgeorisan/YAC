@@ -364,12 +364,8 @@ class Ventas_AdministrarController extends jfLib_Controller
                 $objpti->id_producto      = $obj->id_producto;
                 $objpti->tienda_id_tienda = $tienda;
                 $objpti->existencias      = $cantidad;//solo asta que se valide
-                try {
-                    $objpti->save();//guardamos la nueva relacion
-                } catch (Exception $e) {
-                    echo "no se genero la relacion";
-                    exit();
-                }
+                $objpti->save();//guardamos la nueva relacion
+                
             }else{
                 $objpt->existencias = $cantidad;
                 $objpt->save();
@@ -397,8 +393,8 @@ class Ventas_AdministrarController extends jfLib_Controller
             $obje->id_tienda      = $tienda;
             $obje->fecha          = date('Y-m-d H:i:s');
             $obje->status         = "ACTIVO";
-            $obje->concepto       = "ENTRADA DIRECTA EN VENTA";
-            $obje->referencia       = "ENTRADA DIRECTA EN VENTA";
+            $obje->concepto       = "";
+            $obje->referencia     = "ENTRADA DIRECTA EN VENTA";
             $obje->save();
             $id = $obje->getIncremented();
 

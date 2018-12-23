@@ -109,7 +109,17 @@ if($this->tipousu){
             }?>
             <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>">$<?php echo number_format($obj["precio"], 2); ?></td>
             <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>">$<?php echo number_format($obj["preciomayoreo"], 2); ?></td>
-            <td><?php echo $obj["existenciastienda"]; ?></td>
+            <?php
+                if($this->tipousu=="5"){
+            ?>
+                <td><input type='text' class="productotienda" style="width:20px" id="" idproductotienda="<?php echo $obj["id_productotienda"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>"></td>
+            <?php
+            }else{
+            ?>
+                <td><?php echo $obj["existenciastienda"]; ?></td>
+            <?php
+            }?>
+           
             <td><?php echo $obj["existencias"]; ?></td>
             <td><?php
                 if($obj["paquete"]=='SI'){
@@ -150,7 +160,26 @@ if($this->tipousu){
 
 <script>
 
-
+    $(".productotienda").change(function (e) {
+        e.preventDefault();
+        var id=$(this).attr("idproductotienda");
+        var cant=$(this).val();
+        if (confirm("Deseas actualizar este producto?") == true) {
+            updateproducto(id,cant);
+        }
+        return false;
+    });
+    updateproducto = function(id,cant){
+        $.get(_root + "/administracion/productos/updateproducto/id/"+id+"/cant/"+cant,
+        function (response) {
+            if(response==1){
+                alert('exito!');
+            }else{
+                alert('Ocurrio un error en el proceso');
+            } 
+        });
+        return false;
+    }
     $(".selectnvo").multiselect({
         multiple: false,
         header: "Selecciona una opcion",

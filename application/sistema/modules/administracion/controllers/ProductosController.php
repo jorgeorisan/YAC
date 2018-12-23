@@ -75,7 +75,7 @@ class Administracion_ProductosController extends jfLib_Controller
         while ( $objasas = $resbkp->fetch_object() ) {
             $exixtenciastienda = 0;
             $quuerytienda ="
-                SELECT id_producto, existencias, tienda_id_tienda id_tienda
+                SELECT id_productotienda, id_producto, existencias, tienda_id_tienda id_tienda
                 FROM producto_tienda 
                 WHERE id_producto=".$objasas->id_producto."
                 and tienda_id_tienda=".$tienda."
@@ -84,9 +84,22 @@ class Administracion_ProductosController extends jfLib_Controller
 
                 if ( ! $resbkp2 )
                     return $this->_informError(null, 'Oops! There was an error retrieving the data.');
-    
+                $id_productotienda = "";
                 while ( $objasas2 = $resbkp2->fetch_object() ) {
                     $exixtenciastienda = $objasas2->existencias;
+                    $id_productotienda = $objasas2->id_productotienda;
+                }
+                if(!$id_productotienda){
+                    $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                    $objpti->id_producto      = $objasas->id_producto;
+                    $objpti->tienda_id_tienda = $tienda;
+                    $objpti->existencias      = 0;//solo asta que se valide
+                    try {
+                        $objpti->save();//guardamos la nueva relacion
+                    } catch (Exception $e) {
+                        echo "no se genero la relacion";
+                        exit();
+                    }
                 }
             array_push($array,
                 array(
@@ -101,7 +114,8 @@ class Administracion_ProductosController extends jfLib_Controller
                     'precio' => $objasas->precio,
                     'preciomayoreo' => $objasas->preciomayoreo,
                     'existencias' => $objasas->existencias,
-                    'existenciastienda' => $exixtenciastienda
+                    'existenciastienda' => $exixtenciastienda,
+                    'id_productotienda' => $id_productotienda
                 ));
         }
        
@@ -457,6 +471,93 @@ class Administracion_ProductosController extends jfLib_Controller
         $this->_disableLayout();
         $this->view->id = $this->_request->getParam("id");
         $this->view->tipousu = $this->_loggedUser->id_usuario_tipo;//mando el tipo de usuario
+    }
+    function updateproductoAction(){
+        $this->_disableAllLayouts();
+        if($this->_request->getParam("id") && $this->_request->getParam("cant")){
+            $id       = $this->_request->getParam("id");
+            $cantidad = $this->_request->getParam("cant");
+            $obj = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $id);
+            $tienda = $this->_loggedUser->id_tienda;
+            $existant=0;
+            if (!$obj) {
+                echo "error";
+                exit;
+            }else{
+                $existant=$obj->existencias;
+                $obj->existencias = $cantidad;
+                $obj->save();
+            }
+            $preciodesc = 0;
+            $precio     = 0;
+            $costo      = 0;
+            $ejeprecio= Doctrine_Query::create()
+                ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                ->where("a.id_producto=?",$obj->id_producto)
+                ->andWhere("b.status='ACTIVO'")
+                ->orderBy("id_entrada_producto DESC")
+                ->limit(1);
+                
+            foreach($ejeprecio->execute() as $ex){
+                $precio    = $ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $costo     = $ex["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                $preciodesc= $ex["precio_descuento"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+            }
+            if($cantidad>$existant){
+                //entrada de productos
+                $obje = new Database_Model_Entrada();
+                $obje->id_usuario     = $this->_loggedUser->id_usuario;
+                $obje->id_tienda      = $tienda;
+                $obje->fecha          = date('Y-m-d H:i:s');
+                $obje->status         = "ACTIVO";
+                $obje->concepto       = "ACTUALIZACION INVENTARIO";
+                $obje->referencia     = "ENTRADA DIRECTA";
+                $obje->save();
+                $id = $obje->getIncremented();
+
+                $iObj = new Database_Model_EntradaProducto();
+                $iObj->cantidad         = $cantidad-$existant;
+                $iObj->precio           = $precio;
+                $iObj->precio_descuento = $preciodesc;
+                $iObj->costo            = $costo;
+                
+                $iObj->totalcosto       = $cantidad*$costo;
+                $iObj->id_entrada       = $id;
+                $iObj->nombre           = $obj->Producto->nombre;
+                $iObj->id_producto      = $obj->id_producto;
+                $iObj->id_tienda        = $tienda;
+                $iObj->save();
+                echo 1;
+            }else{
+                //salida de productos
+                $obje = new Database_Model_Salida();
+                $obje->id_usuario     = $this->_loggedUser->id_usuario;
+                $obje->id_tienda      = 14;
+                $obje->id_tiendaanterior      = $tienda;
+                $obje->fecha          = date('Y-m-d H:i:s');
+                $obje->status         = "ACTIVO";
+                $obje->concepto       = "ACTUALIZACION INVENTARIO";
+                $obje->referencia     = "SALIDA DIRECTA";
+                $obje->save();
+                $id = $obje->getIncremented();
+
+                $iObj = new Database_Model_SalidaProducto();
+                $iObj->cantidad         = $existant-$cantidad;
+                $iObj->precio           = $precio;
+                $iObj->precio_descuento = $preciodesc;
+                $iObj->costo            = $costo;
+
+                $iObj->totalcosto       = $cantidad*$costo;
+                $iObj->id_salida       = $id;
+                $iObj->nombre           = $obj->Producto->nombre;
+                $iObj->id_producto      = $obj->id_producto;
+                $iObj->id_tienda        = $tienda;
+                $iObj->save();
+                echo 1;
+            }
+        }else{
+            echo 0;
+        }
     }
     function actualizarAction(){
         $this->_disableLayout();
