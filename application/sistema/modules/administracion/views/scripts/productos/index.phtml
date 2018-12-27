@@ -78,7 +78,6 @@ if($this->tipousu){
         <th>Precio Mayoreo</th>
         <th>Exist. Tienda</th>
         <th>Exist. Globales</th>
-        <th>Paquete</th>
 
         <th >Acciones</th>
     </tr>
@@ -112,7 +111,7 @@ if($this->tipousu){
             <?php
                 if($this->tipousu=="5"){
             ?>
-                <td><input type='text' class="productotienda" style="width:20px" id="" idproductotienda="<?php echo $obj["id_productotienda"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>"></td>
+                <td><input type='text' class="productotienda" style="width:20px" id="" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>"></td>
             <?php
             }else{
             ?>
@@ -121,17 +120,7 @@ if($this->tipousu){
             }?>
            
             <td><?php echo $obj["existencias"]; ?></td>
-            <td><?php
-                if($obj["paquete"]=='SI'){
-                    echo "<label style='color: #0000cc;'>SI</label><br> "; ?>
-                    <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/detallespaquete/id/".$obj["id_producto"]); ?>">
-                        Mostrar </a>
-                <?php
-                }else{
-                    echo $obj["paquete"];
-                }
-                // echo $obj["existencias"]; ?></td>
-
+           
             <td>
                 <a  target="_blank" title="Agregar nueva Entrada" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/inventarios/alta/id/" . $obj["id_producto"]); ?>">
                     <img src="<?php echo $this->baseUrl("css/img/add.png") ?>" border="0"/>

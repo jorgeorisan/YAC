@@ -38,36 +38,75 @@ class Administracion_ProductosController extends jfLib_Controller
         }
 
         $querybkp = "
-            SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
-            ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
-            ,SUM(EXISTENCIAS.existencias) existencias
-            FROM(
-                SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
-                FROM producto p
-                LEFT JOIN marca m on p.id_marca=m.id_marca
-                LEFT JOIN categoria c on p.id_categoria=c.id_categoria
-                LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
-                WHERE p.status='ACTIVO'
-            ) AS PRODUCTO LEFT JOIN (
-            SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
-            FROM(
-                SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
-                FROM xqwmrfeeug.entrada_producto
-                WHERE status='ACTIVO'
-                group by id_producto
-            )ULTIMAENTRADA  
-            JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
-            )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
-            LEFT JOIN(
-                SELECT id_producto, existencias, tienda_id_tienda id_tienda
-                FROM producto_tienda 
-                WHERE tienda_id_tienda!='14'
-                group by id_producto,tienda_id_tienda
-            )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
-            $existencia
-            group by 
-            PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
-            ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+        SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,
+        TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
+        ,TODO.existencias, TIENDA.existencias existenciastienda
+        FROM(
+             SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+                PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+                ,SUM(EXISTENCIAS.existencias) existencias
+                FROM(
+                    SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+                    FROM producto p
+                    LEFT JOIN marca m on p.id_marca=m.id_marca
+                    LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+                    LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+                    WHERE p.status='ACTIVO'
+                ) AS PRODUCTO LEFT JOIN (
+                SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
+                FROM(
+                    SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
+                    FROM xqwmrfeeug.entrada_producto
+                    WHERE status='ACTIVO'
+                    group by id_producto
+                )ULTIMAENTRADA  
+                JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
+                )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
+                LEFT JOIN(
+                    SELECT id_producto, existencias, tienda_id_tienda id_tienda
+                    FROM producto_tienda 
+                    WHERE tienda_id_tienda!='14'
+                    group by id_producto,tienda_id_tienda
+                )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+                $existencia
+                group by 
+                PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
+                PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+                ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+        ) AS TODO
+        LEFT JOIN (
+            SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+                PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+                ,SUM(EXISTENCIAS.existencias) existencias
+                FROM(
+                    SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+                    FROM producto p
+                    LEFT JOIN marca m on p.id_marca=m.id_marca
+                    LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+                    LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+                    WHERE p.status='ACTIVO'
+                ) AS PRODUCTO LEFT JOIN (
+                SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
+                FROM(
+                    SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
+                    FROM xqwmrfeeug.entrada_producto
+                    WHERE status='ACTIVO'
+                    group by id_producto
+                )ULTIMAENTRADA  
+                JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
+                )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
+                LEFT JOIN(
+                    SELECT id_producto, tienda_id_tienda id_tienda, existencias
+                    FROM producto_tienda 
+                    WHERE tienda_id_tienda='$tienda'
+                    group by id_producto,tienda_id_tienda
+                )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+                $existencia
+                group by 
+                PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
+                PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+                ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+        ) TIENDA ON TODO.id_producto=TIENDA.id_producto 
         ";
 
         $resbkp = Sistema_Class_Controller::conect()->query($querybkp);
@@ -77,34 +116,7 @@ class Administracion_ProductosController extends jfLib_Controller
 
         $array = array();
         while ( $objasas = $resbkp->fetch_object() ) {
-            $exixtenciastienda = 0;
-            $quuerytienda ="
-                SELECT id_productotienda, id_producto, existencias, tienda_id_tienda id_tienda
-                FROM producto_tienda 
-                WHERE id_producto=".$objasas->id_producto."
-                and tienda_id_tienda=".$tienda."
-                group by id_producto,tienda_id_tienda";
-                $resbkp2 = Sistema_Class_Controller::conect()->query($quuerytienda);
-
-                if ( ! $resbkp2 )
-                    return $this->_informError(null, 'Oops! There was an error retrieving the data.');
-                $id_productotienda = "";
-                while ( $objasas2 = $resbkp2->fetch_object() ) {
-                    $exixtenciastienda = $objasas2->existencias;
-                    $id_productotienda = $objasas2->id_productotienda;
-                }
-                if(!$id_productotienda){
-                    $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
-                    $objpti->id_producto      = $objasas->id_producto;
-                    $objpti->tienda_id_tienda = $tienda;
-                    $objpti->existencias      = 0;//solo asta que se valide
-                    try {
-                        $objpti->save();//guardamos la nueva relacion
-                    } catch (Exception $e) {
-                        echo "no se genero la relacion";
-                        exit();
-                    }
-                }
+            
             array_push($array,
                 array(
                     'id_producto' => $objasas->id_producto,
@@ -118,8 +130,7 @@ class Administracion_ProductosController extends jfLib_Controller
                     'precio' => $objasas->precio,
                     'preciomayoreo' => $objasas->preciomayoreo,
                     'existencias' => $objasas->existencias,
-                    'existenciastienda' => $exixtenciastienda,
-                    'id_productotienda' => $id_productotienda
+                    'existenciastienda' => $objasas->existenciastienda
                 ));
         }
        
@@ -481,8 +492,35 @@ class Administracion_ProductosController extends jfLib_Controller
         if($this->_request->getParam("id") && $this->_request->getParam("cant")){
             $id       = $this->_request->getParam("id");
             $cantidad = $this->_request->getParam("cant");
-            $obj = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $id);
-            $tienda = $this->_loggedUser->id_tienda;
+            $tienda   = $this->_loggedUser->id_tienda;
+            $quuerytienda ="
+                SELECT id_productotienda, id_producto, existencias, tienda_id_tienda id_tienda
+                FROM producto_tienda 
+                WHERE id_producto=".$id."
+                and tienda_id_tienda=".$tienda."
+                group by id_producto,tienda_id_tienda";
+            $resbkp2 = Sistema_Class_Controller::conect()->query($quuerytienda);
+
+            if ( ! $resbkp2 )
+                return $this->_informError(null, 'Oops! There was an error retrieving the data.');
+            $id_productotienda = "";
+            while ( $objasas2 = $resbkp2->fetch_object() ) {
+                $id_productotienda = $objasas2->id_productotienda;
+            }
+            if(!$id_productotienda){
+                $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                $objpti->id_producto      = $objasas->id_producto;
+                $objpti->tienda_id_tienda = $tienda;
+                $objpti->existencias      = 0;//solo asta que se valide
+                try {
+                    $objpti->save();//guardamos la nueva relacion
+                } catch (Exception $e) {
+                    echo "no se genero la relacion";
+                    exit();
+                }
+            }
+            $obj = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $id_productotienda);
+          
             $existant=0;
             if (!$obj) {
                 echo "error";
@@ -1066,103 +1104,113 @@ class Administracion_ProductosController extends jfLib_Controller
         header("Content-Disposition: attachment; filename=inventario.csv");
         header("Pragma: no-cache");
         header("Expires: 0");
-        $query = Doctrine_Query::create()
-            ->from("Database_Model_ProductoTienda t,t.Producto p")
-            ->Where("p.status = 'ACTIVO'")
-            ->orderBy("t.tienda_id_tienda ASC");
-        if (!$this->_request->getParam("vertodo")) {//para la busqueda
-            $query->andWhere("t.existencias>0");
+        
+        ////////////////////////////////////////
+        $existencia="";
+        if($this->_request->getParam("vertodo")){
+            $existencia="WHERE SUM(EXISTENCIAS.existencias)>0";
         }
+        $tipousu=$this->_loggedUser->id_usuario_tipo;
+        $tienda=$this->_loggedUser->id_tienda;
+        $querybkp = "
+        SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,
+        TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
+        ,TODO.existencias, TIENDA.existencias existenciastienda
+        FROM(
+             SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+                PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+                ,SUM(EXISTENCIAS.existencias) existencias
+                FROM(
+                    SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+                    FROM producto p
+                    LEFT JOIN marca m on p.id_marca=m.id_marca
+                    LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+                    LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+                    WHERE p.status='ACTIVO'
+                ) AS PRODUCTO LEFT JOIN (
+                SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
+                FROM(
+                    SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
+                    FROM xqwmrfeeug.entrada_producto
+                    WHERE status='ACTIVO'
+                    group by id_producto
+                )ULTIMAENTRADA  
+                JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
+                )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
+                LEFT JOIN(
+                    SELECT id_producto, existencias, tienda_id_tienda id_tienda
+                    FROM producto_tienda 
+                    WHERE tienda_id_tienda!='14'
+                    group by id_producto,tienda_id_tienda
+                )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+                $existencia
+                group by 
+                PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
+                PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+                ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+        ) AS TODO
+        LEFT JOIN (
+            SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+                PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+                ,SUM(EXISTENCIAS.existencias) existencias
+                FROM(
+                    SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+                    FROM producto p
+                    LEFT JOIN marca m on p.id_marca=m.id_marca
+                    LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+                    LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+                    WHERE p.status='ACTIVO'
+                ) AS PRODUCTO LEFT JOIN (
+                SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
+                FROM(
+                    SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
+                    FROM xqwmrfeeug.entrada_producto
+                    WHERE status='ACTIVO'
+                    group by id_producto
+                )ULTIMAENTRADA  
+                JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
+                )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
+                LEFT JOIN(
+                    SELECT id_producto, tienda_id_tienda id_tienda, existencias
+                    FROM producto_tienda 
+                    WHERE tienda_id_tienda='$tienda'
+                    group by id_producto,tienda_id_tienda
+                )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+                $existencia
+                group by 
+                PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
+                PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+                ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+        ) TIENDA ON TODO.id_producto=TIENDA.id_producto 
+        ";
 
-        if ($id_marca = $this->_request->getParam("id_marca")) {//para la busqueda
-            $query->andWhere("p.id_marca =?",$id_marca);
+        $resbkp = Sistema_Class_Controller::conect()->query($querybkp);
 
-        }
-        if ($id_categoria = $this->_request->getParam("id_categoria")) {//para la busqueda
-            $query->andWhere("p.id_categoria =?",$id_categoria);
+        if ( ! $resbkp )
+            return $this->_informError(null, 'Oops! There was an error retrieving the data.');
 
-        }
-        if ($id_proveedor = $this->_request->getParam("id_proveedor")) {//para la busqueda
-            $query->andWhere("p.id_proveedor =?",$id_proveedor);
-
-
-        }
-        echo "IDPRODUCTO,CODIGO INTER,NOMBRE,MARCA,CATEGORIA,PROVEEDOR,COSTO,PRECIO,EXISTENCIAS,TIENDA,IDPRODUCTOTIENDA";
+        echo "IDPRODUCTO,CODIGO INTER,NOMBRE,MARCA,CATEGORIA,PROVEEDOR,COSTO,PRECIO,PRECIO MAYOREO,EXISTENCIAS TIENDA,EXISTENCIAS GLOBAL,TIENDA";
         echo "\n";
         $counter=0;
-        foreach($query->execute() as $obj){
+        while ( $objasas = $resbkp->fetch_object() ) {
             $counter++;
-
-            ////////////////////existencias
-
-            $query = Doctrine_Query::create()
-                ->select("ifnull(sum(existencias),0) totexistencias,tienda_id_tienda")
-                ->from("Database_Model_ProductoTienda")
-                ->where("id_producto=?",$obj->id_producto)
-                ->andWhere("tienda_id_tienda!=14")
-                ->andWhere("tienda_id_tienda=?",$obj->Tienda->id_tienda);
-            //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
-            // ->execute();//verificamos si es adminisrador
-             $id_productotienda=$obj->id_productotienda;
-            foreach($query->execute() as $objt){
-                $totexistencias=$objt->totexistencias;
                 
-            }
-
-            ////////////////////////////////precio
-            $ejeprecio= Doctrine_Query::create()
-                ->from("Database_Model_EntradaProducto a, a.Entrada b")
-                ->where("a.id_producto=?",$obj->id_producto)
-                //->andWhere("cantvendida<cantidad")
-                ->andWhere("b.status='ACTIVO'")
-                ->orderBy("id_entrada_producto DESC")
-                ->limit(1);
-
-
-            $existentes=$totexistencias;
-            $precio2=null;
-            foreach($ejeprecio->execute() as $ex){
-                $existentes=$ex->cantidad-$ex->cantvendida;
-                $precio2=$ex->precio;//sacamos el ultimo precio por fecha mientras no se allan vendido
-            }
-            if($precio2){
-                $precio=$precio2;
+            echo $objasas->id_producto.",";
+            echo $objasas->codinter.",";
+            echo str_replace(","," ",$objasas->nombre).",";
+            echo str_replace(","," ",$objasas->marca).",";
+            echo str_replace(","," ",$objasas->categoria).",";
+            echo str_replace(","," ",$objasas->proveedor).",";
+            if($tipousu=="5"||($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena')){
+                echo $objasas->costo.",";
             }else{
-                $precio=$obj->Producto->precio;
+                echo "";
             }
-
-
-            $ejecosto= Doctrine_Query::create()
-                ->from("Database_Model_EntradaProducto a, a.Entrada b")
-                ->where("a.id_producto=?",$obj->id_producto)
-                ->andWhere("b.status='ACTIVO'")
-                //  ->andWhere("a.cantvendida<a.cantidad")
-                ->orderBy("id_entrada_producto desc")
-                ->limit(1);
-            $costoBase0=$obj->Producto->costo;
-            // echo $ejecosto->getSqlQuery();//imprime la consulta qu ese esta generando
-            $costoBase=0;
-            $costoBase1=null;
-            foreach($ejecosto->execute() as $excosto){
-
-                $costoBase1=$excosto->costo;//sacamos el ultimo precio por fecha mientras no se allan vendido
-            }
-            if($costoBase1){
-                $costoBase=$costoBase1;
-            }else{
-                $costoBase=$costoBase0;
-            }
-            echo $obj->id_producto.",";
-            echo $obj->Producto->codinter.",";
-            echo str_replace(","," ",$obj->Producto->nombre).",";
-            echo str_replace(","," ",$obj->Producto->Marca->nombre).",";
-            echo str_replace(","," ",$obj->Producto->Categoria->categoria).",";
-            echo str_replace(","," ",$obj->Producto->Proveedor->nombre_corto).",";
-            echo $costoBase.",";
-            echo $precio.",";
-            echo $totexistencias.",";
-            echo $obj->Tienda->nombre.",";
-            echo $id_productotienda."";
+            echo $objasas->precio.",";
+            echo $objasas->preciomayoreo.",";
+            echo $objasas->existenciastienda.",";
+            echo $objasas->existencias.",";
+            echo $this->_loggedUser->Tienda->nombre.",";
             
             echo "\n";
         }
@@ -1302,7 +1350,7 @@ class Administracion_ProductosController extends jfLib_Controller
             $mail->addAttachment($at);
            // $mail->send();
             /*
-///////////////////////////////////para enviar un pdf
+        ///////////////////////////////////para enviar un pdf
             $data = ob_get_contents();
 
             $at = new Zend_Mime_Part($data);
@@ -1324,7 +1372,7 @@ class Administracion_ProductosController extends jfLib_Controller
                 str_replace('cellpadding="0"','cellpadding="10"',str_replace('border="0"','border="1"',$data)));
             $mail3->send();
             ob_clean();
-*/
+        */
 
         }else{
             $mail = new Zend_Mail("utf-8");
