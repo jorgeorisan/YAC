@@ -188,11 +188,7 @@ class Ventas_ReportesController extends jfLib_Controller
             $this->view->credito=1;
             $query->andWhere("tipo='Credito'");
         }
-        if($this->_loggedUser->id_usuario_tipo!=2){
-            $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
-        }
-
-
+     
         if ($id_usuario = $this->_request->getParam("id_usuario")) {
             $query->andWhere("id_usuario = ?", $id_usuario);
         }
