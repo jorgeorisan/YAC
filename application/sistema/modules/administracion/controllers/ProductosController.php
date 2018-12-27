@@ -32,19 +32,22 @@ class Administracion_ProductosController extends jfLib_Controller
         $this->view->usu = $this->_loggedUser->id_usuario;
         $this->view->tienda = $tienda;
         ////////////////////////////////////////
-       
+        $existencia="";
+        if($this->_request->getParam("vertodo")){
+            $existencia="WHERE SUM(EXISTENCIAS.existencias)>0";
+        }
 
         $querybkp = "
             SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
             ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
             ,SUM(EXISTENCIAS.existencias) existencias
             FROM(
-            SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
-            FROM producto p
-            LEFT JOIN marca m on p.id_marca=m.id_marca
-            LEFT JOIN categoria c on p.id_categoria=c.id_categoria
-            LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
-            WHERE p.status='ACTIVO'
+                SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+                FROM producto p
+                LEFT JOIN marca m on p.id_marca=m.id_marca
+                LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+                LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+                WHERE p.status='ACTIVO'
             ) AS PRODUCTO LEFT JOIN (
             SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
             FROM(
@@ -56,11 +59,12 @@ class Administracion_ProductosController extends jfLib_Controller
             JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
             )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
             LEFT JOIN(
-            SELECT id_producto, existencias, tienda_id_tienda id_tienda
-            FROM producto_tienda 
-            WHERE tienda_id_tienda!='14'
-            group by id_producto,tienda_id_tienda
+                SELECT id_producto, existencias, tienda_id_tienda id_tienda
+                FROM producto_tienda 
+                WHERE tienda_id_tienda!='14'
+                group by id_producto,tienda_id_tienda
             )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+            $existencia
             group by 
             PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
             ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
