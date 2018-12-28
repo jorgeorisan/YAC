@@ -137,19 +137,11 @@
                         </li>
                         <li><a href="<?php echo $this->baseUrl("administracion/productos/index/vertodo/0"); ?>"><span>Productos</span></a>
                         </li>
-                        <li><a href="<?php echo $this->baseUrl("administracion/paquete"); ?>"><span>Paquetes</span></a>
+                       <!-- <li><a href="<?php echo $this->baseUrl("administracion/paquete"); ?>"><span>Paquetes</span></a>
                         </li>
+                        -->
                         <li><a href="<?php echo $this->baseUrl("administracion/traspaso"); ?>"><span>Traspaso de Productos</span></a>
                         </li>
-                    
-                    <?php
-                    if($profile->id_usuario_tipo==5){
-                        ?>
-                        <li><a href="<?php echo $this->baseUrl("administracion/proveedores"); ?>"><span>Proveedores</span></a></li>
-                    <?php
-                    }
-                    ?>
-
                     <li><a
                             href="<?php echo $this->baseUrl("deudores/administrar"); ?>"><span>Ventas a Credito</span></a>
                     </li>

@@ -230,7 +230,7 @@ class Ventas_AdministrarController extends jfLib_Controller
                     }
                     if($abono=$this->_request->getPost("abono")){
                         $obj = new Database_Model_Deudores();
-                        $obj->fecha_abono=date('Y-m-d H:i:s');
+                        $obj->fecha_abono=$this->_request->getPost("fecha")." ".date('H:i:s');
                         $obj->id_persona=$this->_request->getPost("id_persona");
                         $obj->comentarios="Abono Inicial";
                         $obj->id_usuario = $this->_loggedUser->id_usuario;
