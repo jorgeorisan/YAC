@@ -13,6 +13,8 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_ProductoTienda', 
  * @property integer $tienda_id_tienda
  * @property integer $id_producto
  * @property float $alerta_minima
+ * @property string $fecha_actualizacion
+ * @property string $usuario_actualizacion
  * @property Database_Model_Producto $Producto
  * @property Database_Model_Tienda $Tienda
  * @property Doctrine_Collection $ProductosVenta
@@ -75,6 +77,24 @@ abstract class Database_Model_Base_ProductoTienda extends Doctrine_Record
              ));
         $this->hasColumn('alerta_minima', 'float', null, array(
              'type' => 'float',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('fecha_actualizacion', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('usuario_actualizacion', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,

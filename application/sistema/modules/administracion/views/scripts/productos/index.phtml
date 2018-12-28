@@ -75,9 +75,10 @@ if($this->tipousu){
         <?php
         }?>
         <th>Precio</th>
-        <th>Precio Mayoreo</th>
-        <th>Exist. Tienda</th>
-        <th>Exist. Globales</th>
+        <th>Mayoreo</th>
+        <th>Exist. Tienda||Gral.</th>
+        
+        <th>Act.</th>
 
         <th >Acciones</th>
     </tr>
@@ -111,15 +112,17 @@ if($this->tipousu){
             <?php
                 if($this->tipousu=="5"){
             ?>
-                <td><input type='text' class="productotienda" style="width:20px" id="" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>"></td>
+                <td><input type='text' class="productotienda" style="width:20px" id="" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?></td>
             <?php
             }else{
             ?>
-                <td><?php echo $obj["existenciastienda"]; ?></td>
+                <td><?php echo $obj["existenciastienda"]; ?>||<?php echo $obj["existencias"]; ?></td>
             <?php
             }?>
            
-            <td><?php echo $obj["existencias"]; ?></td>
+            <td><?php echo $obj["fecha_actualizacion"]; ?><br>
+                <?php echo $obj["usuario_actualizacion"]; ?>
+            </td>
            
             <td>
                 <a  target="_blank" title="Agregar nueva Entrada" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/inventarios/alta/id/" . $obj["id_producto"]); ?>">

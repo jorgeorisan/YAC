@@ -34,13 +34,13 @@ class Administracion_ProductosController extends jfLib_Controller
         ////////////////////////////////////////
         $existencia="";
         if($this->_request->getParam("vertodo")){
-            $existencia="WHERE SUM(EXISTENCIAS.existencias)>0";
+            $existencia="WHERE TIENDA.existencias>0";
         }
 
         $querybkp = "
         SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,
         TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
-        ,TODO.existencias, TIENDA.existencias existenciastienda
+        ,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
         FROM(
              SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
                 PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
@@ -68,7 +68,7 @@ class Administracion_ProductosController extends jfLib_Controller
                     WHERE tienda_id_tienda!='14'
                     group by id_producto,tienda_id_tienda
                 )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
-                $existencia
+                
                 group by 
                 PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
                 PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
@@ -77,7 +77,7 @@ class Administracion_ProductosController extends jfLib_Controller
         LEFT JOIN (
             SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
                 PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
-                ,SUM(EXISTENCIAS.existencias) existencias
+                ,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion
                 FROM(
                     SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
                     FROM producto p
@@ -96,17 +96,18 @@ class Administracion_ProductosController extends jfLib_Controller
                 JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
                 )PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
                 LEFT JOIN(
-                    SELECT id_producto, tienda_id_tienda id_tienda, existencias
+                    SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,usuario_actualizacion
                     FROM producto_tienda 
                     WHERE tienda_id_tienda='$tienda'
                     group by id_producto,tienda_id_tienda
                 )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
-                $existencia
+                
                 group by 
                 PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
                 PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
                 ,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
         ) TIENDA ON TODO.id_producto=TIENDA.id_producto 
+        $existencia
         ";
 
         $resbkp = Sistema_Class_Controller::conect()->query($querybkp);
@@ -130,7 +131,9 @@ class Administracion_ProductosController extends jfLib_Controller
                     'precio' => $objasas->precio,
                     'preciomayoreo' => $objasas->preciomayoreo,
                     'existencias' => $objasas->existencias,
-                    'existenciastienda' => $objasas->existenciastienda
+                    'existenciastienda' => $objasas->existenciastienda,
+                    'fecha_actualizacion' => $objasas->fecha_actualizacion,
+                    'usuario_actualizacion' => $objasas->usuario_actualizacion
                 ));
         }
        
@@ -512,6 +515,8 @@ class Administracion_ProductosController extends jfLib_Controller
                 $objpti->id_producto      = $objasas->id_producto;
                 $objpti->tienda_id_tienda = $tienda;
                 $objpti->existencias      = 0;//solo asta que se valide
+                $objpti->fecha_actualizacion   = date('Y-m-d H:i:s');
+                $objpti->usuario_actualizacion = $this->_loggedUser->id_usuario;
                 try {
                     $objpti->save();//guardamos la nueva relacion
                 } catch (Exception $e) {
@@ -527,7 +532,9 @@ class Administracion_ProductosController extends jfLib_Controller
                 exit;
             }else{
                 $existant=$obj->existencias;
-                $obj->existencias = $cantidad;
+                $obj->existencias = $cantidad; 
+                $obj->fecha_actualizacion   = date('Y-m-d H:i:s');
+                $obj->usuario_actualizacion = $this->_loggedUser->id_usuario;
                 $obj->save();
             }
             $preciodesc = 0;
