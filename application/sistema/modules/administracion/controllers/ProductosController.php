@@ -658,15 +658,21 @@ class Administracion_ProductosController extends jfLib_Controller
     function kardexAction(){
         $query = Doctrine_Query::create()
             //->select("t.id_producto id_producto")
-            ->from("Database_Model_ProductoTienda t")
-            ->where("id_productotienda = ?", $this->_request->getParam("id"));
+            ->from("Database_Model_ProductoTienda ")
+            ->where("id_productotienda  >0");
             //  ->orderBy("t.nombre ASC")
-
-        if($id=$this->_request->getParam("id2")){
-            $query->andwhere("t.tienda_id_tienda=?",$id);
-        }else{
-            $query->andwhere("t.tienda_id_tienda=?",$this->_loggedUser->id_tienda);
+        
+        if($idp=$this->_request->getParam("id2")){
+            $query->andwhere("id_producto=?",$idp);
+        }elseif($id=$this->_request->getParam("id")){
+            $query->andwhere("id_productotienda=?",$id);
         }
+        if($idtienda=$this->_request->getParam("id_sucursal2")){
+            $query->andwhere("tienda_id_tienda=?",$idtienda);
+        }else{
+            $query->andwhere("tienda_id_tienda=?",$this->_loggedUser->id_tienda);
+        }
+        
         $this->view->query=$query->fetchOne();;
     }
 

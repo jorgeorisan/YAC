@@ -30,7 +30,7 @@
     <div class="panel-body">
         <!-- Filtros para listar -->
         <form class="form-inline"  role="form">
-            <table style="width: 25%;">
+            <table style="width: 50%;">
                 <tr align="center">
                     <td> <h2>Producto</h2></td>
                     <td> <h2> Sucursal</h2></td>
@@ -39,7 +39,7 @@
                     <td>
                         <div class="controls">
                             <?php echo $this->formSelect("id2", $this->query->id_producto,
-                                array("class" => "form-control chosen-select"),
+                                array("class" => "form-control selectnvo"),
                                 Database_Model_Producto::getAllArr()
                             ); ?>
                         </div>
@@ -48,7 +48,7 @@
                         <h3>
                             <div class="controls">
                                 <?php echo $this->formSelect("id_sucursal2", $this->query->tienda_id_tienda,
-                                    array("class" => "form-control chosen-select"),
+                                    array("class" => "form-control selectnvo"),
                                     Database_Model_Tienda::getAllT()
                                 ); ?>
                             </div>
@@ -642,3 +642,11 @@
 
 
 </section>
+<script>
+$(".selectnvo").multiselect({
+        multiple: false,
+        header: "Selecciona una opcion",
+        noneSelectedText: "Seleccionar",
+        selectedList: 1
+    }).multiselectfilter();
+</script>
