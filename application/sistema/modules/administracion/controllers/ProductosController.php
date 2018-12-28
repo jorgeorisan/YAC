@@ -492,7 +492,7 @@ class Administracion_ProductosController extends jfLib_Controller
     }
     function updateproductoAction(){
         $this->_disableAllLayouts();
-        if($this->_request->getParam("id") && $this->_request->getParam("cant")){
+        if($this->_request->getParam("id")){
             $id       = $this->_request->getParam("id");
             $cantidad = $this->_request->getParam("cant");
             $tienda   = $this->_loggedUser->id_tienda;
@@ -512,7 +512,7 @@ class Administracion_ProductosController extends jfLib_Controller
             }
             if(!$id_productotienda){
                 $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
-                $objpti->id_producto      = $objasas->id_producto;
+                $objpti->id_producto      = $id;
                 $objpti->tienda_id_tienda = $tienda;
                 $objpti->existencias      = 0;//solo asta que se valide
                 $objpti->fecha_actualizacion   = date('Y-m-d H:i:s');
@@ -520,10 +520,11 @@ class Administracion_ProductosController extends jfLib_Controller
                 try {
                     $objpti->save();//guardamos la nueva relacion
                 } catch (Exception $e) {
-                    echo "no se genero la relacion";
+                    echo "no se genero la relacion".$e;
                     exit();
                 }
             }
+           
             $obj = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $id_productotienda);
           
             $existant=0;

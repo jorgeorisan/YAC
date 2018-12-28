@@ -120,8 +120,19 @@ if($this->tipousu){
             <?php
             }?>
            
-            <td><?php echo $obj["fecha_actualizacion"]; ?><br>
-                <?php echo $obj["usuario_actualizacion"]; ?>
+            <td>
+                <?php
+                if($obj["fecha_actualizacion"]){
+                    echo $obj["fecha_actualizacion"]."<br>".$obj["usuario_actualizacion"]; 
+                }else{
+                    if($this->tipousu=="5"){
+                    ?>
+                        <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
+                    <?php
+                    }
+                }
+                
+                ?>
             </td>
            
             <td>
@@ -158,6 +169,16 @@ if($this->tipousu){
         var cant=$(this).val();
         if (confirm("Deseas actualizar este producto?") == true) {
             updateproducto(id,cant);
+        }
+        return false;
+    });
+    $(".validar").click(function (e) {
+        e.preventDefault();
+        var id=$(this).attr("idproductotienda");
+        var cant=$(this).attr('existencias');
+        if (confirm("Deseas actualizar este producto?") == true) {
+            updateproducto(id,cant);
+            $(this).hide();
         }
         return false;
     });
