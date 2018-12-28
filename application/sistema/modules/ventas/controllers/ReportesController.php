@@ -1186,9 +1186,9 @@ class Ventas_ReportesController extends jfLib_Controller
             ->andWhere("DATE(v.fecha) <= '$to'")
             ->andWhere("pv.cancelado = ?", "0")
             ->andWhere("v.cancelado = ?", "0")
-
             ->orderBy("total_cantidad DESC")
             ->groupBy("pv.id_productotienda");
+
         $queryexce = Doctrine_Query::create()
             ->select("SUM(pv.cantidad) AS total_cantidad, SUM(pv.total) AS total_total, *")
             ->from("Database_Model_ProductosVenta pv, pv.Venta v, pv.ProductoTienda p, p.Producto pr")
@@ -1197,11 +1197,7 @@ class Ventas_ReportesController extends jfLib_Controller
             ->andWhere("pv.cancelado = ?", "0")
             ->andWhere("v.cancelado = ?", "0")
             ->andWhere("pr.manual=1")
-            ->andWhere("v.id_usuario!='Elena'")
-            ->andWhere("v.id_usuario!='Fanny Casas'")
-            ->andWhere("v.id_usuario!='jorge'")
             ->andWhere("pr.nombre='EXCEDENTE'")
-
             ->orderBy("total_cantidad DESC")
             ->groupBy("pv.id_productotienda");
 
@@ -1213,9 +1209,6 @@ class Ventas_ReportesController extends jfLib_Controller
             ->andWhere("DATE(fecha_registro) <= '$to'")
 			;
 
-        if (!$this->_loggedUser->super_secure) {
-            $query->andWhere("v.no_calculable = 0");
-        }
 
         if ($idProveedor = $this->_request->getParam("id_proveedor")) {
            $query->andWhere("pr.id_proveedor = ?", $idProveedor);

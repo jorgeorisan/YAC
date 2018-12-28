@@ -162,19 +162,19 @@ $cadena = substr($prod,1);
         <td>$<?php echo number_format($totalUtilidad, 2); ?>
           <?php
            $this->dias=$this->dias+1;
-              $bonos=($totatgral/4000)*100;
-            echo "<br>$-".number_format($bonos,2)." bonos";
+             // $bonos=($totatgral/4000)*100;
+           //echo "<br>$-".number_format($bonos,2)." bonos";
             $totalgerente=$this->dias*150;
-            echo "<br>$-".number_format($totalgerente,2)." pago gerentes";
-             $totalvendedor=($this->dias*100);
-            echo "<br>$-".number_format($totalvendedor,2)." pago vendedor";
-             $totalcomi=$totatgral*0.06;
+            $totalvendedor=($this->dias*100);
+            echo "<br>$-".number_format($totalgerente+$totalvendedor,2)." pago sueldos";
+            
+            $totalcomi=$totatgral*0.06;
             echo "<br>$-".number_format($totalcomi,2)." comisiones";
 
-             $totalgastos=(400+200+150+1000+170+2000); //400 internet, 200 impuestos, 150 contabilidad, 1000 renta, 170 luz, 2000 gastos de surtir
-          $promgastosxdia=126*$this->dias;
+            $totalgastos=(400+100+150+1000+200); //400 internet, 200 impuestos, 150 contabilidad, 1000 renta, 170 luz, 2000 gastos de surtir
+         
             echo "<br><font title='400 internet, 200 impuestos, 150 contabilidad, 1000 renta, 170 luz, 2000 gastos de surtir'>$".number_format($promgastosxdia,2)." gastos generales</font>";
-          $totalgralutilidad=number_format($totalUtilidad-$bonos-$totalgerente-$totalvendedor-$totalcomi-$promgastosxdia,2);
+          $totalgralutilidad=number_format($totalUtilidad-$totalgerente-$totalvendedor-$totalcomi,2);
           echo "<br><strong>$".$totalgralutilidad." Utilidad tienda</strong>";
             ?>
         </td>
