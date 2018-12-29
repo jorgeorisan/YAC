@@ -708,7 +708,7 @@ class Administracion_ProductosController extends jfLib_Controller
                     ->where('id_producto = ?', $this->_request->getParam("id"));
                 $q->execute();
 
-              $this->_informSuccess(null, true, "productos/alta/");
+              $this->_informSuccess(null, true, "productos/index/");
             } catch (Exception $e) {
                 $this->_informError($e);
             }
