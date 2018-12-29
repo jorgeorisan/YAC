@@ -107,7 +107,7 @@
                 <?php
                     if($this->tipousu=="5"){
                 ?>
-                    <td><input type='text' class="productotienda" style="width:20px" id="" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?></td>
+                    <td><input type='text' class="productotienda" style="width:20px" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?></td>
                 <?php
                 }else{
                 ?>
@@ -180,27 +180,26 @@
                     "aLengthMenu": [[5, 10, 15, 25, 50, -1], [5, 10, 15, 25, 50, "All"]]
                 } );
             });
-        
         return false;
     });
-    $(".productotienda").change(function (e) {
-        e.preventDefault();
-        var id=$(this).attr("idproductotienda");
-        var cant=$(this).val();
-        if (confirm("Deseas actualizar este producto?") == true) {
-            updateproducto(id,cant);
-        }
-        return false;
-    });
-    $(".validar").click(function (e) {
-        e.preventDefault();
-        var id=$(this).attr("idproductotienda");
-        var cant=$(this).attr('existencias');
-        if (confirm("Deseas actualizar este producto?") == true) {
-            updateproducto(id,cant);
-            $(this).hide();
-        }
-        return false;
+    $(document).ready(function(){
+        $(".productotienda").live('change',(function () {
+            var id=$(this).attr("idproductotienda");
+            var cant=$(this).val();
+            if (confirm("Deseas actualizar este producto?") == true) {
+                updateproducto(id,cant);
+            }
+            return false;
+        }));
+        $(".validar").live('click',(function () {
+            var id=$(this).attr("idproductotienda");
+            var cant=$(this).attr('existencias');
+            if (confirm("Deseas actualizar este producto?") == true) {
+                updateproducto(id,cant);
+                $(this).hide();
+            }
+            return false;
+        }));
     });
     updateproducto = function(id,cant){
         $.get(_root + "/administracion/productos/updateproducto/id/"+id+"/cant/"+cant,
