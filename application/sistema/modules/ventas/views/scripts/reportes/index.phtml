@@ -281,7 +281,7 @@
             endforeach;
         endforeach;
         foreach ($querymayo as $objSINC):
-            if($objSINC->tipoprecio=='Mayoreo'&&$objSINC->Venta->icredito==0){
+            if($objSINC->tipoprecio=='Mayoreo' && $objSINC->Venta->icredito==0){
                 $mayoreo += ($objSINC->total)/2;
                // echo "<script>alert($mayoreo);</script>";
             }
@@ -313,9 +313,7 @@
             ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
             ->andWhere("v.id_usuario=?",$obj->id_usuario)
             ->andWhere("v.status='ACTIVA'") ;
-        if($this->id_tienda){
-            $queryabono->andWhere("v.id_tienda=?",$this->id_tienda);
-        }
+      
         $queryabono = $queryabono->fetchOne();
         $queryrecag = Doctrine_Query::create()
             ->select("sum(pv.total) as total")

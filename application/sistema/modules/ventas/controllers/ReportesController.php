@@ -70,7 +70,7 @@ class Ventas_ReportesController extends jfLib_Controller
         }
         $id_tienda = $this->_request->getParam("id_tienda");
         if($this->_loggedUser->id_usuario_tipo == 2 || $this->_loggedUser->id_usuario_tipo == 5  ){
-            if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario_tipo == 5)) {
+            if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena'  || $this->_loggedUser->id_usuario_tipo == 5)) {
                 if( $id_tienda ){
                     $this->view->id_tienda = $id_tienda;
                     $query->andWhere("id_tienda = ?", $id_tienda);
