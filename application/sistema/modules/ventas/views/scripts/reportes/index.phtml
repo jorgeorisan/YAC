@@ -144,12 +144,12 @@
     echo $msj2;
     $queryabono = Doctrine_Query::create()
         ->select("ifnull(sum(v.montoabono),0) as total,v.id_usuario")
-        ->from("Database_Model_Deudores v")
+        ->from("Database_Model_Deudores v,v.Venta vv")
         ->where("DATE(v.fecha_abono) >= '$this->from'")
         ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
         ->andWhere("v.status='ACTIVA'");
     if($this->id_tienda){
-        $queryabono->andWhere("v.id_tienda=?",$this->id_tienda);
+        $queryabono->andWhere("vv.id_tienda=?",$this->id_tienda);
     }
 
     $abon=0;
@@ -398,6 +398,7 @@
                 echo $totcomm; ?></td>
         </tr>
     <?php endforeach;
+    
     if($totalabonos<$abon){
         ?>
         <tr>

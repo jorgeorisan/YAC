@@ -69,6 +69,10 @@ class Ventas_ReportesController extends jfLib_Controller
             $this->view->id_usuario=$id_usuario;
         }
         $id_tienda = $this->_request->getParam("id_tienda");
+        if($this->_loggedUser->id_tienda==16){
+            $id_tienda=$this->_loggedUser->id_tienda;
+        }
+        
         if($this->_loggedUser->id_usuario_tipo == 2 || $this->_loggedUser->id_usuario_tipo == 5  ){
             if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena'  || $this->_loggedUser->id_usuario_tipo == 5)) {
                 if( $id_tienda ){
@@ -76,13 +80,15 @@ class Ventas_ReportesController extends jfLib_Controller
                     $query->andWhere("id_tienda = ?", $id_tienda);
                     $querycomi->andWhere("id_tienda = ?", $id_tienda);
                 }
-            
             }else{
                 $this->view->id_tienda=$this->_loggedUser->id_tienda;
                 $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
                 $querycomi->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
             }
-            
+        }else{
+            $this->view->id_tienda=$this->_loggedUser->id_tienda;
+            $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+            $querycomi->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
         }
     
 
@@ -227,7 +233,7 @@ class Ventas_ReportesController extends jfLib_Controller
             ->from("Database_Model_Venta")
             ->where("DATE(fecha) >= '$from'")
             ->andWhere("DATE(fecha) <= '$to'");
-        
+      
         $queryabono = Doctrine_Query::create()
             ->select("sum(v.montoabono) as total")
             ->from("Database_Model_Deudores v")
@@ -235,7 +241,11 @@ class Ventas_ReportesController extends jfLib_Controller
             ->andWhere("DATE(v.fecha_abono) <= '$to'");
 
         //echo $queryabono->getSqlQuery();
-
+        $id_tienda = $this->_request->getParam("id_tienda");
+        if($this->_loggedUser->id_tienda==16){
+            $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
+            $id_tienda = 16;
+        }
 
 
         if ($id_usuario = $this->_request->getParam("id_usuario")) {
@@ -243,9 +253,9 @@ class Ventas_ReportesController extends jfLib_Controller
             $queryabono->andWhere("v.id_usuario=?",$id_usuario);
             $this->view->id_usuario=$id_usuario;
         }
-        $id_tienda = $this->_request->getParam("id_tienda");
+       
         if($this->_loggedUser->id_usuario_tipo == 2 || $this->_loggedUser->id_usuario_tipo == 5  ){
-            if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario_tipo == 5)) {
+            if (($this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='Elena'  || $this->_loggedUser->id_usuario=='tavo' || $this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario_tipo == 5)) {
                 if( $id_tienda ){
                     $this->view->id_tienda = $id_tienda;
                     $query->andWhere("id_tienda = ?", $id_tienda);
@@ -256,6 +266,9 @@ class Ventas_ReportesController extends jfLib_Controller
                 $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
             }
             
+        }else{
+            $this->view->id_tienda=$this->_loggedUser->id_tienda;
+            $query->andWhere("id_tienda=?",$this->_loggedUser->id_tienda);
         }
 
         $this->view->queryabono=$queryabono->fetchOne();
