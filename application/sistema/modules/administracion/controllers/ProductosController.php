@@ -583,6 +583,7 @@ class Administracion_ProductosController extends jfLib_Controller
 
             if ( ! $resbkp2 )
                 return $this->_informError(null, 'Oops! There was an error retrieving the data.');
+
             $id_productotienda = "";
             while ( $objasas2 = $resbkp2->fetch_object() ) {
                 $id_productotienda = $objasas2->id_productotienda;
@@ -596,6 +597,7 @@ class Administracion_ProductosController extends jfLib_Controller
                 $objpti->usuario_actualizacion = $this->_loggedUser->id_usuario;
                 try {
                     $objpti->save();//guardamos la nueva relacion
+                    $id_productotienda=$objpti->getIncremented();
                 } catch (Exception $e) {
                     echo "no se genero la relacion".$e;
                     exit();
