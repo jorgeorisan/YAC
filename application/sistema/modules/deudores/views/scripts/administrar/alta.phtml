@@ -65,7 +65,7 @@
         </tr>
         <tr>
             <td><label>Fecha Del Abono</label></td>
-            <td>   <?php echo " ".$this->formText("fecha_abono", "",
+            <td>   <?php echo " ".$this->formText("fecha_abono", date('Y-m-d'),
                     array("style"=>"width:460px","required" => "required","datepicker"=>"past")
                 ); ?>
             </td>
@@ -88,6 +88,7 @@
                     foreach (Doctrine_Query::create()
                                  ->from("Database_Model_Usuario")
                                  ->where("id_usuario_tipo in(2,4,5)")
+                                 ->where("status='ACTIVO'")
                                  ->execute() as $obju) {
                         $arr[$obju->id_usuario] = $obju->id_usuario.$obju->id_usuario_tipo;
                     }

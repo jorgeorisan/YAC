@@ -19,32 +19,16 @@ class Administracion_Clientes2Controller extends jfLib_Controller
     }
     function indexAction()
     {
-       
-        $query = Doctrine_Query::create()
-            ->from("Database_Model_Usuario")
-            ->where("id_usuario=?",$this->_loggedUser->id_usuario)
-            ->execute();//verificamos si es adminisrador
+      
+        $tipousuario=$this->_loggedUser->id_usuario_tipo;
+        $tienda=$this->_loggedUser->id_tienda;
 
-        foreach($query as $obj){
-             $tipousuario=$obj->id_usuario_tipo;
-            $tienda=$obj->id_tienda;
-        }
-        switch ($tipousuario) {
-            case 2:////si es administrador mostramos todos los tipos de persona menos los 3(proveedores)
-                $query = Doctrine_Query::create()
-                    ->from("Database_Model_Persona")
-                    ->where("id_usuario_tipo in(1)")
-                    ->andWhere("status='ACTIVO'")
-                    ->orderBy("nombre ASC");
-                break;
-            default://si no es administador mostramos solo los clientes
-                $query = Doctrine_Query::create()
-                    ->from("Database_Model_Persona")
-                    ->where("id_usuario_tipo in(1)")
-                    ->andWhere("status='ACTIVO'")
-                    ->andWhere("id_tienda=?",$tienda)
-                    ->orderBy("nombre ASC");
-        }
+        $query = Doctrine_Query::create()
+                ->from("Database_Model_Persona")
+                ->where("id_usuario_tipo in(1)")
+                ->andWhere("status='ACTIVO'")
+                ->orderBy("nombre ASC");
+                
 
 
        
@@ -52,17 +36,9 @@ class Administracion_Clientes2Controller extends jfLib_Controller
     }
 
     function altaAction(){
-        $querytipo = Doctrine_Query::create()
-            ->from("Database_Model_Usuario")
-            ->where("id_usuario=?",$this->_loggedUser->id_usuario)
-            ->execute();
-        $tipousu="";
-        foreach($querytipo as $tipo){
-             $tipousu=$tipo["id_usuario_tipo"];
-             $tienda=$tipo->id_tienda;
-        }
-
-          $this->view->tipousu = $tipousu;
+        $tipousu=$this->_loggedUser->id_usuario_tipo;
+        $tienda=$this->_loggedUser->id_tienda;
+        $this->view->tipousu = $tipousu;
 
         if ($this->_request->isPost()) {
             $obj = new Database_Model_Persona();
