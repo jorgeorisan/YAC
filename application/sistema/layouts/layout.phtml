@@ -189,11 +189,17 @@
                 $queryproductos = Doctrine_Query::create()
                     ->from("Database_Model_Producto")
                     ->where("status='ACTIVO'")
-                    ->execute();
+                   ;
+                $id_tienda = $this->profile()->id_tienda;
+
+               
+                if($id_tienda==16){//urban solo muestra lo de urban
+                    $queryproductos->andWhere("id_proveedor='14'");
+                }
 
                 $prod="";
-                 $id_tienda=$this->profile()->id_tienda;
-                foreach($queryproductos as $tipo){   
+               
+                foreach($queryproductos->execute() as $tipo){   
                     $ejeprecio= Doctrine_Query::create()
                         ->from("Database_Model_EntradaProducto a, a.Entrada b, a.Producto p")
                         ->where("a.id_producto=?",$tipo->id_producto)
