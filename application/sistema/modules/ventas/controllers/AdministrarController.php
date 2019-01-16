@@ -190,9 +190,19 @@ class Ventas_AdministrarController extends jfLib_Controller
                                     exit;
                                 }
                             }else{
-                                $error=1;
-                                $msj= "Las Existencias del producto: ".$productotienda->Producto->nombre." en esta tienda son insuficientes, solo se cuentan con: ".$productotienda->existencias;
-                                echo "<script>alert('".$msj."');</script>";
+                                try {
+
+                                    // $producto->save();
+ 
+                                     //termina peps
+                                     //$obj->ProductosVenta->add($iObj);
+                                     $iObj->save();
+                                     $productotienda->save();
+                                 } catch (Exception $e) {
+                                     // $this->sendErrorMail("VENTA ALTA LINEA 48  (INVENTARIO):" . $e);
+                                     echo "error linea pv2".$e;
+                                     exit;
+                                 }
 
                             }
                         }
