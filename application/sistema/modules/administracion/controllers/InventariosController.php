@@ -144,60 +144,62 @@ class Administracion_InventariosController extends jfLib_Controller
             $obj->total          = $tottienda ;
             $obj->save();
             $id = $obj->getIncremented();
-            //productos tienda
+            //productos tienda YAC
             foreach ($productos as $key => $val) {
                 $producto = Database_Model_Producto::getById($val);
-                if ($producto && $cantidades[$key]>0) {
-                    $iObj = new Database_Model_EntradaProducto();
-                    $iObj->cantidad         = $cantidades[$key];
-                    $iObj->precio           = $precio[$key];
-                    $iObj->precio_descuento = $preciodescuento[$key];
-                    $iObj->costo            = $costo[$key];
-                    $iObj->totalcosto       = $cantidades[$key]*$costo[$key];
-                    $iObj->id_entrada       = $id;
-                    $iObj->nombre           = $producto->nombre;
-                    $iObj->id_producto      = $val;
-                    $iObj->id_tienda        = $obj->id_tienda;
-                    $cantproductos          = $cantproductos+$iObj->cantidad;
+                if ($producto) {
+                    if($cantidades[$key]>0){
+                        $iObj = new Database_Model_EntradaProducto();
+                        $iObj->cantidad         = $cantidades[$key];
+                        $iObj->precio           = $precio[$key];
+                        $iObj->precio_descuento = $preciodescuento[$key];
+                        $iObj->costo            = $costo[$key];
+                        $iObj->totalcosto       = $cantidades[$key]*$costo[$key];
+                        $iObj->id_entrada       = $id;
+                        $iObj->nombre           = $producto->nombre;
+                        $iObj->id_producto      = $val;
+                        $iObj->id_tienda        = $obj->id_tienda;
+                        $cantproductos          = $cantproductos+$iObj->cantidad;
 
-                    $query = Doctrine_Query::create()
-                        ->from("Database_Model_ProductoTienda")
-                        ->where("id_producto=".$producto->id_producto)
-                        ->andWhere("tienda_id_tienda=".$obj->id_tienda)
-                        ->andWhere("status='ACTIVO'");
-                    //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
-                    $cantanterior=0;
-                    foreach($query->execute() as $objt){
-                        $id_productotienda = $objt->id_productotienda;
-                        $cantanterior      = $objt->existencias;
-                    }
-                    $iObj->cantidad_anterior=$cantanterior;
-                    if($id_productotienda>0){//el producto en esta tienda si existe
-                        try {
-
-                            //$obj->EntradaProducto->add($iObj);
-                            $iObj->save();
-                        } catch (Exception $e) {
-                            $error=1;
-                            echo "no se metio en entrada producto";
-                            exit();
+                        $query = Doctrine_Query::create()
+                            ->from("Database_Model_ProductoTienda")
+                            ->where("id_producto=".$producto->id_producto)
+                            ->andWhere("tienda_id_tienda=".$obj->id_tienda)
+                            ->andWhere("status='ACTIVO'");
+                        //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
+                        $cantanterior=0;
+                        foreach($query->execute() as $objt){
+                            $id_productotienda = $objt->id_productotienda;
+                            $cantanterior      = $objt->existencias;
                         }
-                    }else{
-                        $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
-                        $objpti->id_producto=$producto->id_producto;
-                        $objpti->tienda_id_tienda=$obj->id_tienda;
-                        $objpti->existencias=0;//solo asta que se valide
-                        
-                        try {
-                            $objpti->save();//guardamos la nueva relacion
-                            //$obj->EntradaProducto->add($iObj);
-                            $iObj->save();
-                        } catch (Exception $e) {
-                            $error=1;
-                            echo "no se genero la relacion";
-                            exit();
-                        }
+                        $iObj->cantidad_anterior=$cantanterior;
+                        if($id_productotienda>0){//el producto en esta tienda si existe
+                            try {
 
+                                //$obj->EntradaProducto->add($iObj);
+                                $iObj->save();
+                            } catch (Exception $e) {
+                                $error=1;
+                                echo "no se metio en entrada producto";
+                                exit();
+                            }
+                        }else{
+                            $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                            $objpti->id_producto=$producto->id_producto;
+                            $objpti->tienda_id_tienda=$obj->id_tienda;
+                            $objpti->existencias=0;//solo asta que se valide
+                            
+                            try {
+                                $objpti->save();//guardamos la nueva relacion
+                                //$obj->EntradaProducto->add($iObj);
+                                $iObj->save();
+                            } catch (Exception $e) {
+                                $error=1;
+                                echo "no se genero la relacion";
+                                exit();
+                            }
+
+                        }
                     }
                 }else{
                     echo "no existe el producto";
@@ -219,56 +221,58 @@ class Administracion_InventariosController extends jfLib_Controller
                 $id = $objzaragoza->getIncremented();
                 foreach ($productos as $key => $val) {
                     $producto = Database_Model_Producto::getById($val);
-                    if ($producto && $cantidades_zaragoza[$key]>0) {
-                        $iObj = new Database_Model_EntradaProducto();
-                        $iObj->cantidad         = $cantidades_zaragoza[$key];
-                        $iObj->precio           = $precio[$key];
-                        $iObj->precio_descuento = $preciodescuento[$key];
-                        $iObj->costo            = $costo[$key];
-                        $iObj->totalcosto       = $cantidades_zaragoza[$key]*$costo[$key];
-                        $iObj->id_entrada       = $id;
-                        $iObj->nombre           = $producto->nombre;
-                        $iObj->id_producto      = $val;
-                        $iObj->id_tienda        = $objzaragoza->id_tienda;
-                        $cantproductos          = $cantproductos+$iObj->cantidad;
-    
-                        $query = Doctrine_Query::create()
-                            ->from("Database_Model_ProductoTienda")
-                            ->where("id_producto=".$producto->id_producto)
-                            ->andWhere("tienda_id_tienda=".$objzaragoza->id_tienda)
-                            ->andWhere("status='ACTIVO'");
-                        //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
-                        $cantanterior=0;
-                        foreach($query->execute() as $objt){
-                            $id_productotienda = $objt->id_productotienda;
-                            $cantanterior      = $objt->existencias;
-                        }
-                        $iObj->cantidad_anterior=$cantanterior;
-                        if($id_productotienda>0){//el producto en esta tienda si existe
-                            try {
-                                //$obj->EntradaProducto->add($iObj);
-                                $iObj->save();
-                            } catch (Exception $e) {
-                                $error=1;
-                                echo "no se metio en entrada producto";
-                                exit();
+                    if ($producto) {
+                        if( $cantidades_zaragoza[$key]>0 ){
+                            $iObj = new Database_Model_EntradaProducto();
+                            $iObj->cantidad         = $cantidades_zaragoza[$key];
+                            $iObj->precio           = $precio[$key];
+                            $iObj->precio_descuento = $preciodescuento[$key];
+                            $iObj->costo            = $costo[$key];
+                            $iObj->totalcosto       = $cantidades_zaragoza[$key]*$costo[$key];
+                            $iObj->id_entrada       = $id;
+                            $iObj->nombre           = $producto->nombre;
+                            $iObj->id_producto      = $val;
+                            $iObj->id_tienda        = $objzaragoza->id_tienda;
+                            $cantproductos          = $cantproductos+$iObj->cantidad;
+        
+                            $query = Doctrine_Query::create()
+                                ->from("Database_Model_ProductoTienda")
+                                ->where("id_producto=".$producto->id_producto)
+                                ->andWhere("tienda_id_tienda=".$objzaragoza->id_tienda)
+                                ->andWhere("status='ACTIVO'");
+                            //  echo $query->getSqlQuery();//imprime la consulta qu ese esta generando
+                            $cantanterior=0;
+                            foreach($query->execute() as $objt){
+                                $id_productotienda = $objt->id_productotienda;
+                                $cantanterior      = $objt->existencias;
                             }
-                        }else{
-                            $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
-                            $objpti->id_producto      = $producto->id_producto;
-                            $objpti->tienda_id_tienda = $objzaragoza->id_tienda;
-                            $objpti->existencias      = 0;//solo asta que se valide
-                            
-                            try {
-                                $objpti->save();//guardamos la nueva relacion
-                                //$obj->EntradaProducto->add($iObj);
-                                $iObj->save();
-                            } catch (Exception $e) {
-                                $error=1;
-                                echo "no se genero la relacion";
-                                exit();
+                            $iObj->cantidad_anterior=$cantanterior;
+                            if($id_productotienda>0){//el producto en esta tienda si existe
+                                try {
+                                    //$obj->EntradaProducto->add($iObj);
+                                    $iObj->save();
+                                } catch (Exception $e) {
+                                    $error=1;
+                                    echo "no se metio en entrada producto";
+                                    exit();
+                                }
+                            }else{
+                                $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                                $objpti->id_producto      = $producto->id_producto;
+                                $objpti->tienda_id_tienda = $objzaragoza->id_tienda;
+                                $objpti->existencias      = 0;//solo asta que se valide
+                                
+                                try {
+                                    $objpti->save();//guardamos la nueva relacion
+                                    //$obj->EntradaProducto->add($iObj);
+                                    $iObj->save();
+                                } catch (Exception $e) {
+                                    $error=1;
+                                    echo "no se genero la relacion zaragoza";
+                                    exit();
+                                }
+        
                             }
-    
                         }
                     }else{
                         echo "no existe el producto zaragoza";

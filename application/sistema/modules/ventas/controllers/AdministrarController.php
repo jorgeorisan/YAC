@@ -192,17 +192,54 @@ class Ventas_AdministrarController extends jfLib_Controller
                             }else{
                                 try {
 
-                                    // $producto->save();
- 
-                                     //termina peps
-                                     //$obj->ProductosVenta->add($iObj);
-                                     $iObj->save();
-                                     $productotienda->save();
-                                 } catch (Exception $e) {
-                                     // $this->sendErrorMail("VENTA ALTA LINEA 48  (INVENTARIO):" . $e);
-                                     echo "error linea pv2".$e;
-                                     exit;
-                                 }
+                                   // $producto->save();
+
+                                    //termina peps
+                                    //$obj->ProductosVenta->add($iObj);
+                                    $iObj->save();
+                                    $productotienda->save();
+                                    $preciodesc = 0;
+                                    $precio     = 0;
+                                    $costo      = 0;
+                                    $ejeprecio= Doctrine_Query::create()
+                                        ->from("Database_Model_EntradaProducto a, a.Entrada b")
+                                        ->where("a.id_producto=?",$producto->id_producto)
+                                        ->andWhere("b.status='ACTIVO'")
+                                        ->orderBy("id_entrada_producto DESC")
+                                        ->limit(1);
+                                        
+                                    foreach($ejeprecio->execute() as $ex){
+                                        $precio    = $ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                                        $costo     = $ex["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                                        $preciodesc= $ex["precio_descuento"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+                                    }
+                                     //entrada de productos
+                                    $obje = new Database_Model_Entrada();
+                                    $obje->id_usuario     = $this->_loggedUser->id_usuario;
+                                    $obje->id_tienda      = $obj->id_tienda;
+                                    $obje->fecha          = date('Y-m-d H:i:s');
+                                    $obje->status         = "ACTIVO";
+                                    $obje->concepto       = "ACTUALIZACION INVENTARIO EN VENTA";
+                                    $obje->referencia     = "ENTRADA DIRECTA";
+                                    $obje->save();
+                                    $iden = $obje->getIncremented();
+                                    $cantidad = $iObj->cantidad;
+                                    $iObjEP = new Database_Model_EntradaProducto();
+                                    $iObjEP->cantidad         = $cantidad;
+                                    $iObjEP->precio           = $precio;
+                                    $iObjEP->precio_descuento = $preciodesc;
+                                    $iObjEP->costo            = $costo;
+                                    $iObjEP->totalcosto       = $cantidad*$costo;
+                                    $iObjEP->id_entrada       = $iden;
+                                    $iObjEP->nombre           = $producto->nombre;
+                                    $iObjEP->id_producto      = $producto->id_producto;
+                                    $iObjEP->id_tienda        = $tienda;
+                                    $iObjEP->save();
+                                } catch (Exception $e) {
+                                    // $this->sendErrorMail("VENTA ALTA LINEA 48  (INVENTARIO):" . $e);
+                                    echo "error linea pv2".$e;
+                                    exit;
+                                }
 
                             }
                         }
