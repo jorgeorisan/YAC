@@ -24,6 +24,7 @@ class Database_Model_Usuario extends Database_Model_Base_Usuario
         $arr[""]="Selecciona";
         foreach (Doctrine_Query::create()
                      ->from(get_class())
+                     ->where("status='ACTIVO'")
                      ->orderBy("id_usuario desc")
                      ->execute() as $obj) {
             $arr[$obj->id_usuario] = $obj->id_usuario."|".$obj->nombre;
