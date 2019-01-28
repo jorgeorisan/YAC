@@ -16,7 +16,11 @@ class Database_Model_Usuario extends Database_Model_Base_Usuario
 
     function getAll()
     {
-        return Doctrine_Core::getTable("Database_Model_Usuario")->findAll();
+        return Doctrine_Query::create()
+        ->from(get_class())
+        ->where("status='ACTIVO'")
+        ->orderBy("id_usuario desc")
+        ->execute();
     }
     public static function getAllarr()
     {
