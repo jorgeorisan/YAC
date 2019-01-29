@@ -178,6 +178,23 @@
                     echo "Usuario: <strong>" . $profile->id_usuario . " (" . $profile->nombre . ")" .$profile->Tienda->nombre." Tipo:".$profile->UsuarioTipo->usuario_tipo. "</strong>";
    
                 }
+                $showcostos=0;
+                $readonly=" readonly ";
+                switch ($this->profile()->id_usuario_tipo) {
+                    case '2':
+                        if($this->profile()->id_usuario=='Elena' || $this->profile()->id_usuario=='anny' || $this->profile()->id_usuario=='tavo'   ){
+                            $showcostos=1;
+                            $readonly="";
+                        }
+                        break;
+                    case '5':
+                        $showcostos=1;
+                        $readonly="";
+                        break;
+                    
+                    default:
+                        break;
+                }
                 ?>
             </p>
 

@@ -54,7 +54,7 @@
             <th>Categoría</th>
             <th>Proveedor</th>
             <?php
-            if($this->tipousu=="5"||($this->usu=='anny' || $this->usu=='tavo'  || $this->usu=='Elena')){
+            if($showcostos){
             ?>
             <th>Costo</th>
             <?php
@@ -87,13 +87,13 @@
                 <td><?php echo $obj["categoria"]; ?></td>
                 <td><?php echo $obj["proveedor"]; ?></td>
                 <?php
-                    if($this->tipousu=="5"||($this->usu=='anny' || $this->usu=='tavo' || $this->usu=='Elena')){
+                    if($showcostos){
                 ?>
-                    <td>$<?php echo number_format($obj["costo"], 2); ?></td>
+                    <td><?php echo number_format($obj["costo"], 2); ?></td>
                 <?php
                 }?>
-                <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>">$<?php echo number_format($obj["precio"], 2); ?></td>
-                <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>">$<?php echo number_format($obj["preciomayoreo"], 2); ?></td>
+                <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>"><?php echo number_format($obj["precio"], 2); ?></td>
+                <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>"><?php echo number_format($obj["preciomayoreo"], 2); ?></td>
                 <td><input type='text' class="productotienda" style="width:20px" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?></td>
                
             
@@ -128,12 +128,17 @@
 
 
 <script>
+    $('#txtbuscar').keyup(function(e){
+        if(e.keyCode == 13)
+        {
+            
+            var text=$(this).val();
+            if (text.length<4) return ;
 
-    $("#txtbuscar").blur(function () {
-        var text=$(this).val();
-        if( !text){
-            $("#table-resultados").html('<img style="padding-left:30%" src="<?php echo $this->baseUrl("images/loading.gif"); ?>"/>');
-        }
+
+            if( !text){
+                $("#table-resultados").html('<img style="padding-left:30%" src="<?php echo $this->baseUrl("images/loading.gif"); ?>"/>');
+            }
        
             $.get(_root + "/administracion/productos/buscarproducto?text="+text, function (response) {
                 $("#table-resultados").html(response);
@@ -150,6 +155,7 @@
                     "aLengthMenu": [[5, 10, 15, 25, 50, -1], [5, 10, 15, 25, 50, "All"]]
                 } );
             });
+        }
         return false;
     });
     $(document).ready(function(){

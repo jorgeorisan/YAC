@@ -1,7 +1,34 @@
 <?php
 $lineId = rand(1000, 100000);
 
-if ($this->obj): ?>
+if ($this->obj): 
+    
+    $precioBase = 0;
+    $descuento = false;
+    $ejeprecio= Doctrine_Query::create()
+        ->from("Database_Model_EntradaProducto a, a.Entrada b")
+        ->where("a.id_producto=?",$this->obj->id_producto)
+        //->andWhere("cantvendida<cantidad")
+        ->andWhere("b.status='ACTIVO'")
+        ->orderBy("id_entrada_producto DESC")
+        ->limit(1);
+    $precio=0;
+    $costo=0;
+    foreach($ejeprecio->execute() as $ex){
+        $precio=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+        $costo=$ex["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
+    }
+    if($precio>0){
+        //$precio=$obj->precio;
+    }else{
+
+            $precio=floatval($this->obj->precio);
+            $costo=floatval($this->obj->costo);
+
+
+    }
+
+?>
 <tr class="producto" lineid="<?php echo $lineId; ?>">
     <td>
         <?php echo "<div  id='cantidad".$lineId."' placeholder='$0.00'>".$this->cantidad."</div>";
@@ -17,38 +44,13 @@ if ($this->obj): ?>
     <td>
         <?php echo $this->obj->nombre; ?>
     </td>
+    <?php if($showcostos){ ?>
     <td>
         <?php
-        $precioBase = 0;
-        $descuento = false;
-        $ejeprecio= Doctrine_Query::create()
-            ->from("Database_Model_EntradaProducto a, a.Entrada b")
-            ->where("a.id_producto=?",$this->obj->id_producto)
-            //->andWhere("cantvendida<cantidad")
-            ->andWhere("b.status='ACTIVO'")
-            ->orderBy("id_entrada_producto DESC")
-            ->limit(1);
-        $precio=0;
-        $costo=0;
-        foreach($ejeprecio->execute() as $ex){
-            $precio=$ex["precio"];//sacamos el ultimo precio por fecha mientras no se allan vendido
-            $costo=$ex["costo"];//sacamos el ultimo precio por fecha mientras no se allan vendido
-        }
-        if($precio>0){
-            //$precio=$obj->precio;
-        }else{
-
-                $precio=floatval($this->obj->precio);
-                $costo=floatval($this->obj->costo);
-
-
-        }
-
-
-
-        echo "<input type='text' name='costo[]' class='small-field' readonly  id='costo".$lineId."' onkeyup='calculaprecio(".$lineId.")'  style='width: 30' pattern='[0-9]+([\.|,][0-9]+)?>$' placeholder='$0.00' value='".$costo."'>";
+            echo "<input type='text' name='costo[]' class='small-field' readonly  id='costo".$lineId."' onkeyup='calculaprecio(".$lineId.")'  style='width: 30' pattern='[0-9]+([\.|,][0-9]+)?>$' placeholder='$0.00' value='".$costo."'>";
           ?>
     </td>
+    <?php } ?>
     <td>
         <?php
         echo "<input type='text' name='precio[]' class='small-field' readonly id='precio".$lineId."' style='width: 30' pattern='[0-9]+([\.|,][0-9]+)?>$' placeholder='$0.00'  value='".$precio."' >";

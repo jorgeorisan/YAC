@@ -666,7 +666,6 @@ class Administracion_ProductosController extends jfLib_Controller
                 $objhist->id_usuario          = $this->_loggedUser->id_usuario;
                 try {
                     $objhist->save();//guardamos la nueva relacion
-                    echo "hist";
                 } catch (Exception $e) {
                     echo "no se genero la relacion".$e;
                     exit();

@@ -9,7 +9,7 @@
         <th>Categoría</th>
         <th>Proveedor</th>
         <?php
-        if($this->tipousu=="5"||($this->usu=='anny' || $this->usu=='Elena')){
+        if($showcostos){
         ?>
         <th>Costo</th>
         <?php
@@ -41,39 +41,26 @@
             <td><?php echo $obj["categoria"]; ?></td>
             <td><?php echo $obj["proveedor"]; ?></td>
             <?php
-                if($this->tipousu=="5"||($this->usu=='anny' || $this->usu=='Elena')){
+                if($showcostos){
             ?>
                 <td>$<?php echo number_format($obj["costo"], 2); ?></td>
             <?php
             }?>
             <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>">$<?php echo number_format($obj["precio"], 2); ?></td>
             <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>">$<?php echo number_format($obj["preciomayoreo"], 2); ?></td>
-            <?php
-                if($this->tipousu=="5"){
-            ?>
-                <td><input type='text' class="productotienda" style="width:20px"  idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?></td>
-            <?php
-            }else{
-            ?>
-                <td><?php echo $obj["existenciastienda"]; ?>||<?php echo $obj["existencias"]; ?></td>
-            <?php
-            }?>
-           
+            <td><input type='text' class="productotienda" style="width:20px" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?></td>
+               
             <td>
                 <?php
                 if($obj["fecha_actualizacion"]){
-                    echo $obj["fecha_actualizacion"]."<br>".$obj["usuario_actualizacion"]; 
-                }else{
-                    if($this->tipousu=="5"){
-                    ?>
-                        <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
-                    <?php
-                    }
+                    echo $obj["fecha_actualizacion"]."<br>".$obj["usuario_actualizacion"]."<br>"; 
                 }
-                
                 ?>
+                <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
+                <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/historialinventario/id/".$obj["id_producto"]); ?>">
+                        Historial</a>
             </td>
-           
+        
             <td>
                 <a  target="_blank" title="Agregar nueva Entrada" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/inventarios/alta/id/" . $obj["id_producto"]); ?>">
                     <img src="<?php echo $this->baseUrl("css/img/add.png") ?>" border="0"/>

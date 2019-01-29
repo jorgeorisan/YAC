@@ -126,7 +126,13 @@ $cadena=$_SESSION['CADENA'];
 
 <form action="" id="main-form" method="post">
     <table class="nostyle">
+        <tr>
+            <td><label>Fecha Traspaso</label></td>
+            <td>
+                <input type="text" class="small-input" datepicker="past" id="fecha" value="<?php echo date('Y-m-d')?>"  name="fecha" placeholder="Fecha Traspaso"/>
+            </td>
 
+        </tr>
         <tr>
             <td><label>Referencia</label></td>
             <td>
@@ -134,13 +140,7 @@ $cadena=$_SESSION['CADENA'];
             </td>
         </tr>
 
-        <tr>
-            <td><label>Fecha Traspaso</label></td>
-            <td>
-                <input type="text" class="small-input" datepicker="past" id="fecha"  name="fecha" placeholder="Fecha Traspaso"/>
-            </td>
-
-        </tr>
+        
 
     </table>
     <div class="control-group" id="" style="display: ">
@@ -207,7 +207,9 @@ $cadena=$_SESSION['CADENA'];
             <th>Cantidad</th>
             <th>Codigo Interno</th>
             <th>Producto</th>
+            <?php if($showcostos){ ?>
             <th>Costo</th>
+            <?php } ?>
             <th>Precio</th>
             <th>Precio Mayoreo</th>
             <th>Importe</th>
