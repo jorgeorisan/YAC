@@ -101,34 +101,7 @@
                     <?php
                     if($obj["fecha_actualizacion"]){
                         echo $obj["fecha_actualizacion"]."<br>".$obj["usuario_actualizacion"]."<br>"; 
-                        $quuerytienda ="
-                                SELECT id_productotienda, id_producto, existencias, tienda_id_tienda id_tienda
-                                FROM producto_tienda 
-                                WHERE id_producto=". $obj["id_producto"]."
-                                and tienda_id_tienda=".$this->profile()->id_tienda."
-                                group by id_producto,tienda_id_tienda";
-                            $resbkp2 = Sistema_Class_Controller::conect()->query($quuerytienda);
-
-                            if ( ! $resbkp2 )
-                                return $this->_informError(null, 'Oops! There was an error retrieving the data.');
-
-                            $id_productotienda = "";
-                            while ( $objasas2 = $resbkp2->fetch_object() ) {
-                                $id_productotienda = $objasas2->id_productotienda;
-                            }
-                        $objhist = new Database_Model_HistorialInventario();
-                        $objhist->id_productotienda   = $id_productotienda;
-                        $objhist->existencia_anterior = 0;
-                        $objhist->existencia          = $obj["existenciastienda"];
-                        $objhist->id_usuario          = $obj["usuario_actualizacion"];
-                        $objhist->fecha_registro      = $obj["fecha_actualizacion"];
-                        try {
-                            $objhist->save();//guardamos la nueva relacion
-                            echo "en historial";
-                        } catch (Exception $e) {
-                            echo "no se genero la relacion".$e;
-                            exit();
-                        }
+                        
                     }
                     ?>
                         <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
