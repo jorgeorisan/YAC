@@ -15,6 +15,31 @@ class Administracion_ValidasalidaController extends jfLib_Controller
             $this->_informError(null, "Usted no tiene permisos para ingresar.", TRUE, "/");
         }
     }
+    function init()
+    {
+        parent::init();
+        $this->view->datauserlogged=$this->_loggedUser;
+        $showcostos=0;
+        $readonly=" readonly ";
+        switch ($this->_loggedUser->id_usuario_tipo) {
+            case '2':
+                if($this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='tavo'   ){
+                    $showcostos=1;
+                    $readonly="";
+                }
+                break;
+            case '5':
+                $showcostos=1;
+                $readonly="";
+                break;
+            
+            default:
+                break;
+        }
+        $this->view->showcostos = $showcostos;
+        $this->view->readonly   = $readonly;
+
+    }
 
     function indexAction()
     {

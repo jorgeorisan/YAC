@@ -58,7 +58,7 @@
             <td  barcode="<?php echo $obj->codinter; ?>"><a href="#"><?php echo $obj->Marca->nombre; ?></a></td>
             <td  barcode="<?php echo $obj->codinter; ?>"><a href="#"><?php echo $obj->Proveedor->nombre_corto; ?></a></td>
 
-            <td >$<?php
+            <td ><?php
                 $id_tienda=$this->view->id_tienda;
                     $precioBase="";
                     $preciodesc="";
@@ -77,9 +77,7 @@
                     echo number_format($preciodesc, 2);
                 ?>
             </a></td>
-            <td>$
-                <?php
-                echo number_format($precioBase, 2); ?>
+            <td><?php echo number_format($precioBase, 2); ?>
             </td>
             <td  barcode="<?php echo $obj->codinter; ?>">
                 <input style="width: 100%" type="button" id="" class="button" value="Usar">

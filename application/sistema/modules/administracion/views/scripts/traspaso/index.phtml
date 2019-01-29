@@ -25,7 +25,7 @@
         <th>Destino</th>
         <th>Cantidad Total</th>
         <?php
-            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            if($this->showcostos){
             echo "<th>Costo Total</th>";
             }
         ?>
@@ -70,7 +70,7 @@
                 } echo number_format($obj->gettotales()[0], 0); ?>
             </td>
             <?php
-                if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){  
+                if($this->showcostos){  
             ?>
                         <td>$ 
                             <?php $costot+=$obj->gettotales()[1]; 
@@ -105,7 +105,7 @@
         <td><strong>Totales</strong></td>
         <td> <?php echo number_format($total, 0); ?></td>
         <?php
-        if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+        if($this->showcostos){
             echo "<td>$".number_format($costot, 2)."</td>";
         }
         ?>

@@ -22,7 +22,8 @@ $cadena = substr($prod,1);
 </script>
 
 <h3 class="tit">Reporte generado</h3>
-<table cellspacing="0" class="full-width" id="example">
+<div style="overflow:auto">
+<table cellspacing="0" class="full-width" id="example" style="overflow:auto">
     <thead>
     <tr>
         <th>Proveedor</th>
@@ -47,7 +48,7 @@ $cadena = substr($prod,1);
     $totalUtilidad = 0;
     $totalCosto = 0;
     foreach ($this->query as $obj): ?>
-        <tr tooltip="true">
+        <tr >
             <td><?php echo $obj->ProductoTienda->Producto->Proveedor->nombre_corto; ?></td>
             <td><?php echo $obj->total_cantidad; ?></td>
             <td><?php echo $obj->ProductoTienda->Producto->id_producto; ?></td>
@@ -98,10 +99,10 @@ $cadena = substr($prod,1);
     </table>
     <table cellspacing="0" class="full-width" id="">
         <tr>
-            <th>Proveedor</th>
-            <th>Cantidad</th>
+            <th>Prov</th>
+            <th>Cant</th>
             <th>ID prod</th>
-            <th>Cod. Interno</th>
+            <th>Cod</th>
             <th>Producto</th>
 
             <th>Tienda</th>
@@ -203,12 +204,13 @@ $cadena = substr($prod,1);
             </td>
         </tr>
 </table>
+</div>
 <script>
     $(function() {
 
         var table =	$('#example').dataTable( {
             "bJQueryUI": true,
-            "scrollY": 200,
+           
             "aaSorting": [[1, "desc"]],
             "scrollX": true,
             "iDisplayLength": 50,

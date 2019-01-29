@@ -13,6 +13,25 @@ class Administracion_ValidainventarioController extends jfLib_Controller
     {
         parent::init();
         $this->view->datauserlogged=$this->_loggedUser;
+        $showcostos=0;
+        $readonly=" readonly ";
+        switch ($this->_loggedUser->id_usuario_tipo) {
+            case '2':
+                if($this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='tavo'   ){
+                    $showcostos=1;
+                    $readonly="";
+                }
+                break;
+            case '5':
+                $showcostos=1;
+                $readonly="";
+                break;
+            
+            default:
+                break;
+        }
+        $this->view->showcostos = $showcostos;
+        $this->view->readonly   = $readonly;
 
     }
     function _onlyAdmin()
@@ -24,20 +43,7 @@ class Administracion_ValidainventarioController extends jfLib_Controller
 
     function indexAction()
     {
-        //$this->_onlyAdmin();
-        $form = new jfLib_Form_Search();
-        $form->populate($this->_request->getParams());
-
-        // Defining initial variables
-        if ($this->_request->getParam('p')) {
-            $currentPage = $this->_request->getParam('p');
-        } else {
-            $currentPage = 1;
-        }
-
-        $resultsPerPage = 25;
-        $url = $this->view->baseUrl($this->_request->getModuleName() . "/" . $this->_request->getControllerName());
-
+        
         $query = Doctrine_Query::create()
             ->from("Database_Model_Entrada ")
             ->where("status='POR AUTORIZAR'")
@@ -50,24 +56,7 @@ class Administracion_ValidainventarioController extends jfLib_Controller
 
         }
 
-        $pagerLayout = new jfLib_Paginator(
-            new Doctrine_Pager(
-                $query,
-                $currentPage,
-                $resultsPerPage
-            ),
-            new Doctrine_Pager_Range_Sliding(array(
-                'chunk' => 5
-            )),
-            $url
-        );
-        $pagerLayout->setTemplate('<a href="{%url}?p={%page_number}">{%page}</a>');
-        $pager = $pagerLayout->getPager();
-
-
-        $this->view->query = $pager->execute();
-        $this->view->paginator = $pagerLayout;
-        $this->view->form = $form;
+        $this->view->query = $query->execute();
     }
 
     function altaAction(){

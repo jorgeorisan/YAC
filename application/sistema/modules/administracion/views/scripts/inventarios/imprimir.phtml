@@ -57,7 +57,7 @@
         
         <th>Precio</th>
         <?php
-            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            if($this->showcostos){
                 echo "<th>Costo</th>";
             }
         ?>
@@ -85,7 +85,7 @@
             <td><?php echo $obj->nombre; ?></td>
             <td>$<?php  echo number_format($obj->cantidad*$obj->precio, 2); ?></td>
             <?php
-            if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+            if($this->showcostos){
               
                 echo "<td>$".number_format($obj->totalcosto, 2)."</td>";
             }
@@ -100,7 +100,7 @@
         <td><strong>Totales</strong></td>
         <td>$<?php  echo number_format($precio, 2); ?></td>
         <?php
-        if($this->datauserlogged->id_usuario=='anny'||$this->datauserlogged->id_usuario=='Elena'||$this->datauserlogged->id_usuario_tipo==5){
+        if($this->showcostos){
             echo "<td>$".number_format($costo, 2)."</td>";
         }
         ?>

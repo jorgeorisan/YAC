@@ -124,7 +124,7 @@ $cadena=$_SESSION['CADENA'];
 
 
 
-<form action="" id="main-form" method="post">
+<form action="#" id="main-form" method="post">
     <table class="nostyle">
         <tr>
             <td><label>Fecha Traspaso</label></td>
@@ -207,7 +207,7 @@ $cadena=$_SESSION['CADENA'];
             <th>Cantidad</th>
             <th>Codigo Interno</th>
             <th>Producto</th>
-            <?php if($showcostos){ ?>
+            <?php if($this->showcostos){ ?>
             <th>Costo</th>
             <?php } ?>
             <th>Precio</th>
@@ -232,7 +232,7 @@ $cadena=$_SESSION['CADENA'];
 
 
     <div style="height: 25px;"></div>
-    <input style="width: 100%" type="button" id="send" class="button" value="Registrar Traspaso">
+    <input style="width: 100%" type="button" onclick='return false;' id="send" class="button" value="Registrar Traspaso">
 </form>
 <script>
     $("#id_tienda").change(function (e) {
@@ -247,6 +247,17 @@ $cadena=$_SESSION['CADENA'];
    
         }
     });
+    $("#send").click(function (e) {
+        if ($("#total-global").val() > 0) {
+            $(this).hide();
+            $("#main-form").submit();
+        } else {
+            $("#barcode").focus();
+            return false;
+        }
+        return false;
+    });
+
 </script>
 
 

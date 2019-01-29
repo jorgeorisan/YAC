@@ -8,11 +8,30 @@
  */
 
 class Administracion_ValidatraspasoController extends jfLib_Controller
-{
+{ 
     function init()
     {
         parent::init();
         $this->view->datauserlogged=$this->_loggedUser;
+        $showcostos=0;
+        $readonly=" readonly ";
+        switch ($this->_loggedUser->id_usuario_tipo) {
+            case '2':
+                if($this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='tavo'   ){
+                    $showcostos=1;
+                    $readonly="";
+                }
+                break;
+            case '5':
+                $showcostos=1;
+                $readonly="";
+                break;
+            
+            default:
+                break;
+        }
+        $this->view->showcostos = $showcostos;
+        $this->view->readonly   = $readonly;
 
     }
    
