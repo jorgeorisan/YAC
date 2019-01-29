@@ -63,7 +63,7 @@
             <th>Mayoreo</th>
             <th>Exist. Tienda||Gral.</th>
             
-            <th>Act.</th>
+            <th>Actualizacion</th>
 
             <th >Acciones</th>
         </tr>
@@ -108,29 +108,16 @@
                 <td>
                     <?php
                     if($obj["fecha_actualizacion"]){
-                        echo $obj["fecha_actualizacion"]."<br>".$obj["usuario_actualizacion"]; 
-                    }else{
-                        if($this->tipousu=="5"){
-                        ?>
-                            <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
-                        <?php
-                        }
+                        echo $obj["fecha_actualizacion"]."<br>".$obj["usuario_actualizacion"]."<br>"; 
                     }
-                    
                     ?>
+                        <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
+                        <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/historialinventario/id/".$obj["id_producto"]); ?>">
+                            Historial</a>
                 </td>
             
                 <td>
-                    <a  target="_blank" title="Agregar nueva Entrada" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/inventarios/alta/id/" . $obj["id_producto"]); ?>">
-                        <img src="<?php echo $this->baseUrl("css/img/add.png") ?>" border="0"/>
-                    </a>
-                    <?php
-                    if($obj["paquete"]=='SI'){ ?>
-                        <a  title="Crear un paquete" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/paquete/alta/id/" . $obj["id_producto"]); ?>">
-                            <img width="25" height="25" src="<?php echo $this->baseUrl("css/img/box.png") ?>" border="0"/>
-                        </a>
-                <?php } ?>
-
+                   
                     <a target="_blank" title="Editar Producto" href="<?php echo $this->baseUrl($this->request->getModuleName() . "/" . $this->request->getControllerName() . "/editar/id/" . $obj["id_producto"]); ?>">
                         <img src="<?php echo $this->baseUrl("css/img/edit.png") ?>" border="0"/>
                     </a>
@@ -186,7 +173,7 @@
             var cant=$(this).attr('existencias');
             if (confirm("Deseas actualizar este producto?") == true) {
                 updateproducto(id,cant);
-                $(this).hide();
+                $(this).val('LISTO');
             }
             return false;
         }));

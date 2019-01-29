@@ -567,6 +567,50 @@ class Administracion_ProductosController extends jfLib_Controller
         $this->view->id = $this->_request->getParam("id");
         $this->view->tipousu = $this->_loggedUser->id_usuario_tipo;//mando el tipo de usuario
     }
+    function historialinventarioAction(){
+        $this->_disableLayout();
+        
+        if($this->_request->getParam("id")){
+            $id       = $this->_request->getParam("id");
+            $tienda   = $this->_loggedUser->id_tienda;
+            $quuerytienda ="
+            SELECT id_productotienda, id_producto, existencias, tienda_id_tienda id_tienda
+            FROM producto_tienda 
+                WHERE id_producto=".$id."
+                and tienda_id_tienda=".$tienda."
+            group by id_producto,tienda_id_tienda";
+            $resbkp2 = Sistema_Class_Controller::conect()->query($quuerytienda);
+
+            if ( ! $resbkp2 )
+                return $this->_informError(null, 'Oops! There was an error retrieving the data.');
+
+            $id_productotienda = "";
+            while ( $objasas2 = $resbkp2->fetch_object() ) {
+                $id_productotienda = $objasas2->id_productotienda;
+            } 
+            if(!$id_productotienda){
+                $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                $objpti->id_producto      = $id;
+                $objpti->tienda_id_tienda = $tienda;
+                $objpti->existencias      = 0;//solo asta que se valide
+                $objpti->fecha_actualizacion   = date('Y-m-d H:i:s');
+                $objpti->usuario_actualizacion = $this->_loggedUser->id_usuario;
+                try {
+                    $objpti->save();//guardamos la nueva relacion
+                    $id_productotienda=$objpti->getIncremented();
+                } catch (Exception $e) {
+                    echo "no se genero la relacion".$e;
+                    exit();
+                }
+            }
+            $query= Doctrine_Query::create()
+                ->from("Database_Model_HistorialInventario")
+                ->where("id_productotienda=?",$id_productotienda)
+                ->execute();
+            $this->view->query =$query;
+            $this->view->hola =1;
+        }
+    }
     function updateproductoAction(){
         $this->_disableAllLayouts();
         if($this->_request->getParam("id")){
@@ -605,9 +649,7 @@ class Administracion_ProductosController extends jfLib_Controller
             }
            
             $obj = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $id_productotienda);
-            $objhist = new Database_Model_ProductoTienda();
-          
-           
+            $objhist = new Database_Model_HistorialInventario();
             $existant=0;
             if (!$obj) {
                 echo "error";
@@ -624,6 +666,7 @@ class Administracion_ProductosController extends jfLib_Controller
                 $objhist->id_usuario          = $this->_loggedUser->id_usuario;
                 try {
                     $objhist->save();//guardamos la nueva relacion
+                    echo "hist";
                 } catch (Exception $e) {
                     echo "no se genero la relacion".$e;
                     exit();
