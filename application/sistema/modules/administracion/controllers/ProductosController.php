@@ -605,7 +605,9 @@ class Administracion_ProductosController extends jfLib_Controller
             }
            
             $obj = Doctrine_Core::getTable("Database_Model_ProductoTienda")->findOneBy("id_productotienda", $id_productotienda);
+            $objhist = new Database_Model_ProductoTienda();
           
+           
             $existant=0;
             if (!$obj) {
                 echo "error";
@@ -616,6 +618,16 @@ class Administracion_ProductosController extends jfLib_Controller
                 $obj->fecha_actualizacion   = date('Y-m-d H:i:s');
                 $obj->usuario_actualizacion = $this->_loggedUser->id_usuario;
                 $obj->save();
+                $objhist->id_productotienda   = $id_productotienda;
+                $objhist->existencia_anterior = $existant;
+                $objhist->existencia          = $cantidad;
+                $objhist->id_usuario          = $this->_loggedUser->id_usuario;
+                try {
+                    $objhist->save();//guardamos la nueva relacion
+                } catch (Exception $e) {
+                    echo "no se genero la relacion".$e;
+                    exit();
+                }
             }
             $preciodesc = 0;
             $precio     = 0;
@@ -749,17 +761,17 @@ class Administracion_ProductosController extends jfLib_Controller
             ->where("id_productotienda  >0");
             //  ->orderBy("t.nombre ASC")
         
-        if($idp=$this->_request->getParam("id2")){
-            $query->andwhere("id_producto=?",$idp);
-        }elseif($id=$this->_request->getParam("id")){
-            $query->andwhere("id_productotienda=?",$id);
-        }
-        if($idtienda=$this->_request->getParam("id_sucursal2")){
-            $query->andwhere("tienda_id_tienda=?",$idtienda);
+        if($idproducto=$this->_request->getParam("id_producto")){
+            $query->andwhere("id_producto=?",$idproducto);
+            if($idtienda=$this->_request->getParam("id_sucursal")){
+                $query->andwhere("tienda_id_tienda=?",$idtienda);
+            }
         }else{
-            $query->andwhere("tienda_id_tienda=?",$this->_loggedUser->id_tienda);
+            if($id=$this->_request->getParam("id")){
+                $query->andwhere("id_productotienda=?",$id);
+            }
         }
-        
+
         $this->view->query=$query->fetchOne();;
     }
 

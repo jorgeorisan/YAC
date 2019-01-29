@@ -38,7 +38,7 @@
                 <tr align="center">
                     <td>
                         <div class="controls">
-                            <?php echo $this->formSelect("id2", $this->query->id_producto,
+                            <?php echo $this->formSelect("id_producto", $this->query->id_producto,
                                 array("class" => "form-control selectnvo"),
                                 Database_Model_Producto::getAllArr()
                             ); ?>
@@ -47,7 +47,7 @@
                     <td>
                         <h3>
                             <div class="controls">
-                                <?php echo $this->formSelect("id_sucursal2", $this->query->tienda_id_tienda,
+                                <?php echo $this->formSelect("id_sucursal", $this->query->tienda_id_tienda,
                                     array("class" => "form-control selectnvo"),
                                     Database_Model_Tienda::getAllT()
                                 ); ?>
