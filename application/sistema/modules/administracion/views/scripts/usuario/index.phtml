@@ -5,7 +5,7 @@
     </a>
 </p>
 <?php echo $this->form; ?>
-<table class="full-width">
+<table class="full-width" id="example">
     <thead>
     <tr>
         <th>ID</th>
@@ -54,7 +54,21 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<script>
+    $(function() {
 
-<div id="tnt_pagination">
-    <?php// echo $this->paginator; ?>
-</div>
+        var table =	$('#example').dataTable( {
+            "bJQueryUI": true,
+            "scrollY": 200,
+            "aaSorting": [[1, "asc"]],
+            "scrollX": true,
+            "iDisplayLength": 15,
+            "bPaginate": true,
+            "bAutoWidth": true,
+            "sPaginationType": "full_numbers",
+            "bSort": true,
+            "aLengthMenu": [[5, 10, 15, 25, 50, -1], [5, 10, 15, 25, 50, "All"]]
+        } );
+
+    });
+</script>

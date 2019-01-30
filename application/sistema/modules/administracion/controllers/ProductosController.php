@@ -61,7 +61,7 @@ class Administracion_ProductosController extends jfLib_Controller
         }else{
             if(!$this->showcostos){
                 $existencia="WHERE TODO.proveedor='".$this->_loggedUser->Tienda->info_adicional."'";
-               
+                
             }
         }
 
