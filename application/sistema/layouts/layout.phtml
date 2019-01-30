@@ -207,11 +207,16 @@
                     ->from("Database_Model_Producto")
                     ->where("status='ACTIVO'")
                    ;
+                $querytienda = Doctrine_Query::create()
+                    ->from("Database_Model_Tienda")
+                    ->where("id_tienda=?",$this->profile()->id_tienda)
+                    ->fetchOne()
+                   ;
                 $id_tienda = $this->profile()->id_tienda;
 
                
-                if($id_tienda==16){//urban solo muestra lo de urban
-                    $queryproductos->andWhere("id_proveedor='14'");
+                if($querytienda->info_adicional){//urban solo muestra lo de urban
+                    $queryproductos->andWhere("id_proveedor='".$querytienda->info_adicional."'");
                 }
 
                 $prod="";

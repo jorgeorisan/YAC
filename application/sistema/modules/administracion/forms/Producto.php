@@ -17,6 +17,7 @@ class Administracion_Form_Producto extends Zend_Form
         $element = new Zend_Form_Element_Select("id_categoria");
         $element->setLabel("Categoría *");
         $element->setRequired(true);
+        $element->setAttrib("class","selectnvo");
       //  $element->addMultiOption("", "Favor de seleccionar");
         foreach (Database_Model_Categoria::getAll() as $obj) {
             $element->addMultiOption($obj->id_categoria, $obj->categoria);
@@ -24,8 +25,9 @@ class Administracion_Form_Producto extends Zend_Form
         $this->addElement($element);
 
         $element = new Zend_Form_Element_Select("id_proveedor");
-        $element->setLabel("Proveedor *");
+        $element->setLabel("Seccion *");
         $element->setRequired(true);
+        $element->setAttrib("class","selectnvo");
        // $element->addMultiOption("1", "No asignado");
         foreach (Database_Model_Proveedor::getAll() as $obj) {
             $element->addMultiOption($obj->id_proveedor, $obj->nombre_corto);
@@ -35,7 +37,8 @@ class Administracion_Form_Producto extends Zend_Form
         $element = new Zend_Form_Element_Select("id_marca");
         $element->setLabel("Marca *");
         $element->setRequired(true);
-
+        $element->setAttrib("class","selectnvo");
+        $element->addMultiOption("1", "No asignada");
         foreach (Database_Model_Marca::getAll() as $obj) {
             $element->addMultiOption($obj->id_marca, $obj->nombre);
         }
@@ -78,15 +81,6 @@ class Administracion_Form_Producto extends Zend_Form
         $element->setLabel("Costo");
         $this->addElement($element);
 
-        $element = new Zend_Form_Element_Hidden("condiciones");
-        $element->setValue("1.16");
-        $this->addElement($element);
-
-        $element = new Zend_Form_Element_Text("multiplicador");
-        $element->setLabel("Multiplicador");
-        $element->setValue("1.5");
-        $this->addElement($element);
-
         $element = new Zend_Form_Element_Text("precio");
         $element->setLabel("Precio *");
         $element->setRequired(TRUE);
@@ -103,21 +97,6 @@ class Administracion_Form_Producto extends Zend_Form
 
         $this->addElement($element);
 
-        $element = new Zend_Form_Element_Select("exento_iva");
-        $element->setLabel("Exento de IVA ");
-        $element->setRequired(TRUE);
-
-        $element->addMultiOption("0", "No");
-        $element->addMultiOption("1", "Sí");
-        $this->addElement($element);
-
-        $element = new Zend_Form_Element_Select("exento_ieps");
-        $element->setLabel("Exento de IEPS ");
-        $element->setRequired(TRUE);
-        $element->addMultiOption("1", "Sí");
-        $element->addMultiOption("0", "No");
-
-        $this->addElement($element);
 
 
 
@@ -125,6 +104,7 @@ class Administracion_Form_Producto extends Zend_Form
         $element->setLabel("Es un Paquete");
         $element->setRequired(TRUE);
 
+        $element->setAttrib("class","selectnvo");
         $element->addMultiOption("0", "No");
         $element->addMultiOption("1", "Sí");
         $this->addElement($element);

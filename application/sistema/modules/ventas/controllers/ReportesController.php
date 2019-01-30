@@ -1259,6 +1259,53 @@ class Ventas_ReportesController extends jfLib_Controller
 
         $this->view->dias=$querydias->dias;
     }
+    function historialinventarioAction()
+    {
+        
+        $form = new Ventas_Form_Historial();
+
+        $from = date("Y-m-d");
+        $to = date("Y-m-d");
+
+        if ($this->_request->getParam("from")) {
+            $from = $this->_request->getParam("from");
+        }
+        if ($this->_request->getParam("to")) {
+            $to = $this->_request->getParam("to");
+        }
+
+        $form->from->setValue($from);
+        $form->to->setValue($to);
+
+        $form->populate($this->_request->getParams());
+
+        $query = Doctrine_Query::create()
+           
+            ->from("Database_Model_HistorialInventario pv, pv.ProductoTienda p, p.Producto pr")
+            ->where("DATE(pv.fecha_registro) >= '$from'")
+            ->andWhere("DATE(pv.fecha_registro) <= '$to'");
+
+       
+
+        if ($id_usuario = $this->_request->getParam("id_usuario")) {
+            $query->andWhere("pv.id_usuario = ?", $id_usuario);
+            $this->view->id_usuario=$id_usuario;
+        }
+        if ($id_tienda = $this->_request->getParam("id_tienda")) {
+            $query->andWhere("p.id_tienda = ?", $id_tienda);
+            $this->view->id_tienda=$id_tienda;
+        }
+        if ($id_producto = $this->_request->getParam("id_producto")) {
+        
+            $query->andWhere("pr.nombre LIKE '%$q%'");
+            $query->orWhere("pr.codinter = ?", $q);
+            $this->view->id_producto=$id_producto;
+        }
+
+
+        $this->view->query = $query->execute();
+        $this->view->form = $form;
+    }
     function porproductoAction()
     {
         $form = new Ventas_Form_PorProducto();

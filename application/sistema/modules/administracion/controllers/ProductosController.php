@@ -12,6 +12,7 @@ class Administracion_ProductosController extends jfLib_Controller
     protected $TITLE = "Reporte de Inventario por Tienda";
     protected $TITLE2 = "Reporte de Consumibles";
     private $DB_MODEL_ID = "id_embarcacion";
+    private $showcostos = "";
 
     function init(){
         parent::init();
@@ -19,6 +20,25 @@ class Administracion_ProductosController extends jfLib_Controller
         $this->view->TITLE2 = $this->TITLE2;
         $this->view->DB_MODEL_ID = $this->DB_MODEL_ID;
         $this->view->datauserlogged=$this->_loggedUser;
+        $readonly=" readonly ";
+        switch ($this->_loggedUser->id_usuario_tipo) {
+            case '2':
+                if($this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='tavo'   ){
+                    $showcostos=1;
+                    $readonly="";
+                }
+                break;
+            case '5':
+                $showcostos=1;
+                $readonly="";
+                break;
+            
+            default:
+                break;
+        }
+        $this->showcostos = $showcostos;
+        $this->view->showcostos = $showcostos;
+        $this->view->readonly   = $readonly;
     }
    
     public function indexAction()
@@ -36,8 +56,13 @@ class Administracion_ProductosController extends jfLib_Controller
         if($this->_request->getParam("vertodo")){
             $existencia="WHERE TIENDA.existencias>0";
         }
-        if($tienda==16){//urban solo muestra lo de urban
-            $existencia="WHERE TODO.proveedor='Urban Style'";
+        if($this->_loggedUser->Tienda->permiso_adicional){
+            $existencia="WHERE TODO.proveedor='".$this->_loggedUser->Tienda->info_adicional."'";
+        }else{
+            if(!$this->showcostos){
+                $existencia="WHERE TODO.proveedor='".$this->_loggedUser->Tienda->info_adicional."'";
+               
+            }
         }
 
         $querybkp = "
@@ -198,8 +223,13 @@ class Administracion_ProductosController extends jfLib_Controller
         if($this->_request->getParam("vertodo")){
             $existencia="WHERE TIENDA.existencias>0";
         }
-        if($tienda==16){//urban solo muestra lo de urban
-            $existencia="WHERE TODO.proveedor='Urban Style'";
+        if($this->_loggedUser->Tienda->permiso_adicional){//urban solo muestra lo de urban
+            $existencia="WHERE TODO.proveedor='".$this->_loggedUser->Tienda->info_adicional."'";
+        }else{
+            if(!$this->showcostos){
+                $existencia="WHERE TODO.proveedor='".$this->_loggedUser->Tienda->info_adicional."'";
+               
+            }
         }
 
         $querybkp = "
@@ -465,9 +495,31 @@ class Administracion_ProductosController extends jfLib_Controller
 
 
                         $obj->save();
-
-
                         $id = $obj->getIncremented();
+                        if($this->_request->getPost("manual")){
+                            $querytienda = Doctrine_Query::create()
+                            ->from("Database_Model_Tienda")
+                            ->where("status='ACTIVA'")
+                            ->execute();
+                            foreach($querytienda as $ex){
+                                $objpti = new Database_Model_ProductoTienda();//creamos la relacion de productotienda
+                                $objpti->id_producto      = $id;
+                                $objpti->tienda_id_tienda = $ex->id_tienda;
+                                $objpti->existencias      = 0;//solo asta que se valide
+                                $objpti->fecha_actualizacion   = date('Y-m-d H:i:s');
+                                $objpti->usuario_actualizacion = $this->_loggedUser->id_usuario;
+                                try {
+                                    $objpti->save();//guardamos la nueva relacion
+                                    $id_productotienda=$objpti->getIncremented();
+                                } catch (Exception $e) {
+                                    echo "no se genero la relacion".$e;
+                                    exit();
+                                }
+                            }
+                            
+                        }
+
+
                         if($this->_request->getPost("paquete")){
                             $this->_informSuccess(null,true,"/administracion/paquete/alta/id/".$id);
                         }else{
@@ -543,9 +595,6 @@ class Administracion_ProductosController extends jfLib_Controller
                             echo $e;
 
                         }
-
-
-
                     }
                     else{
                         $this->_informSuccess();
@@ -1382,9 +1431,14 @@ class Administracion_ProductosController extends jfLib_Controller
         if($this->_request->getParam("vertodo")){
             $existencia="WHERE SUM(EXISTENCIAS.existencias)>0";
         }
-        if($tienda==16){//urban solo muestra lo de urban
-            $existencia="WHERE TODO.proveedor='Urban Style'";
+        if($this->_loggedUser->Tienda->info_adicional){//urban solo muestra lo de urban
+            $existencia="WHERE TODO.proveedor='".$this->_loggedUser->Tienda->info_adicional."'";
+        }else{
+            if(!$this->showcostos){
+                $existencia="WHERE TODO.proveedor='".$this->_loggedUser->Tienda->nombre."'";
+            }
         }
+        
         $tipousu=$this->_loggedUser->id_usuario_tipo;
         $tienda=$this->_loggedUser->id_tienda;
         $querybkp = "

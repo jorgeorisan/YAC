@@ -34,7 +34,7 @@ class Deudores_AdministrarController extends jfLib_Controller
             ->Where("icredito = '1'")
             ->andWhere("cancelado=0")
             ->orderBy("id_venta desc");
-        if($tienda==16){//urban solo muestra lo de urban
+        if($this->_loggedUser->Tienda->permiso_adicional){//urban solo muestra lo de urban
             $query->andWhere("v.id_tienda='$tienda'");
         }
 

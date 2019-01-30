@@ -47,8 +47,8 @@
     <table cellspacing="0" class="full-width" id="example">
         <thead>
         <tr>
-            <th>Cont.</th>
-            <th>Codigo Inter.</th>
+            <th style="width:15px">Cont.</th>
+            <th style="width:30px">Codigo</th>
             <th>Nombre</th>
             <th>Marca</th>
             <th>Categoría</th>
@@ -63,7 +63,7 @@
             <th>Mayoreo</th>
             <th>Exist. Tienda||Gral.</th>
             
-            <th>Actualizacion</th>
+            <th>Act.</th>
 
             <th >Acciones</th>
         </tr>
@@ -104,7 +104,7 @@
                         
                     }
                     ?>
-                        <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
+                        <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>"><br>
                         <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/historialinventario/id/".$obj["id_producto"]); ?>">
                             Historial</a>
                 </td>

@@ -16,12 +16,16 @@ class Database_Model_Tienda extends Database_Model_Base_Tienda
     {
         return Doctrine_Core::getTable("Database_Model_Tienda")->findOneBy("id_tienda", $id);
     }
-    function getAll2()
-    {
-        return Doctrine_Core::getTable(get_class())->findAll();
-    }
-
+   
     public static function getAll()
+    {
+        return Doctrine_Query::create()
+            ->from(get_class())
+            ->where("status='ACTIVA'")
+
+            ->execute();
+    }
+    public static function getAll2()
     {
         $arr = array();
 

@@ -24,8 +24,9 @@ class Administracion_Form_Tienda extends Zend_Form
         $this->addElement($element);
 
         $element = new Zend_Form_Element_Text("info_adicional");
-        $element->setLabel("Informacion Adicional");
+        $element->setLabel("Productos Independientes de la seccion");
         $this->addElement($element);
+
 
         $element = new Zend_Form_Element_Text("ubicacion");
         $element->setLabel("Ubicacion");
