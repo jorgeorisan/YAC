@@ -26,7 +26,7 @@ if($this->tipousu=="2"|| $this->usu=="mariely"){
     <div class="controls">
         <?php echo $this->formSelect("id_tienda", $this->tienda,
             array("style"=>"width:460px","onchange"=>"ProductosTienda();"),
-            Database_Model_Tienda::getAll()
+            Database_Model_Tienda::getAll2()
         ); ?>
         <?php $url_actual = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
         //echo "<strong>$url_actual</strong>";

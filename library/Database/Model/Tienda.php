@@ -22,7 +22,6 @@ class Database_Model_Tienda extends Database_Model_Base_Tienda
         return Doctrine_Query::create()
             ->from(get_class())
             ->where("status='ACTIVA'")
-
             ->execute();
     }
     public static function getAll2()
@@ -31,6 +30,7 @@ class Database_Model_Tienda extends Database_Model_Base_Tienda
 
         foreach (Doctrine_Query::create()
                      ->from(get_class())
+                     ->where("status='ACTIVA'")
                      ->orderBy("id_tienda ")
                      ->execute() as $obj) {
             $arr[$obj->id_tienda] = $obj->nombre;
