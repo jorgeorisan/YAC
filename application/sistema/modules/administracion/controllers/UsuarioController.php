@@ -13,43 +13,13 @@ class Administracion_UsuarioController extends jfLib_Controller
 
     function indexAction()
     {
-        $form = new jfLib_Form_Search();
-        $form->populate($this->_request->getParams());
-        // Defining initial variables
+      
         $query = Doctrine_Query::create()
             ->from("Database_Model_Usuario")
-            //->where("id_usuario=?",$this->_loggedUser->id_usuario)
+            ->where("status='ACTIVO'")
             ;//verificamos si es adminisrador
 
-        if ($q = $this->_request->getParam("q")) {
-            $query->where("id_usuario LIKE '%$q%'")
-               //->andWhere("id_tienda=?",$tienda)
-                ->orWhere("nombre LIKE '%$q%'");
-               // ->orWhere("rfc LIKE '%$q%'");
-        }
-        if ($this->_request->getParam('p')) {
-            $currentPage = $this->_request->getParam('p');
-        } else {
-            $currentPage = 1;
-        }
-        $resultsPerPage = 10;
-        $url = $this->view->baseUrl($this->_request->getModuleName() . "/" . $this->_request->getControllerName());
-        $pagerLayout = new jfLib_Paginator(
-            new Doctrine_Pager(
-                $query,
-                $currentPage,
-                $resultsPerPage
-            ),
-            new Doctrine_Pager_Range_Sliding(array(
-                'chunk' => 5
-            )),
-            $url
-        );
-        $pagerLayout->setTemplate('<a href="{%url}?p={%page_number}">{%page}</a>');
-        $pager = $pagerLayout->getPager();
-        $this->view->query = $pager->execute();
-        $this->view->paginator = $pagerLayout;
-        $this->view->form = $form;
+        $this->view->query = $query->execute();
     }
 
     function altaAction(){
