@@ -94,19 +94,27 @@
                 }?>
                 <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>"><?php echo number_format($obj["precio"], 2); ?></td>
                 <td  title="<?php echo "Existentes con este precio: ".$obj["existencias"]; ?>"><?php echo number_format($obj["preciomayoreo"], 2); ?></td>
-                <td><input type='text' class="productotienda" style="width:25px" idproductotienda="<?php echo $obj["id_producto"]; ?>" value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?></td>
+                <td>
+                <input type='text' class="productotienda" key="<?php echo $key;?>" style="width:25px" idproductotienda="<?php echo $obj["id_producto"]; ?>" 
+                    value="<?php echo $obj["existenciastienda"]; ?>">||<?php echo $obj["existencias"]; ?>
+                </td>
                
             
                 <td>
+                    <div class="contfecha<?php echo $key;?>">
                     <?php
                     if($obj["fecha_actualizacion"]){
                         echo $obj["fecha_actualizacion"]."<br>".$obj["usuario_actualizacion"]."<br>"; 
                         
                     }
                     ?>
-                        <input type='button' class='validar' idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>"><br>
+                        <input type='button' class='validar' key="<?php echo $key;?>" idproductotienda="<?php echo $obj["id_producto"]; ?>" value='Validar' existencias="<?php echo $obj["existenciastienda"]; ?>">
+                        
+                    </div><br>
+                        
                         <a fancybox="true" href="<?php echo $this->baseUrl("administracion/productos/historialinventario/id/".$obj["id_producto"]); ?>">
                             Historial</a>
+
                 </td>
             
                 <td>
@@ -158,21 +166,36 @@
         }
         return false;
     });
+    function getdate(){
+        var d = new Date();
+
+        var month = d.getMonth()+1;
+        var day = d.getDate();
+
+        var output = d.getFullYear() + '-' +
+            (month<10 ? '0' : '') + month + '-' +
+            (day<10 ? '0' : '') + day;
+        return output;
+    }
     $(document).ready(function(){
         $(".productotienda").live('change',(function () {
             var id=$(this).attr("idproductotienda");
+            var key=$(this).attr("key");
             var cant=$(this).val();
             if (confirm("Deseas actualizar este producto?") == true) {
                 updateproducto(id,cant);
+                $(".contfecha"+key).html( getdate());
             }
             return false;
         }));
         $(".validar").live('click',(function () {
             var id=$(this).attr("idproductotienda");
+            var key=$(this).attr("key");
             var cant=$(this).attr('existencias');
             if (confirm("Deseas actualizar este producto?") == true) {
                 updateproducto(id,cant);
                 $(this).val('LISTO');
+                $(".contfecha"+key).html( getdate());
             }
             return false;
         }));
