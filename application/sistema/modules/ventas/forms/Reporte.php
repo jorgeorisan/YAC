@@ -48,7 +48,7 @@ class Ventas_Form_Reporte extends Zend_Form
         $element->setLabel("Tienda");
         $element->setRequired(TRUE);
         $element->addMultiOption("", "Favor de seleccionar");
-        foreach (Database_Model_Tienda::getAll2() as $obj) {
+        foreach (Database_Model_Tienda::getAll() as $obj) {
             $element->addMultiOption($obj->id_tienda, $obj->nombre);
         }
         $this->addElement($element);
