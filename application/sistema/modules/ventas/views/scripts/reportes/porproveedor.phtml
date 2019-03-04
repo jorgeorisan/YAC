@@ -26,14 +26,12 @@ $cadena = substr($prod,1);
 <table cellspacing="0" class="full-width" id="example" style="overflow:auto">
     <thead>
     <tr>
-        <th>Proveedor</th>
-        <th>Cantidad</th>
-        <th>ID prod</th>
+        <th>Tienda</th>
+        <th>Prov</th>
+        <th>Cant</th>
         <th>Cod. Interno</th>
         <th>Producto</th>
         <th>Marca</th>
-        <th>Tienda</th>
-
         <th>Precio U.</th>
         <th>Total</th>
 		 <th>Costo U.</th>
@@ -49,20 +47,23 @@ $cadena = substr($prod,1);
     $totalCosto = 0;
     foreach ($this->query as $obj): ?>
         <tr >
+            <td><?php echo $obj->Venta->Tienda->nombre; ?></td>
             <td><?php echo $obj->ProductoTienda->Producto->Proveedor->nombre_corto; ?></td>
             <td><?php echo $obj->total_cantidad; ?></td>
-            <td><?php echo $obj->ProductoTienda->Producto->id_producto; ?></td>
             <td><?php echo $obj->ProductoTienda->Producto->codinter; ?></td>
             <td><?php echo $obj->ProductoTienda->Producto->nombre; ?></td>
 
             <td><?php echo $obj->ProductoTienda->Producto->Marca->nombre; ?></td>
-            <td><?php echo $obj->Venta->Tienda->nombre; ?></td>
+          
             <td><?php
 					$totalunit= ($obj->total_total/$obj->total_cantidad);
                 echo number_format($totalunit, 2); ?></td>
             <td><?php
+            
 				$total=$obj->total_total;
-                $totalt += $total;
+                if(!$obj->Venta->icredito){
+                    $totalt += $total;
+                }
                 echo number_format($total, 2, ".", ""); ?></td>
 			<td><?php
 			$ejecosto= Doctrine_Query::create()
@@ -115,7 +116,7 @@ $cadena = substr($prod,1);
         </tr>
         <?php
         $totaldes=0;
-        if($this->idproveedor==1 ||$this->idproveedor=="") {
+        if($this->idproveedor==1 || $this->idproveedor=="") {
             foreach ($this->querydesc as $objD): ?>
                 <tr>
                     <td></td>
@@ -167,7 +168,7 @@ $cadena = substr($prod,1);
            //echo "<br>$-".number_format($bonos,2)." bonos";
             $totalgerente=$this->dias*150;
             $totalvendedor=($this->dias*100);
-            echo "<br>$-".number_format($totalgerente+$totalvendedor,2)." pago sueldos";
+            echo "<br>$-".number_format($totalgerente,2)." pago sueldos";
             
             $totalcomi=$totatgral*0.06;
             echo "<br>$-".number_format($totalcomi,2)." comisiones";
@@ -175,7 +176,7 @@ $cadena = substr($prod,1);
             $totalgastos=(400+100+150+1000+200); //400 internet, 200 impuestos, 150 contabilidad, 1000 renta, 170 luz, 2000 gastos de surtir
          
             echo "<br><font title='400 internet, 200 impuestos, 150 contabilidad, 1000 renta, 170 luz, 2000 gastos de surtir'>$".number_format($promgastosxdia,2)." gastos generales</font>";
-          $totalgralutilidad=number_format($totalUtilidad-$totalgerente-$totalvendedor-$totalcomi,2);
+          $totalgralutilidad=number_format($totalUtilidad-$totalgerente-$totalcomi,2);
           echo "<br><strong>$".$totalgralutilidad." Utilidad tienda</strong>";
             ?>
         </td>
