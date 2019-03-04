@@ -147,6 +147,7 @@
         ->from("Database_Model_Deudores v,v.Venta vv")
         ->where("DATE(v.fecha_abono) >= '$this->from'")
         ->andWhere("DATE(v.fecha_abono) <= '$this->to'")
+        ->andWhere("v.status='ACTIVA'")
         ->andWhere("v.status='ACTIVA'");
     if($this->id_tienda){
         $queryabono->andWhere("vv.id_tienda=?",$this->id_tienda);

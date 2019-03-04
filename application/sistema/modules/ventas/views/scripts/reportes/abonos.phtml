@@ -64,7 +64,7 @@
           
                 <td>
 
-                    <?php if (!$obj->Venta->cancelado && $obj->status=='ACTIVA'): ?>
+                    <?php if ($obj->status=='ACTIVA'): ?>
                         <a title="Ver Abonos" href="<?php echo $this->baseUrl("deudores/administrar/ver/id/" . $obj->id_venta); ?>">
                             <img src="<?php echo $this->baseUrl("css/img/view.png"); ?>" border="0"/> </a>
                         <a  title="Agregar nuevo Abono" href="<?php echo $this->baseUrl("deudores/administrar/alta/id/" . $obj->id_venta); ?>">
