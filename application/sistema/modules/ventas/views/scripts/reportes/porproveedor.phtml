@@ -83,14 +83,18 @@ $cadena = substr($prod,1);
                 echo number_format(($costoBase), 2, ".", ""); ?></td>
             <td><?php
                 $costot=$obj->total_cantidad * $costoBase;
-                $totalCosto += $costot; 
+                if(!$obj->Venta->icredito){
+                    $totalCosto += $costot; 
+                }
 				
 				echo number_format(($costot), 2, ".", ""); ?>
 				</td>
            
             <td><?php
-				$utilidad=$total-($costot);
-				$totalUtilidad += $utilidad;
+                $utilidad=$total-($costot);
+                if(!$obj->Venta->icredito){
+                    $totalUtilidad += $utilidad;
+                }
 			echo number_format($utilidad, 2, ".", ""); ?>
 			</td>
         </tr>
