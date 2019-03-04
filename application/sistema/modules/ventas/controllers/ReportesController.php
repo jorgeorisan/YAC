@@ -1241,6 +1241,12 @@ class Ventas_ReportesController extends jfLib_Controller
             $query->andWhere("pr.id_proveedor = ?", $codiner[0]);
             $queryexce->andWhere("pr.id_proveedor = ?", $codiner[0]);
         }
+        
+        if ($id_tienda = $this->_request->getParam("id_tienda")) {
+            $query->andWhere("v.id_tienda = ?", $id_tienda);
+            $queryexce->andWhere("v.id_tienda = ?", $id_tienda);
+            $querydesc->andWhere("v.id_tienda = ?", $id_tienda);
+        }
 
         if ($idProveedor!=9) {//si es tecnopay no se generan descuentos
             $this->view->querydesc = $querydesc->execute();

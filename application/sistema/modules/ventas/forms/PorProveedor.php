@@ -49,6 +49,15 @@ class Ventas_Form_PorProveedor extends Zend_Form
             $element->addMultiOption($obj->id_usuario, $obj->nombre);
         }
         $this->addElement($element);
+
+        $element = new Zend_Form_Element_Select("id_tienda");
+        $element->setLabel("Tienda");
+        $element->setRequired(TRUE);
+        $element->addMultiOption("", "Favor de seleccionar");
+        foreach (Database_Model_Tienda::getAll() as $obj) {
+            $element->addMultiOption($obj->id_tienda, $obj->nombre);
+        }
+        $this->addElement($element);
         
         $element = new Zend_Form_Element_Text("autocomplete");
         $element->setLabel("Selecciona un Proveedor *");
