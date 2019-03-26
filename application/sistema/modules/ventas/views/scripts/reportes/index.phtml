@@ -391,7 +391,7 @@
             </td>
             <td style="color: green"><?php
                 
-                $totcomm=$tott*$obj->Usuario->comision;
+                $totcomm=($tott-$totalab)*$obj->Usuario->comision;
                 if($obj->Usuario->id_usuario_tipo==4){
                     $totcomm=$totalv*$obj->Usuario->comision;
                 }
