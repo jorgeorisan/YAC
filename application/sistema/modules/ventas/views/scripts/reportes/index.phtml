@@ -24,7 +24,6 @@
     </tr>
     <?php
     $total         = 0;
-    $totalComision = 0;
     $totdesc       = 0;
     $totalcancel   = 0;
     $totalsincom   = 0;
@@ -209,12 +208,12 @@
     $totalgeneral=0;
 
     $totdesctt=0;
-    foreach ($this->querycomisiones as $obj):
-        $totalrec= 0;
-        $totalexce=0;
-        $totalab=0;
-        $mayoreo=0;
-
+    foreach ($this->querycomisiones as $obj){
+        $totalrec  = 0;
+        $totalexce = 0;
+        $totalab   = 0;
+        $mayoreo   = 0;
+        $totcomm   = 0;
         $totalcancel2=0;
         $credito=0;
         $totdesctt=0;
@@ -390,15 +389,16 @@
                 echo $totalgen ?>
             </td>
             <td style="color: green"><?php
+                $pocent = ($obj->Usuario->comision) ? $obj->Usuario->comision : 0.06;
+                $totcomm = ($tott*number_format($pocent,2));
                 
-                $totcomm=($tott-$totalab)*$obj->Usuario->comision;
-                if($obj->Usuario->id_usuario_tipo==4){
-                    $totcomm=$totalv*$obj->Usuario->comision;
-                }
+               
+                echo  ($tott*$obj->Usuario->comision); 
                 $totalComision+=$totcomm;
-                echo $totcomm; ?></td>
+                ?></td>
         </tr>
-    <?php endforeach;
+    <?php 
+    };
     
     if($totalabonos<$abon){
         ?>
