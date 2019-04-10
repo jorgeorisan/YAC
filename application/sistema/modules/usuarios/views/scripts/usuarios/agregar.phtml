@@ -1,0 +1,33 @@
+<div class="control-group">
+  <div class="col-lg-6">
+    <section class="panel">
+
+        <h3 class="tit">  Agregar usuario</h3>
+
+      <div class="panel-body">
+
+        <?php 
+        $this->form->getElement('submit')->setLabel('Aceptar');
+        echo $this->form;
+        ?>
+
+          &nbsp; <a href="<?php echo $this->baseUrl('usuarios/usuarios');?>" class="btn btn-danger">
+          Cancelar
+        </a>
+        
+      </div>
+    </section>
+  </div>
+</div>
+
+<?php
+///////////// chosen
+$this->inlineScript()->appendFile($this->baseUrl('js/chosen.js'));
+$this->inlineScript()->appendScript('
+  jQuery(document).ready(function() {
+    $(".chosen-select").chosen({no_results_text: "No hay coincidencias"}); 
+  });
+ 
+');
+$this->headLink()->appendStylesheet($this->baseUrl('css/chosen.css'));
+?>

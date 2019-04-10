@@ -93,7 +93,68 @@
     <div id="menu" class="box">
         <ul class="box">
             <?php
-
+            $entradas= $productos= $traspasos= $usuarios= $clientes=0;
+            $reportes= $ventas= $salidas= $gastos=0;
+           
+            $permisousu = Doctrine_Query::create()
+                ->from("Database_Model_UsuarioAccion")
+                ->where("id_usuario = ?",$this->profile()->id_usuario)
+            ;
+            foreach($permisousu->execute() as $objpu){
+                $permiso = Doctrine_Query::create()
+                    ->from("Database_Model_Accion")
+                    ->where("id_accion = ?",$objpu->id_accion)
+                ;
+                foreach($permiso->execute() as $objp){
+                    switch ($objp->controlador) {
+                        case 'productos'          : $embarcacion=1;      break;
+                        case 'combustibles'         : $embarcacion=1;      break;
+                        case 'mantenimiento'        : $mantenimiento=1;    break;
+                        case 'compra'               : $compra=1;           break;
+                        case 'proveedorcompra'      : $compra=1;           break;
+                        case 'opcionespago'         : $compra=1;           break;
+                        case 'certificado'          : $certificado=1;      break;
+                        case 'catcertificado'       : $certificado=1;      break;
+                        case 'proveedorcer'         : $certificado=1;      break;
+                        case 'comercializacion'     : $comercializacion=1; break;
+                        case 'comercializacionemppub': $comercializacion=1; break;
+                        case 'proveedor'            : $comercializacion=1; break;
+                        case 'catcontrato'          : $comercializacion=1; break;
+                        case 'cliente'              : $comercializacion=1; break;
+                        case 'credito'              : $credito=1;          break;
+                        case 'catiso'               : $segcal=1;           break;
+                        case 'auditoriainterna'     : $segcal=1;           break;
+                        case 'auditoriaexterna'     : $segcal=1;           break;
+                        case 'gastosportuarios'     : $gastosportuarios=1; break;
+                        case 'puerto'               : $gastosportuarios=1; break;
+                        case 'agenciaportuario'     : $gastosportuarios=1; break;
+                        case 'administrar':
+                            if($objp->modulo=='facturas'){
+                                $facturacion=1;
+                            }
+                            if($objp->modulo=='tma'){
+                                $tma=1;
+                            }
+                            break;
+                        case 'tesoreria'            : $tesoreria=1;    break;
+                        case 'personal'             : $personal=1;     break;
+                        case 'movimientopersonal'   : $personal=1;     break;
+                        case 'certificacionpersonal': $personal=1;     break;
+                        case 'tipocontrato'         : $personal=1;     break;
+                        case 'documentooficial'     : $recursosdocs=1; break;
+                        case 'inventario'           : $alimentos=1;    break;
+                        case 'producto'             : $alimentos=1;    break;
+                        case 'pedido'               : $alimentos=1;    break;
+                        case 'inventario'           : $equipo=1;       break;
+                        case 'producto'             : $equipo=1;       break;
+                        case 'entrada'              : $equipo=1;       break;
+                        case 'salida'               : $equipo=1;       break;
+                        case 'partidapresupuestal'  : $partidaspres=1; break;
+                        case -1:
+                            break;
+                    }
+                }
+            }
             $profile = $this->profile();
             if($profile->permisos=="TODO"||$profile->permisos=="VENDEDOR" ) {  ?>
                 <li><a href="<?php echo $this->baseUrl("ventas/administrar/alta"); ?>"><span>Nueva Venta</span></a></li>
