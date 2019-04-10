@@ -1,0 +1,13 @@
+body.smart-style-7 #logo-group > span#logo::before {  content: "";}
+body.smart-style-7 nav ul li.active > a::before{color: #323950 !important;}
+aside {background-color: #fff; border-right:1px solid #ccc; }
+#main {background-color: #fff;}
+.page-footer{position: fixed; bottom:0;}
+body.smart-style-7 .minifyme { background: #323950 !important;}
+input[disabled] {color: #bbb !important;}
+#resultado{
+    padding-top:15px;
+}
+.cancelada {
+    opacity: .5;
+}
