@@ -39,7 +39,7 @@
 <header id="header">
    <!--<span id="logo"></span>-->
 </header>
-<div id="main" role="main">
+<div id="main" class="main" role="main" style="background-color: #323950;">
    <!-- MAIN CONTENT -->
    <div id="content" class="containerNOT">
       <div class="row">
@@ -66,9 +66,9 @@
                         <img src="<?php echo ASSETS_URL; ?>/img/logo2.png" alt="GEOHTI" style="max-height: 300px;width:200px "> 
                      </section>
                      <section>
-                        <label class="label">E-mail</label>
+                        <label class="label">Username</label>
                         <label class="input"> <i class="icon-append fa fa-user"></i>
-                        <input type="email" name="email">
+                        <input type="text" name="email">
                         <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
                      </section>
                      <section>
@@ -96,6 +96,9 @@
 <!-- END MAIN PANEL -->
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 <?php
+
+echo $p=password_hash('admin123', PASSWORD_DEFAULT);
+		
    //include required scripts
    include(SYSTEM_DIR . "/inc/scripts.php");
    if ( isset($_POST['email']) && trim(strtolower($_POST['password'])) ) {
@@ -106,17 +109,14 @@
 		if ($id>0){
 			// is authorized
 			// load user / start session
-			$u = new User();
+			$u = new Usuario();
 			$u->load($id);
-			$_SESSION['user_id']=$id;
+			echo $_SESSION['user_id']=$id;
 			$_SESSION['user_info']=array(
-				'id'=>$u->getId,
-				'email'=>$u->getEmail(),
+				'id'=>$u->getId(),
 				'nombre'=>$u->getNombre(),
-				'apellido_pat'=>$u->getApellidoPat(),
-				'initials'=>$u->getInitials(),
-				'id_clinica'=>$u->getIdClinica(),
-				'type'=>$u->getType()
+				'id_tienda'=>$u->getIdTienda(),
+				'id_usuario_tipo'=>$u->getIdUsuarioTipo()
 				);
 			$_SESSION['CSRFToken']=CSRFToken();
 			$_SESSION['getCSRF']=CSRFToken();
@@ -145,10 +145,7 @@
    	$("#login-form").validate({
    		// Rules for form validation
    		rules : {
-   			email : {
-   				required : true,
-   				email : true
-   			},
+   			
    			password : {
    				required : true,
    				minlength : 3,
@@ -158,10 +155,6 @@
    
    		// Messages for form validation
    		messages : {
-   			email : {
-   				required : 'Please enter your email address',
-   				email : 'Please enter a VALID email address'
-   			},
    			password : {
    				required : 'Please enter your password'
    			}

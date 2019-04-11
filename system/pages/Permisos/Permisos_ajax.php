@@ -9,10 +9,10 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 
 	switch ($_GET["object"]) {
 		case 'permisousertype':
-			if( isset($_GET["id_usertype"]) ){
+			if( isset($_GET["id_usuario_tipo"]) ){
 		        $permisos = array();
                 $objpermuser = new PermisoUserType();
-                $datapermisosuser = $objpermuser->getAllArr($_GET["id_usertype"]);
+                $datapermisosuser = $objpermuser->getAllArr($_GET["id_usuario_tipo"]);
                 if ( $datapermisosuser ) {
 			        foreach ($datapermisosuser as $rowperm) {
 			          $permisos[] = $rowperm['id_permiso'];

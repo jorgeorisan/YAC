@@ -1,13 +1,13 @@
 <?php 
 
-	class AutoPersonalPuesto {
+	class AutoPermisoUsuario {
 
 	// Variables
 		protected $db;
 		
 		protected $id = 0;
-		protected $nombre = "";
-		protected $status = "";
+		protected $id_permiso = 0;
+		protected $id_usuario = 0;
 		protected $created_date = "";
 
 		protected $validclass = true;
@@ -20,14 +20,14 @@
 			$this->db = $db;
 		}
 		public static function construct( $id ){
-			$personalPuesto = new PersonalPuesto();
-			$personalPuesto->setId( $id );
-			return $personalPuesto;
+			$permisoUsuario = new PermisoUsuario();
+			$permisoUsuario->setId( $id );
+			return $permisoUsuario;
 		}
 		public static function constructWithValues( $values ){
-			$personalPuesto = new PersonalPuesto();
-			$personalPuesto->setValues( $values );
-			return $personalPuesto;
+			$permisoUsuario = new PermisoUsuario();
+			$permisoUsuario->setValues( $values );
+			return $permisoUsuario;
 		}
 
 
@@ -37,14 +37,14 @@
  				$this->id = $value;
 		}
 		
-		public function setNombre( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "NOMBRE","s") ) 
- 				$this->nombre = $value;
+		public function setIdPermiso( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDPERMISO","i") ) 
+ 				$this->id_permiso = $value;
 		}
 		
-		public function setStatus( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "STATUS","s") ) 
- 				$this->status = $value;
+		public function setIdUsuario( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDUSUARIO","i") ) 
+ 				$this->id_usuario = $value;
 		}
 		
 		public function setCreatedDate( $value ){			
@@ -77,19 +77,19 @@
  			}
 		}
 		
-		public function getNombre($sanitize=true){ 
+		public function getIdPermiso($sanitize=true){ 
  			if($sanitize){
- 				return htmlspecialchars($this->nombre) ;
+ 				return htmlspecialchars($this->id_permiso) ;
  			}else{
- 				return $this->nombre ;
+ 				return $this->id_permiso ;
  			}
 		}
 		
-		public function getStatus($sanitize=true){ 
+		public function getIdUsuario($sanitize=true){ 
  			if($sanitize){
- 				return htmlspecialchars($this->status) ;
+ 				return htmlspecialchars($this->id_usuario) ;
  			}else{
- 				return $this->status ;
+ 				return $this->id_usuario ;
  			}
 		}
 		
@@ -110,7 +110,7 @@
 
 	// Public Support Functions
 		public function load($id) {
-			$sql="SELECT * FROM personal_puesto WHERE id = ?";
+			$sql="SELECT * FROM permiso_usuario WHERE id = ?";
 
 			if ( $id == 0 )
 				return $this->killInvalidclass( "The ID not validclass." );
@@ -128,8 +128,8 @@
 			}
 
 			$this->setId( $res['id'] );
-			$this->setNombre( $res['nombre'] );
-			$this->setStatus( $res['status'] );
+			$this->setIdPermiso( $res['id_permiso'] );
+			$this->setIdUsuario( $res['id_usuario'] );
 			$this->setCreatedDate( $res['created_date'] );
 			return true;
 		}
@@ -137,18 +137,18 @@
 
 		public function save() {
 			if ($this->getId()==0){ // insert new
-				$sql = "INSERT INTO personal_puesto SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
+				$sql = "INSERT INTO permiso_usuario SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
 
-			$sql .= " `nombre` = ? ,";
-			$sql .= " `status` = ? ,";
+			$sql .= " `id_permiso` = ? ,";
+			$sql .= " `id_usuario` = ? ,";
 			$sql .= " `created_date` = ? ,";
 			$sql = trim($sql,",");
 
 			} else { // updated existing
-				$sql = "UPDATE personal_puesto SET modified=UTC_TIMESTAMP(),";	
+				$sql = "UPDATE permiso_usuario SET modified=UTC_TIMESTAMP(),";	
 
-			$sql .= " `nombre` = ? ,";
-			$sql .= " `status` = ? ,";
+			$sql .= " `id_permiso` = ? ,";
+			$sql .= " `id_usuario` = ? ,";
 			$sql .= " `created_date` = ? ,";
 			$sql = trim($sql,",");
 			$sql .= " WHERE id = ?";
@@ -159,8 +159,8 @@
 			$stmt = $this->db->prepare( $sql );
 			//$stmt->mbind_param( 'i', $id );
 
-			$stmt->mbind_param( 's', $this->nombre );
-			$stmt->mbind_param( 's', $this->status );
+			$stmt->mbind_param( 'i', $this->id_permiso );
+			$stmt->mbind_param( 'i', $this->id_usuario );
 			$stmt->mbind_param( 's', $this->created_date );
 			if ($this->getId()>0){
 				$stmt->mbind_param( 'i', $this->id  );
@@ -178,13 +178,13 @@
 			if ($this->getId()==0){ // insert new
 				// only updates no save new here
 			} else { // updated existing
-				$sql = "UPDATE personal_puesto SET modified=UTC_TIMESTAMP(),";	
+				$sql = "UPDATE permiso_usuario SET modified=UTC_TIMESTAMP(),";	
 
-			if (in_array("nombre",$fieldstoupdate)){
-				$sql .= " `nombre` = ? ,";
+			if (in_array("id_permiso",$fieldstoupdate)){
+				$sql .= " `id_permiso` = ? ,";
 			}
-			if (in_array("status",$fieldstoupdate)){
-				$sql .= " `status` = ? ,";
+			if (in_array("id_usuario",$fieldstoupdate)){
+				$sql .= " `id_usuario` = ? ,";
 			}
 			if (in_array("created_date",$fieldstoupdate)){
 				$sql .= " `created_date` = ? ,";
@@ -198,11 +198,11 @@
 			$stmt = $this->db->prepare( $sql );
 			//$stmt->mbind_param( 'i', $id );
 
-			if (in_array("nombre",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->nombre  );
+			if (in_array("id_permiso",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->idPermiso  );
 			}
-			if (in_array("status",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->status  );
+			if (in_array("id_usuario",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->idUsuario  );
 			}
 			if (in_array("created_date",$fieldstoupdate)){
 				$stmt->mbind_param( 's', $this->createdDate  );
@@ -220,7 +220,7 @@
 		
 
 		public function getAll() {
-			$sql="SELECT id FROM personal_puesto WHERE 1 and status='active'";
+			$sql="SELECT id FROM permiso_usuario WHERE 1 and status='active'";
 			// Get data 
 			$stmt = $this->db->prepare( $sql );
 			$stmt->execute();
@@ -228,7 +228,7 @@
 			$res = $stmt->get_result();
 			$retval=array();
 			while($id = mysqli_fetch_row($res)){
-				$retval[$id[0]] = new PersonalPuesto();
+				$retval[$id[0]] = new PermisoUsuario();
 				$retval[$id[0]]->load($id[0]);
 			}
 			return $retval;

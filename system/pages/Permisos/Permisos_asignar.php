@@ -30,17 +30,17 @@ if(isset($request['params']['id'])   && $request['params']['id']>0)
     $id=$request['params']['id'];
 
 else
-    informError(true,make_url("Users","index"));
+    informError(true,make_url("Usuarios","index"));
 
 
 
-$obj = new User();
+$obj = new Usuario();
 $data = $obj->getTable($id);
 if ( !$data ) {
-    informError(true,make_url("Users","index"));
+    informError(true,make_url("Usuarios","index"));
 }
 if(isPost()){
-	$objpermuser = new PermisoUser();
+	$objpermuser = new PermisoUsuario();
     $datapermisosuser = $objpermuser->deleteAll($id);
     if(!$datapermisosuser){
     	echo "error al eliminar permisos";
@@ -62,7 +62,7 @@ if(isPost()){
   	
    
     if( $error == 0  ) {
-         informSuccess(true, make_url("Users","index"));
+         informSuccess(true, make_url("Usuarios","index"));
     }else{
         informError(true, make_url("Permisos","asignar",array('id'=>$id)),"asignar");
     }
@@ -95,18 +95,18 @@ if(isPost()){
                                     <input type="text" class="" name="idPermiso" hidden>
                                     <fieldset>
                                          <div class="col-sm-4">
-                                             <select style="width:100px" class="select2" name="id_usertype" id="id_usertype">
+                                             <select style="width:100px" class="select2" name="id_usuario_tipo" id="id_usuario_tipo">
                                                 <option value="">--Precargar Perfil--</option>
                                                 <?php 
-                                                $obj = new UserType();
+                                                $obj = new UsuarioTipo();
                                                 $list=$obj->getAllArr();
                                                 if (is_array($list) || is_object($list)){
                                                     foreach($list as $val){
                                                         $selected = "";
-                                                        //if ($data['id_usertype'] == $val['id'] )
+                                                        //if ($data['id_usuario_tipo'] == $val['id'] )
                                                             //$selected = "selected";
                                                         
-                                                        echo "<option ".$selected." value='".$val['id']."'>".$val['nombre']."</option>";
+                                                        echo "<option ".$selected." value='".$val['id_usuario_tipo']."'>".$val['usuario_tipo']."</option>";
                                                     }
                                                 }
                                                  ?>
@@ -125,7 +125,7 @@ if(isPost()){
     							              </th>
     							              <?php
     									        $permisos = array();
-    		                                    $objpermuser = new PermisoUser();
+    		                                    $objpermuser = new PermisoUsuario();
     		                                    $datapermisosuser = $objpermuser->getAllArr($id);
     									        foreach ($datapermisosuser as $rowperm) {
     									          $permisos[] = $rowperm['id_permiso'];
@@ -233,9 +233,9 @@ if(isPost()){
 	        }
 	    });
       
-        $('body').on('change', '#id_usertype', function(){
-            var id_usertype=$("input[name=id_usertype]", $(this).parents('form:first')).val();
-            console.log(id_usertype);
+        $('body').on('change', '#id_usuario_tipo', function(){
+            var id_usuario_tipo=$("input[name=id_usuario_tipo]", $(this).parents('form:first')).val();
+            console.log(id_usuario_tipo);
           
             var url = config.base+"/Permisos/ajax/?action=get&object=permisousertype"; // El script a dónde se realizará la petición.
             $.ajax({

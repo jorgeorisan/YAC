@@ -1,15 +1,18 @@
 <?php
 
-require_once(SYSTEM_DIR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR ."base". DIRECTORY_SEPARATOR. "user_type.auto.class.php");
+require_once(SYSTEM_DIR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR ."base". DIRECTORY_SEPARATOR ."usuario.auto.class.php");
 
-class UserType extends AutoUserType { 
-	private $DB_TABLE = "user_type";
+class Usuario extends AutoUsuario { 
+	private $DB_TABLE = "usuario";
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr()
+	public function getAllArr($id_usuario_tipo=false)
 	{
-		$sql = "SELECT * FROM user_type where status='active';";
+		$add = ($id_usuario_tipo) ? " and id_tienda in (" . $id_usuario_tipo . ") " : '';
+		
+		$sql = "SELECT * FROM usuario where status='ACTIVO' $add ;";
+		
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
@@ -26,10 +29,10 @@ class UserType extends AutoUserType {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM user_type WHERE id=$id;";
+		$sql= "SELECT * FROM usuario WHERE id=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
-			{die("Error getting result user_type");}
+			{die("Error getting result usuario");}
 		$row = $res->fetch_assoc();
 		$res->close();
 		return $row;
@@ -38,8 +41,8 @@ class UserType extends AutoUserType {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
-		$data=fromArray($_request,'user_type',$this->db,"add");
-		$sql= "INSERT INTO user_type (".$data[0].") VALUES(".$data[1]."); ";
+		$data=fromArray($_request,'usuario',$this->db,"add");
+		$sql= "INSERT INTO usuario (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
 		$sql= "SELECT LAST_INSERT_ID();";//. $num ;
 		$res=$this->db->query($sql);
@@ -56,8 +59,8 @@ class UserType extends AutoUserType {
 	public function updateAll($id,$_request)
 	{
 		$_request["updated_date"]=date("Y-m-d H:i:s");
-		$data=fromArray($_request,'user_type',$this->db,"update");
-		$sql= "UPDATE user_type SET $data[0]  WHERE id=".$id.";";
+		$data=fromArray($_request,'usuario',$this->db,"update");
+		$sql= "UPDATE usuario SET $data[0]  WHERE id=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
@@ -70,8 +73,8 @@ class UserType extends AutoUserType {
 	{
 		$_request["status"]="deleted";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
-		$data=fromArray($_request,'user_type',$this->db,"update");	
-		$sql= "UPDATE user_type SET $data[0]  WHERE id=".$id.";";
+		$data=fromArray($_request,'usuario',$this->db,"update");	
+		$sql= "UPDATE usuario SET $data[0]  WHERE id=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
@@ -79,5 +82,27 @@ class UserType extends AutoUserType {
 			return true;
 		}
 	}
+		//metodo comprueba que un usuario ya existe o no
+		public function userExists($username)
+		{
+	
+			$username=$this->db->real_escape_string($username);
+			$sql= "SELECT * FROM usuario WHERE id_usuario='".$username."' and status='ACTIVO';";
+			$res=$this->db->query($sql);
+			if(!$res)
+				{die('Error getting result');}
+			//echo $sql;
+			$row = $res->fetch_assoc();
+			//echo $this->db->error;
+			$res->close();
+			if(!$row)
+				{
+					return false;}
+			else
+				{
+					return true;}
+	
+		}
+
 
 }

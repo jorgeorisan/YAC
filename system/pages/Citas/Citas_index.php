@@ -21,7 +21,7 @@ include(SYSTEM_DIR . "/inc/nav.php");
 $obj = new Cita();
 $data = $obj->getAllArr();
 
-//print_r($users);
+//print_r($usuarios);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -58,13 +58,13 @@ $data = $obj->getAllArr();
 												<i class="fa fa-fw fa-certificate text-muted hidden-md hidden-sm hidden-xs"></i> Status
 											</th>
 											<th class = "col-md-1" data-hide="">
-												<i class="fa fa-fw  fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Paciente
+												<i class="fa fa-fw  fa-usuario text-muted hidden-md hidden-sm hidden-xs"></i> Persona
 											</th>
 											<th class = "col-md-1" data-class="expand">
 												<i class="fa fa-fw fa-certificate text-muted hidden-md hidden-sm hidden-xs"></i> Motivo
 											</th>
 											<th class = "col-md-1" data-hide="">
-												<i class="fa fa-fw  fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Medico
+												<i class="fa fa-fw  fa-usuario text-muted hidden-md hidden-sm hidden-xs"></i> Usuario
 											</th>
 											<th class = "col-md-1" data-hide="">
 												<i class="fa fa-fw  fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> Fecha Cita
@@ -85,15 +85,15 @@ $data = $obj->getAllArr();
 									</thead>
 									<tbody>
 										<?php  foreach($data as $row) {
-											$pacientes = new Paciente();
-											$paciente  = $pacientes->getTable($row['id_paciente']);
-											$users     = new User();
-											$user      = $users->getTable($row['id_user']);
-											$personal  = new Personal();
-											$persona   = $personal->getTable($row['id_personal']);
-											$nombrepaciente  = htmlentities($paciente['nombre']." ".$paciente['apellido_pat']." ".$paciente['apellido_mat']." "); 
-											$nombrepersonal  = htmlentities($persona['nombre']." ".$persona['apellido_pat']." ".$persona['apellido_mat']." ");
-											$nombreuser      = htmlentities($user['nombre']." ".$user['apellido_pat']." ".$user['apellido_mat']." ");
+											$personas = new Persona();
+											$paciente = $personas->getTable($row['id_persona']);
+											$usuarios = new Usuario();
+											$usuario  = $usuarios->getTable($row['id_usuario']);
+											$persona  = new Persona();
+											$persona  = $persona->getTable($row['id_persona']);
+											$nombrepaciente  = htmlentities($paciente['nombre']." ".$paciente['ap_paterno']." ".$paciente['ap_materno']." "); 
+											$nombrepersona  = htmlentities($persona['nombre']." ".$persona['ap_paterno']." ".$persona['ap_materno']." ");
+											$nombreusuario      = htmlentities($usuario['id_usuario']);
 											switch ($row['status']) {
 												case 'active':	   $status = 'Pendiente';  $class = "bg-color-blue"; 	   $icon = "fa-clock-o"; break;
 												case 'deleted':    $status = 'Cancelada';  $class = "bg-color-red";	       $icon = "fa-warning"; break;
@@ -106,10 +106,10 @@ $data = $obj->getAllArr();
 												<td class='<?php echo $class; ?>'><?php echo $status; ?></td>
 												<td><?php echo $nombrepaciente; ?></td>
 												<td><?php echo htmlentities($row['motivo'])?></td>
-												<td><?php echo $nombrepersonal; ?></td>
+												<td><?php echo $nombrepersona; ?></td>
 												<td><?php echo date('Y-m-d',strtotime($row['fecha_inicial']))?></td>
 												<td><?php echo date('H:m',strtotime($row['fecha_inicial']))." / ". date('H:m',strtotime($row['fecha_final']))?></td>
-												<td><?php echo $nombreuser; ?></td>
+												<td><?php echo $nombreusuario; ?></td>
 												<td><?php echo htmlentities($row['created_date']) ?></td>
 												<td>
 													<div class="btn-group">

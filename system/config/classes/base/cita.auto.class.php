@@ -6,10 +6,10 @@
 		protected $db;
 		
 		protected $id = 0;
-		protected $id_clinica = 0;
-		protected $id_personal = 0;
-		protected $id_paciente = 0;
-		protected $id_user = 0;
+		protected $id_tienda = 0;
+		protected $id_persona = "";
+		protected $id_usuario = 0;
+		protected $id_usuarioalta = 0;
 		protected $motivo = "";
 		protected $status = "";
 		protected $fecha_inicial = "";
@@ -45,24 +45,24 @@
  				$this->id = $value;
 		}
 		
-		public function setIdClinica( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "IDCLINICA","i") ) 
- 				$this->id_clinica = $value;
+		public function setIdTienda( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDTIENDA","i") ) 
+ 				$this->id_tienda = $value;
 		}
 		
-		public function setIdPersonal( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "IDPERSONAL","i") ) 
- 				$this->id_personal = $value;
+		public function setIdPersona( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDPERSONA","s") ) 
+ 				$this->id_persona = $value;
 		}
 		
-		public function setIdPaciente( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "IDPACIENTE","i") ) 
- 				$this->id_paciente = $value;
+		public function setIdUsuario( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDUSUARIO","i") ) 
+ 				$this->id_usuario = $value;
 		}
 		
-		public function setIdUser( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "IDUSER","i") ) 
- 				$this->id_user = $value;
+		public function setIdUsuarioalta( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDUSUARIOALTA","i") ) 
+ 				$this->id_usuarioalta = $value;
 		}
 		
 		public function setMotivo( $value ){ 				$this->motivo = $value;
@@ -123,35 +123,35 @@
  			}
 		}
 		
-		public function getIdClinica($sanitize=true){ 
+		public function getIdTienda($sanitize=true){ 
  			if($sanitize){
- 				return htmlspecialchars($this->id_clinica) ;
+ 				return htmlspecialchars($this->id_tienda) ;
  			}else{
- 				return $this->id_clinica ;
+ 				return $this->id_tienda ;
  			}
 		}
 		
-		public function getIdPersonal($sanitize=true){ 
+		public function getIdPersona($sanitize=true){ 
  			if($sanitize){
- 				return htmlspecialchars($this->id_personal) ;
+ 				return htmlspecialchars($this->id_persona) ;
  			}else{
- 				return $this->id_personal ;
+ 				return $this->id_persona ;
  			}
 		}
 		
-		public function getIdPaciente($sanitize=true){ 
+		public function getIdUsuario($sanitize=true){ 
  			if($sanitize){
- 				return htmlspecialchars($this->id_paciente) ;
+ 				return htmlspecialchars($this->id_usuario) ;
  			}else{
- 				return $this->id_paciente ;
+ 				return $this->id_usuario ;
  			}
 		}
 		
-		public function getIdUser($sanitize=true){ 
+		public function getIdUsuarioalta($sanitize=true){ 
  			if($sanitize){
- 				return htmlspecialchars($this->id_user) ;
+ 				return htmlspecialchars($this->id_usuarioalta) ;
  			}else{
- 				return $this->id_user ;
+ 				return $this->id_usuarioalta ;
  			}
 		}
 		
@@ -238,10 +238,10 @@
 			}
 
 			$this->setId( $res['id'] );
-			$this->setIdClinica( $res['id_clinica'] );
-			$this->setIdPersonal( $res['id_personal'] );
-			$this->setIdPaciente( $res['id_paciente'] );
-			$this->setIdUser( $res['id_user'] );
+			$this->setIdTienda( $res['id_tienda'] );
+			$this->setIdPersona( $res['id_persona'] );
+			$this->setIdUsuario( $res['id_usuario'] );
+			$this->setIdUsuarioalta( $res['id_usuarioalta'] );
 			$this->setMotivo( $res['motivo'] );
 			$this->setStatus( $res['status'] );
 			$this->setFechaInicial( $res['fecha_inicial'] );
@@ -257,10 +257,10 @@
 			if ($this->getId()==0){ // insert new
 				$sql = "INSERT INTO cita SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
 
-			$sql .= " `id_clinica` = ? ,";
-			$sql .= " `id_personal` = ? ,";
-			$sql .= " `id_paciente` = ? ,";
-			$sql .= " `id_user` = ? ,";
+			$sql .= " `id_tienda` = ? ,";
+			$sql .= " `id_persona` = ? ,";
+			$sql .= " `id_usuario` = ? ,";
+			$sql .= " `id_usuarioalta` = ? ,";
 			$sql .= " `motivo` = ? ,";
 			$sql .= " `status` = ? ,";
 			$sql .= " `fecha_inicial` = ? ,";
@@ -273,10 +273,10 @@
 			} else { // updated existing
 				$sql = "UPDATE cita SET modified=UTC_TIMESTAMP(),";	
 
-			$sql .= " `id_clinica` = ? ,";
-			$sql .= " `id_personal` = ? ,";
-			$sql .= " `id_paciente` = ? ,";
-			$sql .= " `id_user` = ? ,";
+			$sql .= " `id_tienda` = ? ,";
+			$sql .= " `id_persona` = ? ,";
+			$sql .= " `id_usuario` = ? ,";
+			$sql .= " `id_usuarioalta` = ? ,";
 			$sql .= " `motivo` = ? ,";
 			$sql .= " `status` = ? ,";
 			$sql .= " `fecha_inicial` = ? ,";
@@ -293,10 +293,10 @@
 			$stmt = $this->db->prepare( $sql );
 			//$stmt->mbind_param( 'i', $id );
 
-			$stmt->mbind_param( 'i', $this->id_clinica );
-			$stmt->mbind_param( 'i', $this->id_personal );
-			$stmt->mbind_param( 'i', $this->id_paciente );
-			$stmt->mbind_param( 'i', $this->id_user );
+			$stmt->mbind_param( 'i', $this->id_tienda );
+			$stmt->mbind_param( 's', $this->id_persona );
+			$stmt->mbind_param( 'i', $this->id_usuario );
+			$stmt->mbind_param( 'i', $this->id_usuarioalta );
 			$stmt->mbind_param( 's', $this->motivo );
 			$stmt->mbind_param( 's', $this->status );
 			$stmt->mbind_param( 's', $this->fecha_inicial );
@@ -322,17 +322,17 @@
 			} else { // updated existing
 				$sql = "UPDATE cita SET modified=UTC_TIMESTAMP(),";	
 
-			if (in_array("id_clinica",$fieldstoupdate)){
-				$sql .= " `id_clinica` = ? ,";
+			if (in_array("id_tienda",$fieldstoupdate)){
+				$sql .= " `id_tienda` = ? ,";
 			}
-			if (in_array("id_personal",$fieldstoupdate)){
-				$sql .= " `id_personal` = ? ,";
+			if (in_array("id_persona",$fieldstoupdate)){
+				$sql .= " `id_persona` = ? ,";
 			}
-			if (in_array("id_paciente",$fieldstoupdate)){
-				$sql .= " `id_paciente` = ? ,";
+			if (in_array("id_usuario",$fieldstoupdate)){
+				$sql .= " `id_usuario` = ? ,";
 			}
-			if (in_array("id_user",$fieldstoupdate)){
-				$sql .= " `id_user` = ? ,";
+			if (in_array("id_usuarioalta",$fieldstoupdate)){
+				$sql .= " `id_usuarioalta` = ? ,";
 			}
 			if (in_array("motivo",$fieldstoupdate)){
 				$sql .= " `motivo` = ? ,";
@@ -364,17 +364,17 @@
 			$stmt = $this->db->prepare( $sql );
 			//$stmt->mbind_param( 'i', $id );
 
-			if (in_array("id_clinica",$fieldstoupdate)){
-				$stmt->mbind_param( 'i', $this->idClinica  );
+			if (in_array("id_tienda",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->idTienda  );
 			}
-			if (in_array("id_personal",$fieldstoupdate)){
-				$stmt->mbind_param( 'i', $this->idPersonal  );
+			if (in_array("id_persona",$fieldstoupdate)){
+				$stmt->mbind_param( 's', $this->idPersona  );
 			}
-			if (in_array("id_paciente",$fieldstoupdate)){
-				$stmt->mbind_param( 'i', $this->idPaciente  );
+			if (in_array("id_usuario",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->idUsuario  );
 			}
-			if (in_array("id_user",$fieldstoupdate)){
-				$stmt->mbind_param( 'i', $this->idUser  );
+			if (in_array("id_usuarioalta",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->idUsuarioalta  );
 			}
 			if (in_array("motivo",$fieldstoupdate)){
 				$stmt->mbind_param( 's', $this->motivo  );

@@ -8,7 +8,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 /*---------------- PHP Custom Scripts ---------
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
-$page_title = "Pacientes";
+$page_title = "Clientes";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 $page_css[] = "your_style.css";
@@ -18,10 +18,10 @@ include(SYSTEM_DIR . "/inc/header.php");
 include(SYSTEM_DIR . "/inc/nav.php");
 
 
-$obj = new Paciente();
+$obj = new Persona();
 $data = $obj->getAllArr();
 
-//print_r($users);
+//print_r($data);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -36,7 +36,7 @@ $data = $obj->getAllArr();
 	<!-- MAIN CONTENT -->
 	<div id="content">
 		<section id="widget-grid" class="">
-			 <p><a class="btn btn-success" href="<?php echo make_url("Pacientes","add")?>" ><i class="fas fa-plus"></i> Nuevo Paciente</a></p>
+			 <p><a class="btn btn-success" href="<?php echo make_url("Clientes","add")?>" ><i class="fas fa-plus"></i> Nuevo Cliente</a></p>
 			<div class="row">
 				<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
@@ -52,7 +52,7 @@ $data = $obj->getAllArr();
 									<thead>
 										<tr>
 											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw fa-list-ol text-muted hidden-md hidden-sm hidden-xs"></i> No. Paciente
+												<i class="fa fa-fw fa-list-ol text-muted hidden-md hidden-sm hidden-xs"></i> No. Persona
 											</th>
 											<th class = "col-md-1" data-class="expand">
 												<i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Nombre
@@ -79,19 +79,19 @@ $data = $obj->getAllArr();
 									</thead>
 									<tbody>
 										<?php  foreach($data as $row) {
-											$nomclinica="";
-											$objclinica = new Clinica();
-											$dataclinica = $objclinica->getTable($row["id_clinica"]);
-											if($dataclinica){ $nomclinica = $dataclinica["nombre"]; }
+											$nomtienda="";
+											$objtienda = new Tienda();
+											$datatienda = $objtienda->getTable($row["id_tienda"]);
+											if($datatienda){ $nomtienda = $datatienda["nombre"]; }
 											?>
 											<tr>
-												<td><?php echo htmlentities($row['id'])?></td>
-												<td><?php echo htmlentities($row['nombre'].' '.$row['apellido_pat'].' '.$row['apellido_mat'])?></td>
+												<td><?php echo htmlentities($row['id_persona'])?></td>
+												<td><?php echo htmlentities($row['nombre'].' '.$row['ap_paterno'].' '.$row['ap_materno'])?></td>
 												<td><?php echo htmlentities($row['email'])?></td>
 												<td><?php echo htmlentities($row['telefono']) ?></td>
-												<td><?php echo htmlentities($row['ciudad']." ".$row['estado']." Col. ".$row['colonia']." Calle. ".$row['calle']." Num. ".$row['num_ext']." ".$row['num_int']) ?></td>
+												<td><?php echo htmlentities($row['ciudad']." ".$row['estado']." Col. ".$row['colonia']." Calle. ".$row['calle']." Num. ".$row['num_exterior']." ".$row['num_interior']) ?></td>
 												<td><?php echo htmlentities($row['alergias']) ?></td>
-												<td><?php echo htmlentities($row['created_date']) ?></td>
+												<td><?php echo htmlentities($row['fecha_registro']) ?></td>
 												<td>
 													<div class="btn-group">
 														<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -99,15 +99,15 @@ $data = $obj->getAllArr();
 														</button>
 														<ul class="dropdown-menu">
 															<li>
-																<a class="" href="<?php echo make_url("Pacientes","show",array('id'=>$row['id'])); ?>">Ver</a>
+																<a class="" href="<?php echo make_url("Clientes","show",array('id'=>$row['id_persona'])); ?>">Ver</a>
 															</li>
 															<li>
-																<a class="" href="<?php echo make_url("Pacientes","edit",array('id'=>$row['id'])); ?>">Editar</a>
+																<a class="" href="<?php echo make_url("Clientes","edit",array('id'=>$row['id_persona'])); ?>">Editar</a>
 															</li>
 															
 															<li class="divider"></li>
 															<li>
-																<a href="#" class="red" onclick="borrar('<?php echo make_url("Pacientes","pacientedelete",array('id'=>$row['id'])); ?>',<?php echo $row['id']; ?>);">Eliminar</a>
+																<a href="#" class="red" onclick="borrar('<?php echo make_url("Clientes","pacientedelete",array('id'=>$row['id_persona'])); ?>',<?php echo $row['id']; ?>);">Eliminar</a>
 															</li>
 														</ul>
 													</div>

@@ -1,15 +1,15 @@
 <?php
 
-require_once(SYSTEM_DIR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR ."base". DIRECTORY_SEPARATOR ."paciente.auto.class.php");
+require_once(SYSTEM_DIR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR ."base". DIRECTORY_SEPARATOR ."persona.auto.class.php");
 
-class Paciente extends AutoPaciente { 
-	private $DB_TABLE = "paciente";
+class Persona extends AutoPersona { 
+	private $DB_TABLE = "persona";
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
 	public function getAllArr()
 	{
-		$sql = "SELECT * FROM paciente where status='active';";
+		$sql = "SELECT * FROM persona where status='ACTIVO' order by nombre;";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
@@ -26,10 +26,10 @@ class Paciente extends AutoPaciente {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM paciente WHERE id=$id;";
+		$sql= "SELECT * FROM persona WHERE id_persona=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
-			{die("Error getting result paciente");}
+			{die("Error getting result persona");}
 		$row = $res->fetch_assoc();
 		$res->close();
 		return $row;
@@ -38,8 +38,8 @@ class Paciente extends AutoPaciente {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
-		$data=fromArray($_request,'paciente',$this->db,"add");
-		$sql= "INSERT INTO paciente (".$data[0].") VALUES(".$data[1]."); ";
+		$data=fromArray($_request,'persona',$this->db,"add");
+		$sql= "INSERT INTO persona (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
 		$sql= "SELECT LAST_INSERT_ID();";//. $num ;
 		$res=$this->db->query($sql);
@@ -56,8 +56,8 @@ class Paciente extends AutoPaciente {
 	public function updateAll($id,$_request)
 	{
 		$_request["updated_date"]=date("Y-m-d H:i:s");
-		$data=fromArray($_request,'paciente',$this->db,"update");
-		$sql= "UPDATE paciente SET $data[0]  WHERE id=".$id.";";
+		$data=fromArray($_request,'persona',$this->db,"update");
+		$sql= "UPDATE persona SET $data[0]  WHERE id=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
@@ -70,8 +70,8 @@ class Paciente extends AutoPaciente {
 	{
 		$_request["status"]="deleted";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
-		$data=fromArray($_request,'paciente',$this->db,"update");	
-		$sql= "UPDATE paciente SET $data[0]  WHERE id=".$id.";";
+		$data=fromArray($_request,'persona',$this->db,"update");	
+		$sql= "UPDATE persona SET $data[0]  WHERE id=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;

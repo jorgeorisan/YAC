@@ -87,14 +87,14 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                                                         </div>
                                                         <div class="form-group">
                                                             
-                                                            <select style="width:100%" class="select2"  required name="id_personal" id="id_personal">
-                                                                <option value="" selected disabled>Selecciona Medico</option>
+                                                            <select style="width:100%" class="select2"  required name="id_usuario" id="id_usuario">
+                                                                <option value="" selected disabled>Selecciona Usuario</option>
                                                                 <?php 
-                                                                $obj = new Personal();
-                                                                $list=$obj->getAllArr(2); // medicos
+                                                                $obj = new Usuario();
+                                                                $list=$obj->getAllArr("17,18"); // medicos
                                                                 if (is_array($list) || is_object($list)){
                                                                     foreach($list as $val){
-                                                                        echo "<option value='".$val['id']."'>".htmlentities($val['nombre'])."</option>";
+                                                                        echo "<option value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
                                                                     }
                                                                 }
                                                                 ?>
@@ -113,21 +113,21 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                                                         </div> 
                                                         <div class="form-group">
                                                             <div class="col-sm-10">
-                                                                <select style="width:100%" class="select2"  required name="id_paciente" id="id_paciente">
-                                                                    <option value="" selected disabled>Selecciona paciente</option>
+                                                                <select style="width:100%" class="select2"  required name="id_persona" id="id_persona">
+                                                                    <option value="" selected disabled>Selecciona Cliente</option>
                                                                     <?php 
-                                                                    $obj = new Paciente();
+                                                                    $obj = new Persona();
                                                                     $list=$obj->getAllArr();
                                                                     if (is_array($list) || is_object($list)){
                                                                         foreach($list as $val){
-                                                                            echo "<option value='".$val['id']."'>".htmlentities($val['nombre'])."</option>";
+                                                                            echo "<option value='".$val['id_persona']."'>".htmlentities($val['nombre'])."</option>";
                                                                         }
                                                                     }
                                                                     ?>
                                                                 </select>
                                                             </div>
                                                             <div class="col-sm-2">
-                                                                <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopuppacientes()" > <i class="fa fa-plus"></i></a>                                          
+                                                                <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopuppersonas()" > <i class="fa fa-plus"></i></a>                                          
                                                             </div>
                                                         </div>
                                                     </div>
@@ -137,7 +137,7 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                                                 </div>
                                                 <div class="col-sm-12" >
                                                     <div class="col-sm-3"></div>
-                                                    <div class="col-sm-6" id="contpaciente"></div> 
+                                                    <div class="col-sm-6" id="contpersona"></div> 
                                                     <div class="col-sm-3"></div>
                                                 </div>
                                             </div>
@@ -231,14 +231,14 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
         validateForm =function(){
             var fecha_alta    = $("input[name=fecha_inicial]").val();
             var fecha_final   = $("input[name=fecha_final]").val();
-            var id_paciente   = $("#id_paciente").val();
-            var id_personal   = $("#id_personal").val();
+            var id_persona   = $("#id_persona").val();
+            var id_usuario   = $("#id_usuario").val();
             var motivo        = $("#motivo").val();
             if ( ! fecha_alta )              return notify("info","La fecha de inicio es requerida");
             if ( ! fecha_final )             return notify("info","La fecha final es requerida");
             if ( fecha_final < fecha_alta )  return notify("info","La fecha final no puede ser menor a la fecha de inicio");      
-            if ( ! id_paciente )             return notify("info","El Paciente es requerido");
-            if ( ! id_personal )             return notify("info","El Medico es requerido");
+            if ( ! id_persona )             return notify("info","El Paciente es requerido");
+            if ( ! id_usuario )             return notify("info","El Usuario es requerido");
             if ( ! motivo )                  return notify("info","El motivo es requerido");
             
             $("#main-form").submit();       
@@ -253,25 +253,25 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
  
 
         //**********Clients*************/
-        showpopuppacientes = function(){
-            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo paciente</span>');
-            $.get(config.base+"/Pacientes/ajax/?action=get&object=showpopup", null, function (response) {
+        showpopuppersonas = function(){
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo persona</span>');
+            $.get(config.base+"/Clientes/ajax/?action=get&object=showpopup", null, function (response) {
                     if ( response ){
                         $("#contentpopup").html(response);
                     }else{
-                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
+                        return notify('error', 'Error al obtener los datos del Formulario de personas');
                         
                     }     
             });
         }
-        getpaciente =function(id){
+        getpersona =function(id){
             if ( ! id ) return;
-            $("#contpaciente").html("<div align='center'><i class='far fa-cog fa-spin fa-5x'></i></div>");
-            $.get(config.base+"/Citas/ajax/?action=get&object=getpaciente&id=" + id, null, function (response) {
+            $("#contpersona").html("<div align='center'><i class='far fa-cog fa-spin fa-5x'></i></div>");
+            $.get(config.base+"/Citas/ajax/?action=get&object=getcliente&id=" + id, null, function (response) {
                     if ( response ){
-                        $("#contpaciente").html(response);
+                        $("#contpersona").html(response);
                     }else{
-                        notify('error', 'Error al obtener los datos del paciente');
+                        notify('error', 'Error al obtener los datos del persona');
                         return false;
                     }     
             });
@@ -282,8 +282,8 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
             var apellido_mat = $("input[name=apellido_mat]", $(this).parents('form:first')).val();
             var telefono     = $("input[name=telefono]", $(this).parents('form:first')).val();
             
-            if(!nombre) {  notify('error',"Se necesita el nombre del paciente."); return false; }
-            var url = config.base+"/Pacientes/ajax/?action=get&object=savenewclient"; // El script a dónde se realizará la petición.
+            if(!nombre) {  notify('error',"Se necesita el nombre del persona."); return false; }
+            var url = config.base+"/Clientes/ajax/?action=get&object=savenewclient"; // El script a dónde se realizará la petición.
             $.ajax({
                 type: "POST",
                 url: url,
@@ -291,31 +291,31 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                 success: function(response){
                     if(response>0){
                         //alert("Group successfully added");
-                        $('#id_paciente').append($('<option>', {
+                        $('#id_persona').append($('<option>', {
                             value: response,
                             text: nombre+" "+apellido_pat+" "+apellido_mat,
                             selected:true
                         }));  
-                        $("#id_paciente").select2({
+                        $("#id_persona").select2({
                             multiple: false,
                             header: "Selecciona una opcion",
                             noneSelectedText: "Seleccionar",
                             selectedList: 1
                         });
                         $('#myModal').modal('hide');
-                        notify('success',"paciente agregado correctamente:"+response);
-                        getpaciente(response);
+                        notify('success',"persona agregado correctamente:"+response);
+                        getpersona(response);
                     }else{
-                        notify('error',"Oopss error al agregar paciente"+response);
+                        notify('error',"Oopss error al agregar persona"+response);
                     }
                 }
              });
             return false; // Evitar ejecutar el submit del formulario.
         });
-        $('body').on('change', '#id_paciente', function(){
+        $('body').on('change', '#id_persona', function(){
             if( $(this).val() ){
-                var id = $("#id_paciente").val();
-                getpaciente(id);
+                var id = $("#id_persona").val();
+                getpersona(id);
             }
         });
         $('body').on('change', '.fecha_inicial', function(){

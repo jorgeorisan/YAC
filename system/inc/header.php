@@ -100,7 +100,7 @@
 	</head>
 	<body <?php echo implode(' ', array_map(function($prop, $value) {
 			return $prop.'="'.$value.'"';
-		}, array_keys($page_body_prop), $page_body_prop)) ;?>  class=" smart-style-2 ">
+		}, array_keys($page_body_prop), $page_body_prop)) ;?>  class=" smart-style-7 ">
 		<!-- POSSIBLE CLASSES: minified, fixed-ribbon, fixed-header, fixed-width
 			 You can also add different skin classes such as "smart-style-1", "smart-style-2" etc...-->
 		<?php

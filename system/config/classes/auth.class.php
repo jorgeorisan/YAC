@@ -104,20 +104,20 @@ updated token / token experation
 		
 		public function validateCredentials($e,$p){
 			$id=0;
+			
 
-			$sql = "SELECT `id`,`password` FROM user WHERE `email` = ?  AND  `status` = 'active' AND `deleted_date` is NULL ";
+			$sql = "SELECT `id`,`id_usuario`,`password` FROM usuario WHERE `id_usuario` = ?  AND  `status` = 'ACTIVO' ";
 
 			if ( ! $stmt = $this->db->prepare( $sql ) ) return false;
 
 			$e=strtolower($e);
 			$stmt->mbind_param( 's', $e );
 			$stmt->execute( $stmt );	
-			
-  		$stmt->bind_result($ti, $tp);
+  			$stmt->bind_result($id, $username, $password);
 			/* fetch values */
 			if ($stmt->fetch()) {
-				if ( password_verify($p, $tp) ){ 
-					$id = $ti;
+				if ( password_verify($p, $password) ){ 
+					$id = $id;
 				}
 			}
 			// Terminate

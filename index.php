@@ -57,12 +57,12 @@ Routing section
     
      
       
-      if ($request['section']==='Pacientes'){
-        $page = "Pacientes_index.php";
-        $dir  = "Pacientes";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Pacientes_add.php";      }
-        if ($request['page']==='addpopup') { $page = "Pacientes_addpopup.php";  }
-        if ($request['page']==='edit')     { $page = "Pacientes_edit.php";     }
+      if ($request['section']==='Clientes'){
+        $page = "Clientes_index.php";
+        $dir  = "Clientes";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Clientes_add.php";      }
+        if ($request['page']==='addpopup') { $page = "Clientes_addpopup.php";  }
+        if ($request['page']==='edit')     { $page = "Clientes_edit.php";     }
         
       }
       if ( $request['section'] === 'Catalogos' ) {
@@ -73,14 +73,14 @@ Routing section
         if ($request['page'] === 'categoria')      { $page = "Catalogos_categoria.php";  }
         if ($request['page'] === 'personalpuesto') { $page = "Catalogos_personalpuesto.php";  }
       }
-      if ($request['section']==='Users'){
-       $page = "Users_index.php";
-       $dir  = "Users";//si esta en carpeta
+      if ($request['section']==='Usuarios'){
+       $page = "Usuarios_index.php";
+       $dir  = "Usuarios";//si esta en carpeta
 
-        if ($request['page']==='show') { $page = "Users_show.php"; }
-        if ($request['page']==='add')  { $page = "Users_add.php" ; }
-        if ($request['page']==='edit') { $page = "Users_edit.php"; }
-        if ($request['page']==='ajax') { $page = "Users_ajax.php"; }
+        if ($request['page']==='show') { $page = "Usuarios_show.php"; }
+        if ($request['page']==='add')  { $page = "Usuarios_add.php" ; }
+        if ($request['page']==='edit') { $page = "Usuarios_edit.php"; }
+        if ($request['page']==='ajax') { $page = "Usuarios_ajax.php"; }
        
       }
       if ($request['section']==='Permisos'){
@@ -125,7 +125,7 @@ Routing section
       //*****permisos de usuario  */***///
       if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print" ){
         
-        $objpermuser = new PermisoUser();
+        $objpermuser = new PermisoUsuario();
         
         $datapermuser  = $objpermuser->getpermisouser($_SESSION['user_id'],$request['section'],$page2);
         if ( !$datapermuser ) {
@@ -172,10 +172,10 @@ Routing section
                 $dir="";//si esta en carpeta
             }
             break;
-          case 'Pacientes':
+          case 'Clientes':
             if ($request['page']==='addpopup'){
-              $dir  = "Pacientes";//si esta en carpeta
-              $page = "Pacientes_adpopup.php";      
+              $dir  = "Clientes";//si esta en carpeta
+              $page = "Clientes_adpopup.php";      
             }
             break;
           case 'Vehiculos':            

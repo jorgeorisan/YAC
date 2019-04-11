@@ -1,8 +1,6 @@
 <?php
 $errormessage="";
 
-
-$errormessage=""; 
 if ( isset($request['params']['email'])  && isset($_POST['password']) && isset($_POST['passwordConfirm']) &&  isset($request['params']['token']) ){
 //  $errormessage.=" a ";
 	if ($_POST['password']!==$_POST['passwordConfirm']){$errormessage="<p>Passwords do not match</p>";}

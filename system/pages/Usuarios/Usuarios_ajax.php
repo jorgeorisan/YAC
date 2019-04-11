@@ -9,9 +9,9 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 
 	switch ($_GET["object"]) {
 		case 'existadmin':
-			if( isset($_GET["email"]) ){
-				$u = new User();
-				if($u->userExists($_GET['email'])){
+			if( isset($_GET["id_usuario"]) ){
+				$u = new Usuario();
+				if($u->userExists($_GET['id_usuario'])){
 					echo 1;
 				}else{
 					echo 0;

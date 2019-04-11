@@ -1,6 +1,6 @@
 <?php 
 
-	class AutoClinica {
+	class AutoPersona {
 
 	// Variables
 		protected $db;
@@ -16,14 +16,14 @@
 			$this->db = $db;
 		}
 		public static function construct( $id ){
-			$clinica = new Clinica();
-			$clinica->setId( $id );
-			return $clinica;
+			$persona = new Persona();
+			$persona->setId( $id );
+			return $persona;
 		}
 		public static function constructWithValues( $values ){
-			$clinica = new Clinica();
-			$clinica->setValues( $values );
-			return $clinica;
+			$persona = new Persona();
+			$persona->setValues( $values );
+			return $persona;
 		}
 
 
@@ -54,7 +54,7 @@
 
 	// Public Support Functions
 		public function load($id) {
-			$sql="SELECT * FROM clinica WHERE id = ?";
+			$sql="SELECT * FROM persona WHERE id = ?";
 
 			if ( $id == 0 )
 				return $this->killInvalidclass( "The ID not validclass." );
@@ -77,12 +77,12 @@
 
 		public function save() {
 			if ($this->getId()==0){ // insert new
-				$sql = "INSERT INTO clinica SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
+				$sql = "INSERT INTO persona SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
 
 			$sql = trim($sql,",");
 
 			} else { // updated existing
-				$sql = "UPDATE clinica SET modified=UTC_TIMESTAMP(),";	
+				$sql = "UPDATE persona SET modified=UTC_TIMESTAMP(),";	
 
 			$sql = trim($sql,",");
 			$sql .= " WHERE id = ?";
@@ -109,7 +109,7 @@
 			if ($this->getId()==0){ // insert new
 				// only updates no save new here
 			} else { // updated existing
-				$sql = "UPDATE clinica SET modified=UTC_TIMESTAMP(),";	
+				$sql = "UPDATE persona SET modified=UTC_TIMESTAMP(),";	
 
 			$sql = trim($sql,",");
 			$sql .= " WHERE id = ?";
@@ -133,7 +133,7 @@
 		
 
 		public function getAll() {
-			$sql="SELECT id FROM clinica WHERE 1";
+			$sql="SELECT id FROM persona WHERE 1 and status='active'";
 			// Get data 
 			$stmt = $this->db->prepare( $sql );
 			$stmt->execute();
@@ -141,7 +141,7 @@
 			$res = $stmt->get_result();
 			$retval=array();
 			while($id = mysqli_fetch_row($res)){
-				$retval[$id[0]] = new Clinica();
+				$retval[$id[0]] = new Persona();
 				$retval[$id[0]]->load($id[0]);
 			}
 			return $retval;

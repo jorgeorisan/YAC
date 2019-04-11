@@ -30,27 +30,27 @@ include(SYSTEM_DIR . "/inc/nav.php");
 if(isset($request['params']['id'])   && $request['params']['id']>0)
     $id=$request['params']['id'];
 else
-    informError(true,make_url("Users","index"));
+    informError(true,make_url("Usuarios","index"));
 
-$obj = new User();
+$obj = new Usuario();
 $data = $obj->getTable($id);
 if ( !$data ) {
-    informError(true,make_url("Users","index"));
+    informError(true,make_url("Usuarios","index"));
 }
 if(isPost()){
-    $obj = new User();
+    $obj = new Usuario();
     $id = $obj->updateAll($id,getPost());
     if ( $id ) {
-        informSuccess(true, make_url("Users","index"));
+        informSuccess(true, make_url("Usuarios","index"));
     }else{
-        informError(true, make_url("Users","edit",array('id'=>$data['id']) ) );
+        informError(true, make_url("Usuarios","edit",array('id'=>$data['id']) ) );
     }
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-	 <?php $breadcrumbs["Users"] = APP_URL."/Users/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+	 <?php $breadcrumbs["Usuarios"] = APP_URL."/Usuarios/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -66,7 +66,7 @@ if(isPost()){
                         <div style="display: ;">
 							<div class="jarviswidget-editbox" style=""></div>
                                 <div class="widget-body">
-									<form id="main-form" class="smart-form" role="form" method=post action="<?php echo make_url("Users","edit",array('id'=>$data['id']));?>" onsubmit="return checkSubmit();">
+									<form id="main-form" class="smart-form" role="form" method=post action="<?php echo make_url("Usuarios","edit",array('id'=>$data['id']));?>" onsubmit="return checkSubmit();">
 										
 											<section>
 												<label class="input"> <i class="icon-append fa fa-envelope"></i>
@@ -78,16 +78,7 @@ if(isPost()){
 													<input type="text" id="nombre" name="nombre" placeholder="Nombre" value="<?php echo htmlentities($data['nombre']); ?>">
 												</label>
 											</section>
-											<section>
-												<label class="input"> <i class="icon-append fa fa-user"></i>
-													<input type="text" id="apellido_pat" name="apellido_pat" placeholder="Apellido Paterno" value="<?php echo htmlentities($data['apellido_pat']); ?>">
-												</label>
-											</section>
-											<section>
-												<label class="input"> <i class="icon-append fa fa-user"></i>
-													<input type="text" id="apellido_mat" name="apellido_mat" placeholder="Apellido Materno" value="<?php echo htmlentities($data['apellido_mat']); ?>">
-												</label>
-											</section>
+											
 											<section>
 												<label class="input"> <i class="icon-append fa fa-list-alt"></i>
 													<input type="text" id="direccion" name="direccion" placeholder="Direccion" value="<?php echo htmlentities($data['direccion']); ?>">
@@ -95,17 +86,17 @@ if(isPost()){
 											</section>
 											<section>
 												<label class="label">Selecciona el Tipo de usuario</label>
-												<select style="width:100%" class="select2" name="id_usertype" id="id_usertype">
+												<select style="width:100%" class="select2" name="id_usuario_tipo" id="id_usuario_tipo">
 													<option value="">Selecciona</option>
 													<?php 
-													$obj = new UserType();
+													$obj = new UsuarioTipo();
 													$list=$obj->getAllArr();
 													if (is_array($list) || is_object($list)){
 														foreach($list as $val){
 																$selected = "";
-															if ($data['id_usertype'] == $val['id'] )  $selected = "selected";
+															if ($data['id_usuario_tipo'] == $val['id_usuario_tipo'] )  $selected = "selected";
 															
-															echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['nombre'])."</option>";
+															echo "<option ".$selected ." value='".$val['id_usuario_tipo']."'>".htmlentities($val['usuario_tipo'])."</option>";
 														}
 													}
 													 ?>
@@ -113,15 +104,15 @@ if(isPost()){
 											</section>
 											<section>
 												<label class="label">Selecciona el clinica</label>
-												<select style="width:100%" class="select2" name="id_clinica" id="id_clinica">
+												<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
 													
 													<?php 
-													$obj = new Clinica();
+													$obj = new Tienda();
 													$list=$obj->getAllArr();
 													if (is_array($list) || is_object($list)){
 														foreach($list as $val){
 															$selected = "";
-															if ($data['id_clinica'] == $val['id'] ) {
+															if ($data['id_tienda'] == $val['id'] ) {
 																$selected = "selected";
 															}
 															echo "<option value='".$val['id']."' $selected >".htmlentities($val['nombre'])."</option>";
@@ -188,7 +179,7 @@ if(isPost()){
 		var x = $("#apellido_pat").val();
 		if (x == ""){ notify("warning","Se necesita un apellido"); return false; }
 
-		var idclinica = $("#id_clinica").val();
+		var idclinica = $("#id_tienda").val();
 		if (idclinica == ""){ notify("info","Se necesita un clinica"); return false; }
 	
 	    $("#main-form").submit();		

@@ -18,10 +18,10 @@ include(SYSTEM_DIR . "/inc/header.php");
 include(SYSTEM_DIR . "/inc/nav.php");
 
 
-$obj = new User();
+$obj = new Usuario();
 $data = $obj->getAllArr();
 
-//print_r($users);
+//print_r($Usuarios);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -36,7 +36,7 @@ $data = $obj->getAllArr();
 	<!-- MAIN CONTENT -->
 	<div id="content">
 		<section id="widget-grid" class="">
-			 <p><a class="btn btn-success" href="<?php echo make_url("Users","add")?>" ><i class="fas fa-plus"></i> Nuevo Usuario</a></p>
+			 <p><a class="btn btn-success" href="<?php echo make_url("Usuarios","add")?>" ><i class="fas fa-plus"></i> Nuevo Usuario</a></p>
 			<div class="row">
 				<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
@@ -52,40 +52,40 @@ $data = $obj->getAllArr();
 									<thead>
 										<tr>
 											<th class = "col-md-1" data-class="expand">
-												<i class="fa fa-fw  fa-envelope  text-muted hidden-md hidden-sm hidden-xs"></i> Email</th>
+												<i class="fa fa-fw  fa-envelope  text-muted hidden-md hidden-sm hidden-xs"></i> Username</th>
 											<th class = "col-md-1" data-class="expand">
-												<i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Nombre</th>
+												<i class="fa fa-fw fa-Usuario text-muted hidden-md hidden-sm hidden-xs"></i> Nombre</th>
 											<th class = "col-md-1" data-hide="phone tablet">
 												<i class="fa fa-fw  fa-certificate text-muted hidden-md hidden-sm hidden-xs"></i> Type</th>
 											<th class = "col-md-1" data-hide="phone,tablet">
 												<i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i>Status</th>
 											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i>Clinica</th>
+												<i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i>Tienda</th>
 											<th class = "col-md-1" data-hide="phone,tablet">
 												<i class="fa fa-fw  text-muted hidden-md hidden-sm hidden-xs"></i>Action</th>
 										</tr>
 									</thead>
 									<tbody>
 										<?php  foreach($data as $row) {
-											$nomclinica  = "";
-											$objclinica  = new Clinica();
-											$dataclinica = $objclinica->getTable($row["id_clinica"]);
-											if($dataclinica){ $nomclinica = $dataclinica["nombre"]; }
-											$nomusertype  ="";
-											$objusertype = new UserType();
-											$datausertype = $objusertype->getTable($row["id_usertype"]);
-											if($dataclinica){ $nomusertype = $datausertype["nombre"]; }
+											$nomtienda  = "";
+											$objtienda  = new Tienda();
+											$datatienda = $objtienda->getTable($row["id_tienda"]);
+											if($datatienda){ $nomtienda = $datatienda["nombre"]; }
+											$nomUsuariotype  ="";
+											$objUsuariotype = new UsuarioTipo();
+											$dataUsuariotype = $objUsuariotype->getTable($row["id_usuario_tipo"]);
+											if($datatienda){ $nomUsuariotype = $dataUsuariotype["usuario_tipo"]; }
 											?>
 											<tr>
-												<td><?php echo htmlentities($row['email'])?></td>
-												<td><?php echo htmlentities($row['nombre'].' '.$row['apellido_pat'])?></td>
-												<td><?php echo htmlentities($nomusertype) ?></td>
+												<td><?php echo htmlentities($row['id_usuario'])?></td>
+												<td><?php echo htmlentities($row['nombre'])?></td>
+												<td><?php echo htmlentities($nomUsuariotype) ?></td>
 												<?php if($row['status']=='active'){?>
 													<td><i class="fa fa-check-square    text-muted hidden-md hidden-sm hidden-xs"></td>
 												<?php }else{?>
 													<td><i class="fa f fa-square-o  text-muted hidden-md hidden-sm hidden-xs"></td>
 												<?php } ?>
-												<td><?php echo htmlentities($nomclinica) ?></td>
+												<td><?php echo htmlentities($nomtienda) ?></td>
 												<td>
 													<div class="btn-group">
 														<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -93,17 +93,17 @@ $data = $obj->getAllArr();
 														</button>
 														<ul class="dropdown-menu">
 															<li>
-																<a class="" href="<?php echo make_url("Users","edit",array('id'=>$row['id'])); ?>">Editar</a>
+																<a class="" href="<?php echo make_url("Usuarios","edit",array('id'=>$row['id'])); ?>">Editar</a>
 															</li>
 															<li>
 																<a class="" href="<?php echo make_url("Permisos","asignar",array('id'=>$row['id'])); ?>">Permisos</a>
 															</li>
 															<li>
-																<a class="" href="<?php echo make_url("Users","cambiarpwd",array('id'=>$row['id'])); ?>">Cambiar password</a>
+																<a class="" href="<?php echo make_url("Usuarios","cambiarpwd",array('id'=>$row['id'])); ?>">Cambiar password</a>
 															</li>
 															<li class="divider"></li>
 															<li>
-																<a href="#" class="red" onclick="borrar('<?php echo make_url("Users","userdelete",array('id'=>$row['id'])); ?>',<?php echo $row['id']; ?>);">Eliminar</a>
+																<a href="#" class="red" onclick="borrar('<?php echo make_url("Usuarios","Usuariodelete",array('id'=>$row['id'])); ?>',<?php echo $row['id']; ?>);">Eliminar</a>
 															</li>
 														</ul>
 													</div>

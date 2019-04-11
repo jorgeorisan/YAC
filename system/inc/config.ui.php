@@ -34,13 +34,13 @@ $menuPacientes = array(
 			)
 	)
 );
-$menuPersonal = array(
-	"Personal" => array(
-			"title" => "Personal",
+$menuClientes = array(
+	"Clientes" => array(
+			"title" => "Clientes",
 			"icon" => "fa-users",
 			"sub" => array(
-				'personalindex' => array('title'  => 'Personal','url' => APP_URL."/Personal/index" ),
-				'personal' => array('title'  => 'Nuevo Personal','url' => APP_URL."/Personal/add" )
+				'clientesindex' => array('title'  => 'Clientes','url' => APP_URL."/Clientes/index" ),
+				'clientes' => array('title'  => 'Nuevo Cliente','url' => APP_URL."/Clientes/add" )
 			)
 	)
 );
@@ -71,7 +71,8 @@ $menuCatalogos = array(
 		"icon"  => "fa-book",
 		"sub" => array(
 			"catclinica" 	 => array( "title" => "Clinicas",      "url" => APP_URL."/Catalogos/clinica" ),
-			"catmarca"  	 => array( "title" => "Categorias",       "url" => APP_URL."/Catalogos/categoria" ),
+			"catcategoria"  	 => array( "title" => "Categorias",       "url" => APP_URL."/Catalogos/categoria" ),
+			"catmarca"  	 => array( "title" => "Marcas",       "url" => APP_URL."/Catalogos/marca" ),
 			"catpersonalpuesto"  => array( "title" => "Personal puestos", "url" => APP_URL."/Catalogos/personalpuesto" )
 		)
 	)
@@ -82,8 +83,8 @@ $menuUsuarios = array(
 		"title" => "Usuarios",
 		"icon"  => "fa-user-tie",
 		"sub" => array(
-				'userindex' => array('title'  => 'Usuarios','url' => APP_URL."/Users/index" ),
-				'usertypeindex' => array('title'  => 'Usuarios Perfiles','url' => APP_URL."/Users/usertype" ),
+				'userindex' => array('title'  => 'Usuarios','url' => APP_URL."/Usuarios/index" ),
+				'usertypeindex' => array('title'  => 'Usuarios Perfiles','url' => APP_URL."/Usuarios/usertype" ),
 				'permisoindex' => array('title'  => 'Permisos','url' => APP_URL."/Permisos/index" )
 		)
 	)
@@ -98,7 +99,7 @@ $extras = array(
 	)
 );
 if(isset($_SESSION['user_id'])){
-	$objperm = new PermisoUser();
+	$objperm = new PermisoUsuario();
 
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Citas');
 	if ( $datapermuser ) { 
@@ -118,14 +119,14 @@ if(isset($_SESSION['user_id'])){
 	  $page_nav = array_merge($page_nav, $menuCatalogos);
 	}
 
-	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Users');
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Usuarios');
 	if ( $datapermuser ) { 
 	  $page_nav = array_merge($page_nav, $menuUsuarios);
 	}
 
-	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Personal');
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Clientes');
 	if ( $datapermuser ) { 
-	  $page_nav = array_merge($page_nav, $menuPersonal);
+	  $page_nav = array_merge($page_nav, $menuClientes);
 	}
 
 

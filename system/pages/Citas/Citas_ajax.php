@@ -18,27 +18,27 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			$citas  = new Cita();
 			if($res=$citas->getAllArr()){
 				foreach($res as $row) {
-					$pacientes = new Paciente();
-					$paciente  = $pacientes->getTable($row['id_paciente']);
+					$personas = new Paciente();
+					$persona  = $personas->getTable($row['id_persona']);
 					$users     = new User();
 					$user      = $users->getTable($row['id_user']);
 					$personal  = new Personal();
-					$persona   = $personal->getTable($row['id_paciente']);
-					$nombrepaciente  = htmlentities($paciente['nombre']." ".$paciente['apellido_pat']." ".$paciente['apellido_mat']." "); 
-					$nombrepersonal  = htmlentities($persona['nombre']." ".$persona['apellido_pat']." ".$persona['apellido_mat']." ");
-					$nombreuser      = htmlentities($user['nombre']." ".$user['apellido_pat']." ".$user['apellido_mat']." ");
+					$persona   = $personal->getTable($row['id_persona']);
+					$nombrepersona  = htmlentities($persona['nombre']." ".$persona['ap_paterno']." ".$persona['ap_materno']." "); 
+					$nombrepersonal  = htmlentities($persona['nombre']." ".$persona['ap_paterno']." ".$persona['ap_materno']." ");
+					$nombreuser      = htmlentities($user['nombre']." ".$user['ap_paterno']." ".$user['ap_materno']." ");
 					switch ($row['status']) {
 						case 'active':	   $status = 'Pendiente';  $class = "bg-color-blue"; 	   $icon = "fa-clock-o"; break;
 						case 'deleted':    $status = 'Cancelada';  $class = "bg-color-red";	       $icon = "fa-warning"; break;
 						case 'Finalizada': $status = 'Finalizada'; $class = "bg-color-greenLight"; $icon = "fa-check";   break;
 						default: 	       $status = 'N/A';		   $class = "";           	       $icon = "";           break;
 					}
-					$events['title']       = $nombrepaciente; 
+					$events['title']       = $nombrepersona; 
 					$events['start']       = $row['fecha_inicial']; 
 					$events['end']         = $row['fecha_final']; 
 					$events['description'] = $status; 
 					$events['allDay'] 	   = 'false'; 
-					$events['url'] 		   = make_url("Citas","historial",array('id'=>$row['id_paciente'] )); 
+					$events['url'] 		   = make_url("Citas","historial",array('id'=>$row['id_persona'] )); 
 					$events['icon']        = $icon; 
 					
 				}
@@ -46,16 +46,16 @@ if (  isset($_GET["action"]) && $_GET["object"]){
   			respondData($events);
 			
 			break;
-		case 'getpaciente':
+		case 'getcliente':
 			if( isset($_GET["id"]) && intval($_GET["id"]) ){
-				$u = new Paciente();
+				$u = new Persona();
 				if($res=$u->getTable($_GET['id'])){
 					$data="
 						<table border=1 style=' border-color: #CCC;'>
-							<tr  align='center'><td colspan='2'><h4>Datos del paciente</h4></td></tr>";
+							<tr  align='center'><td colspan='2'><h4>Datos del persona</h4></td></tr>";
 					$data.="<tr>
 								<td><strong>Nombre:</strong></td>
-								<td>" . htmlentities($res["nombre"] ." ".$res["apellido_pat"] ." ".$res["apellido_mat"]) . "</td>
+								<td>" . htmlentities($res["nombre"] ." ".$res["ap_paterno"] ." ".$res["ap_materno"]) . "</td>
 							</tr>
 							<tr>
 								<td><strong>Email:</strong></td><td>"   .htmlentities($res["email"])     . "</td>
@@ -63,7 +63,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 							<tr>
 								<td><strong>Telefono:</strong></td><td>" .htmlentities($res["telefono"]) . "</td>
 							</tr>
-							<tr><td><strong>Direccion:</strong></td><td>" .htmlentities($res["ciudad"]." ".$res["estado"]). " Col." .htmlentities($res["colonia"]) ." Call." .htmlentities($res["calle"]." ".$res["num_ext"]. " " .$res["num_int"])."</td>
+							<tr><td><strong>Direccion:</strong></td><td>" .htmlentities($res["ciudad"]." ".$res["estado"]). " Col." .htmlentities($res["colonia"]) ." Call." .htmlentities($res["calle"]." ".$res["num_exterior"]. " " .$res["num_interior"])."</td>
 							</tr>
 						</table>";
 					echo $data;

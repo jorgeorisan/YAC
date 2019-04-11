@@ -9,7 +9,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 
 	switch ($_GET["object"]) {
 		case 'showpopup':
-		    $html = file_get_contents(SYSTEM_DIR.'/pages/Pacientes/Pacientes_addpopup.php');
+		    $html = file_get_contents(SYSTEM_DIR.'/pages/Clientes/Clientes_addpopup.php');
 			if( $html ){
 					echo $data=$html;
 			}else{
@@ -18,9 +18,9 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			
 			break;
 		case 'savenewclient':
-		    $obj = new Paciente();
+		    $obj = new Persona();
 			if(isPost()){
-			    $obj = new Paciente();
+			    $obj = new Persona();
 			    $id=$obj->addAll(getPost());
 			    if($id>0){
 			        echo $id;

@@ -29,15 +29,15 @@ $citas  = new Cita();
 $events = [];
 if($res=$citas->getAllArr()){
 	foreach($res as $key => $row) {
-		$pacientes = new Paciente();
-		$paciente  = $pacientes->getTable($row['id_paciente']);
-		$users     = new User();
-		$user      = $users->getTable($row['id_user']);
-		$personal  = new Personal();
-		$persona   = $personal->getTable($row['id_paciente']);
-		$nombrepaciente  = htmlentities($paciente['nombre']." ".$paciente['apellido_pat']." ".$paciente['apellido_mat']." "); 
-		$nombrepersonal  = htmlentities($persona['nombre']." ".$persona['apellido_pat']." ".$persona['apellido_mat']." ");
-		$nombreuser      = htmlentities($user['nombre']." ".$user['apellido_pat']." ".$user['apellido_mat']." ");
+		$personas = new Persona();
+		$persona  = $personas->getTable($row['id_persona']);
+		$users     = new Usuario();
+		$user      = $users->getTable($row['id_usuario']);
+		$persona  = new Persona();
+		$persona   = $persona->getTable($row['id_persona']);
+		$nombrepersona  = htmlentities($persona['nombre']." ".$persona['ap_paterno']." ".$persona['ap_materno']." "); 
+		$nombrepersona  = htmlentities($persona['nombre']." ".$persona['ap_paterno']." ".$persona['ap_materno']." ");
+		$nombreuser      = htmlentities($user['id_usuario']);
 		switch ($row['status']) {
 			case 'active':	   $status = 'Pendiente';  $class = "bg-color-blue"; 	   $icon = "fa-clock-o"; break;
 			case 'deleted':    $status = 'Cancelada';  $class = "bg-color-red";	       $icon = "fa-warning"; break;
@@ -45,19 +45,20 @@ if($res=$citas->getAllArr()){
 			default: 	       $status = 'N/A';		   $class = "";           	       $icon = "";           break;
 		}
 		$event = array([
-			"title"       => $nombrepaciente,
+			"title"       => $nombrepersona,
 			"start"       => $row['fecha_inicial'],
 			"end"         => $row['fecha_final'],
 			"description" => $status,
 			"allDay"      => false,
 			"className"   => array('event', $class),
-			"url"         => make_url("Historial","consulta",array('id'=>$row['id_paciente'],'id_cita'=>$row['id'])),
+			"url"         => make_url("Historial","consulta",array('id'=>$row['id_persona'],'id_cita'=>$row['id'])),
 			"icon"        => $icon
 		]);	
 		$events=array_merge($event, $events);
 	}
 
 }
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->

@@ -26,17 +26,17 @@ include(SYSTEM_DIR . "/inc/header.php");
 include(SYSTEM_DIR . "/inc/nav.php");
 if(isPost()){
 	if(isPost()){
-	    $obj = new User();
-	    if(!$obj->userExists($_POST['email']))
+	    $obj = new Usuario();
+	    if(!$obj->userExists($_POST['id_usuario']))
 		{
 		    $id=$obj->addAll(getPost());
 		    if($id>0){
 		        informSuccess(true,  make_url("Permisos","asignar",array('id'=>$id) ));
 		    }else{
-		        informError(true,make_url("Users","index"));
+		        informError(true,make_url("Usuarios","index"));
 		    }
 		}else{
-			informError(true,make_url("Users","index"));
+			informError(true,make_url("Usuarios","index"));
 		}
 	}
 }
@@ -44,7 +44,7 @@ if(isPost()){
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-	 <?php $breadcrumbs["Users"] = APP_URL."/Users/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+	 <?php $breadcrumbs["Usuarios"] = APP_URL."/Usuarios/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -60,10 +60,10 @@ if(isPost()){
                         <div style="display: ;">
 							<div class="jarviswidget-editbox" style=""></div>
                                 <div class="widget-body">
-									<form id="main-form" class="smart-form" role="form" method=post action="<?php echo make_url("Users","add");?>" onsubmit="return checkSubmit();">
+									<form id="main-form" class="smart-form" role="form" method=post action="<?php echo make_url("Usuarios","add");?>" onsubmit="return checkSubmit();">
 										<section>
-											<label class="input"> <i class="icon-append fa fa-envelope"></i>
-												<input type="email" id="email" name="email" placeholder="Email">
+											<label class="input"> <i class="icon-append fa fa-user"></i>
+												<input type="text" id="id_usuario" autocomplete="off" name="id_usuario" placeholder="Username">
 											</label>
 										</section>
 										<section>
@@ -81,16 +81,7 @@ if(isPost()){
 												<input type="text" id="nombre" name="nombre" placeholder="Nombre">
 											</label>
 										</section>
-										<section>
-											<label class="input"> <i class="icon-append fa fa-user"></i>
-												<input type="text" id="apellido_pat" name="apellido_pat" placeholder="Apellido Paterno">
-											</label>
-										</section>
-										<section>
-											<label class="input"> <i class="icon-append fa fa-user"></i>
-												<input type="text" id="apellido_mat" name="apellido_mat" placeholder="Apellido Materno">
-											</label>
-										</section>
+										
 										<section>
 											<label class="input"> <i class="icon-append fa fa-list-alt"></i>
 												<input type="text" id="direccion" name="direccion" placeholder="Direccion">
@@ -98,28 +89,28 @@ if(isPost()){
 										</section>
 										<section>
 											<label class="label">Selecciona el perfil</label>
-											<select style="width:100%" class="select2" name="id_usertype" id="id_usertype">
+											<select style="width:100%" class="select2" name="id_usuario_tipo" id="id_usuario_tipo">
 												<option value="">Selecciona</option>
 												<?php 
-												$obj = new UserType();
+												$obj = new UsuarioTipo();
 												$list=$obj->getAllArr();
 												if (is_array($list) || is_object($list)){
 													foreach($list as $val){
-														echo "<option value='".$val['id']."'>".$val['nombre']."</option>";
+														echo "<option value='".$val['id_usuario_tipo']."'>".$val['usuario_tipo']."</option>";
 													}
 												}
 												 ?>
 											</select>
 										</section>
 										<section>
-											<label class="label">Selecciona la  clinica</label>
-											<select style="width:100%" class="select2" name="id_clinica" id="id_clinica">
+											<label class="label">Selecciona la  tienda</label>
+											<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
 												<?php 
-												$obj = new Clinica();
+												$obj = new Tienda();
 												$list=$obj->getAllArr();
 												if (is_array($list) || is_object($list)){
 													foreach($list as $val){
-														echo "<option value='".$val['id']."'>".$val['nombre']."</option>";
+														echo "<option value='".$val['id_tienda']."'>".$val['nombre']."</option>";
 													}
 												}
 												 ?>
@@ -170,15 +161,14 @@ if(isPost()){
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/YOURJS.js"></script>-->
 
 <script>
-	function existadmin(email, callback){
-        if ( ! email ) return;
-        if ( ! validateEmailStructure( email ) )
-            return notify('warning', 'Email no es valido.');
+	function existadmin(id_usuario, callback){
+        if ( ! id_usuario ) return;
+       
 
-        $.get(config.base+"/Users/ajax/?action=get&object=existadmin&email=" + email, null, function (response) {
+        $.get(config.base+"/Usuarios/ajax/?action=get&object=existadmin&id_usuario=" + id_usuario, null, function (response) {
         		if ( response == 1){
-					$("#email").val('');
-					notify('warning', 'Este email ya existe favor de intentar con otro');
+					$("#id_usuario").val('');
+					notify('warning', 'Este username ya existe favor de intentar con otro');
 					return false;
 				}else{
 					if(callback){
@@ -191,11 +181,11 @@ if(isPost()){
         });
 	}
 	function validateForm()	{
-		var email 		= $("#email").val();
-		var id_usertype = $("#id_usertype").val();
-		if (email == "")	   return notify("info","Se necesita un email"); 
-		if (id_usertype == "") return notify("info","Se necesita un Perfil"); 
-			existadmin(email,function(){
+		var id_usuario 		= $("#id_usuario").val();
+		var id_usuario_tipo = $("#id_usuario_tipo").val();
+		if (id_usuario == "")	   return notify("info","Se necesita un id_usuario"); 
+		if (id_usuario_tipo == "") return notify("info","Se necesita un Perfil"); 
+			existadmin(id_usuario,function(){
 				var p1 = $("#password").val();
 			    var p2 = $("#confirmpassword").val();
 				var x = $("#password").val();
@@ -208,8 +198,6 @@ if(isPost()){
 				var x = $("#nombre").val();
 				if (x == ""){ notify("warning","Se necesita un nombre"); return false; }
 					
-				var x = $("#apellido_pat").val();
-				if (x == ""){ notify("warning","Se necesita un apellido"); return false; }
 			
 			    $("#main-form").submit();		
 			});
