@@ -10,7 +10,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Ver Puestos";
+$page_title = "Editar Puesto";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -27,18 +27,27 @@ include(SYSTEM_DIR . "/inc/nav.php");
 if(isset($request['params']['id'])   && $request['params']['id']>0)
     $id=$request['params']['id'];
 else
-    informError(true,make_url("Catalogos","personalpuesto"));
+    informError(true,make_url("Catalogos","usuariotipo"));
 
-$obj = new PersonalPuesto();
+$obj = new UsuarioTipo();
 $data = $obj->getTable($id);
 if ( !$data ) {
-    informError(true,make_url("Catalogos","personalpuesto"));
+    informError(true,make_url("Catalogos","usuariotipo"));
+}
+if(isPost()){
+    $obj = new UsuarioTipo();
+    $id = $obj->updateAll($id,getPost());
+    if( $id  ) {
+         informSuccess(true, make_url("Catalogos","usuariotipo"));
+    }else{
+        informError(true, make_url("Catalogos","usuariotipoedit",array('id'=>$id)),"usuariotipoedit");
+    }
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["PersonalPuesto"] = APP_URL."/Catalogos/personalpuesto"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Personal Puesto"] = APP_URL."/Catalogos/usuariotipo"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -57,16 +66,32 @@ if ( !$data ) {
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <div class="tl-body">
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label for="name">Puesto</label>
-                                            <input type="text" class="form-control" readonly placeholder="Nombre puesto" name="nombre" value="<?php echo htmlentities($data['nombre']); ?>">
+                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","usuariotipoedit",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                   <div class="tl-body">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="name">Puesto</label>
+                                                <input type="text" class="form-control" placeholder="Nombre puesto" name="usuario_tipo" value="<?php echo htmlentities($data['usuario_tipo']); ?>">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                           <div class="form-actions" style="text-align: center">
+                                                <div class="row">
+                                                   <div class="col-md-12">
+                                                        <button class="btn btn-default btn-md" type="button" onclick="window.history.go(-1); return false;">
+                                                            Cancelar
+                                                        </button>
+                                                        <button class="btn btn-primary btn-md" type="button" onclick=" validateForm();">
+                                                            <i class="fa fa-save"></i>
+                                                            Guardar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                            <div id="resultado"></div>
                                         </div>
                                     </div>
-                                   
-                                </div>
-                                
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -97,7 +122,7 @@ if ( !$data ) {
 <script>
     function validateForm()
     {
-        var nombre = $("input[name=nombre]").val();
+        var nombre = $("input[name=usuario_tipo]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");
 
         $("#main-form").submit();       

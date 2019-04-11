@@ -71,7 +71,7 @@ Routing section
         if ($request['page'] === 'clinica')        { $page = "Catalogos_clinica.php"; }
         if ($request['page'] === 'marca')          { $page = "Catalogos_marca.php";  }
         if ($request['page'] === 'categoria')      { $page = "Catalogos_categoria.php";  }
-        if ($request['page'] === 'personalpuesto') { $page = "Catalogos_personalpuesto.php";  }
+        if ($request['page'] === 'usuariotipo')    { $page = "Catalogos_usuariotipo.php";  }
       }
       if ($request['section']==='Usuarios'){
        $page = "Usuarios_index.php";

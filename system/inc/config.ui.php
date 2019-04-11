@@ -71,9 +71,9 @@ $menuCatalogos = array(
 		"icon"  => "fa-book",
 		"sub" => array(
 			"cattiendas" 	 => array( "title" => "Tiendas",      "url" => APP_URL."/Catalogos/tienda" ),
-			"catcategoria"  	 => array( "title" => "Categorias",       "url" => APP_URL."/Catalogos/categoria" ),
+			"catcategoria"   => array( "title" => "Categorias",   "url" => APP_URL."/Catalogos/categoria" ),
 			"catmarca"  	 => array( "title" => "Marcas",       "url" => APP_URL."/Catalogos/marca" ),
-			"catpersonalpuesto"  => array( "title" => "Personal puestos", "url" => APP_URL."/Catalogos/personalpuesto" )
+			"catusuariotipo" => array( "title" => "Tipos Usuario","url" => APP_URL."/Catalogos/usuariotipo" )
 		)
 	)
 );

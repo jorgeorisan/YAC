@@ -57,7 +57,7 @@ class UsuarioTipo extends AutoUsuarioTipo {
 	{
 		$_request["updated_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'usuario_tipo',$this->db,"update");
-		$sql= "UPDATE usuario_tipo SET $data[0]  WHERE id=".$id.";";
+		$sql= "UPDATE usuario_tipo SET $data[0]  WHERE id_usuario_tipo=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
@@ -71,7 +71,7 @@ class UsuarioTipo extends AutoUsuarioTipo {
 		$_request["status"]="deleted";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'usuario_tipo',$this->db,"update");	
-		$sql= "UPDATE usuario_tipo SET $data[0]  WHERE id=".$id.";";
+		$sql= "UPDATE usuario_tipo SET $data[0]  WHERE id_usuario_tipo=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;

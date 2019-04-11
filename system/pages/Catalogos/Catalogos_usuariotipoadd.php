@@ -10,7 +10,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Editar Puesto";
+$page_title = "Agregar Puesto";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -24,54 +24,41 @@ include(SYSTEM_DIR . "/inc/header.php");
 //follow the tree in inc/config.ui.php
 //$page_nav["misc"]["sub"]["blank"]["active"] = true;
 include(SYSTEM_DIR . "/inc/nav.php");
-if(isset($request['params']['id'])   && $request['params']['id']>0)
-    $id=$request['params']['id'];
-else
-    informError(true,make_url("Catalogos","personalpuesto"));
-
-$obj = new PersonalPuesto();
-$data = $obj->getTable($id);
-if ( !$data ) {
-    informError(true,make_url("Catalogos","personalpuesto"));
-}
 if(isPost()){
-    $obj = new PersonalPuesto();
-    $id = $obj->updateAll($id,getPost());
-    if( $id  ) {
-         informSuccess(true, make_url("Catalogos","personalpuesto"));
+    $obj = new UsuarioTipo();
+    $id=$obj->addAll(getPost());
+    if($id>0){
+        informSuccess(true, make_url("Catalogos","usuariotipo"));
     }else{
-        informError(true, make_url("Catalogos","personalpuestoedit",array('id'=>$id)),"personalpuestoedit");
+        informError(true,make_url("Catalogos","usuariotipo"));
     }
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Personal Puesto"] = APP_URL."/Catalogos/personalpuesto"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["UsuarioTipo"] = APP_URL."/Catalogos/usuariotipo"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
             <section id="widget-grid" class="">
-                 <article class="col-sm-12 col-md-6 col-lg-6"  id="">
+                <article class="col-sm-12 col-md-6 col-lg-6"  id="">
                     <div class="jarviswidget  jarviswidget-sortables" id="wid-id-0"
                     data-widget-colorbutton="false" data-widget-editbutton="false" 
                     data-widget-deletebutton="false" data-widget-collapsed="false">
                         <!-- Widget ID (each widget will need unique ID)-->
-                        <header>
-                            <span class="widget-icon"> 
-                                <i class="fa fa-edit"></i>
-                            </span>
-                            <h2><?php echo $page_title ?></h2>
+                        <header> <span class="widget-icon"> 
+                            <i class="fa fa-plus"></i> </span><h2><?php echo $page_title ?></h2>
                         </header>
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","personalpuestoedit",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
-                                   <div class="tl-body">
+                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","usuariotipoadd");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                    <div class="tl-body">
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="name">Puesto</label>
-                                                <input type="text" class="form-control" placeholder="Nombre puesto" name="nombre" value="<?php echo htmlentities($data['nombre']); ?>">
+                                                <input type="text" class="form-control" placeholder="Nombre puesto" name="usuario_tipo"  >
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -122,7 +109,7 @@ if(isPost()){
 <script>
     function validateForm()
     {
-        var nombre = $("input[name=nombre]").val();
+        var nombre = $("input[name=usuario_tipo]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");
 
         $("#main-form").submit();       
