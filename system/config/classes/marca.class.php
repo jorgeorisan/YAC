@@ -26,7 +26,7 @@ class Marca extends AutoMarca {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM marca WHERE id=$id;";
+		$sql= "SELECT * FROM marca WHERE id_marca=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
 			{die("Error getting result marca");}
@@ -57,7 +57,7 @@ class Marca extends AutoMarca {
 	{
 		$_request["updated_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'marca',$this->db,"update");
-		$sql= "UPDATE marca SET $data[0]  WHERE id=".$id.";";
+		$sql= "UPDATE marca SET $data[0]  WHERE id_marca=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
@@ -71,7 +71,7 @@ class Marca extends AutoMarca {
 		$_request["status"]="deleted";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'marca',$this->db,"update");	
-		$sql= "UPDATE marca SET $data[0]  WHERE id=".$id.";";
+		$sql= "UPDATE marca SET $data[0]  WHERE id_marca=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;

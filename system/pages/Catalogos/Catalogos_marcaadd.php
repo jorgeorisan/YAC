@@ -10,7 +10,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Agregar Modelo";
+$page_title = "Agregar Marca";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -28,9 +28,9 @@ if(isPost()){
     $obj = new Marca();
     $id=$obj->addAll(getPost());
     if($id>0){
-        informSuccess(true, make_url("Catalogos","submarca"));
+        informSuccess(true, make_url("Catalogos","marca"));
     }else{
-        informError(true,make_url("Catalogos","submarca"));
+        informError(true,make_url("Catalogos","marca"));
     }
 }
 ?>
@@ -56,27 +56,14 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","submarcaadd");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","marcaadd");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
                                     <div class="tl-body">
                                         <div class="col-sm-13">
                                             <div class="form-group">
-                                                <label for="name">Modelo</label> 
+                                                <label for="name">Marca</label> 
                                                 <input type="text" required class="form-control" placeholder="Capture modelo" name="nombre" >
                                             </div>                            
-                                            <div class="form-group">
-                                                <label for="name">Categoria</label><br>
-                                                <select style="width:100%" class="select2" name="id_marca">
-                                                    <option value="">Seleccione una Categoria</option>
-                                                    <?php 
-                                                        $obj = new Categoria();
-                                                        $list=$obj->getAllArr();
-                                                        if (is_array($list) || is_object($list)){
-                                                            foreach($list as $val)
-                                                                echo "<option value='".$val['id']."'>".$val['nombre']."</option>";
-                                                        }
-                                                    ?>
-                                                </select>                                
-                                            </div>
+                                            
                                         </div>
                                         <div class="form-actions" style="text-align: center">
                                             <div class="row">
@@ -126,9 +113,7 @@ if(isPost()){
         var nombre = $("input[name=nombre]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");
 
-        var id_marca = $('select[name=id_marca] option:selected').val();
-        if ( ! id_marca )  return notify("info","La marca es requerida");
-
+      
         $("#main-form").submit();       
     }
     $(document).ready(function() {

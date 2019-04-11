@@ -8,7 +8,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 /*---------------- PHP Custom Scripts ---------
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
-$page_title = "Modelos";
+$page_title = "Marcas";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 $page_css[] = "your_style.css";
@@ -29,7 +29,7 @@ $data = $obj->getAllArr();
 	<!-- MAIN CONTENT -->
 	<div id="content">
 		<section id="widget-grid" class="">
-			<p><a class="btn btn-success" href="<?php echo make_url("Catalogos","submarcaadd")?>" >Nuevo Modelo</a></p>
+			<p><a class="btn btn-success" href="<?php echo make_url("Catalogos","marcaadd")?>" >Nueva Marca</a></p>
 			<div class="row">
 				<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
@@ -44,23 +44,16 @@ $data = $obj->getAllArr();
 								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 									<thead>
 										<tr>
-											<th class = "col-md-4" data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Nombre</th>
-											<th class = "col-md-1" data-hide=""><i class="fa fa-fw  fa-certificate text-muted hidden-md hidden-sm hidden-xs"></i> Categoria</th>
-											<th class = "col-md-1" data-hide=""><i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i>Status</th>
-											<th class = "col-md-2" data-hide=""><i class="fa fa-fw    text-muted hidden-md hidden-sm hidden-xs"></i>Action</th>
+											<th class = "col-md-4" data-class="expand"> Nombre</th>
+											<th class = "col-md-2" data-hide="">Action</th>
 										</tr>
 									</thead>
 									<tbody>
 										<?php foreach($data as $row){
-											$nommarca="";
-											$objmarca = new Categoria();
-											$datamarca = $objmarca->getTable($row["id_marca"]);
-											if($datamarca){ $nommarca = $datamarca["nombre"]; }
+											
 											?>
 											<tr>
-												<td><?php echo htmlentities($row['nombre'])?></td>
-												<td><?php echo htmlentities($nommarca)?></td>
-												<td><?php echo htmlentities($row['status']) ?></td>												
+												<td><?php echo htmlentities($row['nombre'])?></td>											
 												<td>
 													<div class="btn-group">
 														<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -68,14 +61,11 @@ $data = $obj->getAllArr();
 														</button>
 														<ul class="dropdown-menu">
 															<li>
-																<a class="" href="<?php echo make_url("Catalogos","submarcashow",array('id'=>$row['id'])); ?>">Ver</a>
-															</li>
-															<li>
-																<a class="" href="<?php echo make_url("Catalogos","submarcaedit",array('id'=>$row['id'])); ?>">Editar</a>
+																<a class="" href="<?php echo make_url("Catalogos","marcaedit",array('id'=>$row['id_marca'])); ?>">Editar</a>
 															</li>
 															<li class="divider"></li>
 															<li>
-																<a href="#" class="red" onclick="borrar('<?php echo make_url("Catalogos","submarcadelete",array('id'=>$row['id'])); ?>',<?php echo $row['id']; ?>);">Eliminar</a>
+																<a href="#" class="red" onclick="borrar('<?php echo make_url("Catalogos","marcadelete",array('id'=>$row['id_marca'])); ?>',<?php echo $row['id_marca']; ?>);">Eliminar</a>
 															</li>
 														</ul>
 													</div>

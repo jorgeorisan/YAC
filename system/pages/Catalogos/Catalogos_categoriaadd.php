@@ -58,7 +58,7 @@ if(isPost()){
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="name">Nombre</label>
-                                                <input type="text" class="form-control" placeholder="Nombre categoria" name="nombre"  >
+                                                <input type="text" class="form-control" placeholder="Nombre categoria" name="categoria"  >
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -109,7 +109,7 @@ if(isPost()){
 <script>
     function validateForm()
     {
-        var nombre = $("input[name=nombre]").val();
+        var nombre = $("input[name=categoria]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");
 
         $("#main-form").submit();       

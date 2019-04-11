@@ -10,7 +10,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Editar Modelo";
+$page_title = "Editar Marca";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -38,16 +38,16 @@ if(isPost()){
     $obj = new Marca();
     $id = $obj->updateAll($id,getPost());
     if( $id  ) {
-         informSuccess(true, make_url("Catalogos","submarca"));
+         informSuccess(true, make_url("Catalogos","marca"));
     }else{
-        informError(true, make_url("Catalogos","submarcaedit",array('id'=>$id)),"submarcaedit");
+        informError(true, make_url("Catalogos","marcaedit",array('id'=>$id)),"marcaedit");
     }
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Modelo"] = APP_URL."/Catalogos/submarca"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Marca"] = APP_URL."/Catalogos/marca"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -66,33 +66,14 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","submarcaedit",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","marcaedit",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
                                     <div class="tl-body">
                                         <div class="col-sm-13">
                                             <div class="form-group">
-                                                <label for="name">Modelo</label> 
-                                                <input type="text" required class="form-control" placeholder="Capture modelo" name="nombre" value="<?php echo htmlentities($data['nombre']); ?>" >
+                                                <label for="name">Marca</label> 
+                                                <input type="text" required class="form-control" placeholder="Capture marca" name="nombre" value="<?php echo htmlentities($data['nombre']); ?>" >
                                             </div>                            
-                                            <div class="form-group">
-                                                <label for="name">Categoria</label><br>
-                                                <select style="width:100%" class="select2" name="id_marca">
-                                                    <option value="">Seleccione una Categoria</option>
-                                                    <?php 
-                                                        $obj = new Categoria();
-                                                        $list=$obj->getAllArr();
-                                                        if (is_array($list) || is_object($list)){
-                                                            foreach($list as $val){
-                                                                $selected = "";
-                                                                if ($data['id_marca'] == $val['id'] ) {
-                                                                    $selected = "selected";
-                                                                }
-                                                                echo "<option value='".$val['id']."' $selected >".htmlentities($val['nombre'])."</option>";
-                                                            }
-                                                        }
-                                                    ?>
-                                                </select>                                
-                                            </div>
-                                        </div>
+                                           
                                         <div class="form-actions" style="text-align: center">
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -141,9 +122,7 @@ if(isPost()){
         var nombre = $("input[name=nombre]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");
 
-        var id_marca = $('select[name=id_marca] option:selected').val();
-        if ( ! id_marca )  return notify("info","La marca es requerida");
-
+      
         $("#main-form").submit();       
     }
     $(document).ready(function() {
