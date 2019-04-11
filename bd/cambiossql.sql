@@ -240,3 +240,10 @@ INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalo
 INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalogos Usuarios Tipo Alta', 'Catalogos', 'usuariotipoadd');
 INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalogos Usuarios Tipo Editar', 'Catalogos', 'usuariotipoedit');
 INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalogos Usuarios Tipo Borrar', 'Catalogos', 'usuariotipodelete');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalogos Tienda', 'Catalogos', 'tienda');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalogos Tienda Alta', 'Catalogos', 'tiendaadd');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalogos Tienda Editar', 'Catalogos', 'tiendaedit');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalogos Tienda Borrar', 'Catalogos', 'tiendadelete');
+
+ALTER TABLE `xqwmrfeeug`.`marca` 
+ADD COLUMN `status` VARCHAR(45) NULL DEFAULT 'active' AFTER `descuento_activado`;

@@ -67,10 +67,10 @@ $menuHistorial = array(
 
 $menuCatalogos = array(
 	"catalogos" => array(
-		"title" => "Catalogo Admin",
+		"title" => "Catalogos",
 		"icon"  => "fa-book",
 		"sub" => array(
-			"catclinica" 	 => array( "title" => "Clinicas",      "url" => APP_URL."/Catalogos/clinica" ),
+			"cattiendas" 	 => array( "title" => "Tiendas",      "url" => APP_URL."/Catalogos/tienda" ),
 			"catcategoria"  	 => array( "title" => "Categorias",       "url" => APP_URL."/Catalogos/categoria" ),
 			"catmarca"  	 => array( "title" => "Marcas",       "url" => APP_URL."/Catalogos/marca" ),
 			"catpersonalpuesto"  => array( "title" => "Personal puestos", "url" => APP_URL."/Catalogos/personalpuesto" )

@@ -10,7 +10,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Agregar nuevo clinica";
+$page_title = "Agregar nueva tienda";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -25,19 +25,19 @@ include(SYSTEM_DIR . "/inc/header.php");
 //$page_nav["misc"]["sub"]["blank"]["active"] = true;
 include(SYSTEM_DIR . "/inc/nav.php");
 if(isPost()){
-    $obj = new Clinica();
+    $obj = new Tienda();
     $id=$obj->addAll(getPost());
     if($id>0){
-        informSuccess(true, make_url("Catalogos","clinica"));
+        informSuccess(true, make_url("Catalogos","tienda"));
     }else{
-        informError(true,make_url("Catalogos","clinica"));
+        informError(true,make_url("Catalogos","tienda"));
     }
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Clinica"] = APP_URL."/Catalogos/clinica"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Tienda"] = APP_URL."/Catalogos/tienda"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -56,61 +56,34 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","clinicaadd");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Catalogos","tiendaadd");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
                                     <fieldset>
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label for="name">Nombre del Clinica</label>
-                                                <input type="text" class="form-control" placeholder="Nombre Clinica" name="nombre">                                                    
+                                                <label for="name">Nombre</label>
+                                                <input type="text" class="form-control" placeholder="Nombre Tienda" name="nombre">                                                    
                                             </div>
                                             <div class="form-group">
-                                                <label for="name">Calle</label>
-                                                <input type="text" class="form-control" placeholder="Calle" name="calle" >                        
+                                                <label for="name">Ubicacion</label>
+                                                <input type="text" class="form-control" placeholder="Direccion" name="ubicacion" >                        
                                             </div>
                                             <div class="form-group">
-                                                <label for="name">Número Exterior</label>
-                                                <input type="text" class="form-control" placeholder="Número exterior" name="numext" >                                               
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name">Número Interior</label>
-                                                <input type="text" class="form-control" placeholder="Número interior" name="numinte" >                                                                       
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name">Colonia</label>
-                                                <input type="text" class="form-control" placeholder="Colonia" name="colonia" >                                                           
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name">Ciudad</label>
-                                                <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" > 
+                                                <label for="name">Logotipo</label>
+                                                <input type="file" class="form-control"  id="imagen1" name="logo" onchange="vistaPrevia(this, 'logoTiendaPrev');" multiple>
+                                                <fieldset id="logoTiendaPrev" class="0">
+                                                </fieldset>
                                             </div>
                                         </div>  
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label for="name">Estado</label>
-                                                <input type="text" class="form-control" placeholder="Estado" name="estado" >                                                                                               
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name">CP</label>
-                                                <input type="text" maxlength="5" class="form-control" id="cp" placeholder="CP" name="cp">                                                                                                                                                       
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name">RFC</label>
-                                                <input type="text" class="form-control" placeholder="RFC" name="rfc" >                                                                                               
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="email">Correo</label>
-                                                <input type="email" class="form-control" placeholder="example@email.com" name="correo">                                                                                               
+                                                <label for="name">Info Adicional</label>
+                                                <input type="text" class="form-control" placeholder="Inf. Adicional" name="info_adicional">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Teléfono</label>
                                                 <input type="text" class="form-control" placeholder="" name="telefono">                                                                                                                     
                                             </div>
-                                            <div class="form-group">
-                                                <label for="name">Logotipo</label>
-                                                <input type="file" class="form-control"  id="imagen1" name="logo" onchange="vistaPrevia(this, 'logoClinicaPrev');" multiple>
-                                                <fieldset id="logoClinicaPrev" class="0">
-                                                </fieldset>
-                                            </div>
+                                           
                                         </div>
                                     </fieldset>
                                     <div class="form-actions" style="text-align: center">
