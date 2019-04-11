@@ -307,6 +307,7 @@ function delete($id,$module,$table){
     case 'usertype':           $obj = new UserType();          $pagereturn = $table;    break;
     case 'cita':               $obj = new Cita();                                       break;
     case 'personalpuesto':     $obj = new PersonalPuesto();    $pagereturn = $table;    break;
+    case 'usuariotipo':        $obj = new UsuarioTipo();       $pagereturn = $table;    break;
     default:
       echo "no se encontro tabla en func.global ".$table;
       exit;

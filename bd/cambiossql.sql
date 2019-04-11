@@ -247,3 +247,7 @@ INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Catalo
 
 ALTER TABLE `xqwmrfeeug`.`marca` 
 ADD COLUMN `status` VARCHAR(45) NULL DEFAULT 'active' AFTER `descuento_activado`;
+
+
+ALTER TABLE `xqwmrfeeug`.`usuario_tipo` 
+ADD COLUMN `status` VARCHAR(45) NULL DEFAULT 'active' AFTER `usuario_tipo`;

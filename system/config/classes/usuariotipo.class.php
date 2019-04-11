@@ -9,7 +9,7 @@ class UsuarioTipo extends AutoUsuarioTipo {
 		//metodo que sirve para obtener todos los datos de la tabla
 	public function getAllArr()
 	{
-		$sql = "SELECT * FROM usuario_tipo ;";
+		$sql = "SELECT * FROM usuario_tipo where status='active' ;";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
