@@ -112,7 +112,7 @@ spl_autoload_register(function ($class_name) {
 //include_once( 'classes/auth.class.php' );
 //include_once( 'classes/user.class.php' );
 // open conection
-if($_SERVER["SERVER_NAME"]){
+if(isset($_SERVER["SERVER_NAME"])){
  	$db = new db(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME,DB_PORT,DB_SOCKET);
  }else{
 	$db = new db('127.0.0.1', 'root', '', "xqwmrfeeug",null,null);
