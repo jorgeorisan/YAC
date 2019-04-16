@@ -325,6 +325,25 @@ class Ventas_AdministrarController extends jfLib_Controller
         if (!$obj) {
             $this->_informError();
         }
+        $showcostos=0;
+        $readonly=" readonly ";
+        switch ($this->_loggedUser->id_usuario_tipo) {
+            case '2':
+                if($this->_loggedUser->id_usuario=='Elena' || $this->_loggedUser->id_usuario=='anny' || $this->_loggedUser->id_usuario=='tavo'   ){
+                    $showcostos=0;
+                    $readonly="";
+                }
+                break;
+            case '5':
+                $showcostos=1;
+                $readonly="";
+                break;
+            
+            default:
+                break;
+        }
+        
+        $this->view->showcostos = $showcostos;
         $this->view->obj = $obj;
     }
     function verdevolucionAction()
