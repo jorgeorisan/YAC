@@ -27,3 +27,10 @@ $RECYCLE.BIN/
 
 # Data
 public/sistema/documentos
+
+# Logs
+internal/log
+
+# Composer
+composer.lock
+vendor/
