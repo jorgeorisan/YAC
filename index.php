@@ -55,8 +55,6 @@ Routing section
       $page2    = ($request['page'])? $request['page'] : 'index';
 
     
-     
-      
       if ($request['section']==='Clientes'){
         $page = "Clientes_index.php";
         $dir  = "Clientes";//si esta en carpeta
@@ -74,8 +72,8 @@ Routing section
         if ($request['page'] === 'usuariotipo')    { $page = "Catalogos_usuariotipo.php";  }
       }
       if ($request['section']==='Usuarios'){
-       $page = "Usuarios_index.php";
-       $dir  = "Usuarios";//si esta en carpeta
+        $page = "Usuarios_index.php";
+        $dir  = "Usuarios";//si esta en carpeta
 
         if ($request['page']==='show') { $page = "Usuarios_show.php"; }
         if ($request['page']==='add')  { $page = "Usuarios_add.php" ; }
@@ -109,6 +107,14 @@ Routing section
         $dir  = "Historial";//si esta en carpeta
         if ($request['page']==='consulta') { $page = "Historial_consulta.php"; }
         if ($request['page']==='view')     { $page = "Historial_view.php";     }
+      }
+      if ($request['section']==='Productos'){
+        $page = "Productos_index.php";
+        $dir  = "Productos";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Productos_add.php";      }
+        if ($request['page']==='edit')     { $page = "Productos_edit.php";     }
+        if ($request['page']==='addpopup') { $page = "Productos_addpopup.php";  }
+        
       }
      
       //delete pages

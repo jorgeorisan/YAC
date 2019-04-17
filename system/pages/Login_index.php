@@ -113,8 +113,10 @@ echo $p=password_hash('admin123', PASSWORD_DEFAULT);
 			$u->load($id);
 			echo $_SESSION['user_id']=$id;
 			$_SESSION['user_info']=array(
-				'id'=>$u->getId(),
+            'id'=>$u->getId(),
+            'id_usuario'=>$u->getId(),
 				'nombre'=>$u->getNombre(),
+				'costos'=>$u->getCostos(),
 				'id_tienda'=>$u->getIdTienda(),
 				'id_usuario_tipo'=>$u->getIdUsuarioTipo()
 				);

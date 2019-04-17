@@ -40,7 +40,9 @@ $menuClientes = array(
 			"icon" => "fa-users",
 			"sub" => array(
 				'clientesindex' => array('title'  => 'Clientes','url' => APP_URL."/Clientes/index" ),
-				'clientes' => array('title'  => 'Nuevo Cliente','url' => APP_URL."/Clientes/add" )
+				'clientes' => array('title'  => 'Nuevo Cliente','url' => APP_URL."/Clientes/add" ),
+				'prospectosindex' => array('title'  => 'Prospectos*','url' => APP_URL."/Clientes/prospectos" ),
+				'solicitudesindex' => array('title'  => 'Solicitudes*','url' => APP_URL."/Clientes/solicitudes" )
 			)
 	)
 );
@@ -51,6 +53,16 @@ $menuCitas = array(
 			"sub" => array(
 				'citasindex' => array('title'  => 'Citas','url' => APP_URL."/Citas/index" ),
 				'citas' => array('title'  => 'Nueva cita','url' => APP_URL."/Citas/add" )
+			)
+	)
+);
+$menuProductos = array(
+	"Productos" => array(
+			"title" => "Productos",
+			"icon" => "fa-archive",
+			"sub" => array(
+				'productosindex' => array('title'  => 'Productos','url' => APP_URL."/Productos/index" ),
+				'productos' => array('title'  => 'Nuevo Producto','url' => APP_URL."/Productos/add" )
 			)
 	)
 );
@@ -77,7 +89,17 @@ $menuCatalogos = array(
 		)
 	)
 );
-
+$menuVentas = array(
+	"ventas" => array(
+		"title" => "Ventas",
+		"icon"  => "fa-money-check-alt",
+		"sub" => array(
+				'ventasindex'     => array('title'  => 'Ventas','url' => APP_URL."/Ventas/add" ),
+				'ventastypeindex' => array('title'  => 'Ventas','url' => APP_URL."/Ventas/index" ),
+				'permisoindex'    => array('title'  => 'Ventas a credito','url' => APP_URL."/Ventas/credito" )
+		)
+	)
+);
 $menuUsuarios = array(
 	"usuarios" => array(
 		"title" => "Usuarios",
@@ -101,19 +123,19 @@ $extras = array(
 if(isset($_SESSION['user_id'])){
 	$objperm = new PermisoUsuario();
 
-	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Citas');
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Ventas');
 	if ( $datapermuser ) { 
-	  $page_nav = array_merge($page_nav, $menuCitas);
+	  $page_nav = array_merge($page_nav, $menuVentas);
 	}
-	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Historial');
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Clientes');
 	if ( $datapermuser ) { 
-	  $page_nav = array_merge($page_nav, $menuHistorial);
+	  $page_nav = array_merge($page_nav, $menuClientes);
 	}
-	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Pacientes');
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Productos');
 	if ( $datapermuser ) { 
-	  $page_nav = array_merge($page_nav, $menuPacientes);
+	  $page_nav = array_merge($page_nav, $menuProductos);
 	}
-
+	
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Catalogos');
 	if ( $datapermuser ) { 
 	  $page_nav = array_merge($page_nav, $menuCatalogos);
@@ -124,11 +146,14 @@ if(isset($_SESSION['user_id'])){
 	  $page_nav = array_merge($page_nav, $menuUsuarios);
 	}
 
-	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Clientes');
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Citas');
 	if ( $datapermuser ) { 
-	  $page_nav = array_merge($page_nav, $menuClientes);
+	  $page_nav = array_merge($page_nav, $menuCitas);
 	}
-
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Historial');
+	if ( $datapermuser ) { 
+	  $page_nav = array_merge($page_nav, $menuHistorial);
+	}
 
 	//default
 	$page_nav = array_merge($page_nav, $extras);

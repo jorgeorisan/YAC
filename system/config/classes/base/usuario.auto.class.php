@@ -16,6 +16,7 @@
 		protected $permisos = "";
 		protected $comision = 0;
 		protected $direccion = "";
+		protected $costos = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -88,6 +89,11 @@
 		}
 		
 		public function setDireccion( $value ){ 				$this->direccion = $value;
+		}
+		
+		public function setCostos( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "COSTOS","s") ) 
+ 				$this->costos = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -195,6 +201,14 @@
  			}
 		}
 		
+		public function getCostos($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->costos) ;
+ 			}else{
+ 				return $this->costos ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -232,6 +246,7 @@
 			$this->setPermisos( $res['permisos'] );
 			$this->setComision( $res['comision'] );
 			$this->setDireccion( $res['direccion'] );
+			$this->setCostos( $res['costos'] );
 			return true;
 		}
 		// end function load
@@ -250,6 +265,7 @@
 			$sql .= " `permisos` = ? ,";
 			$sql .= " `comision` = ? ,";
 			$sql .= " `direccion` = ? ,";
+			$sql .= " `costos` = ? ,";
 			$sql = trim($sql,",");
 
 			} else { // updated existing
@@ -265,6 +281,7 @@
 			$sql .= " `permisos` = ? ,";
 			$sql .= " `comision` = ? ,";
 			$sql .= " `direccion` = ? ,";
+			$sql .= " `costos` = ? ,";
 			$sql = trim($sql,",");
 			$sql .= " WHERE id = ?";
 			}
@@ -284,6 +301,7 @@
 			$stmt->mbind_param( 's', $this->permisos );
 			$stmt->mbind_param( 'd', $this->comision );
 			$stmt->mbind_param( 's', $this->direccion );
+			$stmt->mbind_param( 's', $this->costos );
 			if ($this->getId()>0){
 				$stmt->mbind_param( 'i', $this->id  );
 			} // end save
@@ -332,6 +350,9 @@
 			if (in_array("direccion",$fieldstoupdate)){
 				$sql .= " `direccion` = ? ,";
 			}
+			if (in_array("costos",$fieldstoupdate)){
+				$sql .= " `costos` = ? ,";
+			}
 			$sql = trim($sql,",");
 			$sql .= " WHERE id = ?";
 			}
@@ -370,6 +391,9 @@
 			}
 			if (in_array("direccion",$fieldstoupdate)){
 				$stmt->mbind_param( 's', $this->direccion  );
+			}
+			if (in_array("costos",$fieldstoupdate)){
+				$stmt->mbind_param( 's', $this->costos  );
 			}
 			if ($this->getId()>0){
 				$stmt->mbind_param( 'i', $this->getId()  );

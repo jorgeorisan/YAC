@@ -98,6 +98,7 @@ $fieldTypes= array(
 		12=>array('num'=>12,'type'=>'DATETIME','bind'=>'s'),
 		13=>array('num'=>13,'type'=>'YEAR','bind'=>'s'),
 		16=>array('num'=>16,'type'=>'BIT','bind'=>'s'),
+		17=>array('num'=>9,'type'=>'BIGINT','bind'=>'i'),
 		246=>array('num'=>246,'type'=>'DECIMAL','bind'=>'d'),
 		252=>array('num'=>252,'type'=>'BLOB','bind'=>'b'),
 		252=>array('num'=>252,'type'=>'TEXT','bind'=>'s'),
@@ -110,7 +111,7 @@ $fieldTypes= array(
      // Set character set, to show its impact on some values (e.g., length in bytes)
     //$db->set_charset($charset);
 
-    $query = "SELECT *  from ".$db->real_escape_string($table_name)." ORDER BY id";
+    $query = "SELECT *  from ".$db->real_escape_string($table_name)."";
 
     $fields=array();
     
@@ -138,7 +139,7 @@ $fieldTypes= array(
         }
         $result->free();
     }
- //print_r($finfo);die;
+ //print_r($finfo); die();
 
 /*  START OF AUTO GENERATED CLASS  */
 $output ='<?php 
@@ -267,161 +268,6 @@ $output.= '
 ';
 
 $output.= '
-		public function save() {
-			if ($this->getId()==0){ // insert new
-				$sql = "INSERT INTO ' . $table_name . ' SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
-';
-foreach ($fields as $k=>$v){
-		if ( $k != 'id' && $k != 'modified' && $k != 'created' ){
-		$output.= '
-			$sql .= " `'.$v['database_name'].'` = ? ,";';
-		}
-}
-$output.= '
-			$sql = trim($sql,",");
-
-			} else { // updated existing
-				$sql = "UPDATE ' . $table_name . ' SET modified=UTC_TIMESTAMP(),";	
-';
-foreach ($fields as $k=>$v){
-		if ( $k != 'id' && $k != 'modified' && $k != 'created' ){
-		$output.= '
-			$sql .= " `' . $v['database_name'] . '` = ? ,";';
-		}
-}
-$output.= '
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-';
-
-$output.= '
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( \'i\', $id );
-';
-foreach ($fields as $k=>$v){
-		if ( $k != 'id' && $k != 'modified' && $k != 'created' ){
-		$output.= '
-			$stmt->mbind_param( \'' . $v['bind_type'] . '\', $this->' . $v['database_name'] . ' );';
-		}
-}
-$output.= '
-			if ($this->getId()>0){
-				$stmt->mbind_param( \'i\', $this->id  );
-			} // end save
-';
-
-
-$output.= '
-			$stmt->execute();
-			if ($this->getId()==0){
-				$this->setId( $this->db->insert_id );
-			}
-			return $this->getId();
-		}
-		
-';
-
-/// updateFields
-$output.= '
-		public function updateFields($fieldstoupdate) {
-			if ($this->getId()==0){ // insert new
-				// only updates no save new here
-			} else { // updated existing
-				$sql = "UPDATE ' . $table_name . ' SET modified=UTC_TIMESTAMP(),";	
-';
-foreach ($fields as $k=>$v){
-		if ( $k != 'id' && $k != 'modified' && $k != 'created'  ){
-		$output.= '
-			if (in_array("' . $k . '",$fieldstoupdate)){
-				$sql .= " `' . $v['database_name'] . '` = ? ,";
-			}';
-		}
-}
-$output.= '
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-';
-
-$output.= '
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( \'i\', $id );
-';
-foreach ($fields as $k=>$v){
-		if ( $k != 'id' && $k != 'modified' && $k != 'created' ){
-		$output.= '
-			if (in_array("' . $k . '",$fieldstoupdate)){
-				$stmt->mbind_param( \'' . $v['bind_type'] . '\', $this->' . $v['model_name'] .  '  );
-			}';
-		}
-}
-$output.= '
-			if ($this->getId()>0){
-				$stmt->mbind_param( \'i\', $this->getId()  );
-			}
-';
-$output.= '
-			$stmt->execute();
-			//if ($this->getId()==0){
-			//	$this->setId( $this->db->insert_id );
-			//}
-			return $this->getId();
-		}  // updateFields
-		
-';
-
-
-
-
-
-
-$output.= '
-		public function getAll() {
-			$sql="SELECT id FROM ' . $table_name . ' WHERE 1 and status=\'active\'";
-			// Get data 
-			$stmt = $this->db->prepare( $sql );
-			$stmt->execute();
-
-			$res = $stmt->get_result();
-			$retval=array();
-			while($id = mysqli_fetch_row($res)){
-				$retval[$id[0]] = new ' . $model_name . '();
-				$retval[$id[0]]->load($id[0]);
-			}
-			return $retval;
-		}
-
-';
-
-$output.= '
-
-	// Private Support Functions
-		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
-			//if ( ! $this->validclass )
-			//	return $this->validclass;
-
-			if ( ! preg_match($pcre, $input) ){ 
-				return $this->killInvalidclass( "The input provided for the field \'$field\' is not validclass. Value provided: ".htmlentities($input),$field);
-			}else{
-				unset($this->statusclass[$field]);
-				if (empty($this->statusclass)){$this->validclass=true;}
-			}
-
-			return true;
-		}
-		protected function killInvalidclass( $msg, $field="General Error" ){
-			$this->statusclass[$field] = $msg;
-			$this->validclass = false;
-			return false;
-		}
-';
-
-$output.= '
 }
 ';
 $filename=SYSTEM_DIR.DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR."classes".DIRECTORY_SEPARATOR."base". DIRECTORY_SEPARATOR.$table_name.".auto.class.php";
@@ -515,11 +361,12 @@ class ' . $model_name . ' extends Auto' . $model_name . ' {
 
 }
 ';
-if (file_exists($filename)){
-	$filename.="__".date('Ymdhsi')."-".uniqid();
+if (! file_exists($filename)){
+	file_put_contents($filename, $output) ;
+	//$filename.="__".date('Ymdhsi')."-".uniqid();
 }
 
-file_put_contents($filename, $output) ;
+
 
 
 

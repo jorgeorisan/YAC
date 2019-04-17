@@ -14,9 +14,12 @@ $app_path=str_replace(DIRECTORY_SEPARATOR, '/', substr($directory, strlen($docum
 if(strpos($directory, $document_root)===0) {
     $base_url .= str_replace(DIRECTORY_SEPARATOR, '/', substr($directory, strlen($document_root)));
 }
-if($_SERVER["SERVER_NAME"]=='138.128.161.42'){
-	 $base_url =$base_url."/~systemclinica" ;
+if(isset($_SERVER["SERVER_NAME"])){
+	if($_SERVER["SERVER_NAME"]=='138.128.161.42'){
+		$base_url =$base_url."/YAC/" ;
+ 	}
 }
+
 
 
 defined("APP_URL") 			           ? null : define("APP_URL", str_replace("/system/config", "", $base_url));
@@ -28,6 +31,7 @@ defined("SYSTEM_DIR")              ? null : define("SYSTEM_DIR", ROOT_DIR . DIRE
 defined("CONFIG_DIR")              ? null : define("CONFIG_DIR", ROOT_DIR . DIRECTORY_SEPARATOR . "system" . DIRECTORY_SEPARATOR . "config");
 //Assets URL, location of your css, img, js, etc. files
 defined("ASSETS_URL")              ? null : define("ASSETS_URL", APP_URL );
+defined("PRODUCTOS")         		   ? null : define("PRODUCTOS", ROOT_DIR . DIRECTORY_SEPARATOR . "productos");
 #echo "<pre>";
 #print_r(array(APP_URL,APP_PATH,ROOT_DIR,ASSETS_URL));
 #echo "</pre>";#die;
@@ -64,7 +68,8 @@ if (getenv('MYSQL_SOCKET') != null){
 	define("ON_GOOGLE", FALSE);
 	/* Database local*/
 	defined("DB_HOST") ? null : define("DB_HOST", "127.0.0.1");
-	if($_SERVER["SERVER_NAME"]){
+	
+	if(isset($_SERVER["SERVER_NAME"])){
        // echo "<strong>$url_actual</strong>";
 	    if($_SERVER["SERVER_NAME"]!='localhost'){
 				defined("DB_USER") ? null : define("DB_USER", "xqwmrfeeug");

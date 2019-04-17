@@ -4,8 +4,6 @@
 sftp-config.json
 
 #
-
-<<<<<<< HEAD
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
@@ -30,6 +28,9 @@ public/sistema/documentos
 
 # Logs
 internal/log
+
+#imagenes de productos
+productos
 
 # Composer
 composer.lock

@@ -25,12 +25,12 @@ include(SYSTEM_DIR . "/inc/header.php");
 //follow the tree in inc/config.ui.php
 include(SYSTEM_DIR . "/inc/nav.php");
 if(isPost()){
-    $obj = new Paciente();
+    $obj = new Persona();
     $id=$obj->addAll(getPost());
     if($id>0){
-        informSuccess(true, make_url("Pacientes","index"));
+        informSuccess(true, make_url("Clientes","index"));
     }else{
-        informError(true,make_url("Pacientes","index"));
+        informError(true,make_url("Clientes","index"));
     }
 }
 
@@ -38,7 +38,7 @@ if(isPost()){
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Paciente"] = APP_URL."/Paciente/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Cliente"] = APP_URL."/Cliente/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -57,7 +57,7 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Pacientes","add");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Clientes","add");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
                                         <div class="col-sm-6">
                                             <div class="form-group">

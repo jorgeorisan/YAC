@@ -1,15 +1,15 @@
 <?php
 
-require_once(SYSTEM_DIR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR ."base". DIRECTORY_SEPARATOR ."persona.auto.class.php");
+require_once(SYSTEM_DIR . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "classes" . DIRECTORY_SEPARATOR ."base". DIRECTORY_SEPARATOR ."producto_tienda.auto.class.php");
 
-class Persona extends AutoPersona { 
-	private $DB_TABLE = "persona";
+class ProductoTienda extends AutoProductoTienda { 
+	private $DB_TABLE = "producto_tienda";
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
 	public function getAllArr()
 	{
-		$sql = "SELECT * FROM persona where status='ACTIVO' order by nombre;";
+		$sql = "SELECT * FROM producto_tienda where status='active';";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
@@ -26,10 +26,10 @@ class Persona extends AutoPersona {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM persona WHERE id_persona=$id;";
+		$sql= "SELECT * FROM producto_tienda WHERE id=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
-			{die("Error getting result persona");}
+			{die("Error getting result producto_tienda");}
 		$row = $res->fetch_assoc();
 		$res->close();
 		return $row;
@@ -38,8 +38,8 @@ class Persona extends AutoPersona {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
-		$data=fromArray($_request,'persona',$this->db,"add");
-		$sql= "INSERT INTO persona (".$data[0].") VALUES(".$data[1]."); ";
+		$data=fromArray($_request,'producto_tienda',$this->db,"add");
+		$sql= "INSERT INTO producto_tienda (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
 		$sql= "SELECT LAST_INSERT_ID();";//. $num ;
 		$res=$this->db->query($sql);
@@ -56,8 +56,8 @@ class Persona extends AutoPersona {
 	public function updateAll($id,$_request)
 	{
 		$_request["updated_date"]=date("Y-m-d H:i:s");
-		$data=fromArray($_request,'persona',$this->db,"update");
-		$sql= "UPDATE persona SET $data[0]  WHERE id_persona=".$id.";";
+		$data=fromArray($_request,'producto_tienda',$this->db,"update");
+		$sql= "UPDATE producto_tienda SET $data[0]  WHERE id=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
@@ -70,8 +70,8 @@ class Persona extends AutoPersona {
 	{
 		$_request["status"]="deleted";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
-		$data=fromArray($_request,'persona',$this->db,"update");	
-		$sql= "UPDATE persona SET $data[0]  WHERE id_persona=".$id.";";
+		$data=fromArray($_request,'producto_tienda',$this->db,"update");	
+		$sql= "UPDATE producto_tienda SET $data[0]  WHERE id=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;

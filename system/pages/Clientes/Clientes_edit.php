@@ -27,20 +27,20 @@ include(SYSTEM_DIR . "/inc/nav.php");
 if(isset($request['params']['id'])   && $request['params']['id']>0)
     $id=$request['params']['id'];
 else
-    informError(true,make_url("Pacientes","index"));
+    informError(true,make_url("Clientes","index"));
 
-$obj = new Paciente();
+$obj = new Persona();
 $data = $obj->getTable($id);
 if ( !$data ) {
-    informError(true,make_url("Pacientes","index"));
+    informError(true,make_url("Clientes","index"));
 }
 if(isPost()){
-    $obj = new Paciente();
+    $obj = new Cliente();
     $id = $obj->updateAll($id,getPost());
     if( $id  ) {
-         informSuccess(true, make_url("Pacientes","index"));
+         informSuccess(true, make_url("Clientes","index"));
     }else{
-        informError(true, make_url("Pacientes","edit",array('id'=>$id)),"edit");
+        informError(true, make_url("Clientes","edit",array('id'=>$id)),"edit");
     }
 }
 
@@ -48,7 +48,7 @@ if(isPost()){
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Pacientes"] = APP_URL."/Pacientes/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Clientes"] = APP_URL."/Clientes/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -67,7 +67,7 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Pacientes","edit",array('id'=>$id))?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Clientes","edit",array('id'=>$id))?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
                                         <div class="col-sm-6">
                                             <div class="form-group">

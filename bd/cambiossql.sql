@@ -251,3 +251,30 @@ ADD COLUMN `status` VARCHAR(45) NULL DEFAULT 'active' AFTER `descuento_activado`
 
 ALTER TABLE `xqwmrfeeug`.`usuario_tipo` 
 ADD COLUMN `status` VARCHAR(45) NULL DEFAULT 'active' AFTER `usuario_tipo`;
+
+
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Productos', 'Productos', 'index');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Productos Borrar', 'Productos', 'productodelete');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Productos Alta', 'Productos', 'add');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Productos Editar', 'Productos', 'edit');
+
+ALTER TABLE `xqwmrfeeug`.`usuario` 
+ADD COLUMN `costos` VARCHAR(45) NULL DEFAULT 0 AFTER `direccion`;
+
+UPDATE `xqwmrfeeug`.`usuario` SET `costos` = '1' WHERE (`id` = '10');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Productos Ver', 'Productos', 'view');
+
+ALTER TABLE `xqwmrfeeug`.`producto` 
+CHANGE COLUMN `id_proveedor` `id_proveedor` INT(11) NOT NULL AFTER `id_producto`,
+CHANGE COLUMN `id_marca` `id_marca` INT(11) NOT NULL AFTER `id_proveedor`,
+CHANGE COLUMN `id_categoria` `id_categoria` INT(11) NOT NULL AFTER `id_marca`;
+ALTER TABLE `xqwmrfeeug`.`producto` 
+CHANGE COLUMN `condiciones` `condiciones` VARCHAR(45) NULL ;
+
+ALTER TABLE `xqwmrfeeug`.`marca` 
+CHANGE COLUMN `descuento_activado` `descuento_activado` INT NULL DEFAULT '0' ;
+ALTER TABLE `xqwmrfeeug`.`producto` 
+ADD COLUMN `updated_date` TIMESTAMP NULL AFTER `precio_editable`;
+
+ALTER TABLE `xqwmrfeeug`.`producto` 
+ADD COLUMN `deleted_date` TIMESTAMP NULL AFTER `updated_date`;
