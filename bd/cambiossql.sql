@@ -8,13 +8,13 @@ DROP TABLE `xqwmrfeeug`.`ventascorte1`;
 DROP FOREIGN KEY `id_usuar_vta_dx`;
 ALTER TABLE `xqwmrfeeug`.`venta` 
 DROP INDEX `fk_venta_usuario1_idx` ;
-;
+
 
 ALTER TABLE `xqwmrfeeug`.`asistencia` 
 DROP FOREIGN KEY `fk_asistencia_usuario1`;
 ALTER TABLE `xqwmrfeeug`.`asistencia` 
 DROP INDEX `fk_asistencia_usuario1` ;
-;
+
 DROP TABLE `xqwmrfeeug`.`datos_facturacion`;
 DROP TABLE `xqwmrfeeug`.`inventariocostomensual`;
 
@@ -26,13 +26,13 @@ ALTER TABLE `xqwmrfeeug`.`salida`
 DROP FOREIGN KEY `id_usua_sal_dx`;
 ALTER TABLE `xqwmrfeeug`.`salida` 
 DROP INDEX `id_usu_idx` ;
-;
+
 
 ALTER TABLE `xqwmrfeeug`.`entrada` 
 DROP FOREIGN KEY `fk_entrada_usuario1`;
 ALTER TABLE `xqwmrfeeug`.`entrada` 
 DROP INDEX `fk_entrada_usuario1_idx` ;
-;
+
 
 ALTER TABLE `xqwmrfeeug`.`usuario` 
 ADD COLUMN `id` INT NULL FIRST;
@@ -67,7 +67,6 @@ ALTER TABLE `xqwmrfeeug`.`usuario`
 CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
 DROP PRIMARY KEY,
 ADD PRIMARY KEY (`id_usuario`, `id`);
-;
 
 
 ALTER TABLE `xqwmrfeeug`.`usuario` 
@@ -85,7 +84,7 @@ CREATE TABLE `permiso` (
    `deleted_date` timestamp NULL DEFAULT NULL,
    `status` varchar(45) DEFAULT 'active',
    PRIMARY KEY (`id`)
- ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8
+ ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
  CREATE TABLE `permiso_usuario` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -106,13 +105,13 @@ ADD CONSTRAINT `id_permiso_usuario_dx`
 DROP FOREIGN KEY `id_usu_tp_dx`;
 ALTER TABLE `xqwmrfeeug`.`traspaso` 
 DROP INDEX `id_usu_idx` ;
-;
+
 
 
 ALTER TABLE `xqwmrfeeug`.`usuario` 
 DROP PRIMARY KEY,
 ADD PRIMARY KEY (`id`);
-;
+
 
 ALTER TABLE `xqwmrfeeug`.`usuario` 
 CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;
