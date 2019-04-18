@@ -1,0 +1,433 @@
+<?php 
+
+	class Blogpost {
+
+	// Variables
+		protected $db;
+		
+		protected $id = 0;
+		protected $title = "";
+		protected $idauthor = 0;
+		protected $content = "";
+		protected $quote = "";
+		protected $postdate = "";
+		protected $poststatus = 0;
+		protected $postimage_id = 0;
+		protected $postlink = "";
+		protected $created = "";
+		protected $modified = "";
+		protected $deleted = 0;
+
+		protected $valid = true;
+		protected $status = array();
+
+
+	// Constructor Methods
+		public   function __construct(){
+			global $db;
+			$this->db = $db;
+		}
+		public static function construct( $id ){
+			$blogpost = new Blogpost();
+			$blogpost->setId( $id );
+			return $blogpost;
+		}
+		public static function constructWithValues( $values ){
+			$blogpost = new Blogpost();
+			$blogpost->setValues( $values );
+			return $blogpost;
+		}
+
+
+	// Setter Methods
+		public function setId( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "ID","i") ) 
+ 				$this->id = $value;
+		}
+		
+		public function setTitle( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "TITLE","s") ) 
+ 				$this->title = $value;
+		}
+		
+		public function setIdauthor( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "IDAUTHOR","i") ) 
+ 				$this->idauthor = $value;
+		}
+		
+		public function setContent( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "CONTENT","s") ) 
+ 				$this->content = $value;
+		}
+		
+		public function setQuote( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "QUOTE","s") ) 
+ 				$this->quote = $value;
+		}
+		
+		public function setPostdate( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "POSTDATE","s") ) 
+ 				$this->postdate = $value;
+		}
+		
+		public function setPoststatus( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "POSTSTATUS","i") ) 
+ 				$this->poststatus = $value;
+		}
+		
+		public function setPostimageId( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "POSTIMAGEID","i") ) 
+ 				$this->postimage_id = $value;
+		}
+		
+		public function setPostlink( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "POSTLINK","s") ) 
+ 				$this->postlink = $value;
+		}
+		
+		public function setCreated( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "CREATED","s") ) 
+ 				$this->created = $value;
+		}
+		
+		public function setModified( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "MODIFIED","s") ) 
+ 				$this->modified = $value;
+		}
+		
+		public function setDeleted( $value ){
+			if ( $this->validateInput("/^.*$/", $value, "DELETED","i") ) 
+ 				$this->deleted = $value;
+		}
+		
+		public function setValid( $value ){
+			if ( $this->validateInput('/^(true|false)$/', ( $value ) ? 'true' : 'false', "Valid",'s') )
+				$this->valid = $value;
+		}
+
+		public function setStatus( $value ){
+			if ( ! is_array($this->status) ){
+				$this->status=array();
+			}
+
+			$this->status[] = $value;
+			$this->status = array_unique($this->status );
+			
+		}
+
+
+	// Getter Methods
+		public function getId($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id) ;
+ 			}else{
+ 				return $this->id ;
+ 			}
+		}
+		
+		public function getTitle($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->title) ;
+ 			}else{
+ 				return $this->title ;
+ 			}
+		}
+		
+		public function getIdauthor($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->idauthor) ;
+ 			}else{
+ 				return $this->idauthor ;
+ 			}
+		}
+		
+		public function getContent($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->content) ;
+ 			}else{
+ 				return $this->content ;
+ 			}
+		}
+		
+		public function getQuote($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->quote) ;
+ 			}else{
+ 				return $this->quote ;
+ 			}
+		}
+		
+		public function getPostdate($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->postdate) ;
+ 			}else{
+ 				return $this->postdate ;
+ 			}
+		}
+		
+		public function getPoststatus($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->poststatus) ;
+ 			}else{
+ 				return $this->poststatus ;
+ 			}
+		}
+		
+		public function getPostimageId($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->postimage_id) ;
+ 			}else{
+ 				return $this->postimage_id ;
+ 			}
+		}
+		
+		public function getPostlink($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->postlink) ;
+ 			}else{
+ 				return $this->postlink ;
+ 			}
+		}
+		
+		public function getCreated($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->created) ;
+ 			}else{
+ 				return $this->created ;
+ 			}
+		}
+		
+		public function getModified($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->modified) ;
+ 			}else{
+ 				return $this->modified ;
+ 			}
+		}
+		
+		public function getDeleted($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->deleted) ;
+ 			}else{
+ 				return $this->deleted ;
+ 			}
+		}
+		
+		public function getValid(){
+			return $this->valid;
+		}
+		public function getStatus(){
+			return  $this->status ;
+		}
+
+	// Public Support Functions
+		public function load($id) {
+			$sql="SELECT * FROM blogpost WHERE id = ?";
+
+			if ( $id == 0 )
+				return $this->killInvalid( "The ID not valid." );
+
+			// Get data 
+			$stmt = $this->db->prepare( $sql );
+			$stmt->mbind_param( 'i', $id );
+			$stmt->execute();
+
+			$res = $stmt->get_result();
+			$res = ( is_null($res) || ! $res )? [] : $res->fetch_array(MYSQLI_ASSOC) ;
+			$stmt->close();
+			if ( sizeof( $res ) == 0 ) {
+				return $this->killInvalid( "Unable to retrieve information for ID. Please try again later, or contact support." );
+			}
+
+			$this->setId( $res['id'] );
+			$this->setTitle( $res['title'] );
+			$this->setIdauthor( $res['idauthor'] );
+			$this->setContent( $res['content'] );
+			$this->setQuote( $res['quote'] );
+			$this->setPostdate( $res['postdate'] );
+			$this->setPoststatus( $res['poststatus'] );
+			$this->setPostimageId( $res['postimage_id'] );
+			$this->setPostlink( $res['postlink'] );
+			$this->setCreated( $res['created'] );
+			$this->setModified( $res['modified'] );
+			$this->setDeleted( $res['deleted'] );
+			return true;
+		}
+		// end function load
+
+		public function save() {
+			if ($this->getId()==0){ // insert new
+				$sql = "INSERT INTO blogpost SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
+
+			$sql .= " `title` = ? ,";
+			$sql .= " `idauthor` = ? ,";
+			$sql .= " `content` = ? ,";
+			$sql .= " `quote` = ? ,";
+			$sql .= " `postdate` = ? ,";
+			$sql .= " `poststatus` = ? ,";
+			$sql .= " `postimage_id` = ? ,";
+			$sql .= " `postlink` = ? ,";
+			$sql .= " `deleted` = ? ,";
+			$sql = trim($sql,",");
+
+			} else { // updated existing
+				$sql = "UPDATE blogpost SET modified=UTC_TIMESTAMP(),";	
+
+			$sql .= " `title` = ? ,";
+			$sql .= " `idauthor` = ? ,";
+			$sql .= " `content` = ? ,";
+			$sql .= " `quote` = ? ,";
+			$sql .= " `postdate` = ? ,";
+			$sql .= " `poststatus` = ? ,";
+			$sql .= " `postimage_id` = ? ,";
+			$sql .= " `postlink` = ? ,";
+			$sql .= " `deleted` = ? ,";
+			$sql = trim($sql,",");
+			$sql .= " WHERE id = ?";
+			}
+
+			
+			// Save data 
+			$stmt = $this->db->prepare( $sql );
+			//$stmt->mbind_param( 'i', $id );
+
+			$stmt->mbind_param( 's', $this->title );
+			$stmt->mbind_param( 'i', $this->idauthor );
+			$stmt->mbind_param( 's', $this->content );
+			$stmt->mbind_param( 's', $this->quote );
+			$stmt->mbind_param( 's', $this->postdate );
+			$stmt->mbind_param( 'i', $this->poststatus );
+			$stmt->mbind_param( 'i', $this->postimage_id );
+			$stmt->mbind_param( 's', $this->postlink );
+			$stmt->mbind_param( 'i', $this->deleted );
+			if ($this->getId()>0){
+				$stmt->mbind_param( 'i', $this->id  );
+			} // end save
+
+			$stmt->execute();
+			if ($this->getId()==0){
+				$this->setId( $this->db->insert_id );
+			}
+			return $this->getId();
+		}
+		
+
+		public function updateFields($fieldstoupdate) {
+			if ($this->getId()==0){ // insert new
+				// only updates no save new here
+			} else { // updated existing
+				$sql = "UPDATE blogpost SET modified=UTC_TIMESTAMP(),";	
+
+			if (in_array("title",$fieldstoupdate)){
+				$sql .= " `title` = ? ,";
+			}
+			if (in_array("idauthor",$fieldstoupdate)){
+				$sql .= " `idauthor` = ? ,";
+			}
+			if (in_array("content",$fieldstoupdate)){
+				$sql .= " `content` = ? ,";
+			}
+			if (in_array("quote",$fieldstoupdate)){
+				$sql .= " `quote` = ? ,";
+			}
+			if (in_array("postdate",$fieldstoupdate)){
+				$sql .= " `postdate` = ? ,";
+			}
+			if (in_array("poststatus",$fieldstoupdate)){
+				$sql .= " `poststatus` = ? ,";
+			}
+			if (in_array("postimage_id",$fieldstoupdate)){
+				$sql .= " `postimage_id` = ? ,";
+			}
+			if (in_array("postlink",$fieldstoupdate)){
+				$sql .= " `postlink` = ? ,";
+			}
+			if (in_array("deleted",$fieldstoupdate)){
+				$sql .= " `deleted` = ? ,";
+			}
+			$sql = trim($sql,",");
+			$sql .= " WHERE id = ?";
+			}
+
+			
+			// Save data 
+			$stmt = $this->db->prepare( $sql );
+			//$stmt->mbind_param( 'i', $id );
+
+			if (in_array("title",$fieldstoupdate)){
+				$stmt->mbind_param( 's', $this->title  );
+			}
+			if (in_array("idauthor",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->idauthor  );
+			}
+			if (in_array("content",$fieldstoupdate)){
+				$stmt->mbind_param( 's', $this->content  );
+			}
+			if (in_array("quote",$fieldstoupdate)){
+				$stmt->mbind_param( 's', $this->quote  );
+			}
+			if (in_array("postdate",$fieldstoupdate)){
+				$stmt->mbind_param( 's', $this->postdate  );
+			}
+			if (in_array("poststatus",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->poststatus  );
+			}
+			if (in_array("postimage_id",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->postimageId  );
+			}
+			if (in_array("postlink",$fieldstoupdate)){
+				$stmt->mbind_param( 's', $this->postlink  );
+			}
+			if (in_array("deleted",$fieldstoupdate)){
+				$stmt->mbind_param( 'i', $this->deleted  );
+			}
+			if ($this->getId()>0){
+				$stmt->mbind_param( 'i', $this->getId()  );
+			}
+
+			$stmt->execute();
+			//if ($this->getId()==0){
+			//	$this->setId( $this->db->insert_id );
+			//}
+			return $this->getId();
+		}  // updateFields
+		
+
+		public function getAll() {
+			$sql="SELECT id FROM blogpost WHERE 1";
+			// Get data 
+			$stmt = $this->db->prepare( $sql );
+			$stmt->execute();
+
+			$res = $stmt->get_result();
+			$retval=array();
+			while($id = mysqli_fetch_row($res)){
+				$retval[$id[0]] = new Blogpost();
+				$retval[$id[0]]->load($id[0]);
+			}
+			return $retval;
+		}
+
+
+
+	// Private Support Functions
+		protected function validateInput( $pcre, $input, $field , $bind_type) {
+			//if ( ! $this->valid )
+			//	return $this->valid;
+
+			if ( ! preg_match($pcre, $input) ){ 
+				return $this->killInvalid( "The input provided for the field '$field' is not valid. Value provided: ".htmlentities($input),$field);
+			}else{
+				unset($this->status[$field]);
+				if (empty($this->status)){$this->valid=true;}
+			}
+
+			return true;
+		}
+		protected function killInvalid( $msg, $field="General Error" ){
+			$this->status[$field] = $msg;
+			$this->valid = false;
+			return false;
+		}
+
+}
