@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html"; charset="utf-8"/> 
 		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 
-		<title> <?php echo $page_title != "" ? $page_title." - " : ""; ?>Clinica - Le Strellita Dental </title>
+		<title> <?php echo $page_title != "" ? $page_title." - " : ""; ?>Yo Amo Comprar </title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 

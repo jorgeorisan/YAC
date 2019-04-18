@@ -103,9 +103,8 @@ if(isPost()){
 												</select>
 											</section>
 											<section>
-												<label class="label">Selecciona el clinica</label>
-												<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
-													
+												<label class="label">Selecciona el tienda</label>
+												<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">													
 													<?php 
 													$obj = new Tienda();
 													$list=$obj->getAllArr();
@@ -119,6 +118,14 @@ if(isPost()){
 														}
 													}
 													 ?>
+												</select>
+											</section>
+											<section>
+												<label class="label">Mostrar costos</label>
+												<select style="width:100%" class="select2" name="costos" id="costos">
+													<option value='0' <?php echo ($data['costos'] == 0 ) ? 'selected' : ''; ?>>No</option>
+													<option value='1' <?php echo ($data['costos'] == 1 ) ? 'selected' : ''; ?>>Si</option>
+														
 												</select>
 											</section>
 									

@@ -30,17 +30,17 @@ if(isset($request['params']['id'])   && $request['params']['id']>0)
     $id=$request['params']['id'];
 
 else
-    informError(true,make_url("Users","usertype"));
+    informError(true,make_url("Usuarios","usertype"));
 
 
 
-$obj = new UserType();
+$obj = new UsuarioTipo();
 $data = $obj->getTable($id);
 if ( !$data ) {
-    informError(true,make_url("Users","usertype"));
+    informError(true,make_url("Usuarios","usertype"));
 }
 if(isPost()){
-	$objpermuser = new PermisoUsertype();
+	$objpermuser = new PermisoUsuario();
     $datapermisosuser = $objpermuser->deleteAll($id);
     if(!$datapermisosuser){
     	echo "error al eliminar permisos";
@@ -62,7 +62,7 @@ if(isPost()){
   	
    
     if( $error == 0  ) {
-         informSuccess(true, make_url("Users","usertype"));
+         informSuccess(true, make_url("Usuarios","usertype"));
     }else{
         informError(true, make_url("Permisos","asignartipousuario",array('id'=>$id)),"asignartipousuario");
     }
@@ -71,7 +71,7 @@ if(isPost()){
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Users"] = APP_URL."/Users/usertype"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Usuarios"] = APP_URL."/Usuarios/usertype"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -106,7 +106,7 @@ if(isPost()){
 							              </th>
 							              <?php
 									        $permisos = array();
-		                                    $objpermuser = new PermisoUsertype();
+		                                    $objpermuser = new PermisoUsuario();
 		                                    $datapermisosuser = $objpermuser->getAllArr($id);
 									        foreach ($datapermisosuser as $rowperm) {
 									          $permisos[] = $rowperm['id_permiso'];

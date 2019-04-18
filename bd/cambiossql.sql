@@ -278,3 +278,23 @@ ADD COLUMN `updated_date` TIMESTAMP NULL AFTER `precio_editable`;
 
 ALTER TABLE `xqwmrfeeug`.`producto` 
 ADD COLUMN `deleted_date` TIMESTAMP NULL AFTER `updated_date`;
+
+ALTER TABLE `xqwmrfeeug`.`usuario_tipo` 
+ADD COLUMN `comentarios` TEXT NULL AFTER `status`;
+
+UPDATE `xqwmrfeeug`.`permiso` SET `section` = 'Usuarios' WHERE (`id` = '11');
+UPDATE `xqwmrfeeug`.`permiso` SET `section` = 'Usuarios' WHERE (`id` = '12');
+
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Ventas Alta', 'Ventas', 'add');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Ventas Editar', 'Ventas', 'edit');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Ventas Ver', 'Ventas', 'view');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Ventas Reporte', 'Ventas', 'index');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Ventas a Credito', 'Ventas', 'credito');
+
+
+ALTER TABLE `xqwmrfeeug`.`productos_venta` 
+ADD COLUMN `fecha_registro` TIMESTAMP NULL DEFAULT current_timestamp AFTER `tipoprecio`;
+ALTER TABLE `xqwmrfeeug`.`venta` 
+ADD COLUMN `fecha_cancelacion` TIMESTAMP NULL AFTER `credencial`;
+ALTER TABLE `xqwmrfeeug`.`venta` 
+ADD COLUMN `razon_cancelacion` TEXT NULL AFTER `fecha_cancelacion`;

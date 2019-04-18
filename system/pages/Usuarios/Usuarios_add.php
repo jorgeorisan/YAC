@@ -116,6 +116,14 @@ if(isPost()){
 												 ?>
 											</select>
 										</section>
+										<section>
+											<label class="label">Mostrar costos</label>
+											<select style="width:100%" class="select2" name="costos" id="costos">
+												<option value='0'>No</option>
+												<option value='1'>Si</option>
+													
+											</select>
+										</section>
 										<div class="form-actions" style="text-align: center">
 	                                        <div class="row">
 	                                            <div class="col-md-12">

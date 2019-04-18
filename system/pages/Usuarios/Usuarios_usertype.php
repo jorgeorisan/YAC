@@ -18,7 +18,7 @@ include(SYSTEM_DIR . "/inc/header.php");
 include(SYSTEM_DIR . "/inc/nav.php");
 
 
-$obj = new UserType();
+$obj = new UsuarioTipo();
 $data = $obj->getAllArr();
 
 //print_r($users);
@@ -36,7 +36,7 @@ $data = $obj->getAllArr();
 	<!-- MAIN CONTENT -->
 	<div id="content">
 		<section id="widget-grid" class="">
-			<p><a class="btn btn-success" href="<?php echo make_url("Users","usertypeadd")?>" >Nuevo Perfil</a></p>
+			<p><a class="btn btn-success" href="<?php echo make_url("Usuarios","usertypeadd")?>" >Nuevo Perfil</a></p>
 			<div class="row">
 				<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
@@ -51,13 +51,9 @@ $data = $obj->getAllArr();
 								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 									<thead>
 										<tr>
-											<th class = "col-md-1" data-class="expand">
-												<i class="fa fa-fw  fa-envelope  text-muted hidden-md hidden-sm hidden-xs"></i> Nombre</th>
-											<th class = "col-md-1" data-hide="">
-												<i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Comentarios</th>
-										
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  text-muted hidden-md hidden-sm hidden-xs"></i>Action</th>
+											<th class = "col-md-1" data-class="expand"> Nombre</th>
+											<th class = "col-md-1" data-hide=""> Comentarios</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Action</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -65,7 +61,7 @@ $data = $obj->getAllArr();
 										
 											?>
 											<tr>
-												<td><?php echo htmlentities($row['nombre'])?></td>
+												<td><?php echo htmlentities($row['usuario_tipo'])?></td>
 												<td><?php echo htmlentities(utf8_encode($row['comentarios']))?></td>
 												
 												<td>
@@ -75,14 +71,14 @@ $data = $obj->getAllArr();
 														</button>
 														<ul class="dropdown-menu">
 															<li>
-																<a class="" href="<?php echo make_url("Users","usertypeedit",array('id'=>$row['id'])); ?>">Editar</a>
+																<a class="" href="<?php echo make_url("Usuarios","usertypeedit",array('id'=>$row['id_usuario_tipo'])); ?>">Editar</a>
 															</li>
 															<li>
-																<a class="" href="<?php echo make_url("Permisos","asignartipouser",array('id'=>$row['id'])); ?>">Permisos</a>
+																<a class="" href="<?php echo make_url("Permisos","asignartipouser",array('id'=>$row['id_usuario_tipo'])); ?>">Permisos</a>
 															</li>
 															<li class="divider"></li>
 															<li>
-																<a href="#" class="red" onclick="borrar('<?php echo make_url("Users","usertypedelete",array('id'=>$row['id'])); ?>',<?php echo $row['id']; ?>);">Eliminar</a>
+																<a href="#" class="red" onclick="borrar('<?php echo make_url("Usuarios","usuariotipodelete",array('id'=>$row['id_usuario_tipo'])); ?>',<?php echo $row['id_usuario_tipo']; ?>);">Eliminar</a>
 															</li>
 														</ul>
 													</div>

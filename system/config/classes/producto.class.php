@@ -124,14 +124,12 @@ class Producto extends AutoProducto {
 				
 			$id = $id["LAST_INSERT_ID()"];
 			
-			$querytienda = Doctrine_Query::create()
-			->from("Database_Model_Tienda")
-			->where("status='ACTIVA'")
-			->execute();
-			$_requestpt['id_producto'] = $id;
+			$tienda = new Tienda();
+			$datatienda = $tienda->getAllArr();
 			$objpti = new ProductoTienda();
-			foreach($querytienda as $ex){					
-				$_requestpt['tienda_id_tienda']      = $ex->id_tienda;
+			foreach($datatienda as $ex){					
+				$_requestpt['id_producto'] 			 = $id;
+				$_requestpt['tienda_id_tienda']      = $ex['id_tienda'];
 				$_requestpt['existencias']           = 0;
 				$_requestpt['fecha_actualizacion']   = date('Y-m-d H:i:s');
 				$_requestpt['usuario_actualizacion'] = $_SESSION['user_id'];

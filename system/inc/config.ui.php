@@ -94,9 +94,9 @@ $menuVentas = array(
 		"title" => "Ventas",
 		"icon"  => "fa-money-check-alt",
 		"sub" => array(
-				'ventasindex'     => array('title'  => 'Ventas','url' => APP_URL."/Ventas/add" ),
-				'ventastypeindex' => array('title'  => 'Ventas','url' => APP_URL."/Ventas/index" ),
-				'permisoindex'    => array('title'  => 'Ventas a credito','url' => APP_URL."/Ventas/credito" )
+				'ventasindex'     => array('title'  => 'Ventas Alta','url'    => APP_URL."/Ventas/add" ),
+				'ventastypeindex' => array('title'  => 'Ventas Reporte','url' => APP_URL."/Ventas/index" ),
+				'permisoindex'    => array('title'  => 'Ventas Credito','url' => APP_URL."/Ventas/credito" )
 		)
 	)
 );

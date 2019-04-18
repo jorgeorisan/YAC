@@ -27,27 +27,27 @@ include(SYSTEM_DIR . "/inc/nav.php");
 if(isset($request['params']['id'])   && $request['params']['id']>0)
     $id=$request['params']['id'];
 else
-    informError(true,make_url("Users","usertype"));
+    informError(true,make_url("Usuarios","usertype"));
 
-$obj = new Usertype();
+$obj = new UsuarioTipo();
 $data = $obj->getTable($id);
 if ( !$data ) {
-    informError(true,make_url("Users","usertype"));
+    informError(true,make_url("Usuarios","usertype"));
 }
 if(isPost()){
-    $obj = new Usertype();
+    $obj = new UsuarioTipo();
     $id = $obj->updateAll($id,getPost());
     if( $id  ) {
-         informSuccess(true, make_url("Users","usertype"));
+         informSuccess(true, make_url("Usuarios","usertype"));
     }else{
-        informError(true, make_url("Users","usertypeedit",array('id'=>$id)),"usertypeedit");
+        informError(true, make_url("Usuarios","usertypeedit",array('id'=>$id)),"usertypeedit");
     }
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Usertype"] = APP_URL."/Users/usertype"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Usertype"] = APP_URL."/Usuarios/usertype"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -66,12 +66,12 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Users","usertypeedit",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Usuarios","usertypeedit",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
                                    <div class="tl-body">
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="name">Nombre</label>
-                                                <input type="text" class="form-control" placeholder="Nombre del perfil" name="nombre" value="<?php echo htmlentities($data['nombre']); ?>">
+                                                <input type="text" class="form-control" placeholder="Nombre del perfil" name="usuario_tipo" value="<?php echo htmlentities($data['usuario_tipo']); ?>">
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -128,7 +128,7 @@ if(isPost()){
 <script>
     function validateForm()
     {
-        var nombre = $("input[name=nombre]").val();
+        var nombre = $("input[name=usuario_tipo]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");
 
         $("#main-form").submit();       

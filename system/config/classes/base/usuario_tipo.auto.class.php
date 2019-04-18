@@ -5,6 +5,10 @@
 	// Variables
 		protected $db;
 		
+		protected $id_usuario_tipo = "";
+		protected $usuario_tipo = "";
+		protected $status = "";
+		protected $comentarios = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -28,6 +32,24 @@
 
 
 	// Setter Methods
+		public function setIdUsuarioTipo( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDUSUARIOTIPO","s") ) 
+ 				$this->id_usuario_tipo = $value;
+		}
+		
+		public function setUsuarioTipo( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "USUARIOTIPO","s") ) 
+ 				$this->usuario_tipo = $value;
+		}
+		
+		public function setStatus( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "STATUS","s") ) 
+ 				$this->status = $value;
+		}
+		
+		public function setComentarios( $value ){ 				$this->comentarios = $value;
+		}
+		
 		public function setValidclass( $value ){
 			if ( $this->validclassateInput('/^(true|false)$/', ( $value ) ? 'true' : 'false', "Validclass",'s') )
 				$this->validclass = $value;
@@ -45,6 +67,38 @@
 
 
 	// Getter Methods
+		public function getIdUsuarioTipo($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id_usuario_tipo) ;
+ 			}else{
+ 				return $this->id_usuario_tipo ;
+ 			}
+		}
+		
+		public function getUsuarioTipo($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->usuario_tipo) ;
+ 			}else{
+ 				return $this->usuario_tipo ;
+ 			}
+		}
+		
+		public function getStatus($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->status) ;
+ 			}else{
+ 				return $this->status ;
+ 			}
+		}
+		
+		public function getComentarios($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->comentarios) ;
+ 			}else{
+ 				return $this->comentarios ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -71,102 +125,12 @@
 				return $this->killInvalidclass( "Unable to retrieve information for ID. Please try again later, or contact support." );
 			}
 
+			$this->setIdUsuarioTipo( $res['id_usuario_tipo'] );
+			$this->setUsuarioTipo( $res['usuario_tipo'] );
+			$this->setStatus( $res['status'] );
+			$this->setComentarios( $res['comentarios'] );
 			return true;
 		}
 		// end function load
-
-		public function save() {
-			if ($this->getId()==0){ // insert new
-				$sql = "INSERT INTO usuario_tipo SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
-
-			$sql = trim($sql,",");
-
-			} else { // updated existing
-				$sql = "UPDATE usuario_tipo SET modified=UTC_TIMESTAMP(),";	
-
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( 'i', $id );
-
-			if ($this->getId()>0){
-				$stmt->mbind_param( 'i', $this->id  );
-			} // end save
-
-			$stmt->execute();
-			if ($this->getId()==0){
-				$this->setId( $this->db->insert_id );
-			}
-			return $this->getId();
-		}
-		
-
-		public function updateFields($fieldstoupdate) {
-			if ($this->getId()==0){ // insert new
-				// only updates no save new here
-			} else { // updated existing
-				$sql = "UPDATE usuario_tipo SET modified=UTC_TIMESTAMP(),";	
-
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( 'i', $id );
-
-			if ($this->getId()>0){
-				$stmt->mbind_param( 'i', $this->getId()  );
-			}
-
-			$stmt->execute();
-			//if ($this->getId()==0){
-			//	$this->setId( $this->db->insert_id );
-			//}
-			return $this->getId();
-		}  // updateFields
-		
-
-		public function getAll() {
-			$sql="SELECT id FROM usuario_tipo WHERE 1 and status='active'";
-			// Get data 
-			$stmt = $this->db->prepare( $sql );
-			$stmt->execute();
-
-			$res = $stmt->get_result();
-			$retval=array();
-			while($id = mysqli_fetch_row($res)){
-				$retval[$id[0]] = new UsuarioTipo();
-				$retval[$id[0]]->load($id[0]);
-			}
-			return $retval;
-		}
-
-
-
-	// Private Support Functions
-		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
-			//if ( ! $this->validclass )
-			//	return $this->validclass;
-
-			if ( ! preg_match($pcre, $input) ){ 
-				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
-			}else{
-				unset($this->statusclass[$field]);
-				if (empty($this->statusclass)){$this->validclass=true;}
-			}
-
-			return true;
-		}
-		protected function killInvalidclass( $msg, $field="General Error" ){
-			$this->statusclass[$field] = $msg;
-			$this->validclass = false;
-			return false;
-		}
 
 }

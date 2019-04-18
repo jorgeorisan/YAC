@@ -1,11 +1,16 @@
 <?php
+// include autoloader
+if(isset($_SESSION['user_id'])){
+  $base = explode('system', $directory);
+  require './vendor/autoload.php';
+}
 /**
  * set document type
  * @param string $type type of document
  */
 
 function isauth(){
-    if ($_SESSSION['user_id']>0){
+    if ($_SESSION['user_id']>0){
         return true;
     }else{
         return false;
@@ -298,13 +303,13 @@ function delete($id,$module,$table){
   $pagereturn = 'index';
   
   switch ($table) {
-    case 'clinica':            $obj = new Clinica();           $pagereturn = $table;    break;
+    case 'taller':             $obj = new Taller();            $pagereturn = $table;    break;
     case 'categoria':          $obj = new Categoria();         $pagereturn = $table;    break;
     case 'marca':              $obj = new Marca();             $pagereturn = $table;    break;
-    case 'paciente':           $obj = new Paciente();                                   break;
-    case 'user':               $obj = new User();                                       break;
+    case 'persona':            $obj = new Persona();                                    break;
+    case 'producto':           $obj = new Producto();                                   break;
+    case 'usuario':            $obj = new usuario();                                    break;
     case 'permiso':            $obj = new Permiso();                                    break;
-    case 'usertype':           $obj = new UserType();          $pagereturn = $table;    break;
     case 'cita':               $obj = new Cita();                                       break;
     case 'personalpuesto':     $obj = new PersonalPuesto();    $pagereturn = $table;    break;
     case 'usuariotipo':        $obj = new UsuarioTipo();       $pagereturn = $table;    break;

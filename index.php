@@ -116,6 +116,15 @@ Routing section
         if ($request['page']==='addpopup') { $page = "Productos_addpopup.php";  }
         
       }
+      if ($request['section']==='Ventas'){
+        $page = "Ventas_index.php";
+        $dir  = "Ventas";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Ventas_add.php";      }
+        if ($request['page']==='edit')     { $page = "Ventas_edit.php";     }
+        if ($request['page']==='view')     { $page = "Ventas_view.php"; }
+        if ($request['page']==='credito')  { $page = "Ventas_credito.php"; }
+        
+      }
      
       //delete pages
       if(isset($request['params']['id'])){

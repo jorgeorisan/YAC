@@ -25,19 +25,19 @@ include(SYSTEM_DIR . "/inc/header.php");
 //$page_nav["misc"]["sub"]["blank"]["active"] = true;
 include(SYSTEM_DIR . "/inc/nav.php");
 if(isPost()){
-    $obj = new Usertype();
+    $obj = new UsuarioTipo();
     $id=$obj->addAll(getPost());
     if($id>0){
-        informSuccess(true, make_url("Users","usertype"));
+        informSuccess(true, make_url("Usuarios","usertype"));
     }else{
-        informError(true,make_url("Users","usertype"));
+        informError(true,make_url("Usuarios","usertype"));
     }
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Usertype"] = APP_URL."/Users/usertype"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Usertype"] = APP_URL."/Usuarios/usertype"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -53,12 +53,12 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Users","usertypeadd");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                <form id="main-form" class="" role="form" method=post action="<?php echo make_url("Usuarios","usertypeadd");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
                                     <div class="tl-body">
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="name">Nombre</label>
-                                                <input type="text" class="form-control" placeholder="Nombre del perfil" name="nombre"  >
+                                                <input type="text" class="form-control" placeholder="Nombre del perfil" name="usuario_tipo"  >
                                             </div>
                                         </div> 
 										<div class="col-sm-12">
@@ -115,7 +115,7 @@ if(isPost()){
 <script>
     function validateForm()
     {
-        var nombre = $("input[name=nombre]").val();
+        var nombre = $("input[name=usuario_tipo]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");
 
         $("#main-form").submit();       
