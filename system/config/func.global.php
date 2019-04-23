@@ -311,6 +311,7 @@ function delete($id,$module,$table){
     case 'usuario':            $obj = new usuario();                                    break;
     case 'permiso':            $obj = new Permiso();                                    break;
     case 'cita':               $obj = new Cita();                                       break;
+    case 'venta':              $obj = new Venta();                                      break;
     case 'personalpuesto':     $obj = new PersonalPuesto();    $pagereturn = $table;    break;
     case 'usuariotipo':        $obj = new UsuarioTipo();       $pagereturn = $table;    break;
     default:

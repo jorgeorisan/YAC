@@ -107,7 +107,7 @@ $data = $obj->getAllArr();
 															
 															<li class="divider"></li>
 															<li>
-																<a href="#" class="red" onclick="borrar('<?php echo make_url("Clientes","pacientedelete",array('id'=>$row['id_persona'])); ?>',<?php echo $row['id']; ?>);">Eliminar</a>
+																<a href="#" class="red" onclick="borrar('<?php echo make_url("Clientes","personadelete",array('id'=>$row['id_persona'])); ?>',<?php echo $row['id_persona']; ?>);">Eliminar</a>
 															</li>
 														</ul>
 													</div>

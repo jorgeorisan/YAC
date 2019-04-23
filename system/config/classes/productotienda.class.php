@@ -79,6 +79,20 @@ class ProductoTienda extends AutoProductoTienda {
 			return true;
 		}
 	}
+	//metodo que sirve para hacer obtener datos en el editar
+	public function getTablebyProducto($id_producto,$id_tienda)
+	{
+		if(! intval( $id_producto )) return false;
+		if(! intval( $id_tienda ))   return false;
+	
+		$sql= "SELECT * FROM producto_tienda WHERE id_producto=$id_producto AND tienda_id_tienda=$id_tienda limit 1;";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result producto_tienda");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row;
 
+	}
 
 }

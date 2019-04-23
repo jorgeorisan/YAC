@@ -1,4 +1,4 @@
-
+require PHP 7
 /** En git hay que cambiar los permisos de Index.php  */
 chmod 0644  index.php
 

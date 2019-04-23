@@ -138,7 +138,7 @@ Routing section
       }
 
       //*****permisos de usuario  */***///
-      if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print" ){
+      if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print"  ){
         
         $objpermuser = new PermisoUsuario();
         
@@ -224,5 +224,22 @@ if( isset($request['path']) && preg_match("/\.php$/",$request['path']) && file_e
 // close database
 if (!$db->connect_errno) {
    // $db->close();
+}
+
+// mostrar productos en sesion
+
+if(!isset($_SESSION['CADENA'])){
+
+  $obj = new Producto();
+  $queryproductos = $obj->getAllArr();
+  
+  $prod="";
+ 
+  foreach($queryproductos as $producto){   
+      $prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."'";
+  }
+
+  $cadena = substr($prod,1);
+  $_SESSION['CADENA']=$cadena;
 }
 ob_end_flush();

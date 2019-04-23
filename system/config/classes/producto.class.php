@@ -7,10 +7,13 @@ class Producto extends AutoProducto {
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr($tienda=false)
+	public function getAllArr($id_producto=false,$tienda=false)
 	{
 		if(!$tienda)
 			$tienda = $_SESSION['user_info']['id_tienda'];
+
+		$queryprod =($id_producto) ? " AND p.id_producto = $id_producto" : '';
+			
 		
         $sql = "
         SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,
@@ -26,7 +29,8 @@ class Producto extends AutoProducto {
                     LEFT JOIN marca m on p.id_marca=m.id_marca
                     LEFT JOIN categoria c on p.id_categoria=c.id_categoria
                     LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
-                    WHERE p.status='ACTIVO'
+					WHERE p.status='ACTIVO'
+					$queryprod
                 ) AS PRODUCTO LEFT JOIN (
                 SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
                 FROM(
@@ -73,7 +77,7 @@ class Producto extends AutoProducto {
                 LEFT JOIN(
                     SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,usuario_actualizacion
                     FROM producto_tienda 
-                    WHERE tienda_id_tienda='$tienda'
+					WHERE tienda_id_tienda='$tienda'
                     group by id_producto,tienda_id_tienda
                 )EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
                 
@@ -159,7 +163,7 @@ class Producto extends AutoProducto {
 		//metodo que sirve para hacer delete
 	public function deleteAll($id,$_request=false)
 	{
-		$_request["status"]="deleted";
+		$_request["status"]="BAJA";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'producto',$this->db,"update");	
 		$sql= "UPDATE producto SET $data[0]  WHERE id_producto=".$id.";";
@@ -169,6 +173,20 @@ class Producto extends AutoProducto {
 		}else{
 			return true;
 		}
+	}
+		//metodo que sirve para hacer obtener datos en el editar
+	public function getTablebyCode($code)
+	{
+		
+		$code = $this->db->real_escape_string($code);
+		$sql  = "SELECT * FROM producto WHERE codinter='$code' and status='ACTIVO'";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result producto");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row;
+
 	}
 
 
