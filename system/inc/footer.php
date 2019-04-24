@@ -1,9 +1,9 @@
 |<!-- PAGE FOOTER -->
-<div class="page-footer" style="background: none;z-index:9999; border:0;margin:0;padding:0;heighWWt:24px;">
+<div class="page-footer" style="background: none;z-index:9999; border:0;margin:0;padding:0;height:24px;">
 	<div class="row" style="position: absolute;bottom: 0">
 		<div class="col-xs-12 col-sm-12">
 			<div class="pull-right;">
-				<div style="color:#eee;font-size:10px; border-radius: 0 6px 0 0 ;padding: 2px 6px;background: rgba(161,15,43,0.8);">Clinica - Le Strellita Dental  © <?php echo date('Y');?></div>
+				<div style="color:#eee;font-size:10px; border-radius: 0 6px 0 0 ;padding: 2px 6px;background: rgba(161,15,43,0.8);">YAC Corporation  © <?php echo date('Y');?></div>
 			</div>
 		</div>
 		<?php if (FALSE){ ?>

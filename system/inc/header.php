@@ -50,8 +50,8 @@
 <!--		<link rel="stylesheet" type="text/css" media="screen" href="<?php echo ASSETS_URL; ?>/NOTcss/demo.min.css"> -->
 
 		<!-- FAVICONS -->
-		<link rel="shortcut icon" href="<?php echo ASSETS_URL; ?>/img/favicon/favicon.ico?a" type="image/x-icon">
-		<link rel="icon" href="<?php echo ASSETS_URL; ?>/img/favicon/favicon.ico?a" type="image/x-icon">
+		<link rel="shortcut icon" href="<?php echo ASSETS_URL; ?>/img/favicon/corazon.ico?a" type="image/x-icon">
+		<link rel="icon" href="<?php echo ASSETS_URL; ?>/img/favicon/corazon.ico?a" type="image/x-icon">
 
 		<!-- GOOGLE FONT -->
 		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
@@ -111,9 +111,9 @@
 				<!-- HEADER -->
 				<header id="header" style="background-color: #323950;">
 					<div id="logo-group">
-					<input type="text" id="base" value="<?php echo APP_URL; ?>" hidden>
+						<input type="text" id="base" value="<?php echo APP_URL; ?>" hidden>
 						<!-- PLACE YOUR LOGO HERE -->
-						<span id="logo"> <img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="GEOHTI" style="max-height: 38px; "> </span>
+						<span id="logo" style="margin-top: 5px;"> <img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="Yo Amo Comprar" style="width:150px "> </span>
 					
 					</div>
 

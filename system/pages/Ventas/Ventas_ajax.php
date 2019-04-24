@@ -46,9 +46,9 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					if($existe)
 						include(SYSTEM_DIR.'/pages/Ventas/Ventas_get_producto.php' );
 					else
-						echo "Cantidad insuficiente:".$existenciatienda;
+						echo "Cantidad insuficiente";
 				}else{
-					echo "Producto no encontrado:".$codigo;
+					echo "Producto no encontrado";
 				}
 			}
 			
@@ -67,6 +67,16 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			
 			break;
 				
+		case 'deleteventa':
+			if( isset($_GET["idventa"])){
+				$id = $_GET["idventa"];
+				$venta  = new Venta();
+				$request ['razon_cancelacion'] = $_GET["motivo"];
+				if($venta->deleteAll($id,$request)){
+					echo "true";
+				}
+			}
+			break;
 		default:
 			# code...
 			break;

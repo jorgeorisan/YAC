@@ -297,4 +297,5 @@ ALTER TABLE `xqwmrfeeug`.`venta`
 ADD COLUMN `fecha_cancelacion` TIMESTAMP NULL AFTER `credencial`;
 ALTER TABLE `xqwmrfeeug`.`venta` 
 ADD COLUMN `razon_cancelacion` TEXT NULL AFTER `fecha_cancelacion`;
-
+ALTER TABLE `xqwmrfeeug`.`venta` 
+ADD COLUMN `usuario_cancelacion` VARCHAR(45) NULL AFTER `razon_cancelacion`;

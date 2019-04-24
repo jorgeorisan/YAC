@@ -196,16 +196,7 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 													<td><?php echo $descuento.htmlentities($row['comentarios']) ?></td>
 													<td>
 														<?php if (!$row['cancelado']){ ?>
-															<div class="btn-group">
-																<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-																	Accion <span class="caret"></span>
-																</button>
-																<ul class="dropdown-menu">
-																	<li>
-																		<a class="" href="<?php echo make_url("Ventas","mostrarcancelarventa",array('id'=>$row['id_venta'])); ?>">Cancelar</a>
-																	</li>
-																</ul>
-															</div>
+															<a href="#" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class="btn btn-primary deleteventa"> Cancelar </a>
 														<?php } ?>
 													</td>
 												</tr>
@@ -416,7 +407,32 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 			
 		});
 		var table = $('#dt_basic2').dataTable();
-		
+		$(".deleteventa").click(function(e) {
+            e.preventDefault();
+			var idventa = $(this).attr('idventa');
+			var folio   = $(this).attr('folio');
+			$.SmartMessageBox({
+				title : "Cancelar Venta: "+folio,
+				content : "Menciona el motivo de cancelacion",
+				buttons : '[No][Yes]',
+				input : "text",
+				placeholder : "Motivo de cancelacion"
+			}, function(ButtonPressed, Value) {
+				if (ButtonPressed === "Yes") {
+					if(!Value) return notify('warning','Se necesita un motivo');
+					$.get(config.base+"/Ventas/ajax/deleteventa?action=get&object=deleteventa&idventa="+idventa+"&motivo="+Value,
+					function (response) {
+						if(response){
+							notify('success','Cancelada con exito');
+							location.reload();
+						}else{
+							return notify('error','Error al cancelar venta');
+						}
+					});
+				}
+			});
+			$("#txt1").val('');
+		});
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 		 *
 		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS

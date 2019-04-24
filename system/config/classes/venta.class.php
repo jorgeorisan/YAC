@@ -69,7 +69,8 @@ class Venta extends AutoVenta {
 	public function deleteAll($id,$_request=false)
 	{
 		$_request["cancelado"]="1";
-		$_request["fecha_cancelacion"]=date("Y-m-d H:i:s");
+		$_request["fecha_cancelacion"]   = date("Y-m-d H:i:s");
+		$_request["usuario_cancelacion"] = $_SESSION['user_info']["id_usuario"];
 		$data=fromArray($_request,'venta',$this->db,"update");	
 		$sql= "UPDATE venta SET $data[0]  WHERE id_venta=".$id.";";
 		$row=$this->db->query($sql);

@@ -6,7 +6,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="name">Nombre</label>
-                    <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre" onkeypress="nextFocus('nombre', 'apellido_pat')" > 
+                    <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre" onkeypress="nextFocus('nombre', 'ap_paterno')" > 
                 </div>
                 <div class="form-group">
                     <label for="name">Correo</label>
@@ -14,17 +14,17 @@
                 </div>
                 <div class="form-group">
                     <label for="name">Calle</label>
-                    <input type="text" class="form-control" placeholder="Calle" name="calle"  id="calle" onkeypress="nextFocus('calle', 'num_ext')">                                                                                               
+                    <input type="text" class="form-control" placeholder="Calle" name="calle"  id="calle" onkeypress="nextFocus('calle', 'num_exterior')">                                                                                               
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="name">Colonia</label>
                     <input type="text" class="form-control" placeholder="Colonia" name="colonia" id="colonia" onkeypress="nextFocus('colonia', 'ciudad')">                                                                                               
                 </div>
             </div>
             <div class="col-sm-3">
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="name">Apellido Paterno</label>
-                    <input type="text" class="form-control" placeholder="Apellido Paterno" name="apellido_pat" id="apellido_pat" onkeypress="nextFocus('apellido_pat', 'apellido_mat')" >                                                                                               
+                    <input type="text" class="form-control" placeholder="Apellido Paterno" name="ap_paterno" id="ap_paterno" onkeypress="nextFocus('ap_paterno', 'ap_materno')" >                                                                                               
                 </div>
                 <div class="form-group">
                     <label for="name">Teléfono</label>
@@ -32,17 +32,17 @@
                 </div>
                 <div class="form-group">
                     <label for="name">Número Exterior</label>
-                    <input type="text" class="form-control" placeholder="Número Exterior" name="num_ext" id="num_ext" onkeypress="nextFocus('num_ext', 'num_int')" >                                                                                               
+                    <input type="text" class="form-control" placeholder="Número Exterior" name="num_exterior" id="num_exterior" onkeypress="nextFocus('num_exterior', 'num_interior')" >                                                                                               
                 </div>
                 <div class="form-group">
                     <label for="name">Ciudad</label>
-                    <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" id="ciudad" onkeypress="nextFocus('ciudad', 'cp')" >                                                                                               
+                    <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" id="ciudad" onkeypress="nextFocus('ciudad', 'codigo_postal')" >                                                                                               
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="name">Apellido Materno</label>
-                    <input type="text" class="form-control" placeholder="Apellido Materno" name="apellido_mat" id="apellido_mat" onkeypress="nextFocus('apellido_mat', 'email')" >                                                                                               
+                    <input type="text" class="form-control" placeholder="Apellido Materno" name="ap_materno" id="ap_materno" onkeypress="nextFocus('ap_materno', 'email')" >                                                                                               
                 </div>
                 <div class="form-group">
                     <label for="name">Estado</label>
@@ -50,18 +50,17 @@
                 </div>
                 <div class="form-group">
                     <label for="name">Número Interior</label>
-                    <input type="text" class="form-control" placeholder="Número Interior" name="num_int" id="num_int" onkeypress="nextFocus('num_int', 'colonia')"  >                                                                                               
+                    <input type="text" class="form-control" placeholder="Número Interior" name="num_interior" id="num_interior" onkeypress="nextFocus('num_interior', 'colonia')"  >                                                                                               
                 </div>
                 <div class="form-group">
                     <label for="name">CP</label>
-                    <input type="text" class="form-control" placeholder="CP" name="cp" id="cp" onkeypress="nextFocus('cp', 'alergias')" >                                                                                               
+                    <input type="text" class="form-control" placeholder="CP" name="codigo_postal" id="codigo_postal" onkeypress="nextFocus('codigo_postal', 'observaciones')" >                                                                                               
                 </div>
-               
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label for="name">Alergias</label>
-                    <input type="text" class="form-control" placeholder="Alergias" name="alergias" id="alergias" onkeypress="nextFocus('alergias', 'savenewclient')">                                                                                               
+                    <label for="name">Observaciones</label>
+                    <input type="text" class="form-control" placeholder="observaciones" name="observaciones" id="observaciones" onkeypress="nextFocus('observaciones', 'savenewclient')">                                                                                               
                 </div>
             </div>
         </fieldset> 

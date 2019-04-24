@@ -73,7 +73,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
                                 <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="col-sm-12 col-md-8 col-lg-8">
                                         <form id="barcode-form">
                                             <input type="hidden" name='action' value='get'>
                                             <input type="hidden" name='object' value='get_producto'>
@@ -119,7 +119,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                             <input type="text" style="width:100%" for='autocomplete' class="form-control" id="barcode" name="codigo" placeholder="Buscar" onkeypress="nextFocus('barcode', 'cantidad')">
                                                         </td>
                                                         <td>
-                                                            <a fancybox="true" class="btn btn-info" style="" id="catalogo" ><i class="fas fa-search"></i></a>
+                                                            <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupcatalogo()" > <i class="fa fa-search"></i></a>                                          
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -130,7 +130,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan='3' style="text-align:center"><br><input style="width:100%" type="submit" class="btn btn-success"  id='btn_agregar'  value="Agregar"/> </td>
+                                                        <td colspan='3'><br><input style="width:100%" type="submit" class="btn btn-success"  id='btn_agregar'  value="Agregar"/> </td>
                                                         
                                                     </tr>
                                             </table>
@@ -182,7 +182,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                         </select>
                                                     </td>
                                                     <td style="width: 50px; text-align:right">
-                                                        <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopuppacientes()" > <i class="fa fa-plus"></i></a>                                          
+                                                        <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupclientes()" > <i class="fa fa-plus"></i></a>                                          
                                                     <td>
                                                 </tr>
                                                 <tr>
@@ -224,7 +224,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 
                                                 <tr>
                                                     <td><label>Descuento Gerencial</label></td>
-                                                    <td colspan="2" style="text-align:center">
+                                                    <td colspan="2" class="text-center" >
                                                         <a href="#" id="solicitar-descuento-gerencial">Show/Hide</a>
 
                                                         <div id="descuento-gerencial" style="display: none;">
@@ -316,8 +316,31 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
     </div>
 </div>
 <!-- END MAIN PANEL -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" width="50" alt="SmartAdmin">
+                    <div id='titlemodal' style="float:right; margin-right: 20px;">
+                        <span class="widget-icon"><i class="fa fa-plus"></i> Nuevo</span>
+                    </div>
+                    
+                </h4>
+            </div>
+            <div class="modal-body no-padding" >
+                <div id="contentpopup">
 
-<!-- END MAIN PANEL -->
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 
 <!-- PAGE FOOTER -->
@@ -373,10 +396,14 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         var getproducto = function(form){
             $.get(config.base+"/Ventas/ajax/get_producto", form,
                 function (response) {
-                    console.log(response);
-                    if(response.trim()=='SIN EXISTENCIA'){
-                        if (confirm("No hay existencia de este producto, deseas agregarlo al inventario?") == true) {
-                            addproducto(form);
+                    if(response == 'Cantidad insuficiente' || response == 'Producto no encontrado'){
+                        console.log(response);
+                        if(response == 'Cantidad insuficiente'){
+                            if (confirm("No hay existencia de este producto, deseas agregarlo al inventario?") == true) {
+                                addproducto(form);
+                            }
+                        }else{
+                            return notify('error',response);
                         }
                     }else{
                         $("table#productos").append(response);
@@ -390,7 +417,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         }
         var addproducto = function(form){
             if ( ! form ) return;
-            $.get(config.base+"/Ventas/ajax/addproducto", form,
+            $.get(config.base+"/Producto/ajax/addproducto", form,
             function (response) {
                 if(response==1){
                     getproducto(form);
@@ -401,49 +428,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             });
             return false;
         }
-        var save= function(){
-            var nomcli    = $('#nom_cli').val();
-            var appat     = $('#ap_pat').val();
-            var apmat     = $('#ap_mat').val();
-            var telcli    = $('#tel_cli').val();
-            var comentcli = $('#coment_cli').val();
-            if(nomcli && telcli){
-                $.post(config.base+"/Clientes/ajax/saveaddpopup",
-                    {
-                        nombre:     nomcli,
-                        ap_paterno: appat,
-                        ap_materno: apmat,
-                        telefono:   telcli,
-                        observaciones: comentcli
-                    },
-                    function (response) {
-                        
-                        if(response>0){
-                            //alert("Group successfully added");
-                            $('#id_persona').append($('<option>', {
-                                value: response,
-                                text: nomcli,
-                                selected:true
-                            }));  
-                            $(".select2").multiselect({
-                                multiple: false,
-                                header: "Selecciona una opcion",
-                                noneSelectedText: "Seleccionar",
-                                selectedList: 1
-                            }).multiselectfilter();
-                                //$.fancybox.close();
-                        }else{
-                            return notify('Error', "Oopss error al agregar cliente"+response);
-                           
-                        }
-                    }
-                );
-            }else{
-                return notify('info', 'El nombre y telefono es requerido');
-                
-            }
-            return false;
-        }
+      
         $("#barcode-form").submit(function (e) {
             e.preventDefault();
             var res =  $('#barcode').val().split("::");
@@ -454,15 +439,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             return false;
         });
 
-        $("#barcode").focus(
-            function () {
-                $(this).addClass("yellow-bg");
-            }).blur(function () {
-                $(this).removeClass("yellow-bg");
-            });
-
-        $("#barcode").focus();
-
+     
         $("#solicitar-descuento-gerencial").click(function () {
             
             $("#descuento-gerencial").toggle();
@@ -557,6 +534,72 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 
             $("#cambio").val(pagoRecibido-total);
         });
+
+        /**********Clients*************/
+        showpopupclientes = function(){
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo Cliente</span>');
+            $.get(config.base+"/Clientes/ajax/?action=get&object=showpopup", null, function (response) {
+                    if ( response ){
+                        $("#contentpopup").html(response);
+                    }else{
+                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
+                        
+                    }     
+            });
+        }
+        $('body').on('click', '#savenewclient', function(){
+            var nombre       = $("input[name=nombre]", $(this).parents('form:first')).val();
+            var apellido_pat = $("input[name=ap_paterno]", $(this).parents('form:first')).val();
+            var apellido_mat = $("input[name=ap_materno]", $(this).parents('form:first')).val();
+            var telefono     = $("input[name=telefono]", $(this).parents('form:first')).val();
+            var id_tienda    = $("#id_tienda").val();
+            if(!nombre)  return notify('error',"Se necesita el nombre del Cliente."); 
+            if(!telefono)  return notify('error',"Se necesita el telefono del Cliente."); 
+            var url = config.base+"/Clientes/ajax/?action=get&object=savenewclient"; // El script a dónde se realizará la petición.
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $(this).parents('form:first').serialize()+'&id_usuario_tipo=1&id_tienda='+id_tienda, // Adjuntar los campos del formulario enviado.
+                success: function(response){
+                    if(response>0){
+                        //alert("Group successfully added");
+                        $('#id_persona').append($('<option>', {
+                            value: response,
+                            text: nombre+" "+apellido_pat+" "+apellido_mat,
+                            selected:true
+                        }));  
+                        $("#id_persona").select2({
+                            multiple: false,
+                            header: "Selecciona una opcion",
+                            noneSelectedText: "Seleccionar",
+                            selectedList: 1
+                        });
+                        $('#myModal').modal('hide');
+                        notify('success',"Cliente agregado correctamente:"+response);
+                    }else{
+                        notify('error',"Oopss error al agregar Cliente"+response);
+                    }
+                }
+             });
+            return false; // Evitar ejecutar el submit del formulario.
+        });
+        /**********Catalogos*************/
+        showpopupcatalogo = function(){
+            var id_tienda    = $("#id_tienda").val();
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Catalogo de Productos</span>');
+            $.get(config.base+"/Productos/ajax/?action=get&object=showpopupcatalogo&id_tienda="+id_tienda, null, function (response) {
+                    if ( response ){
+                        $("#contentpopup").html(response);
+                    }else{
+                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
+                        
+                    }     
+            });
+        }
+
+
+
+        $("#barcode").focus();
         $("#barcode").autocomplete({
             source: [ <?php echo $_SESSION['CADENA'] ?>],
             select: function(res) {
@@ -571,7 +614,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
          */
          pageSetUp();
 
-    })
+    });
   
 </script>
 
