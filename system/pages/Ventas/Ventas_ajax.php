@@ -77,6 +77,35 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 				}
 			}
 			break;
+		case 'deleteproductoventa':
+			if( isset($_GET["idproductoventa"])){
+				$id = $_GET["idproductoventa"];
+				$Pventa  = new ProductosVenta();
+				$request ['razon_cancelacion'] = $_GET["motivo"];
+				if($Pventa->deleteAll($id,$request)){
+					echo "true";
+				}
+			}
+			break;
+		case 'showpopuppagar':
+			if( isset($_GET["id"]) && intval($_GET["id"]) ){
+				$id = $_GET["id"];
+				$objh = new Venta();
+				
+				if($datah = $objh->getTable($id)){
+					$totalpagado = $objh->getpagado($id);
+					$total  = $datah['total']-$totalpagado;
+					include(SYSTEM_DIR.'/pages/Ventas/Ventas_showpopuppagar.php' );
+				}
+			}
+			break;
+		case 'savenewpago':
+			if(isPost()){
+			    $obj = new Venta();
+			    echo $obj->savenewpago(getPost());
+			   
+			}
+			break;
 		default:
 			# code...
 			break;

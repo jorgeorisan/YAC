@@ -28,25 +28,25 @@ else
 
 $obj = new Venta();
 $data = $obj->getTable($id);
+$obj->getstatus($id);
 if ( !$data ) {
     informError(true,make_url("Ventas","index"));
 }
-$icredito = htmlentities($data['icredito']);
-switch ($icredito) {
-	case '1':
-		$icredito = 'Pendiente';
-		$class  = 'label label-danger';
-		break;
-    default:
-        $icredito = '';
-        $class  = 'label label-warning';
-		break;
-} 
+
 $tienda = new Tienda();
 $datatienda = $tienda->getTable($data['id_tienda']);
 $cliente = new Persona();
 $datacliente = $cliente->getTable($data['id_persona']);
 
+$totalpagado = $obj->getpagado($id);
+$porcentpagado = ($totalpagado * 100  / $data['total']);
+
+if ($porcentpagado >= 75)
+    $class  = 'label label-success';
+if (($porcentpagado >= 50 && $porcentpagado < 75) )
+    $class  = 'label label-warning';
+if ($porcentpagado < 50 )
+    $class  = 'label label-danger';
 ?>
 
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -57,13 +57,12 @@ $datacliente = $cliente->getTable($data['id_persona']);
     <!-- MAIN CONTENT -->
     <div id="content">
         <section id="widget-grid" class="">
-			
 			<div class="row">   
                 <div class="widget-body" style='padding-left: 15px;'>
 					<a class="btn btn-success" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$id,'page'=>'venta'))?>" ><i class="fa fa-print"></i> &nbsp;Imprimir</a>
-					<?php if($icredito){
-                    ?>
-                        <a class="btn btn-info" target="" href="javascript:validar(<?php echo $id ?>)" ><i class="fa fa-check"></i></i> &nbsp;Abonar</a>
+			
+                    <?php if($data['icredito']){ ?>
+                        <a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $id ?>)" > <i class="fa fa-plus"></i>&nbsp;Pagar</a>
                     <?php } ?>
                 </div>
             </div>
@@ -85,13 +84,13 @@ $datacliente = $cliente->getTable($data['id_persona']);
                                             <table>
                                                 <tr>
                                                     <td height="100" style="width:15%;border:none;">
-                                                        <img src="<?php echo ASSETS_URL; ?>/img/logo.png" border="0" height="80" width="160"/>
+                                                        <img src="<?php echo ASSETS_URL; ?>/img/logo.png" border="0" height="80" width="260"/>
                                                     </td>
                                                     <td style="width:40%; text-align:center;border:none;">
                                                         <h3>Yo Amo Comprar</h3>
                                                         <p style=" line-height:1.5em; font-weight:bold;"><?php echo $datatienda['ubicacion']?><br />
-                                                            Zitacuaro,Mich., Mexico
-                                                            Tel.7151108800
+                                                            Zitacuaro,Mich., Mexico<br>
+                                                            Tel.7151108800<br>
                                                             R.F.C:AARL921226DJ6
                                                         </p>
                                                     </td>
@@ -117,8 +116,17 @@ $datacliente = $cliente->getTable($data['id_persona']);
                                                             </tr>
 															<tr>
                                                                 <td style="background-color:#d0d0cf; font-weight:bold; text-align:left; width:30%;"> Total</td>
-																<td colspan="2" class="<?php echo $class; ?>"><?php echo htmlentities($data['total']); ?></td>
+																<td colspan="2"><?php echo htmlentities($data['total']); ?></td>
                                                             </tr>
+                                                            <?php 
+                                                            if($data['icredito']){
+                                                                ?>
+                                                                <tr>
+                                                                    <td style="background-color:#d0d0cf; font-weight:bold; text-align:left; width:30%;"> Por Pagar</td>
+                                                                    <td colspan="2" class="<?php echo $class; ?>"><?php echo $totalpagado."->".number_format($porcentpagado,0)."%";; ?></td>
+                                                                </tr>
+                                                                <?php
+                                                            }?>
                                                         </table>
                                                     </td>
                                                 </tr>
@@ -140,8 +148,8 @@ $datacliente = $cliente->getTable($data['id_persona']);
                                                 <tr>
                                                     <td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Tipo pago: </td>
 													<td colspan="" style="width:30%;"><?php echo htmlentities($data['tipo']); ?></td>
-													<td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Por Pagar: </td>
-													<td colspan=""><?php  ?></td>
+													<td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Observaciones: </td>
+													<td colspan=""><?php echo $data['comentarios']; ?></td>
                                                 </tr>
                                                  <tr>
                                                     <td colspan="4" style="width:20%;background-color:#d0d0cf; font-weight:bold; text-align: center">PRODUCTOS DE VENTA : </td>
@@ -150,7 +158,7 @@ $datacliente = $cliente->getTable($data['id_persona']);
                                                     <td colspan="4" style="width:100%;">
 														<table style="height: 100%;width:100%;">
                                                             <tr>
-                                                                <td colspan="8" style="background-color:#d0d0cf; font-weight:bold; text-align: center"> </td>
+                                                                <td colspan="9" style="background-color:#d0d0cf; font-weight:bold; text-align: center"> </td>
                                                             </tr>
                                                             <tr>
                                                                 <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Cant</td>
@@ -163,6 +171,7 @@ $datacliente = $cliente->getTable($data['id_persona']);
                                                                 <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Utilidad</td>
                                                                 <?php } ?>
                                                                 <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Tipo Precio</td>
+                                                                <td colspan="" style="background-color:#d0d0cf; font-weight:bold;"></td>
                                                             </tr>
                                                             <?php 
                                                             $objpv = new ProductosVenta();
@@ -190,7 +199,11 @@ $datacliente = $cliente->getTable($data['id_persona']);
                                                                 <td><?php echo htmlentities($row['costo']); ?></td>
                                                                 <td><?php echo htmlentities($row['utilidad']); ?></td>
                                                                 <td><?php echo htmlentities($row['tipoprecio']); ?></td>
-                                                                <td><?php ?></td>
+                                                                <td class='borrar-td'>
+                                                                    <?php if (!$row['cancelado']){ ?> 
+                                                                        <a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="btn btn-danger deleteventa"> <i class="fas fa-ban"></i></a>
+                                                                    <?php } ?>
+                                                                </td>
                                                             </tr>
 
                                                             <?php
@@ -202,6 +215,7 @@ $datacliente = $cliente->getTable($data['id_persona']);
 																<td></td>
                                                                 <td style='font-weight:bold;'>Total:</td>
                                                                 <td><strong><?php echo $total; ?></strong></td>
+                                                                <td></td> 
                                                                 <td></td> 
                                                                 <td></td> 
                                                                 <td></td>
@@ -225,21 +239,28 @@ $datacliente = $cliente->getTable($data['id_persona']);
     </div>
     <!-- END MAIN CONTENT -->
 </div>
-<div class="modal fade" id="showPhoto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Visor de Imagenes</h4>
-      </div>
-      <div class="modal-body">
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" width="50" alt="SmartAdmin">
+                    <div id='titlemodal' style="float:right; margin-right: 20px;">
+                        <span class="widget-icon"><i class="fa fa-plus"></i> Nuevo</span>
+                    </div>
+                    
+                </h4>
+            </div>
+            <div class="modal-body no-padding" >
+                <div id="contentpopup">
+
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
 </div>
 
 <!-- END MAIN PANEL -->
@@ -261,55 +282,86 @@ $datacliente = $cliente->getTable($data['id_persona']);
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/superbox/superbox.min.js"></script>
 
 <script>
-	function validar(id){ 
-		if ( ! id ) return;	
-		swal({
-			title: "Deseas validar este venta?",
-			text: "El venta se agregara al inventario.",
-			type: "info",
-			showCancelButton: true,
-			confirmButtonColor: '#396bf2',
-			confirmButtonText: 'Si, Validar!',
-			closeOnConfirm: true
-			},
-			function(){
-				swal("Validado!", "Validado con exito!", "Exito");
-				
-				var url  = config.base+"/Ventas/ajax/?action=get&object=validar"; 
-				var data = "id=" + id ;
-				$.ajax({
-					type: "POST",
-					url: url,
-					data: data, // Adjuntar los campos del formulario enviado.
-					success: function(response){
-						if(response==1){
+	
+    $(document).ready(function() {
+         //**********pagoS*************/
+         $('body').on('change', '#montoabono', function(){
+            if( $(this).val() ){
+                var monto  = $("input[name=montoabono]", $(this).parents('form:first')).val();
+                var deuda  = $("input[name=deuda]", $(this).parents('form:first')).val();
+                var nuevadeuda = deuda - monto;
+                if(nuevadeuda<0){ 
+                    notify('error','El monto no puede ser mayor a la deuda actual');
+                    $("#monto").val('').focus();
+                    return false;
+                }
+            }
+        });
+        showpopuppagar = function(id_venta){
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo Pago</span>');
+            $.get(config.base+"/Ventas/ajax/?action=get&object=showpopuppagar&id="+id_venta, null, function (response) {
+                    if ( response ){
+                        $("#contentpopup").html(response);
+                    }else{
+                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
+                        
+                    }     
+            });
+            return false;
+        }
+        $('body').on('click', '#savenewpago', function(){
+            var monto  = $("input[name=montoabono]", $(this).parents('form:first')).val();
+            var deuda  = $("input[name=deuda]", $(this).parents('form:first')).val();
+            if(!monto)  return notify('error',"Se necesita el monto.");  
+            var nuevadeuda = deuda - monto;
+            if(nuevadeuda<0){ 
+                notify('error','El monto no puede ser mayor a la deuda actual');
+                $("#monto").val('').focus();
+                return false;
+            }
+            var url = config.base+"/Ventas/ajax/?action=get&object=savenewpago"; 
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $(this).parents('form:first').serialize(), 
+                success: function(response){
+                    if(response>0){
+                        location.reload();
+                    }else{
+                        return notify('error',"Oopss error al agregar pago"+response);
+                    }
+                }
+             });
+            return false; // Evitar ejecutar el submit del formulario.
+        });
+        //cancelar venta
+        $(".deleteventa").click(function(e) {
+            e.preventDefault();
+			var idventa = $(this).attr('idventa');
+			var folio   = $(this).attr('folio');
+			$.SmartMessageBox({
+				title : "Cancelar Producto Venta: "+folio,
+				content : "Menciona el motivo de cancelacion",
+				buttons : '[No][Yes]',
+				input : "text",
+				placeholder : "Motivo de cancelacion"
+			}, function(ButtonPressed, Value) {
+				if (ButtonPressed === "Yes") {
+					if(!Value) return notify('warning','Se necesita un motivo');
+					$.get(config.base+"/Ventas/ajax/deleteventa?action=get&object=deleteproductoventa&idproductoventa="+idventa+"&motivo="+Value,
+					function (response) {
+						if(response){
+							notify('success','Cancelada con exito');
 							location.reload();
 						}else{
-							notify('error',"Oopss error al cambiar estatus: "+response);
+							return notify('error','Error al cancelar venta');
 						}
-					}
-				});
-       
-			}
-		);
-	}
-    $(document).ready(function() {
-        //$('.superbox').SuperBox();
-
-        $(function(){
-            $('.superbox-img').click(function(){
-                $('#showPhoto .modal-body').html($(this).clone().attr("height","100%"));
-                $('#showPhoto').modal('show');
-            })
+					});
+				}
+			});
+			$("#txt1").val('');
 		});
-		
-        /*$('body').on('click', '.superbox-img', function(e){
-            $('html,body').animate({
-                scrollTop: $(".superbox-show").offset().top
-            }, 1000);
-
-        });
-        */
+        
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.
          * It initializes and checks for all basic elements of the page

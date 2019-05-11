@@ -26,7 +26,7 @@ class ProductoTienda extends AutoProductoTienda {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM producto_tienda WHERE id=$id;";
+		$sql= "SELECT * FROM producto_tienda WHERE id_productotienda=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
 			{die("Error getting result producto_tienda");}
@@ -93,6 +93,21 @@ class ProductoTienda extends AutoProductoTienda {
 		$res->close();
 		return $row;
 
+	}
+	public function actualizaexistencia($id,$cantidad,$tipo){
+		if(! intval( $id )) return false;
+		if(! intval( $cantidad )) return false;
+		if($tipo=='increment'){
+			$sql= "UPDATE producto_tienda SET existencias=existencias+".$cantidad."  WHERE id_productotienda=".$id.";";
+			$row=$this->db->query($sql);
+			return (!$row) ?  false : true;
+		}
+		if($tipo=='decrement'){
+			$sql= "UPDATE producto_tienda SET existencias=existencias-".$cantidad."  WHERE id_productotienda=".$id.";";
+			$row=$this->db->query($sql);
+			return (!$row) ?  false : true;
+		}
+			
 	}
 
 }

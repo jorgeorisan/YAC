@@ -10,7 +10,8 @@ class Producto extends AutoProducto {
 	public function getAllArr($id_producto=false,$tienda=false,$similar=false)
 	{
 		if(!$tienda)
-			$tienda = $_SESSION['user_info']['id_tienda'];
+			if(isset($_SESSION['user_info']['id_tienda']))
+				$tienda = $_SESSION['user_info']['id_tienda'] ;
 
 		$queryprod =($id_producto) ? " AND p.id_producto = $id_producto" : '';
 		if($similar){
@@ -138,7 +139,7 @@ class Producto extends AutoProducto {
 				$_requestpt['tienda_id_tienda']      = $ex['id_tienda'];
 				$_requestpt['existencias']           = 0;
 				$_requestpt['fecha_actualizacion']   = date('Y-m-d H:i:s');
-				$_requestpt['usuario_actualizacion'] = $_SESSION['user_id'];
+				$_requestpt['usuario_actualizacion'] = $_SESSION['user_info']['id_usuario'];
 				try {
 					$objpti->addAll($_requestpt);
 				} catch (Exception $e) {

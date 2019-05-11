@@ -7,21 +7,21 @@
 		
 		protected $id_venta = "";
 		protected $fecha = "";
-		protected $usuariosventa = "";
 		protected $total = 0;
 		protected $tipo = "";
 		protected $factura = "";
-		protected $no_calculable = "";
-		protected $ticket_items = "";
 		protected $cancelado = "";
 		protected $id_usuario = "";
 		protected $id_persona = "";
 		protected $id_tienda = 0;
-		protected $consignacion = "";
 		protected $icredito = "";
 		protected $folio = 0;
 		protected $comentarios = "";
 		protected $credencial = "";
+		protected $fecha_cancelacion = "";
+		protected $razon_cancelacion = "";
+		protected $usuario_cancelacion = "";
+		protected $descuento = 0;
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -55,11 +55,6 @@
  				$this->fecha = $value;
 		}
 		
-		public function setUsuariosventa( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "USUARIOSVENTA","s") ) 
- 				$this->usuariosventa = $value;
-		}
-		
 		public function setTotal( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "TOTAL","d") ) 
  				$this->total = $value;
@@ -73,14 +68,6 @@
 		public function setFactura( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "FACTURA","s") ) 
  				$this->factura = $value;
-		}
-		
-		public function setNoCalculable( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "NOCALCULABLE","s") ) 
- 				$this->no_calculable = $value;
-		}
-		
-		public function setTicketItems( $value ){ 				$this->ticket_items = $value;
 		}
 		
 		public function setCancelado( $value ){			
@@ -103,11 +90,6 @@
  				$this->id_tienda = $value;
 		}
 		
-		public function setConsignacion( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "CONSIGNACION","s") ) 
- 				$this->consignacion = $value;
-		}
-		
 		public function setIcredito( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "ICREDITO","s") ) 
  				$this->icredito = $value;
@@ -122,6 +104,24 @@
 		}
 		
 		public function setCredencial( $value ){ 				$this->credencial = $value;
+		}
+		
+		public function setFechaCancelacion( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "FECHACANCELACION","s") ) 
+ 				$this->fecha_cancelacion = $value;
+		}
+		
+		public function setRazonCancelacion( $value ){ 				$this->razon_cancelacion = $value;
+		}
+		
+		public function setUsuarioCancelacion( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "USUARIOCANCELACION","s") ) 
+ 				$this->usuario_cancelacion = $value;
+		}
+		
+		public function setDescuento( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "DESCUENTO","d") ) 
+ 				$this->descuento = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -157,14 +157,6 @@
  			}
 		}
 		
-		public function getUsuariosventa($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->usuariosventa) ;
- 			}else{
- 				return $this->usuariosventa ;
- 			}
-		}
-		
 		public function getTotal($sanitize=true){ 
  			if($sanitize){
  				return htmlspecialchars($this->total) ;
@@ -186,22 +178,6 @@
  				return htmlspecialchars($this->factura) ;
  			}else{
  				return $this->factura ;
- 			}
-		}
-		
-		public function getNoCalculable($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->no_calculable) ;
- 			}else{
- 				return $this->no_calculable ;
- 			}
-		}
-		
-		public function getTicketItems($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->ticket_items) ;
- 			}else{
- 				return $this->ticket_items ;
  			}
 		}
 		
@@ -237,14 +213,6 @@
  			}
 		}
 		
-		public function getConsignacion($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->consignacion) ;
- 			}else{
- 				return $this->consignacion ;
- 			}
-		}
-		
 		public function getIcredito($sanitize=true){ 
  			if($sanitize){
  				return htmlspecialchars($this->icredito) ;
@@ -277,6 +245,38 @@
  			}
 		}
 		
+		public function getFechaCancelacion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->fecha_cancelacion) ;
+ 			}else{
+ 				return $this->fecha_cancelacion ;
+ 			}
+		}
+		
+		public function getRazonCancelacion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->razon_cancelacion) ;
+ 			}else{
+ 				return $this->razon_cancelacion ;
+ 			}
+		}
+		
+		public function getUsuarioCancelacion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->usuario_cancelacion) ;
+ 			}else{
+ 				return $this->usuario_cancelacion ;
+ 			}
+		}
+		
+		public function getDescuento($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->descuento) ;
+ 			}else{
+ 				return $this->descuento ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -305,21 +305,21 @@
 
 			$this->setIdVenta( $res['id_venta'] );
 			$this->setFecha( $res['fecha'] );
-			$this->setUsuariosventa( $res['usuariosventa'] );
 			$this->setTotal( $res['total'] );
 			$this->setTipo( $res['tipo'] );
 			$this->setFactura( $res['factura'] );
-			$this->setNoCalculable( $res['no_calculable'] );
-			$this->setTicketItems( $res['ticket_items'] );
 			$this->setCancelado( $res['cancelado'] );
 			$this->setIdUsuario( $res['id_usuario'] );
 			$this->setIdPersona( $res['id_persona'] );
 			$this->setIdTienda( $res['id_tienda'] );
-			$this->setConsignacion( $res['consignacion'] );
 			$this->setIcredito( $res['icredito'] );
 			$this->setFolio( $res['folio'] );
 			$this->setComentarios( $res['comentarios'] );
 			$this->setCredencial( $res['credencial'] );
+			$this->setFechaCancelacion( $res['fecha_cancelacion'] );
+			$this->setRazonCancelacion( $res['razon_cancelacion'] );
+			$this->setUsuarioCancelacion( $res['usuario_cancelacion'] );
+			$this->setDescuento( $res['descuento'] );
 			return true;
 		}
 		// end function load

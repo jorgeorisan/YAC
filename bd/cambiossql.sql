@@ -299,3 +299,53 @@ ALTER TABLE `xqwmrfeeug`.`venta`
 ADD COLUMN `razon_cancelacion` TEXT NULL AFTER `fecha_cancelacion`;
 ALTER TABLE `xqwmrfeeug`.`venta` 
 ADD COLUMN `usuario_cancelacion` VARCHAR(45) NULL AFTER `razon_cancelacion`;
+
+-- decuento en la venta
+ALTER TABLE `xqwmrfeeug`.`venta` 
+ADD COLUMN `descuento` DOUBLE NULL DEFAULT 0 AFTER `usuario_cancelacion`;
+
+
+ALTER TABLE `xqwmrfeeug`.`venta` 
+DROP COLUMN `consignacion`,
+DROP COLUMN `no_calculable`,
+DROP COLUMN `usuariosventa`;
+
+ALTER TABLE `xqwmrfeeug`.`deudores` 
+ADD COLUMN `tipo_pago` VARCHAR(45) NULL AFTER `comentarios`;
+
+
+ALTER TABLE `xqwmrfeeug`.`deudores` 
+DROP FOREIGN KEY `id_persona`;
+ALTER TABLE `xqwmrfeeug`.`deudores` 
+DROP COLUMN `id_persona`,
+CHANGE COLUMN `comentarios` `comentarios` VARCHAR(150) NULL ,
+DROP INDEX `id_persona_idx` ;
+
+
+ALTER TABLE `xqwmrfeeug`.`venta` 
+DROP COLUMN `ticket_items`;
+
+ALTER TABLE `xqwmrfeeug`.`productos_venta` 
+ADD COLUMN `fecha_cancelacion` VARCHAR(45) NULL AFTER `fecha_registro`,
+ADD COLUMN `usuario_cancelacion` VARCHAR(45) NULL AFTER `fecha_cancelacion`;
+ALTER TABLE `xqwmrfeeug`.`productos_venta` 
+ADD COLUMN `razon_cancelacion` TEXT NULL AFTER `usuario_cancelacion`,
+CHANGE COLUMN `fecha_cancelacion` `fecha_cancelacion` TIMESTAMP NULL DEFAULT NULL ;
+
+ALTER TABLE `xqwmrfeeug`.`deudores` 
+DROP COLUMN `id_tienda`;
+
+
+-- arreglar ventas canceladas en productos venta
+exit;
+primero ejecutar funcion 
+
+$obj = new Venta();
+$obj->arreglar_Descuentos();
+$obj->arreglar_cancelaciones();
+$obj->arreglar_cancelacionesproductos();
+
+update xqwmrfeeug.productos_venta pv 
+JOIN venta v ON pv.id_venta=v.id_venta
+set pv.cancelado=1
+  where v.cancelado=1 and pv.cancelado=0;

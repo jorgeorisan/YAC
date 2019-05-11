@@ -53,7 +53,7 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 			 
 			<div class="row">
 				
-				<article class="col-xs-6 col-sm-12 col-md-6 col-lg-6">
+				<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 						<header>
 							<span class="widget-icon"> <i class="fa fa-table"></i> </span>
@@ -64,7 +64,7 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
                             <div class="widget-body">
 								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
-                                        <div class="col-sm-6">
+                                        <div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
 							                <div class="form-group">
 							                    <label for="name">Fecha Inicial</label>
 							                    <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
@@ -115,7 +115,7 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
                                                 <button class="btn btn-default btn-md" type="button" onclick="window.history.go(-1); return false;">
                                                     Cancelar
                                                 </button>
-                                                <button class="btn btn-primary btn-md" type="button" onclick=" validateForm();">
+                                                <button class="btn btn-primary btn-md" type="button" id='btngenerar' onclick=" validateForm();">
                                                     <i class="fa fa-save"></i>
                                                     Generar
                                                 </button>
@@ -195,8 +195,11 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 													<td>$<?php echo number_format($row['total'], 2); ?></td>
 													<td><?php echo $descuento.htmlentities($row['comentarios']) ?></td>
 													<td>
-														<?php if (!$row['cancelado']){ ?>
-															<a href="#" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class="btn btn-primary deleteventa"> Cancelar </a>
+														<?php if (!$row['cancelado']){ ?> 
+															<?php if($row['icredito']){ ?>
+																<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)" > <i class="fa fa-money-bill-wave"></i></a>
+															<?php } ?>
+															<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class="btn btn-danger deleteventa"> <i class="fas fa-ban"></i></a>
 														<?php } ?>
 													</td>
 												</tr>
@@ -433,6 +436,56 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 			});
 			$("#txt1").val('');
 		});
+		 //**********pagoS*************/
+         $('body').on('change', '#montoabono', function(){
+            if( $(this).val() ){
+                var monto  = $("input[name=montoabono]", $(this).parents('form:first')).val();
+                var deuda  = $("input[name=deuda]", $(this).parents('form:first')).val();
+                var nuevadeuda = deuda - monto;
+                if(nuevadeuda<0){ 
+                    notify('error','El monto no puede ser mayor a la deuda actual');
+                    $("#monto").val('').focus();
+                    return false;
+                }
+            }
+        });
+        showpopuppagar = function(id_venta){
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo Pago</span>');
+            $.get(config.base+"/Ventas/ajax/?action=get&object=showpopuppagar&id="+id_venta, null, function (response) {
+                    if ( response ){
+                        $("#contentpopup").html(response);
+                    }else{
+                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
+                        
+                    }     
+            });
+            return false;
+        }
+        $('body').on('click', '#savenewpago', function(){
+            var monto  = $("input[name=montoabono]", $(this).parents('form:first')).val();
+            var deuda  = $("input[name=deuda]", $(this).parents('form:first')).val();
+            if(!monto)  return notify('error',"Se necesita el monto.");  
+            var nuevadeuda = deuda - monto;
+            if(nuevadeuda<0){ 
+                notify('error','El monto no puede ser mayor a la deuda actual');
+                $("#monto").val('').focus();
+                return false;
+            }
+            var url = config.base+"/Ventas/ajax/?action=get&object=savenewpago"; 
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $(this).parents('form:first').serialize(), 
+                success: function(response){
+                    if(response>0){
+                        //location.reload();
+                    }else{
+                        return notify('error',"Oopss error al agregar pago"+response);
+                    }
+                }
+             });
+            return false; // Evitar ejecutar el submit del formulario.
+        });
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 		 *
 		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS

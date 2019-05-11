@@ -25,24 +25,12 @@ include(SYSTEM_DIR . "/inc/header.php");
 //follow the tree in inc/config.ui.php
 include(SYSTEM_DIR . "/inc/nav.php");
 if(isPost()){
-    $obj = new Producto();
+    $obj = new Venta();
     $id=$obj->addAll(getPost());
     if($id>0){
         //nuevas imagenes
-        if (isset($_FILES['imagen'])){
-            $carpetaimg = PRODUCTOS.'/images';
-            move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codigo'].'.png');
-            $request['imagen']=$id."_".$_POST['codigo'].'.png';
-            $id = $obj->updateAll($id,$request);
-            if( $id >0  ) {
-                informSuccess(true, make_url("Productos","view",array('id'=>$id)));
-            }else{
-                informError(true, make_url("Productos","edit",array('id'=>$id)),"edit");
-            }
-        }else{
-            informSuccess(true, make_url("Productos","view",array('id'=>$id)));
-        }
-        informSuccess(true, make_url("Productos","view",array('id'=>$id)));
+      
+        informSuccess(true, make_url("Ventas","view",array('id'=>$id)));
     }else{
         informError(true,make_url("Productos","index"));
     }
@@ -138,12 +126,9 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                     </div>
                                 </div>
 								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Ventas","add");?>" onsubmit="return checkSubmit();">     
-                                    
-                                   
                                     <div class="col-sm-6 col-md-6 col-lg-6">
                                         <h3 class="tit">Productos</h3>
                                         <input type="hidden" name="total-global" id="total-global" value="0"/>
-                                        <input type="hidden" name="ticket_items" id="ticket-items" value="0"/>
                                     </div>
                                     <div class="col-sm-6 col-md-6 col-lg-6" style="text-align: right;">
                                         <h3 class="total">Total: $<span id="total-num"></span></h3>
@@ -156,7 +141,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                 <th>Producto</th>
                                                 <th>Subtotal</th>
                                                 <th>Total</th>
-                                                <th class="borrar-td"></th>
+                                                <th ></th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -174,7 +159,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                             $list=$obj->getAllArr();
                                                             if (is_array($list) || is_object($list)){
                                                                 foreach($list as $val){
-                                                                    $selected =  (2 == $val['id_persona'] ) ? "selected" : '';
+                                                                    $selected =  ( $val['id_persona'] == 2 ) ? "selected" : '';
                                                                     echo "<option ".$selected ." value='".$val['id_persona']."'>".htmlentities($val['nombre'].' '.$val['ap_paterno'].' '.$val['ap_materno'])."</option>";
                                                                 }
                                                             }
@@ -188,19 +173,22 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                 <tr>
                                                     <td><label>Tipo de pago</label></td>
                                                     <td colspan="2">
-                                                        <select name="tipo" class="select2" id="tipo">
-                                                            <option value="Efectivo">Efectivo</option>
-                                                            <option value="Tarjeta Credito">Tarjeta Credito</option>
-                                                            <option value="Tarjeta Debito">Tarjeta Debito</option>
-                                                            <option value="Credito">Credito</option>
-                                                            <option value="Otro">Otro</option>
+                                                        <select style="width:100%" class="select2 " name="tipo"  id="tipo">
+                                                            <?php 
+                                                            $listref= getTipoPago();
+                                                            if (is_array($listref)){
+                                                                foreach($listref as $key => $valref){
+                                                                    echo "<option value='".$key."'>".htmlentities($valref)."</option>";
+                                                                }
+                                                            }
+                                                            ?>
                                                         </select>
                                                     </td>
                                                 </tr>
                                                 <tr id="contabono" style="display: none">
                                                     <td><label>Monto del Abono</label></td>
                                                     <td colspan="2">
-                                                        <input type="number" style="width:100px" class="form-control"  id="abono" name="abono" value="0" placeholder=""/>
+                                                        <input type="number" style="width:100px" class="form-control"  id="montoabono" name="montoabono" value="0" placeholder=""/>
                                                     </td>
                                                 </tr>
                                                 <tr id="contcredencial" style="display: none">
@@ -221,41 +209,13 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                         <input type="number" style="width:100px" class="form-control"  id="cambio" readonly="readonly" placeholder="$0.00"/>
                                                     </td>
                                                 </tr>
-
                                                 <tr>
-                                                    <td><label>Descuento Gerencial</label></td>
-                                                    <td colspan="2" class="text-center" >
+                                                    <th>Descuento $</th>
+                                                    <td>
                                                         <a href="#" id="solicitar-descuento-gerencial">Show/Hide</a>
-
                                                         <div id="descuento-gerencial" style="display: none;">
-                                                            <table class="nostyle">
-                                                                <tr>
-                                                                    <td>
-                                                                        <label>Monto en $</label>
-                                                                    </td>
-                                                                    <td><input type="text" id="monto" class="form-control" name="monto"/></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <label>Usuario</label>
-                                                                    </td>
-                                                                    <td><input type="text" class="form-control" name="id_usuario" id="id_usuariodesc"/></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <label>Contraseña</label>
-                                                                    </td>
-                                                                    <td><input type="password" autocomplete="" class="form-control" name="password" id="passworddesc"/></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><input type="button" id="cancelar-solicitud" class="form-control" value="Cancelar"/></td>
-                                                                    <td>
-                                                                        <input type="button" id="mandar-solicitud" class="form-control" value="Solicitar"/>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
+                                                            <input type="number" id="monto" class="form-control" name="monto" placeholder="Monto"/>
                                                         </div>
-
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -269,7 +229,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                         <td>
                                                             <label>Fecha Venta</label>
                                                         </td>
-                                                        <td colspan="2"><input type="text" class="form-control datepicker" datepicker='past' name="fecha" id="" value='<?php echo date('Y-m-d')?>'/></td>
+                                                        <td colspan="2"><input type="text" class="form-control datepicker" datepicker='past' name="fecha" id="fecha" value='<?php echo date('Y-m-d')?>'/></td>
                                                     </tr>
                                                     <tr>
                                                         <td>
@@ -300,7 +260,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                     <div class="" style="text-align: center">
                                         <div class="col-md-12">
                                             <br>
-                                            <button class="btn btn-primary btn-md" id='send' style="width: 100%" type="button" onclick=" validateForm();">
+                                            <button class="btn btn-primary btn-md" id='send' style="width: 100%" type="button">
                                                 <i class="fa fa-save"></i>
                                                 Registrar
                                             </button>
@@ -318,14 +278,14 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 <!-- END MAIN PANEL -->
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog  modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" width="50" alt="SmartAdmin">
+                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" width="100" alt="SmartAdmin">
                     <div id='titlemodal' style="float:right; margin-right: 20px;">
                         <span class="widget-icon"><i class="fa fa-plus"></i> Nuevo</span>
                     </div>
@@ -366,28 +326,18 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             }
         });
     }
-    function validateForm(){
-        var id_categoria = $("#id_categoria").val();
-        if ( ! id_categoria )  return notify("info","La categoria es requerida");
-        var id_proveedor = $("#id_proveedor").val();
-        if ( ! id_proveedor )  return notify("info","La Seccion es requerida");
-        var id_marca = $("#id_marca").val();
-        if ( ! id_marca )  return notify("info","La marca es requerida");
-        var codigo = $("input[name=codigo]").val();
-        if ( ! codigo )  return notify("info","El codigo es requerido");
-        var nombre = $("input[name=nombre]").val();
-        if ( ! nombre )  return notify("info","El nombre es requerido");
-       
-        $("#main-form").submit();           
-    }
+   
     $(document).ready(function() {
         var calcTotal = function () {
             var totales = $(".totales");
+            var totaldescuento = ($("#monto").val()>0) ? parseFloat($("#monto").val()) : 0;  
+        
             var total = 0;
             for (var i = 0, len = totales.length; i < len; i++) {
                 total = parseFloat(total);
                 total += parseFloat($(totales[i]).val());
             }
+            total = total-totaldescuento;
 
             $("#total-num").html(total);
             $("#total-global").val(total);
@@ -439,60 +389,69 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             return false;
         });
 
-     
+        //descuentos
         $("#solicitar-descuento-gerencial").click(function () {
-            
             $("#descuento-gerencial").toggle();
             return false;
+        });        
+        $("#monto").change(function () {
+            var monto = $("#monto").val();
+            if ( monto=='') monto = 0;
+            if (monto >= 0 || monto==''  ) {
+                calcTotal();
+            } else {
+                 notify('warning', 'El monto no es correcto:'+monto);
+                 $("#monto").val('')
+                 return false;
+            }
+            return false;
         });
+        $("#montoabono").change(function () {
+            var tipo  = $("#tipo").val();
+            var monto = parseFloat($("#montoabono").val());
+            if( tipo == "Credito" ) {
+                if ( monto=='') monto = 0;
+                if ( monto >= 0 || monto==''  ) {
+                    if(monto > $("#total-global").val()){
+                        notify('warning', 'El Abono debe ser menor al total de venta:'+monto);
+                        $("#montoabono").val('')
+                        return false;
+                    }
+                } else {
+                    notify('warning', 'El Abono no es correcto:'+monto);
+                    $("#montoabono").val('')
+                    return false;
+                }
+            }else{
+                notify('warning', 'El No se pueden meter abonos');
+                $("#montoabono").val(0);
+            }
+            return false;
+        });
+        
        
         $("#tipo").change(function (e) {
             e.preventDefault();
-            console.log($("#tipo").val());
-            var id=$("#tipo").val();
-            if(id=="Tarjeta Credito"|| id=="Tarjeta Debito") {
+            var tipo    = $("#tipo").val();
+            
+            var cliente = $("#id_persona").val();
+            if(tipo=="Tarjeta Credito"|| tipo=="Tarjeta Debito") {
                 $("#contcredencial").show();
             }else{
                 $("#contcredencial").hide();
             }
-            if(id=="Credito") {
+            if(tipo=="Credito") {
                 $("#contabono").show();
             }else{
                 $("#contabono").hide();
             }
+            if ( tipo == 'Credito' && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
 
             return false;
         });
         $("#id_tienda").change(function () {
             var id=$("#id_tienda").val();
             $("#catalogo").attr('href',''+id);
-            return false;
-        });
-        $("#mandar-solicitud").click(function (e) {
-            e.preventDefault();
-
-            var idusu=document.getElementById("id_usuariodesc").value;
-            var pass=document.getElementById("passworddesc").value;
-            var msj=$("#main-form").serialize()+"&id_usuario="+idusu+"&password="+pass;
-            if (idusu==2 ) {
-                return notify('warning', 'Selecciona un cliente');
-            }else{
-
-
-                var $monto = parseFloat($("#monto").val());
-                if ($monto > 0 ) {
-                    $.get(config.base+"/Ventas/ajax/descuentogerencial", msj, function (response) {
-                        $("table#productos").append(response);
-                        document.getElementById("passworddesc").value = "";
-                        document.getElementById("id_usuariodesc").value = "";
-                        document.getElementById("mandar-solicitud").style.display = "none";
-                        calcTotal();
-
-                    });
-                } else {
-                    return notify('warning', 'El monto no es correcto');
-                }
-            }
             return false;
         });
         $("#cancelar-solicitud").click(function (e) {
@@ -504,19 +463,18 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         });
 
         $("#send").click(function (e) {
-
-
-            $(".borrar-td").remove();
+            $(".borrar-td").remove();    
+            var tipo      = $("#tipo").val();       
+            var cliente   = $("#id_persona").val();
+            var productos = $(".producto");  
+            if ( ! productos.length )  return notify("info","Los productos son requeridos");
             $("#ticket-items").val($("#productos").html());
+            if ( tipo == 'Credito' && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
+           
+            $(this).hide();
+            $("#main-form").submit();
 
-            if ($("#tipo").val() != "") {
-                $(this).hide();
-                $("#main-form").submit();
-
-            } else {
-                $("#tipo").focus();
-                alert("Hay que escoger una forma de pago");
-            }
+            return false;
         });
 
 

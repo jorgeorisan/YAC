@@ -2,11 +2,11 @@
 $lineId = rand(1000, 100000);
 ?>
     <tr class="producto" lineid="<?php echo $lineId; ?>">
-        <input type="hidden" class=""        name="costototal[]"  value="<?php echo ($cantidad * $costo); ?>"/>
-        <input type="hidden" class="totales" name="total[]"       value="<?php echo ($cantidad * $precioventa); ?>"/>
+        <input type="hidden" class="totales" name="total_producto[]"       value="<?php echo ($cantidad * $precioventa); ?>"/>
         <input type="hidden" class=""        name="tipoprecio[]"  value="<?php echo $tipoprecio; ?>"/>
         <input type="hidden"                 name="cantidad[]"    value="<?php echo $cantidad; ?>"/>
         <input type="hidden"                 name="id_producto[]" value="<?php echo $id_producto; ?>"/>
+        <input type="hidden"                 name="id_productotienda[]" value="<?php echo $id_productotienda; ?>"/>
         <td style="padding-left: 20px;"><?php echo $cantidad; ?></td>
         <td><?php echo $codigo;   ?></td>
         <td><?php echo $nombre;   ?></td>

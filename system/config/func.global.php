@@ -123,48 +123,57 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
 }
 /*****/////**********/
 /** CATALOGOS GENERALES/////////////*/
-function catModelo()
-{
-  $array= array();
-  $cont=0;
-  for ($i=date('Y'); $i >= 1990; $i--) { 
-    $array[$cont]=$i;
-    $cont++;
+  function catModelo()
+  {
+    $array= array();
+    $cont=0;
+    for ($i=date('Y'); $i >= 1990; $i--) { 
+      $array[$cont]=$i;
+      $cont++;
+    }
+      return $array;
   }
-    return $array;
-}
-function getStatusServicio(){
-  $arrayStatus = array();
-  $arrayStatus["active"]     = "Pendiente";
-  $arrayStatus["En Proceso"] = "En Proceso";
-  $arrayStatus["Realizado"]  = "Realizado";
-  $arrayStatus["Stand-By"]   = "Stand-By";
-  $arrayStatus["Garantia"]   = "Garantia";
+  function getStatusServicio(){
+    $arrayStatus = array();
+    $arrayStatus["active"]     = "Pendiente";
+    $arrayStatus["En Proceso"] = "En Proceso";
+    $arrayStatus["Realizado"]  = "Realizado";
+    $arrayStatus["Stand-By"]   = "Stand-By";
+    $arrayStatus["Garantia"]   = "Garantia";
 
-  return $arrayStatus;
-}
-function getStatusRefaccion(){
-  $arrayStatus = array();
-  $arrayStatus["active"]     = "Solicitada";
-  $arrayStatus["Autorizada"] = "Autorizada";
-  $arrayStatus["Rechazada"]  = "Rechazada";
-  $arrayStatus["Recibida"]   = "Recibida";
-  $arrayStatus["Reenvio"]    = "Reenvio";
-  $arrayStatus["Proporcionado-Paciente"]  = "Proporcionado-Paciente";
-  $arrayStatus["Entregada"]  = "Entregada";
-  $arrayStatus["Instalado"]  = "Instalado";
-  $arrayStatus["Perdida-daño"] = "Perdida-daño";
-  return $arrayStatus;
-}
-function getStatusAutos(){
-  $arrayStatus = array();
-  $arrayStatus["Pendiente"]           = "Pendiente";
-  $arrayStatus["Terminado sin firma"] = "Terminado sin firma";
-  $arrayStatus["Terminado y firmado"] = "Terminado y firmado";
+    return $arrayStatus;
+  }
+  function getStatusRefaccion(){
+    $arrayStatus = array();
+    $arrayStatus["active"]     = "Solicitada";
+    $arrayStatus["Autorizada"] = "Autorizada";
+    $arrayStatus["Rechazada"]  = "Rechazada";
+    $arrayStatus["Recibida"]   = "Recibida";
+    $arrayStatus["Reenvio"]    = "Reenvio";
+    $arrayStatus["Proporcionado-Paciente"]  = "Proporcionado-Paciente";
+    $arrayStatus["Entregada"]  = "Entregada";
+    $arrayStatus["Instalado"]  = "Instalado";
+    $arrayStatus["Perdida-daño"] = "Perdida-daño";
+    return $arrayStatus;
+  }
+  function getStatusAutos(){
+    $arrayStatus = array();
+    $arrayStatus["Pendiente"]           = "Pendiente";
+    $arrayStatus["Terminado sin firma"] = "Terminado sin firma";
+    $arrayStatus["Terminado y firmado"] = "Terminado y firmado";
 
-  return $arrayStatus;
-}
+    return $arrayStatus;
+  }
+  function getTipoPago(){
+    $arrayStatus = array();
+    $arrayStatus["Efectivo"]        = "Efectivo";
+    $arrayStatus["Tarjeta Credito"] = "Tarjeta Credito";
+    $arrayStatus["Tarjeta Debito"]  = "Tarjeta Debito";
+    $arrayStatus["Credito"]         = "Apartado";
+    $arrayStatus["Otro"]            = "Otro";
 
+    return $arrayStatus;
+  }
 
 
 /**** ********************/
@@ -303,17 +312,18 @@ function delete($id,$module,$table){
   $pagereturn = 'index';
   
   switch ($table) {
-    case 'taller':             $obj = new Taller();            $pagereturn = $table;    break;
-    case 'categoria':          $obj = new Categoria();         $pagereturn = $table;    break;
-    case 'marca':              $obj = new Marca();             $pagereturn = $table;    break;
-    case 'persona':            $obj = new Persona();                                    break;
-    case 'producto':           $obj = new Producto();                                   break;
-    case 'usuario':            $obj = new usuario();                                    break;
-    case 'permiso':            $obj = new Permiso();                                    break;
-    case 'cita':               $obj = new Cita();                                       break;
-    case 'venta':              $obj = new Venta();                                      break;
-    case 'personalpuesto':     $obj = new PersonalPuesto();    $pagereturn = $table;    break;
-    case 'usuariotipo':        $obj = new UsuarioTipo();       $pagereturn = $table;    break;
+    case 'taller':               $obj = new Taller();            $pagereturn = $table;    break;
+    case 'categoria':            $obj = new Categoria();         $pagereturn = $table;    break;
+    case 'marca':                $obj = new Marca();             $pagereturn = $table;    break;
+    case 'persona':              $obj = new Persona();                                    break;
+    case 'producto':             $obj = new Producto();                                   break;
+    case 'usuario':              $obj = new usuario();                                    break;
+    case 'permiso':              $obj = new Permiso();                                    break;
+    case 'cita':                 $obj = new Cita();                                       break;
+    case 'venta':                $obj = new Venta();                                      break;
+    case 'productosventa':       $obj = new ProductosVenta();    $pagereturn = $table;    break;
+    case 'personalpuesto':       $obj = new PersonalPuesto();    $pagereturn = $table;    break;
+    case 'usuariotipo':          $obj = new UsuarioTipo();       $pagereturn = $table;    break;
     default:
       echo "no se encontro tabla en func.global ".$table;
       exit;
@@ -327,11 +337,9 @@ function delete($id,$module,$table){
 
   $array      = [];
   switch ($table) {
-    case 'vehiculoservicio':
-      $array  = array('id'=>$data['id_vehiculo']); 
-      break;
-    case 'vehiculorefaccion':
-      $array  = array('id'=>$data['id_vehiculo']); 
+    case 'productosventa':
+      $array  = array('id'=>$data['id_venta']); 
+      $pagereturn = "view";
       break;
     
     default:

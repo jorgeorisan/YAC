@@ -236,7 +236,7 @@ if($res=$citas->getAllArr()){
 		function newEvent(date){
 			$.get(config.base+"/Citas/ajax/?action=get&object=geturldate&date="+date, null, function (response) {
 				if ( response ){
-						window.open(response);
+					location.href=response;
 				}else{
 					return notify('error', 'Error al redirigir a nueva cita');
 				}    
@@ -296,7 +296,7 @@ if($res=$citas->getAllArr()){
 				jsEvent.preventDefault(); // don't let the browser navigate
 
 				if (event.url) {
-					window.open(event.url);
+					location.href=event.url;
 				}
 			},
 	        eventRender: function (event, element, icon) {

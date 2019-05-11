@@ -18,6 +18,8 @@
 		protected $paquete = 0;
 		protected $tipoprecio = "";
 		protected $fecha_registro = "";
+		protected $fecha_cancelacion = "";
+		protected $usuario_cancelacion = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -104,6 +106,16 @@
 		public function setFechaRegistro( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "FECHAREGISTRO","s") ) 
  				$this->fecha_registro = $value;
+		}
+		
+		public function setFechaCancelacion( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "FECHACANCELACION","s") ) 
+ 				$this->fecha_cancelacion = $value;
+		}
+		
+		public function setUsuarioCancelacion( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "USUARIOCANCELACION","s") ) 
+ 				$this->usuario_cancelacion = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -227,6 +239,22 @@
  			}
 		}
 		
+		public function getFechaCancelacion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->fecha_cancelacion) ;
+ 			}else{
+ 				return $this->fecha_cancelacion ;
+ 			}
+		}
+		
+		public function getUsuarioCancelacion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->usuario_cancelacion) ;
+ 			}else{
+ 				return $this->usuario_cancelacion ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -266,6 +294,8 @@
 			$this->setPaquete( $res['paquete'] );
 			$this->setTipoprecio( $res['tipoprecio'] );
 			$this->setFechaRegistro( $res['fecha_registro'] );
+			$this->setFechaCancelacion( $res['fecha_cancelacion'] );
+			$this->setUsuarioCancelacion( $res['usuario_cancelacion'] );
 			return true;
 		}
 		// end function load
