@@ -30,7 +30,7 @@ if(isPost()){
     if($id>0){
         //nuevas imagenes
       
-        informSuccess(true, make_url("Ventas","view",array('id'=>$id)));
+        informSuccess(true, make_url("Ventas","print",array('id'=>$id,'page'=>'venta')));
     }else{
         informError(true,make_url("Productos","index"));
     }

@@ -193,7 +193,7 @@ if ($porcentpagado < 50 )
                                                             <tr class="<?php echo $class; ?>">
                                                                 <td><?php echo htmlentities($row['cantidad']); ?></td>
                                                                 <td><?php echo htmlentities($row['codinter']); ?></td>
-                                                                <td><?php echo htmlentities($row['nombre']); ?></td>
+                                                                <td><?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
                                                                 <td><?php echo htmlentities($row['precio_unitario']); ?></td>
                                                                 <td><?php echo htmlentities($row['total']); ?></td>
                                                                 <td><?php echo htmlentities($row['costo']); ?></td>

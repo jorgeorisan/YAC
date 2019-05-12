@@ -195,12 +195,34 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 													<td>$<?php echo number_format($row['total'], 2); ?></td>
 													<td><?php echo $descuento.htmlentities($row['comentarios']) ?></td>
 													<td>
-														<?php if (!$row['cancelado']){ ?> 
-															<?php if($row['icredito']){ ?>
-																<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)" > <i class="fa fa-money-bill-wave"></i></a>
-															<?php } ?>
-															<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class="btn btn-danger deleteventa"> <i class="fas fa-ban"></i></a>
-														<?php } ?>
+														
+														
+														<div class="btn-group">
+															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+																Accion <span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu">
+																<li>
+																	<a title="Ver Venta" class=""  href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
+																</li>
+																<li>
+																	<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta')); ?>">Imprimir</a>
+																</li>
+																<?php 
+																if (!$row['cancelado']){ ?> 
+																	<?php if($row['icredito']){ ?>
+																		<li>
+																			<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
+																		</li>
+																	<?php } ?>
+																	<li class="divider"></li>
+																	<li>
+																		<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
+																	</li>
+																<?php 
+																} ?>
+															</ul>
+														</div>
 													</td>
 												</tr>
 											<?php

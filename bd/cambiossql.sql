@@ -349,3 +349,6 @@ update xqwmrfeeug.productos_venta pv
 JOIN venta v ON pv.id_venta=v.id_venta
 set pv.cancelado=1
   where v.cancelado=1 and pv.cancelado=0;
+
+ALTER TABLE `xqwmrfeeug`.`tienda` 
+ADD COLUMN `rfc` VARCHAR(45) NULL AFTER `permiso_adicional`;
