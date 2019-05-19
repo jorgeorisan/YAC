@@ -1,7 +1,8 @@
 
 SET SQL_SAFE_UPDATES =  0;
 -- 09 abril 2019
-DROP TABLE `xqwmrfeeug`.`ventascorte1`;
+DROP VIEW `xqwmrfeeug`.`ventascorte`;
+DROP VIEW `xqwmrfeeug`.`detalle_ventascorte`;
 
 
  -- ------------------------------------
@@ -41,28 +42,37 @@ ADD COLUMN `id` INT NULL FIRST;
 
 UPDATE `xqwmrfeeug`.`usuario` SET `id` = '1' WHERE (`id_usuario` = 'Adriana');
 UPDATE `xqwmrfeeug`.`usuario` SET `id` = '2' WHERE (`id_usuario` = 'Alex');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '3' WHERE (`id_usuario` = 'Angel');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '4' WHERE (`id_usuario` = 'anny');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '5' WHERE (`id_usuario` = 'Azarel');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '6' WHERE (`id_usuario` = 'Elena');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '7' WHERE (`id_usuario` = 'Fanny Casas');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '8' WHERE (`id_usuario` = 'Ingrid');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '9' WHERE (`id_usuario` = 'jazmin');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '10' WHERE (`id_usuario` = 'jorge');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '11' WHERE (`id_usuario` = 'Lizzy');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '12' WHERE (`id_usuario` = 'luis');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '13' WHERE (`id_usuario` = 'Lulu');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '14' WHERE (`id_usuario` = 'Luz Maria');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '15' WHERE (`id_usuario` = 'Paola');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '16' WHERE (`id_usuario` = 'prueba');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '17' WHERE (`id_usuario` = 'Rubi');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '18' WHERE (`id_usuario` = 'Susy');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '19' WHERE (`id_usuario` = 'tavo');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '20' WHERE (`id_usuario` = 'vendedor1');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '21' WHERE (`id_usuario` = 'vendedor2');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '22' WHERE (`id_usuario` = 'Xiadany');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '23' WHERE (`id_usuario` = 'Yazmin');
-UPDATE `xqwmrfeeug`.`usuario` SET `id` = '24' WHERE (`id_usuario` = 'Yesenia');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '3' WHERE (`id_usuario` = 'anaeli');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '4' WHERE (`id_usuario` = 'Angel');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '5' WHERE (`id_usuario` = 'anny');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '6' WHERE (`id_usuario` = 'araceli');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '7' WHERE (`id_usuario` = 'Azarel');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '8' WHERE (`id_usuario` = 'dulce');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '9' WHERE (`id_usuario` = 'Elena');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '10' WHERE (`id_usuario` = 'Fanny Casas');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '11' WHERE (`id_usuario` = 'Ingrid');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '12' WHERE (`id_usuario` = 'Itza');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '13' WHERE (`id_usuario` = 'jazmin');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '14' WHERE (`id_usuario` = 'jorge');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '15' WHERE (`id_usuario` = 'lizbet');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '16' WHERE (`id_usuario` = 'Lizzy');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '17' WHERE (`id_usuario` = 'luis');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '18' WHERE (`id_usuario` = 'Lulu');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '19' WHERE (`id_usuario` = 'Luz Maria');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '20' WHERE (`id_usuario` = 'marymar');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '21' WHERE (`id_usuario` = 'Paola');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '22' WHERE (`id_usuario` = 'prueba');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '23' WHERE (`id_usuario` = 'Rubi');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '24' WHERE (`id_usuario` = 'shiomara');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '25' WHERE (`id_usuario` = 'Susy');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '26' WHERE (`id_usuario` = 'tavo');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '27' WHERE (`id_usuario` = 'vendedor1');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '28' WHERE (`id_usuario` = 'vendedor2');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '29' WHERE (`id_usuario` = 'Xiadany');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '30' WHERE (`id_usuario` = 'yaritzeli');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '31' WHERE (`id_usuario` = 'Yazmin');
+UPDATE `xqwmrfeeug`.`usuario` SET `id` = '32' WHERE (`id_usuario` = 'Yesenia');
+
 
 
 ALTER TABLE `xqwmrfeeug`.`usuario` 
@@ -141,18 +151,18 @@ INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Usuari
 INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Usuarios Perfiles Editar', 'Users', 'usertypeedit');
 
 
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('1', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('2', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('3', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('4', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('5', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('6', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('7', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('8', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('9', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('10', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('11', '10');
-INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('12', '10');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('1', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('2', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('3', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('4', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('5', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('6', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('7', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('8', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('9', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('10', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('11', '14');
+INSERT INTO `xqwmrfeeug`.`permiso_usuario` (`id_permiso`, `id_usuario`) VALUES ('12', '14');
 
 UPDATE `xqwmrfeeug`.`permiso` SET `section` = 'Usuarios' WHERE (`id` = '1');
 UPDATE `xqwmrfeeug`.`permiso` SET `section` = 'Usuarios' WHERE (`id` = '2');
@@ -344,15 +354,12 @@ ADD COLUMN `rfc` VARCHAR(45) NULL AFTER `permiso_adicional`;
 ALTER TABLE `xqwmrfeeug`.`usuario` 
 ADD COLUMN `email` VARCHAR(255) NULL AFTER `costos`;
 
+UPDATE `xqwmrfeeug`.`usuario` SET `password` = '$2y$10$BDAARgQxR1C5Ccb9uETCsOCS3hVs4It55.i/PM/0sHtqUcvzrEWUO' WHERE (`id` = '14');
+
 -- arreglar ventas canceladas en productos venta
 exit;
 primero ejecutar funcion 
-
-$obj = new Venta();
-$obj->arreglar_Descuentos();
-$obj->arreglar_cancelaciones();
-$obj->arreglar_cancelacionesproductos();
-$obj->arreglar_precios();
+http://localhost/GitHub/YAC/Ventas/ajax/get_producto?action=get&object=fixdb
 
 update xqwmrfeeug.productos_venta pv 
 JOIN venta v ON pv.id_venta=v.id_venta

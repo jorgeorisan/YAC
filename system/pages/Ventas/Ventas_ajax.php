@@ -51,9 +51,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					echo "Producto no encontrado";
 				}
 			}
-			
-		break;
-				
+			break;				
 		case 'getpreciotratamiento':
 			$precio = '';
 			if( isset($_GET["id"]) && intval($_GET["id"]) ){
@@ -105,6 +103,15 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			    echo $obj->addAll(getPost());
 			   
 			}
+			break;
+		case 'fixdb':
+			echo 1;
+		exit;
+			$obj = new Venta();
+			$obj->arreglar_Descuentos();
+			$obj->arreglar_cancelaciones();
+			$obj->arreglar_cancelacionesproductos();
+			$obj->arreglar_precios();
 			break;
 		default:
 			# code...

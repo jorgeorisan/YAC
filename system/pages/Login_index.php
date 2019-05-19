@@ -96,7 +96,7 @@
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 <?php
 
-//echo $p=password_hash('jorchyac', PASSWORD_DEFAULT);
+echo $p=password_hash('jorchyac', PASSWORD_DEFAULT);
 		
    //include required scripts
    include(SYSTEM_DIR . "/inc/scripts.php");
