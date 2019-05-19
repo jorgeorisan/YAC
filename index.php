@@ -120,9 +120,29 @@ Routing section
         $page = "Ventas_index.php";
         $dir  = "Ventas";//si esta en carpeta
         if ($request['page']==='add')      { $page = "Ventas_add.php";      }
-        if ($request['page']==='edit')     { $page = "Ventas_edit.php";     }
         if ($request['page']==='view')     { $page = "Ventas_view.php"; }
         if ($request['page']==='credito')  { $page = "Ventas_credito.php"; }
+        
+      }
+      if ($request['section']==='Entradas'){
+        $page = "Entradas_index.php";
+        $dir  = "Entradas";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Entradas_add.php";  }
+        if ($request['page']==='view')     { $page = "Entradas_view.php"; }
+        
+      }
+      if ($request['section']==='Traspasos'){
+        $page = "Traspasos_index.php";
+        $dir  = "Traspasos";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Traspasos_add.php";  }
+        if ($request['page']==='view')     { $page = "Traspasos_view.php"; }
+        
+      }
+      if ($request['section']==='Salidas'){
+        $page = "Salidas_index.php";
+        $dir  = "Salidas";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Salidas_add.php";  }
+        if ($request['page']==='view')     { $page = "Salidas_view.php"; }
         
       }
      

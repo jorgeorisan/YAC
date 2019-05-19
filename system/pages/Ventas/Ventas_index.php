@@ -17,25 +17,27 @@ include(SYSTEM_DIR . "/inc/header.php");
 include(SYSTEM_DIR . "/inc/nav.php");
 
 $data      = '';
-$begin     = date('Y-m-d'); 
-$end       = date('Y-m-d');
 $idtienda  = '';//$_SESSION['user_info']['id_tienda'];
 $idusuario = '';
 $arrayfilters=[];
 
 $obj = new Venta();
-if(isPost()){
-	$begin     = $_POST['fecha_inicial']; 
-	$end       = $_POST['fecha_final'];	
-	$idusuario = (isset($_POST['id_usuario'])) ? $_POST['id_usuario'] : '';
-	$idtienda  = (isset($_POST['id_tienda']))  ? $_POST['id_tienda'] : $_SESSION['user_info']['id_tienda'];
-	$arrayfilters['fecha_inicial'] = $begin;
-	$arrayfilters['fecha_final']   = $end;
-	$arrayfilters['id_usuario']    = $idusuario;
-	$arrayfilters['id_tienda']     = $idtienda;
-}
+$begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
+$end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
+$idusuario = (isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
+$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $_SESSION['user_info']['id_tienda'];
+$arrayfilters['fecha_inicial'] = $begin;
+$arrayfilters['fecha_final']   = $end;
+$arrayfilters['id_usuario']    = $idusuario;
+$arrayfilters['id_tienda']     = $idtienda;
+
 $dataventas     		= $obj->getReporteVentas($arrayfilters);
 $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
+$dataabonos     		= $obj->getReporteAbonos($arrayfilters);
+$totalAbonosGenerales = 0;
+foreach($dataabonos as $row) {
+	$totalAbonosGenerales+=$row->totalventaabonos;
+}
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -100,8 +102,8 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 													$list=$obj->getAllArr();
 													if (is_array($list) || is_object($list)){
 														foreach($list as $val){
-															$selected =  ($idusuario == $val['id_usuario'] ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id_usuario']."'>".htmlentities($val['id_usuario'])."</option>";
+															$selected =  ($idusuario == $val['id_user'] ) ? "selected" : '';
+															echo "<option ".$selected ." value='".$val['id_user']."'>".htmlentities($val['id_usuario'])."</option>";
 														}
 													}
 													?>
@@ -166,9 +168,7 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 												$datatienda = $tienda->getTable($row["id_tienda"]);
 												if($datatienda) $nomtienda = $datatienda["nombre"]; 
 											
-												$descuentos = new Descuentos();
-												$datadescuentos = $descuentos->getTable($row["id_venta"]);
-												$descuento = ($datadescuentos)   ? $datadescuentos["descripciondesc"]."<br>" : ''; 
+												$descuento = ($row["descuento"]) ? 'Descuento:'.$row["descuento"]."<br>" : ''; 
 												$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
 												
 												if ($row['cancelado']==0) {
@@ -268,14 +268,16 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 										<tbody>
 											<?php 
 											$totalventausuariogral   = 0;
-											$totalventaabonosgral    = 0;
+											 $totalAbonosUsers    = 0;
 											$totalventarecargasgral  = 0;
 											$totalventaexcedentegral = 0;
 											$totalcajagral           = 0;
 											$totalventacreditogral   = 0;
 											$totalventagral          = 0;
 											$totalcomisiongral       = 0;
+											$textusers				 = '';
 											foreach($datacomisionesusuarios as $row) {
+												$textusers			.= $row->id_usuario.","; 
 												$id_usuario          = $row->id_usuario; 
 												$totalventa 		 = $row->totalventa; 
 												$totalventacredito   = $row->totalventacredito; 
@@ -290,7 +292,7 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 												$totalcaja           = $totalventausuario + $totalventaabonos + $totalventarecargas + $totalventaexcedente ;
 												$totalcomision		 = $totalventausuario * $row->comision ;
 												$totalventausuariogral   += $totalventausuario;
-												$totalventaabonosgral    += $totalventaabonos;
+												 $totalAbonosUsers    += $totalventaabonos;
 												$totalventarecargasgral  += $totalventarecargas;
 												$totalventaexcedentegral += $totalventaexcedente;
 												$totalcajagral           += $totalcaja;
@@ -313,18 +315,30 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 												</tr>
 											<?php
 											}
+											$totalAbonosOtros= $totalAbonosGenerales - $totalAbonosUsers;
 											?>
+											<tr>
+												<td style="text-align:right" title='Un usuario realizo un abono pero no tiene ventas'>Otro:</td>
+												<td></td>
+												<td><?php echo $totalAbonosOtros; ?></td>
+												<td></td>
+												<td></td>
+												<td><?php echo $totalAbonosOtros; ?></td>
+												<td></td>
+												<td><?php echo $totalAbonosOtros; ?></td>
+												<td></td>
+											</tr>
 										</tbody>
 										<tfoot>
 											<tr>
 												<th style="text-align:right">Total:</th>
 												<th><?php echo $totalventausuariogral; ?></th>
-												<th><?php echo $totalventaabonosgral; ?></th>
+												<th><?php echo $totalAbonosGenerales; ?></th>
 												<th><?php echo $totalventarecargasgral; ?></th>
 												<th><?php echo $totalventaexcedentegral; ?></th>
-												<th><?php echo $totalcajagral; ?></th>
+												<th><?php echo $totalcajagral + $totalAbonosOtros; ?></th>
 												<th><?php echo $totalventacreditogral; ?></th>
-												<th><?php echo $totalventagral; ?></th>
+												<th><?php echo $totalventagral + $totalAbonosOtros; ?></th>
 												<th><?php echo $totalcomisiongral; ?></th>
 											</tr>
 										</tfoot>
@@ -518,7 +532,9 @@ $datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
 		
 
 		 pageSetUp();
-	})
+	});
+
+
 
 </script>
 

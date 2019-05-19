@@ -28,12 +28,11 @@ if(isPost()){
     $obj = new Persona();
     $id=$obj->addAll(getPost());
     if($id>0){
-        informSuccess(true, make_url("Clientes","index"));
+        informSuccess(true, make_url("Clientes","view",array('id'=>$id)));
     }else{
         informError(true,make_url("Clientes","index"));
     }
 }
-
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -61,65 +60,66 @@ if(isPost()){
                                     <fieldset>    
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label for="name">Nombre</label>
-                                                <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre" onkeypress="nextFocus('nombre', 'apellido_pat')" > 
+                                                <label for="name">Nombre *</label>
+                                                <input type="text" class="form-control" placeholder="Nombre" required name="nombre" id="nombre" onkeypress="nextFocus('nombre', 'ap_paterno')" value="<?php //echo $data['nombre']; ?>" > 
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Correo</label>
-                                                <input type="email" class="form-control" placeholder="example@email.com" name="email" id="email" onkeypress="nextFocus('email', 'telefono')">                                                          
+                                                <input type="email" class="form-control" placeholder="example@email.com" name="email" id="email" onkeypress="nextFocus('email', 'telefono')" value="<?php //echo $data['email']; ?>">                                                          
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Calle</label>
-                                                <input type="text" class="form-control" placeholder="Calle" name="calle"  id="calle" onkeypress="nextFocus('calle', 'num_ext')">                                                                                               
+                                                <input type="text" class="form-control" placeholder="Calle" name="calle"  id="calle" onkeypress="nextFocus('calle', 'num_ext')" value="<?php //echo $data['calle']; ?>">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Colonia</label>
-                                                <input type="text" class="form-control" placeholder="Colonia" name="colonia" id="colonia" onkeypress="nextFocus('colonia', 'ciudad')">                                                                                               
+                                                <input type="text" class="form-control" placeholder="Colonia" name="colonia" id="colonia" onkeypress="nextFocus('colonia', 'ciudad')" value="<?php //echo $data['colonia']; ?>">                                                                                               
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <label for="name">Apellido Paterno</label>
-                                                <input type="text" class="form-control" placeholder="Apellido Paterno" name="ap_paterno" id="ap_materno" onkeypress="nextFocus('ap_paterno', 'ap_materno')" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Apellido Paterno" name="ap_paterno" id="ap_paterno" onkeypress="nextFocus('ap_paterno', 'ap_materno')" value="<?php //echo $data['ap_paterno']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
-                                                <label for="name">Teléfono</label>
-                                                <input type="text" class="form-control" placeholder="Teléfono" name="telefono" id="telefono" onkeypress="nextFocus('telefono', 'estado')" >                                                                                               
+                                                <label for="name">Teléfono *</label>
+                                                <input type="text" class="form-control" required placeholder="Teléfono" name="telefono" id="telefono" onkeypress="nextFocus('telefono', 'estado')" value="<?php //echo $data['telefono']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Número Exterior</label>
-                                                <input type="text" class="form-control" placeholder="Número Exterior" name="num_exterior" id="num_exterior" onkeypress="nextFocus('num_exterior', 'num_interior')" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Número Exterior" name="num_exterior" id="num_exterior" onkeypress="nextFocus('num_exterior', 'num_interior')" value="<?php //echo $data['num_exterior']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Ciudad</label>
-                                                <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" id="ciudad" onkeypress="nextFocus('ciudad', 'cp')" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" id="ciudad" onkeypress="nextFocus('ciudad', 'codigo_postal')"  value="<?php //echo $data['ciudad']; ?>">                                                                                               
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <label for="name">Apellido Materno</label>
-                                                <input type="text" class="form-control" placeholder="Apellido Materno" name="ap_materno" id="ap_materno" onkeypress="nextFocus('ap_materno', 'email')" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Apellido Materno" name="ap_materno" id="ap_materno" onkeypress="nextFocus('ap_materno', 'email')"  value="<?php //echo $data['ap_materno']; ?>">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Estado</label>
-                                                <input type="text" class="form-control" placeholder="Estado" name="estado" id="estado"  onkeypress="nextFocus('estado', 'calle')"  >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Estado" name="estado" id="estado"  onkeypress="nextFocus('estado', 'calle')"  value="<?php //echo $data['estado']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Número Interior</label>
-                                                <input type="text" class="form-control" placeholder="Número Interior" name="num_interior" id="num_interior" onkeypress="nextFocus('num_interior', 'colonia')"  >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Número Interior" name="num_interior" id="num_interior" onkeypress="nextFocus('num_interior', 'colonia')"   value="<?php //echo $data['num_interior']; ?>">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">CP</label>
-                                                <input type="text" class="form-control" placeholder="CP" name="codigo_postal" id="codigo_postal" onkeypress="nextFocus('codigo_postal', 'observaciones')" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="codigo postal" name="codigo_postal" id="codigo_postal" onkeypress="nextFocus('codigo_postal', 'alergias')" value="<?php //echo $data['codigo_postal']; ?>" >                                                                                               
                                             </div>
+                                        
                                         </div>
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                <label for="name">Observaciones</label>
-                                                <input type="text" class="form-control" placeholder="observaciones" name="observaciones" id="observaciones" onkeypress="nextFocus('observaciones', 'savenewclient')">                                                                                               
+                                                <label for="name">Alergias</label>
+                                                <input type="text" class="form-control" placeholder="Alergias" name="alergias" id="alergias" onkeypress="nextFocus('alergias', 'savenewclient')" value="<?php //echo $data['alergias']; ?>">                                                                                               
                                             </div>
                                         </div>
-                                    </fieldset> 
+                                    </fieldset>  
                                     <div class="form-actions" style="text-align: center">
                                         <div class="row">
                                            <div class="col-md-12">
@@ -144,7 +144,6 @@ if(isPost()){
 </div>
 <!-- END MAIN PANEL -->
 
-<!-- END MAIN PANEL -->
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 
 <!-- PAGE FOOTER -->

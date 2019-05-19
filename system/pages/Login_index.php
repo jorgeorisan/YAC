@@ -36,10 +36,10 @@
    ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- possible classes: minified, no-right-panel, fixed-ribbon, fixed-header, fixed-width-->
-<header id="header">
-   <!--<span id="logo"></span>-->
-</header>
-<div id="main" class="main" role="main" style="background-color: #323950;">
+
+<div id="main" class="main" role="main" style="background-image: #323950;">
+<img style="position: fixed;width: 100%;height: 100%;" src="<?php echo ASSETS_URL; ?>/img/Fondo.png">
+
    <!-- MAIN CONTENT -->
    <div id="content" class="containerNOT">
       <div class="row">
@@ -59,11 +59,11 @@
             <div class="well no-padding">
                <form action="<?php echo make_url("Login","index",array('action'=>'login','uid'=>uniqid())) ?>" id="login-form" class="smart-form client-form" method="POST">
                   <header>
-                     Sign In
+                     <strong>Bienvenido</strong>
                   </header>
                   <fieldset>
                      <section style="text-align:center">
-                        <img src="<?php echo ASSETS_URL; ?>/img/logo2.png" alt="GEOHTI" style="max-height: 300px;width:200px "> 
+                        <img src="<?php echo ASSETS_URL; ?>/img/logo2.png" alt="YAC" style="max-height: 300px;width:200px "> 
                      </section>
                      <section>
                         <label class="label">Username</label>
@@ -76,15 +76,14 @@
                         <label class="input"> <i class="icon-append fa fa-lock"></i>
                         <input type="password" name="password">
                         <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b> </label>
-                        <div class="note">
-                           <a href="<?php echo make_url("Login","ResetPassword") ?>">Forgot password?</a>
-                        </div>
+                        
                      </section>
                   </fieldset>
                   <footer>
                      <button type="submit" class="btn btn-primary">
                      Sign in
                      </button>
+                     <a class="btn btn-info" href="<?php echo make_url("Login","ResetPassword") ?>">Forgot password?</a>
                   </footer>
                </form>
             </div>
@@ -97,7 +96,7 @@
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 <?php
 
-echo $p=password_hash('admin123', PASSWORD_DEFAULT);
+//echo $p=password_hash('jorchyac', PASSWORD_DEFAULT);
 		
    //include required scripts
    include(SYSTEM_DIR . "/inc/scripts.php");
@@ -105,30 +104,31 @@ echo $p=password_hash('admin123', PASSWORD_DEFAULT);
 		$id=0;
 		$a = new Auth();
 		$id =  $a->validateCredentials($_POST['email'],$_POST['password']);
-		
 		if ($id>0){
 			// is authorized
 			// load user / start session
 			$u = new Usuario();
 			$u->load($id);
-			echo $_SESSION['user_id']=$id;
+         echo $_SESSION['user_id']=$id;
+         $tienda = new Tienda();
+         $dataTienda=$tienda->getTable($u->getIdTienda());
 			$_SESSION['user_info']=array(
             'id'=>$u->getId(),
             'id_usuario'=>$u->getIdUsuario(),
 				'nombre'=>$u->getNombre(),
 				'costos'=>$u->getCostos(),
+				'info_adicional'=>$dataTienda['info_adicional'],
 				'id_tienda'=>$u->getIdTienda(),
 				'id_usuario_tipo'=>$u->getIdUsuarioTipo()
 				);
 			$_SESSION['CSRFToken']=CSRFToken();
-			$_SESSION['getCSRF']=CSRFToken();
-			
+         $_SESSION['getCSRF']=CSRFToken();
 			// redirect to default page for authenticated user
 			redirect(make_url());
 		}else{
 			$showloginerror=1;
 			echo"<script>
-			notify('error','Error to validate');
+			notify('warning','Username o Password incorrecto');
 			</script>";
 			
 		}

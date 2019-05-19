@@ -25,6 +25,10 @@ include(SYSTEM_DIR . "/inc/header.php");
 //follow the tree in inc/config.ui.php
 
 include(SYSTEM_DIR . "/inc/nav.php");  //pone el menu de la izquierda
+
+if($_SESSION['user_info']['id_usuario_tipo']=='4') // empleado
+	header("Location:". make_url("Ventas","add"));
+
 $citas  = new Cita();
 $events = [];
 if($res=$citas->getAllArr()){

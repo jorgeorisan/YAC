@@ -70,7 +70,7 @@ if(isPost()){
 										
 											<section>
 												<label class="input"> <i class="icon-append fa fa-envelope"></i>
-													<?php echo htmlentities($data['email']); ?>
+													<?php echo htmlentities($data['id_usuario']); ?>
 												</label>
 											</section>
 											<section>
@@ -111,10 +111,10 @@ if(isPost()){
 													if (is_array($list) || is_object($list)){
 														foreach($list as $val){
 															$selected = "";
-															if ($data['id_tienda'] == $val['id'] ) {
+															if ($data['id_tienda'] == $val['id_tienda'] ) {
 																$selected = "selected";
 															}
-															echo "<option value='".$val['id']."' $selected >".htmlentities($val['nombre'])."</option>";
+															echo "<option value='".$val['id_tienda']."' $selected >".htmlentities($val['nombre'])."</option>";
 														}
 													}
 													 ?>
@@ -187,7 +187,7 @@ if(isPost()){
 		if (x == ""){ notify("warning","Se necesita un apellido"); return false; }
 
 		var idclinica = $("#id_tienda").val();
-		if (idclinica == ""){ notify("info","Se necesita un clinica"); return false; }
+		if (idclinica == ""){ notify("info","Se necesita un tienda"); return false; }
 	
 	    $("#main-form").submit();		
 	}

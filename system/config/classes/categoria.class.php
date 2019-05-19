@@ -68,7 +68,7 @@ class Categoria extends AutoCategoria {
 		//metodo que sirve para hacer delete
 	public function deleteAll($id,$_request=false)
 	{
-		$_request["status"]="deleted";
+		$_request["status"]="BAJA";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'categoria',$this->db,"update");	
 		$sql= "UPDATE categoria SET $data[0]  WHERE id_categoria=".$id.";";

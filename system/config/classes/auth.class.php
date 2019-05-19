@@ -103,8 +103,7 @@ updated token / token experation
 
 		
 		public function validateCredentials($e,$p){
-			$id=0;
-			
+			$iduser=0;
 
 			$sql = "SELECT `id`,`id_usuario`,`password` FROM usuario WHERE `id_usuario` = ?  AND  `status` = 'ACTIVO' ";
 
@@ -117,12 +116,12 @@ updated token / token experation
 			/* fetch values */
 			if ($stmt->fetch()) {
 				if ( password_verify($p, $password) ){ 
-					$id = $id;
+					$iduser = $id;
 				}
 			}
 			// Terminate
 			$stmt->close();
-			return $id;
+			return $iduser;
 		}
 
 

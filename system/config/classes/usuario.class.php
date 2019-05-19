@@ -41,6 +41,7 @@ class Usuario extends AutoUsuario {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
+		$_request["password"]=password_hash($_request["password"],PASSWORD_DEFAULT);
 		$data=fromArray($_request,'usuario',$this->db,"add");
 		$sql= "INSERT INTO usuario (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
@@ -58,6 +59,9 @@ class Usuario extends AutoUsuario {
 		//metodo que sirve para hacer update
 	public function updateAll($id,$_request)
 	{
+		if($_request["password"]){
+			$_request["password"]=password_hash($_request["password"],PASSWORD_DEFAULT);
+		}
 		$_request["updated_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'usuario',$this->db,"update");
 		$sql= "UPDATE usuario SET $data[0]  WHERE id=".$id.";";
@@ -82,27 +86,25 @@ class Usuario extends AutoUsuario {
 			return true;
 		}
 	}
-		//metodo comprueba que un usuario ya existe o no
-		public function userExists($username)
-		{
-	
-			$username=$this->db->real_escape_string($username);
-			$sql= "SELECT * FROM usuario WHERE id_usuario='".$username."' and status='ACTIVO';";
-			$res=$this->db->query($sql);
-			if(!$res)
-				{die('Error getting result');}
-			//echo $sql;
-			$row = $res->fetch_assoc();
-			//echo $this->db->error;
-			$res->close();
-			if(!$row)
-				{
-					return false;}
-			else
-				{
-					return true;}
-	
-		}
+	//metodo comprueba que un usuario ya existe o no
+	public function userExists($username)
+	{
+
+		$username=$this->db->real_escape_string($username);
+		$sql= "SELECT * FROM usuario WHERE id_usuario='".$username."' and status='ACTIVO';";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die('Error getting result');}
+		//echo $sql;
+		$row = $res->fetch_assoc();
+		//echo $this->db->error;
+		$res->close();
+		if(!$row)
+			return false;
+		else
+			return true;
+
+	}
 
 
 }

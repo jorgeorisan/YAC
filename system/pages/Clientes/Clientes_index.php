@@ -19,7 +19,7 @@ include(SYSTEM_DIR . "/inc/nav.php");
 
 
 $obj = new Persona();
-$data = $obj->getAllArr();
+$data = $obj->getAllArr('clientes');
 
 //print_r($data);
 ?>
@@ -99,7 +99,7 @@ $data = $obj->getAllArr();
 														</button>
 														<ul class="dropdown-menu">
 															<li>
-																<a class="" href="<?php echo make_url("Clientes","show",array('id'=>$row['id_persona'])); ?>">Ver</a>
+																<a class="" href="<?php echo make_url("Clientes","view",array('id'=>$row['id_persona'])); ?>">Ver</a>
 															</li>
 															<li>
 																<a class="" href="<?php echo make_url("Clientes","edit",array('id'=>$row['id_persona'])); ?>">Editar</a>

@@ -21,6 +21,8 @@ $ubicacion .= "RFC: ".$datatienda['rfc']."<br />";
 $cliente = new Persona();
 $datacliente = $cliente->getTable($data['id_persona']);
 
+$usuario = new Usuario();
+$datauser = $usuario->getTable($data['id_user']);
 $totalpagado = $obj->getpagado($id);
 $porcentpagado = ($totalpagado * 100  / $data['total']);
 
@@ -80,7 +82,7 @@ if ($porcentpagado < 50 )
         <tr>
             <th>Vendedor</th>
             <td><?php
-                echo  $data['id_usuario']; ?></td>
+                echo  $datauser['id_usuario']; ?></td>
         </tr>
         <tr>
             <th>Cliente</th>

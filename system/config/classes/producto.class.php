@@ -15,7 +15,7 @@ class Producto extends AutoProducto {
 
 		$queryprod =($id_producto) ? " AND p.id_producto = $id_producto" : '';
 		if($similar){
-			$queryprod =" AND (p.codinter like '%". $similar ."%' OR  p.nombre like '%". $similar ."%')";
+			$queryprod =" AND (p.codinter like '%". $similar ."%' OR  p.nombre like '%". $similar ."%'  OR  m.nombre like '%". $similar ."%')";
 		}
 			
         $sql = "
@@ -24,10 +24,10 @@ class Producto extends AutoProducto {
 			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
 			FROM(
 				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
-					PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
 					,SUM(EXISTENCIAS.existencias) existencias
 					FROM(
-						SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+						SELECT p.id_producto,codinter,p.nombre,p.costo,p.precio_descuento,p.precio,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
 						FROM producto p
 						LEFT JOIN marca m on p.id_marca=m.id_marca
 						LEFT JOIN categoria c on p.id_categoria=c.id_categoria
@@ -35,16 +35,6 @@ class Producto extends AutoProducto {
 						WHERE p.status='ACTIVO'
 						$queryprod
 					) AS PRODUCTO LEFT JOIN (
-					SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
-					FROM(
-						SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
-						FROM xqwmrfeeug.entrada_producto
-						WHERE status='ACTIVO'
-						group by id_producto
-					)ULTIMAENTRADA  
-					JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
-					)PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
-					LEFT JOIN(
 						SELECT id_producto, existencias, tienda_id_tienda id_tienda
 						FROM producto_tienda 
 						WHERE tienda_id_tienda!='14'
@@ -54,30 +44,20 @@ class Producto extends AutoProducto {
 					group by 
 					PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
 					PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
-					,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
 			) AS TODO
 			LEFT JOIN (
 				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
-					PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
 					,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion
 					FROM(
-						SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+						SELECT p.id_producto,codinter,p.costo,p.precio_descuento,p.precio,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
 						FROM producto p
 						LEFT JOIN marca m on p.id_marca=m.id_marca
 						LEFT JOIN categoria c on p.id_categoria=c.id_categoria
 						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
 						WHERE p.status='ACTIVO'
-					) AS PRODUCTO LEFT JOIN (
-					SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
-					FROM(
-						SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
-						FROM xqwmrfeeug.entrada_producto
-						WHERE status='ACTIVO'
-						group by id_producto
-					)ULTIMAENTRADA  
-					JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
-					)PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
-					LEFT JOIN(
+					) AS PRODUCTO LEFT JOIN(
 						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,usuario_actualizacion
 						FROM producto_tienda 
 						WHERE tienda_id_tienda='$tienda'
@@ -87,11 +67,11 @@ class Producto extends AutoProducto {
 					group by 
 					PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
 					PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
-					,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
+					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
 			) TIENDA ON TODO.id_producto=TIENDA.id_producto";
 		$res = $this->db->query($sql);
 		$set = array();
-		if(!$res){ die("Error getting result"); }
+		if(!$res){ die("Error getting result getAllArr Producto"); }
 		else{
 			while ($row = $res->fetch_assoc())
 				{ $set[] = $row; }
@@ -139,7 +119,7 @@ class Producto extends AutoProducto {
 				$_requestpt['tienda_id_tienda']      = $ex['id_tienda'];
 				$_requestpt['existencias']           = 0;
 				$_requestpt['fecha_actualizacion']   = date('Y-m-d H:i:s');
-				$_requestpt['usuario_actualizacion'] = $_SESSION['user_info']['id_usuario'];
+				$_requestpt['usuario_actualizacion'] = $_SESSION['user_id'];
 				try {
 					$objpti->addAll($_requestpt);
 				} catch (Exception $e) {

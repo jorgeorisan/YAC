@@ -37,8 +37,10 @@ $tienda = new Tienda();
 $datatienda = $tienda->getTable($data['id_tienda']);
 $cliente = new Persona();
 $datacliente = $cliente->getTable($data['id_persona']);
-
+$usuario = new Usuario();
+$datauser = $usuario->getTable($data['id_user']);
 $totalpagado = $obj->getpagado($id);
+
 $porcentpagado = ($totalpagado * 100  / $data['total']);
 
 if ($porcentpagado >= 75)
@@ -106,8 +108,8 @@ if ($porcentpagado < 50 )
                                                                 <td colspan="2" style=""><?php echo date("Y-m-d H:i:s",strtotime($data["fecha"])); ?></td>
                                                             </tr>
                                                            <tr>
-                                                                <td style="background-color:#d0d0cf; font-weight:bold; text-align:left; width:30%;"> Venderor </td>
-																<td colspan="2"><?php echo htmlentities($data['id_usuario']); ?></td>
+                                                                <td style="background-color:#d0d0cf; font-weight:bold; text-align:left; width:30%;"> Vendedor </td>
+																<td colspan="2"><?php echo htmlentities($datauser['id_usuario']); ?></td>
                                                             </tr>
 
                                                             <tr>

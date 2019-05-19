@@ -169,7 +169,8 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
     $arrayStatus["Efectivo"]        = "Efectivo";
     $arrayStatus["Tarjeta Credito"] = "Tarjeta Credito";
     $arrayStatus["Tarjeta Debito"]  = "Tarjeta Debito";
-    $arrayStatus["Credito"]         = "Apartado";
+    $arrayStatus["Apartado"]        = "Apartado";
+    $arrayStatus["Credito"]         = "Credito";
     $arrayStatus["Otro"]            = "Otro";
 
     return $arrayStatus;
@@ -324,21 +325,37 @@ function delete($id,$module,$table){
     case 'productosventa':       $obj = new ProductosVenta();    $pagereturn = $table;    break;
     case 'personalpuesto':       $obj = new PersonalPuesto();    $pagereturn = $table;    break;
     case 'usuariotipo':          $obj = new UsuarioTipo();       $pagereturn = $table;    break;
+    case 'entrada':              $obj = new Entrada();                                    break;
+    case 'traspaso':             $obj = new Traspaso();                                   break;
+    case 'salida':               $obj = new Salida();                                     break;
+    case 'entradaproducto':      $obj = new EntradaProducto();    $pagereturn = $table;    break;
+    case 'traspasoproducto':     $obj = new TraspasoProducto();   $pagereturn = $table;    break;
+    case 'salidaproducto':       $obj = new SalidaProducto();     $pagereturn = $table;    break;
     default:
       echo "no se encontro tabla en func.global ".$table;
       exit;
       break;
   }
   $data = $obj->getTable($id);
-  
 
-  if ( !$data ) 
-      informError(true,make_url($module,$pagereturn));
+  if ( !$data )  informError(true,make_url($module,$pagereturn));
 
   $array      = [];
   switch ($table) {
     case 'productosventa':
       $array  = array('id'=>$data['id_venta']); 
+      $pagereturn = "view";
+      break;
+    case 'entradaproducto':
+      $array  = array('id'=>$data['id_entrada']); 
+      $pagereturn = "view";
+      break;
+    case 'traspasoproducto':
+      $array  = array('id'=>$data['id_traspaso']); 
+      $pagereturn = "view";
+      break;
+    case 'salidaproducto':
+      $array  = array('id'=>$data['id_salida']); 
       $pagereturn = "view";
       break;
     
@@ -405,48 +422,49 @@ function make_url($sec='',$pag="index",$params=array()){
     return $url;
 }
 function unmake_url($url=""){
-    if ($url===""){$url=SITE_HOST."".$_SERVER['REQUEST_URI'];}
-   // $tmp=explode("#",$url);$url=$tmp[0];
-   // $tmp=explode("?",$url);$url=$tmp[0];
-//echo $url . " url \n ";
-//echo APP_URL . " appurl \n ";;  
-    /**default oriferror**/
-    $res=array('section'=>"",'page'=>"",'hashpass'=>false,'path'=>'');
-    if(strpos($url,APP_URL)===0) {
-        $path =  str_replace(APP_URL,"",$url);
-      //  echo "\n\n";
-     // echo $path ."<<< unmake path\n\n";
-        if (preg_match("/((\S+\/)\?bbp_([a-zA-Z0-9-_\.]+))__([a-f0-9]{12,12})/",$url,$mm)){
-        //    print_r($mm);
-            if (substr(sha1($mm[1].GET_SALT),0,12)===$mm[4]){
-                $res['hashpass']=true;
-               // echo "\nMATCH\n\n";
-                $res['params']=json_decode(urlsafe_b64decode($mm[3]),true);
-                // validate getCSRF
+  if ($url==="") $url=SITE_HOST."".$_SERVER['REQUEST_URI'];
+  // $tmp=explode("#",$url);$url=$tmp[0];
+  // $tmp=explode("?",$url);$url=$tmp[0];
+  //echo $url . " url \n ";
+  //echo APP_URL . " appurl \n ";;  
+  /**default oriferror**/
+  $res=array('section'=>"",'page'=>"",'hashpass'=>false,'path'=>'');
+  if(strpos($url,APP_URL)===0) {
+      $path =  str_replace(APP_URL,"",$url);
+    //  echo "\n\n";
+    // echo $path ."<<< unmake path\n\n";
+      if (preg_match("/((\S+\/)\?bbp_([a-zA-Z0-9-_\.]+))__([a-f0-9]{12,12})/",$url,$mm)){
+      //    print_r($mm);
+          if (substr(sha1($mm[1].GET_SALT),0,12)===$mm[4]){
+              $res['hashpass']=true;
+              // echo "\nMATCH\n\n";
+              $res['params']=json_decode(urlsafe_b64decode($mm[3]),true);
+              // validate getCSRF
 
-                if ( isset($_SESSION) && isset($_SESSION['getCSRF']) && isset($res['params']['getCSRF'])){
-                    if (  $res['params']['getCSRF']===$_SESSION['getCSRF']){
-                        // valid token
-                    }else{ 
-                      // invalide getCSRF token wipe
-                      $res['params']=array('error'=>'invalidtoken');                  
-                    }
-                }
-                $path =  str_replace(APP_URL,"",$mm[2]);
-            }
-        }    
-        $tmp=explode("/",trim($path,"/"));
+              if ( isset($_SESSION) && isset($_SESSION['getCSRF']) && isset($res['params']['getCSRF'])){
+                  if (  $res['params']['getCSRF']===$_SESSION['getCSRF']){
+                      // valid token
+                  }else{ 
+                    // invalide getCSRF token wipe
+                    $res['params']=array('error'=>'invalidtoken');                  
+                  }
+              }
+              $path =  str_replace(APP_URL,"",$mm[2]);
+          }
+      }    
+      $tmp=explode("/",trim($path,"/"));
+  
+      if (preg_match("/^([a-zA-Z0-9-_\.]+)$/",$tmp[0]) && $res['section']==""){
+            $res['section']=$tmp[0];    
+      }
+      if ( (count($tmp)>1) && preg_match("/^([a-zA-Z0-9-_\.]+)$/",$tmp[1])   && $res['page']==""){
+            $res['page']=$tmp[1];    
+      }
+      $res['path']=trim($path,"/");
+      
+  }
 
-        if (preg_match("/^([a-zA-Z0-9-_\.]+)$/",$tmp[0]) && $res['section']==""){
-             $res['section']=$tmp[0];    
-        }
-        if ( (count($tmp)>1) && preg_match("/^([a-zA-Z0-9-_\.]+)$/",$tmp[1])   && $res['page']==""){
-             $res['page']=$tmp[1];    
-        }
-        $res['path']=trim($path,"/");
-    }
-
-    return $res;
+  return $res;
 }
 
 function urlsafe_b64encode($string)

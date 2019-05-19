@@ -101,8 +101,8 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			break;
 		case 'savenewpago':
 			if(isPost()){
-			    $obj = new Venta();
-			    echo $obj->savenewpago(getPost());
+			    $obj = new Deudores();
+			    echo $obj->addAll(getPost());
 			   
 			}
 			break;

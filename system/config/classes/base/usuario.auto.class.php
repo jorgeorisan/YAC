@@ -17,6 +17,7 @@
 		protected $comision = 0;
 		protected $direccion = "";
 		protected $costos = "";
+		protected $email = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -94,6 +95,11 @@
 		public function setCostos( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "COSTOS","s") ) 
  				$this->costos = $value;
+		}
+		
+		public function setEmail( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "EMAIL","s") ) 
+ 				$this->email = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -209,11 +215,38 @@
  			}
 		}
 		
+		public function getEmail($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->email) ;
+ 			}else{
+ 				return $this->email ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
 		public function getStatusclass(){
 			return  $this->statusclass ;
+		}
+		// Private Support Functions
+		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
+			//if ( ! $this->validclass )
+			//	return $this->validclass;
+
+			if ( ! preg_match($pcre, $input) ){ 
+				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
+			}else{
+				unset($this->statusclass[$field]);
+				if (empty($this->statusclass)){$this->validclass=true;}
+			}
+
+			return true;
+		}
+		protected function killInvalidclass( $msg, $field="General Error" ){
+			$this->statusclass[$field] = $msg;
+			$this->validclass = false;
+			return false;
 		}
 
 	// Public Support Functions
@@ -247,201 +280,9 @@
 			$this->setComision( $res['comision'] );
 			$this->setDireccion( $res['direccion'] );
 			$this->setCostos( $res['costos'] );
+			$this->setEmail( $res['email'] );
 			return true;
 		}
 		// end function load
-
-		public function save() {
-			if ($this->getId()==0){ // insert new
-				$sql = "INSERT INTO usuario SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
-
-			$sql .= " `id_usuario` = ? ,";
-			$sql .= " `password` = ? ,";
-			$sql .= " `session_id` = ? ,";
-			$sql .= " `status` = ? ,";
-			$sql .= " `id_usuario_tipo` = ? ,";
-			$sql .= " `nombre` = ? ,";
-			$sql .= " `id_tienda` = ? ,";
-			$sql .= " `permisos` = ? ,";
-			$sql .= " `comision` = ? ,";
-			$sql .= " `direccion` = ? ,";
-			$sql .= " `costos` = ? ,";
-			$sql = trim($sql,",");
-
-			} else { // updated existing
-				$sql = "UPDATE usuario SET modified=UTC_TIMESTAMP(),";	
-
-			$sql .= " `id_usuario` = ? ,";
-			$sql .= " `password` = ? ,";
-			$sql .= " `session_id` = ? ,";
-			$sql .= " `status` = ? ,";
-			$sql .= " `id_usuario_tipo` = ? ,";
-			$sql .= " `nombre` = ? ,";
-			$sql .= " `id_tienda` = ? ,";
-			$sql .= " `permisos` = ? ,";
-			$sql .= " `comision` = ? ,";
-			$sql .= " `direccion` = ? ,";
-			$sql .= " `costos` = ? ,";
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( 'i', $id );
-
-			$stmt->mbind_param( 's', $this->id_usuario );
-			$stmt->mbind_param( 's', $this->password );
-			$stmt->mbind_param( 's', $this->session_id );
-			$stmt->mbind_param( 's', $this->status );
-			$stmt->mbind_param( 's', $this->id_usuario_tipo );
-			$stmt->mbind_param( 's', $this->nombre );
-			$stmt->mbind_param( 'i', $this->id_tienda );
-			$stmt->mbind_param( 's', $this->permisos );
-			$stmt->mbind_param( 'd', $this->comision );
-			$stmt->mbind_param( 's', $this->direccion );
-			$stmt->mbind_param( 's', $this->costos );
-			if ($this->getId()>0){
-				$stmt->mbind_param( 'i', $this->id  );
-			} // end save
-
-			$stmt->execute();
-			if ($this->getId()==0){
-				$this->setId( $this->db->insert_id );
-			}
-			return $this->getId();
-		}
-		
-
-		public function updateFields($fieldstoupdate) {
-			if ($this->getId()==0){ // insert new
-				// only updates no save new here
-			} else { // updated existing
-				$sql = "UPDATE usuario SET modified=UTC_TIMESTAMP(),";	
-
-			if (in_array("id_usuario",$fieldstoupdate)){
-				$sql .= " `id_usuario` = ? ,";
-			}
-			if (in_array("password",$fieldstoupdate)){
-				$sql .= " `password` = ? ,";
-			}
-			if (in_array("session_id",$fieldstoupdate)){
-				$sql .= " `session_id` = ? ,";
-			}
-			if (in_array("status",$fieldstoupdate)){
-				$sql .= " `status` = ? ,";
-			}
-			if (in_array("id_usuario_tipo",$fieldstoupdate)){
-				$sql .= " `id_usuario_tipo` = ? ,";
-			}
-			if (in_array("nombre",$fieldstoupdate)){
-				$sql .= " `nombre` = ? ,";
-			}
-			if (in_array("id_tienda",$fieldstoupdate)){
-				$sql .= " `id_tienda` = ? ,";
-			}
-			if (in_array("permisos",$fieldstoupdate)){
-				$sql .= " `permisos` = ? ,";
-			}
-			if (in_array("comision",$fieldstoupdate)){
-				$sql .= " `comision` = ? ,";
-			}
-			if (in_array("direccion",$fieldstoupdate)){
-				$sql .= " `direccion` = ? ,";
-			}
-			if (in_array("costos",$fieldstoupdate)){
-				$sql .= " `costos` = ? ,";
-			}
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( 'i', $id );
-
-			if (in_array("id_usuario",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->idUsuario  );
-			}
-			if (in_array("password",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->password  );
-			}
-			if (in_array("session_id",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->sessionId  );
-			}
-			if (in_array("status",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->status  );
-			}
-			if (in_array("id_usuario_tipo",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->idUsuarioTipo  );
-			}
-			if (in_array("nombre",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->nombre  );
-			}
-			if (in_array("id_tienda",$fieldstoupdate)){
-				$stmt->mbind_param( 'i', $this->idTienda  );
-			}
-			if (in_array("permisos",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->permisos  );
-			}
-			if (in_array("comision",$fieldstoupdate)){
-				$stmt->mbind_param( 'd', $this->comision  );
-			}
-			if (in_array("direccion",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->direccion  );
-			}
-			if (in_array("costos",$fieldstoupdate)){
-				$stmt->mbind_param( 's', $this->costos  );
-			}
-			if ($this->getId()>0){
-				$stmt->mbind_param( 'i', $this->getId()  );
-			}
-
-			$stmt->execute();
-			//if ($this->getId()==0){
-			//	$this->setId( $this->db->insert_id );
-			//}
-			return $this->getId();
-		}  // updateFields
-		
-
-		public function getAll() {
-			$sql="SELECT id FROM usuario WHERE 1 and status='active'";
-			// Get data 
-			$stmt = $this->db->prepare( $sql );
-			$stmt->execute();
-
-			$res = $stmt->get_result();
-			$retval=array();
-			while($id = mysqli_fetch_row($res)){
-				$retval[$id[0]] = new Usuario();
-				$retval[$id[0]]->load($id[0]);
-			}
-			return $retval;
-		}
-
-
-
-	// Private Support Functions
-		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
-			//if ( ! $this->validclass )
-			//	return $this->validclass;
-
-			if ( ! preg_match($pcre, $input) ){ 
-				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
-			}else{
-				unset($this->statusclass[$field]);
-				if (empty($this->statusclass)){$this->validclass=true;}
-			}
-
-			return true;
-		}
-		protected function killInvalidclass( $msg, $field="General Error" ){
-			$this->statusclass[$field] = $msg;
-			$this->validclass = false;
-			return false;
-		}
 
 }

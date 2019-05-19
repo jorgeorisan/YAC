@@ -68,7 +68,7 @@ class Marca extends AutoMarca {
 		//metodo que sirve para hacer delete
 	public function deleteAll($id,$_request=false)
 	{
-		$_request["status"]="deleted";
+		$_request["status"]="BAJA";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'marca',$this->db,"update");	
 		$sql= "UPDATE marca SET $data[0]  WHERE id_marca=".$id.";";

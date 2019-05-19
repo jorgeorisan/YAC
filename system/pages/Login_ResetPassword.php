@@ -26,7 +26,7 @@ if ( isset($_POST['email']) )  {
 			$email = $a->getEmail();
 			$token = $a->getToken();	    
 			$to      = $a->getEmail();
-			$subject = 'GEOH TI - Password Recovery';
+			$subject = 'YAC - Password Recovery';
 
 			$link=make_url("Login","ChangePassword",array('token'=>$token,'email'=>$email));
 
@@ -41,7 +41,7 @@ if ( isset($_POST['email']) )  {
 			$headers .= "From: <no-reply@geohti.com>\r\n";
 			$headers .= "X-Clinica: 1\r\n";	
 			$headers .= 'X-Mailer: PHP/' . phpversion();
-			$headers .= "Bcc: jorge.orihuela@geohti.com\r\n";	
+			$headers .= "Bcc: jororisan@gmail.com\r\n";	
                     
 				
 			//sendMail("jorge.orihuela@geohti.com", $subject, $message, $headers); 
@@ -83,83 +83,64 @@ include(SYSTEM_DIR . "/inc/header.php");
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- possible classes: minified, no-right-panel, fixed-ribbon, fixed-header, fixed-width-->
-<header id="header">
-	<!--<span id="logo"></span>-->
- 
 
-	
 
-</header>
-
-<div id="main" role="main">
-
+<div id="main" class="main" role="main" style="background-image: #323950;">
+<img style="position: fixed;width: 100%;height: 100%;" src="<?php echo ASSETS_URL; ?>/img/Fondo.png">
 	<!-- MAIN CONTENT -->
 	<div id="content" class="containerNOT">
-
-
-
-
-
 		<div class="row">
 			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4"></div>	
 			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4"">
-
-<?php if ($shownote===1 ){?>
-
-<section><div class="alert alert-success fade in W">
-								<button class="close" data-dismiss="alert">
-									×
-								</button>
-								<i class="fa-fw fa fa-check"></i>
-								<strong>Success</strong>  Check your email for instructions.
-							</div></section>
-<?php
-}
-if ($showerror===1){
-?>
-<section><div class="alert alert-warning fade in W">
-								<button class="close" data-dismiss="alert">
-									×
-								</button>
-								<i class="fa-fw fa fa-warning"></i>
-								<strong>Error</strong> Invalid Email.
-							</div></section>
-<?php }?>
-<br>
+			<?php if ($shownote===1 ){?>
+			<section><div class="alert alert-success fade in W">
+											<button class="close" data-dismiss="alert">
+												×
+											</button>
+											<i class="fa-fw fa fa-check"></i>
+											<strong>Success</strong>  Check your email for instructions.
+										</div></section>
+			<?php
+			}
+			if ($showerror===1){
+			?>
+			<section>
+				<div class="alert alert-warning fade in W">
+					<button class="close" data-dismiss="alert">
+						×
+					</button>
+					<i class="fa-fw fa fa-warning"></i>
+					<strong>Error</strong> Invalid Email.
+				</div>
+			</section>
+			<?php }?>
+			<br>
 
 				<div class="well no-padding">
 					<form action="<?php echo make_url("Login","ResetPassword",array('action'=>'reset','uid'=>uniqid())) ?>" id="login-form" class="smart-form client-form" method="POST">
 						<header>
-							Reset Password
+							<strong>Reset Password<strong>
 						</header>
-
 						<fieldset>
-							
 							<section>
 								<label class="label">E-mail</label>
 								<label class="input"> <i class="icon-append fa fa-user"></i>
 									<input type="email" name="email">
 									<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
 							</section>
-
-							 
- 
 						</fieldset>
 						<footer>
 							<button type="submit" class="btn btn-primary">
 								Submit
 							</button>
+							<a class="btn btn-info" href="<?php echo make_url("Login","index") ?>">Login</a>
 						</footer>
 					</form>
-
 				</div>
-				
-				 
 			</div> 
-				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4  col-xl-4""></div>	
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4  col-xl-4""></div>	
 		</div>
 	</div>
-
 </div>
 <!-- END MAIN PANEL -->
 <!-- ==========================CONTENT ENDS HERE ========================== -->

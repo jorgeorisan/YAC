@@ -86,7 +86,7 @@ class ProductosVenta extends AutoProductosVenta {
 	{
 		$_request["cancelado"] = "1";
 		$_request["fecha_cancelacion"]  = date("Y-m-d H:i:s");
-		$_request["usuario_cancelacion"]= $_SESSION['user_info']['id_usuario'];
+		$_request["usuario_cancelacion"]= $_SESSION['user_id'];
 		$data=fromArray($_request,'productos_venta',$this->db,"update");	
 		$sql= "UPDATE productos_venta SET $data[0]  WHERE id_productos_venta=".$id.";";
 		$row=$this->db->query($sql);

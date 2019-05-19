@@ -235,6 +235,25 @@ $output.= '
 		public function getStatusclass(){
 			return  $this->statusclass ;
 		}
+		// Private Support Functions
+		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
+			//if ( ! $this->validclass )
+			//	return $this->validclass;
+
+			if ( ! preg_match($pcre, $input) ){ 
+				return $this->killInvalidclass( "The input provided for the field \'$field\' is not validclass. Value provided: ".htmlentities($input),$field);
+			}else{
+				unset($this->statusclass[$field]);
+				if (empty($this->statusclass)){$this->validclass=true;}
+			}
+
+			return true;
+		}
+		protected function killInvalidclass( $msg, $field="General Error" ){
+			$this->statusclass[$field] = $msg;
+			$this->validclass = false;
+			return false;
+		}
 ';		
 
 $output.= '
@@ -357,6 +376,8 @@ class ' . $model_name . ' extends Auto' . $model_name . ' {
 			return true;
 		}
 	}
+
+	
 
 
 }

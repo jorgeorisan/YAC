@@ -99,7 +99,7 @@ $data = $obj->getAllArr();
 																<a class="" href="<?php echo make_url("Permisos","asignar",array('id'=>$row['id'])); ?>">Permisos</a>
 															</li>
 															<li>
-																<a class="" href="<?php echo make_url("Usuarios","cambiarpwd",array('id'=>$row['id'])); ?>">Cambiar password</a>
+																<a class="" href="<?php echo make_url("Usuarios","changepassword",array('id'=>$row['id'])); ?>">Cambiar password</a>
 															</li>
 															<li class="divider"></li>
 															<li>

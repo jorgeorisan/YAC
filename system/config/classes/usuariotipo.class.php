@@ -68,7 +68,7 @@ class UsuarioTipo extends AutoUsuarioTipo {
 		//metodo que sirve para hacer delete
 	public function deleteAll($id,$_request=false)
 	{
-		$_request["status"]="deleted";
+		$_request["status"]="BAJA";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'usuario_tipo',$this->db,"update");	
 		$sql= "UPDATE usuario_tipo SET $data[0]  WHERE id_usuario_tipo=".$id.";";

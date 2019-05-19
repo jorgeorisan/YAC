@@ -28,16 +28,14 @@ if(isPost()){
     $obj = new Venta();
     $id=$obj->addAll(getPost());
     if($id>0){
-        //nuevas imagenes
-      
         informSuccess(true, make_url("Ventas","print",array('id'=>$id,'page'=>'venta')));
     }else{
-        informError(true,make_url("Productos","index"));
+        informError(true,make_url("Ventas","index"));
     }
 }
 $idtienda = $_SESSION['user_info']['id_tienda'];
 $tipousu  = $_SESSION['user_info']['id_usuario_tipo'];
-$idusuario= $_SESSION['user_info']['id_usuario'];
+$idusuario= $_SESSION['user_id'];
 $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -65,62 +63,60 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                         <form id="barcode-form">
                                             <input type="hidden" name='action' value='get'>
                                             <input type="hidden" name='object' value='get_producto'>
+                                            <?php if($disabled){
+                                                ?>
+                                                <input type="hidden" name='id_tienda' value='<?php echo $idtienda ?>'>
+                                                <?php
+                                            }
+                                            ?>
                                             <table class="table-striped table-bordered table-hover" style="width:100%">
-                                                    <tr>
-                                                        <th style="width: 150px;">Sucursal</th>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <select style="width:100%" class="select2" name="id_tienda" id="id_tienda" <?php echo $disabled; ?>>
-                                                                    <option value="">--Sucursal--</option>
-                                                                    <?php 
-                                                                    $obj = new Tienda();
-                                                                    $list=$obj->getAllArr();
-                                                                    if (is_array($list) || is_object($list)){
-                                                                        foreach($list as $val){
-                                                                            $selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
-                                                                            echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
-                                                                        }
-                                                                    }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>TIPO PRECIO</th>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <select style="width:100%" class="select2" name="tipoprecio" id="tipoprecio">
-                                                                    <option value="">--Tipo Precio--</option>
-                                                                    <option value="Normal" selected>Normal</option>
-                                                                    <option value="Mayoreo">Mayoreo</option>
-                                                                    <option value="Promocumple">Promo Cumple</option>
-                                                                </select>
-                                                            </div>
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Código de barras</th>
-                                                        <td>
-                                                            <input type="text" style="width:100%" for='autocomplete' class="form-control" id="barcode" name="codigo" placeholder="Buscar" onkeypress="nextFocus('barcode', 'cantidad')">
-                                                        </td>
-                                                        <td>
-                                                            <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupcatalogo()" > <i class="fa fa-search"></i></a>                                          
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Cantidad</th>
-                                                        <td>
-                                                            <input type="number" style="width:50px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
-                                                        </td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan='3'><br><input style="width:100%" type="submit" class="btn btn-success"  id='btn_agregar'  value="Agregar"/> </td>
-                                                        
-                                                    </tr>
+                                                <tr>
+                                                    <th style="width: 100px;">Sucursal</th>
+                                                    <td>
+                                                        <select style="width:100%" class="select2" name="id_tienda" id="id_tienda" <?php echo $disabled; ?> > 
+                                                            <option value="">--Sucursal--</option>
+                                                            <?php 
+                                                            $obj = new Tienda();
+                                                            $list=$obj->getAllArr();
+                                                            if (is_array($list) || is_object($list)){
+                                                                foreach($list as $val){
+                                                                    $selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
+                                                                    echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+                                                                }
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </td>
+                                                    <th>Precio</th>
+                                                    <td>
+                                                        <select style="width:100%" class="select2" name="tipoprecio" id="tipoprecio">
+                                                            <option value="">--Tipo Precio--</option>
+                                                            <option value="Normal" selected>Normal</option>
+                                                            <option value="Mayoreo">Mayoreo</option>
+                                                            <option value="Promocumple">Promo Cumple</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <td>
+                                                        <input type="text" style="width:100%" for='autocomplete' class="form-control" id="barcode" name="codigo" placeholder="Buscar" onkeypress="nextFocus('barcode', 'cantidad')">
+                                                    </td>
+                                                    <td  colspan='2'>
+                                                        <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupcatalogo()" > <i class="fa fa-search"></i></a>                                          
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Cantidad</th>
+                                                    <td  colspan='3'>
+                                                        <input type="number" style="width:50px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                    <td colspan='4'><br><input style="width:100%; height:100%" type="submit" class="btn btn-success"  id='btn_agregar'  value="Agregar"/> </td>
+                                                    
+                                                </tr>
                                             </table>
                                         </form>
                                     </div>
@@ -156,7 +152,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                             <option value="" disabled>--Selecciona Cliente--</option>
                                                             <?php 
                                                             $obj = new Persona();
-                                                            $list=$obj->getAllArr();
+                                                            $list=$obj->getAllArr('clientes');
                                                             if (is_array($list) || is_object($list)){
                                                                 foreach($list as $val){
                                                                     $selected =  ( $val['id_persona'] == 2 ) ? "selected" : '';
@@ -214,7 +210,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                     <td>
                                                         <a href="#" id="solicitar-descuento-gerencial">Show/Hide</a>
                                                         <div id="descuento-gerencial" style="display: none;">
-                                                            <input type="number" id="monto" class="form-control" name="monto" placeholder="Monto"/>
+                                                            <input type="number" style="width:100px" id="monto" class="form-control" name="monto" placeholder="Monto"/>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -243,8 +239,8 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                                 $list=$obj->getAllArr();
                                                                 if (is_array($list) || is_object($list)){
                                                                     foreach($list as $val){
-                                                                        $selected =  ($idusuario == $val['id_usuario'] ) ? "selected" : '';
-                                                                        echo "<option ".$selected ." value='".$val['id_usuario']."'>".htmlentities($val['id_usuario'])."</option>";
+                                                                        $selected =  ($idusuario == $val['id'] ) ? "selected" : '';
+                                                                        echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
                                                                     }
                                                                 }
                                                                 ?>
@@ -278,7 +274,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 <!-- END MAIN PANEL -->
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -409,7 +405,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         $("#montoabono").change(function () {
             var tipo  = $("#tipo").val();
             var monto = parseFloat($("#montoabono").val());
-            if( tipo == "Credito" ) {
+            if( tipo == "Apartado" || tipo == "Credito" ) {
                 if ( monto=='') monto = 0;
                 if ( monto >= 0 || monto==''  ) {
                     if(monto > $("#total-global").val()){
@@ -440,12 +436,12 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             }else{
                 $("#contcredencial").hide();
             }
-            if(tipo=="Credito") {
+            if(tipo == "Apartado" || tipo == "Credito" ) {
                 $("#contabono").show();
             }else{
                 $("#contabono").hide();
             }
-            if ( tipo == 'Credito' && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
+            if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
 
             return false;
         });
@@ -469,7 +465,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             var productos = $(".producto");  
             if ( ! productos.length )  return notify("info","Los productos son requeridos");
             $("#ticket-items").val($("#productos").html());
-            if ( tipo == 'Credito' && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
+            if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
            
             $(this).hide();
             $("#main-form").submit();

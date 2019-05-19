@@ -57,7 +57,7 @@ class ProductoTienda extends AutoProductoTienda {
 	{
 		$_request["updated_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'producto_tienda',$this->db,"update");
-		$sql= "UPDATE producto_tienda SET $data[0]  WHERE id=".$id.";";
+		$sql= "UPDATE producto_tienda SET $data[0]  WHERE id_productotienda=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
@@ -85,18 +85,31 @@ class ProductoTienda extends AutoProductoTienda {
 		if(! intval( $id_producto )) return false;
 		if(! intval( $id_tienda ))   return false;
 	
-		$sql= "SELECT * FROM producto_tienda WHERE id_producto=$id_producto AND tienda_id_tienda=$id_tienda limit 1;";
+		$sql= "SELECT pt.*,p.nombre,p.precio,p.costo,p.precio_descuento 
+				FROM producto_tienda pt 
+				LEFT JOIN producto p ON pt.id_producto=pt.id_producto
+					WHERE pt.id_producto=$id_producto 
+					AND pt.tienda_id_tienda=$id_tienda 
+				limit 1;";
 		$res=$this->db->query($sql);
 		if(!$res)
-			{die("Error getting result producto_tienda");}
+			{die("Error getting result producto tienda");}
 		$row = $res->fetch_assoc();
 		$res->close();
+		if(!$row){
+			//si no existe la relacion la creamos
+			$_request['id_producto'] = $id_producto;
+			$_request['tienda_id_tienda']   = $id_tienda;
+			$res=$this->addAll($_request);
+			if($res){
+				$this->getTablebyProducto($id_producto,$id_tienda);
+			}
+		}
 		return $row;
 
 	}
 	public function actualizaexistencia($id,$cantidad,$tipo){
 		if(! intval( $id )) return false;
-		if(! intval( $cantidad )) return false;
 		if($tipo=='increment'){
 			$sql= "UPDATE producto_tienda SET existencias=existencias+".$cantidad."  WHERE id_productotienda=".$id.";";
 			$row=$this->db->query($sql);
@@ -107,6 +120,12 @@ class ProductoTienda extends AutoProductoTienda {
 			$row=$this->db->query($sql);
 			return (!$row) ?  false : true;
 		}
+		if($tipo=='general'){
+			$sql= "UPDATE producto_tienda SET existencias=".$cantidad."  WHERE id_productotienda=".$id.";";
+			$row=$this->db->query($sql);
+			return (!$row) ?  false : true;
+		}
+		
 			
 	}
 

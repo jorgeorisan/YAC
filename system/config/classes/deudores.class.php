@@ -38,7 +38,7 @@ class Deudores extends AutoDeudores {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
-		$_request['id_usuario'] = (isset($_request['id_usuario'])) ? $_request['id_usuario'] : $_SESSION['user_info']['id_usuario'];
+		$_request['id_user'] = (isset($_request['id_usuario'])) ? $_request['id_usuario'] : $_SESSION['user_id'];
 		$data=fromArray($_request,'deudores',$this->db,"add");
 		$sql= "INSERT INTO deudores (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
@@ -69,7 +69,7 @@ class Deudores extends AutoDeudores {
 		//metodo que sirve para hacer delete
 	public function deleteAll($id,$_request=false)
 	{
-		$_request["status"]="deleted";
+		$_request["status"]="BAJA";
 		$_request["deleted_date"]=date("Y-m-d H:i:s");
 		$data=fromArray($_request,'deudores',$this->db,"update");	
 		$sql= "UPDATE deudores SET $data[0]  WHERE id=".$id.";";

@@ -94,9 +94,9 @@ $menuVentas = array(
 		"title" => "Ventas",
 		"icon"  => "fa-money-check-alt",
 		"sub" => array(
-				'ventasindex'     => array('title'  => 'Ventas Alta','url'    => APP_URL."/Ventas/add" ),
-				'ventastypeindex' => array('title'  => 'Ventas Reporte','url' => APP_URL."/Ventas/index" ),
-				'permisoindex'    => array('title'  => 'Ventas Credito','url' => APP_URL."/Ventas/credito" )
+				'ventasadd'  => array('title'  => 'Ventas Alta','url'    => APP_URL."/Ventas/add" ),
+				'ventasindex'  => array('title'  => 'Ventas Reporte','url' => APP_URL."/Ventas/index" ),
+				'ventasapartados'  => array('title'  => 'Ventas Apartadas','url' => APP_URL."/Ventas/apartado" )
 		)
 	)
 );
@@ -105,13 +105,42 @@ $menuUsuarios = array(
 		"title" => "Usuarios",
 		"icon"  => "fa-user-tie",
 		"sub" => array(
-				'userindex' => array('title'  => 'Usuarios','url' => APP_URL."/Usuarios/index" ),
-				'usertypeindex' => array('title'  => 'Usuarios Perfiles','url' => APP_URL."/Usuarios/usertype" ),
-				'permisoindex' => array('title'  => 'Permisos','url' => APP_URL."/Permisos/index" )
+			'userindex' => array('title'  => 'Usuarios','url' => APP_URL."/Usuarios/index" ),
+			'usertypeindex' => array('title'  => 'Usuarios Perfiles','url' => APP_URL."/Usuarios/usertype" ),
+			'permisoindex' => array('title'  => 'Permisos','url' => APP_URL."/Permisos/index" )
 		)
 	)
 );
-
+$menuEntradas = array(
+	"entradas" => array(
+		"title" => "Entradas",
+		"icon"  => "fa-person-dolly",
+		"sub" => array(
+			'entradastypeindex' => array('title'  => 'Entradas','url' => APP_URL."/Entradas/index" ),
+			'entradasindex'     => array('title'  => 'Entradas Alta','url'    => APP_URL."/Entradas/add" )
+		)
+	)
+);
+$menuTraspasos = array(
+	"traspasos" => array(
+		"title" => "Traspasos",
+		"icon"  => "fa-exchange-alt",
+		"sub" => array(
+			'traspasostypeindex' => array('title'  => 'Traspasos','url' => APP_URL."/Traspasos/index" ),
+			'traspasosindex'     => array('title'  => 'Traspasos Alta','url'    => APP_URL."/Traspasos/add" )
+		)
+	)
+);
+$menuSalidas = array(
+	"salidas" => array(
+		"title" => "Salidas",
+		"icon"  => "fa-door-open",
+		"sub" => array(
+			'salidastypeindex' => array('title'  => 'Salidas','url' => APP_URL."/Salidas/index" ),
+			'salidasindex'     => array('title'  => 'Salidas Alta','url'    => APP_URL."/Salidas/add" )
+		)
+	)
+);
 
 $extras = array(
 	"examples" => array(
@@ -127,9 +156,18 @@ if(isset($_SESSION['user_id'])){
 	if ( $datapermuser ) { 
 	  $page_nav = array_merge($page_nav, $menuVentas);
 	}
-	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Clientes');
+	
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Entradas');
 	if ( $datapermuser ) { 
-	  $page_nav = array_merge($page_nav, $menuClientes);
+	  $page_nav = array_merge($page_nav, $menuEntradas);
+	}
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Traspasos');
+	if ( $datapermuser ) { 
+	  $page_nav = array_merge($page_nav, $menuTraspasos);
+	}
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Salidas');
+	if ( $datapermuser ) { 
+	  $page_nav = array_merge($page_nav, $menuSalidas);
 	}
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Productos');
 	if ( $datapermuser ) { 
@@ -141,6 +179,10 @@ if(isset($_SESSION['user_id'])){
 	  $page_nav = array_merge($page_nav, $menuCatalogos);
 	}
 
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Clientes');
+	if ( $datapermuser ) { 
+	  $page_nav = array_merge($page_nav, $menuClientes);
+	}
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Usuarios');
 	if ( $datapermuser ) { 
 	  $page_nav = array_merge($page_nav, $menuUsuarios);

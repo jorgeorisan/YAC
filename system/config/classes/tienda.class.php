@@ -7,9 +7,16 @@ class Tienda extends AutoTienda {
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr()
+	public function getAllArr($tipo=false)
 	{
-		$sql = "SELECT * FROM tienda where status='ACTIVA';";
+		
+		$tipo = ($tipo) ? " AND info_adicional in ('$tipo')" : " AND info_adicional!='SALIDA'";
+		
+		$sql = "SELECT * 
+				FROM tienda 
+				where status='ACTIVA'
+				$tipo
+		";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
