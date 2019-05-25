@@ -322,22 +322,22 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             }
         });
     }
-   
-    $(document).ready(function() {
-        var calcTotal = function () {
-            var totales = $(".totales");
-            var totaldescuento = ($("#monto").val()>0) ? parseFloat($("#monto").val()) : 0;  
-        
-            var total = 0;
-            for (var i = 0, len = totales.length; i < len; i++) {
-                total = parseFloat(total);
-                total += parseFloat($(totales[i]).val());
-            }
-            total = total-totaldescuento;
-
-            $("#total-num").html(total);
-            $("#total-global").val(total);
+    var calcTotal = function () {
+        var totales = $(".totales");
+        var totaldescuento = ($("#monto").val()>0) ? parseFloat($("#monto").val()) : 0;  
+    
+        var total = 0;
+        for (var i = 0, len = totales.length; i < len; i++) {
+            total = parseFloat(total);
+            total += parseFloat($(totales[i]).val());
         }
+        total = total-totaldescuento;
+
+        $("#total-num").html(total);
+        $("#total-global").val(total);
+    }
+    $(document).ready(function() {
+       
         
         var getproducto = function(form){
             $.get(config.base+"/Ventas/ajax/get_producto", form,
@@ -345,9 +345,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                     if(response == 'Cantidad insuficiente' || response == 'Producto no encontrado'){
                         console.log(response);
                         if(response == 'Cantidad insuficiente'){
-                            if (confirm("No hay existencia de este producto, deseas agregarlo al inventario?") == true) {
-                                addproducto(form);
-                            }
+                            return notify('warning',response);
                         }else{
                             return notify('error',response);
                         }
@@ -361,19 +359,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             $("#barcode").val("").focus();
             return false;
         }
-        var addproducto = function(form){
-            if ( ! form ) return;
-            $.get(config.base+"/Producto/ajax/addproducto", form,
-            function (response) {
-                if(response==1){
-                    getproducto(form);
-                }else{
-                    return notify('warning', 'A Ocurrido un error');
-                       
-                } 
-            });
-            return false;
-        }
+        
       
         $("#barcode-form").submit(function (e) {
             e.preventDefault();

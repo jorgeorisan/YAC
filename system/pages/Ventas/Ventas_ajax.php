@@ -105,8 +105,6 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			}
 			break;
 		case 'fixdb':
-			echo 1;
-		exit;
 			$obj = new Venta();
 			$obj->arreglar_Descuentos();
 			$obj->arreglar_cancelaciones();

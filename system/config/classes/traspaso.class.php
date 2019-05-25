@@ -68,15 +68,15 @@ class Traspaso extends AutoTraspaso {
 
 			$idtraspaso = $id["LAST_INSERT_ID()"];
 
-			$objTraspasoProducto = new TraspasoProducto();
+			
 			$objproductos 		= new Producto();
 			$objproductotienda 	= new ProductoTienda();
 			//arrays
 			$productos  = $_request["id_producto"];
 			$cantidades = $_request["cantidad"];
-			$costos     = $_request["costo"];
-			$mayoreos   = $_request["mayoreo"];
-			$precios    = $_request["precio"];
+			$costos     = (isset($_request["costo"]))   ? $_request["costo"]  : [];
+			$mayoreos   = (isset($_request["mayoreo"])) ? $_request["mayoreo"]: [];
+			$precios    = (isset($_request["precio"]))  ? $_request["precio"] : [];
 			$totalcosto = $totalgral= 0;
 			foreach ($productos as $key2 => $valproducto) {
 				if($cantidades[$key2]>0){
@@ -100,7 +100,7 @@ class Traspaso extends AutoTraspaso {
 					$_requestTraspasoProducto['totalcosto']        = $cantidades[$key2]*$costos[$key2];
 					$_requestTraspasoProducto['total']        	   = $cantidades[$key2]*$precios[$key2];
 					$_requestTraspasoProducto['status'] 		   = 'POR AUTORIZAR';
-
+					$objTraspasoProducto = new TraspasoProducto();
 					$idEP = $objTraspasoProducto->addAll($_requestTraspasoProducto);
 					if($idEP>0){}else{ die("Error al insertar Traspaso Producto"); }
 				}

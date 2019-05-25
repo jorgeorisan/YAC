@@ -95,7 +95,7 @@ class ProductosVenta extends AutoProductosVenta {
 		}else{
 			$objPV = $this->getTable($id);
 			$ventas = new Venta();
-			if($ventas->getstatus($objPV['id_venta'])){
+			if($ventas->getstatuscancelada($objPV['id_venta'])){
 				$sql= "UPDATE venta SET cancelado=1  WHERE id_venta=".$objPV['id_venta'].";";
 				$row=$this->db->query($sql);
 				if(!$row){

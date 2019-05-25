@@ -95,8 +95,9 @@ $menuVentas = array(
 		"icon"  => "fa-money-check-alt",
 		"sub" => array(
 				'ventasadd'  => array('title'  => 'Ventas Alta','url'    => APP_URL."/Ventas/add" ),
-				'ventasindex'  => array('title'  => 'Ventas Reporte','url' => APP_URL."/Ventas/index" ),
-				'ventasapartados'  => array('title'  => 'Ventas Apartadas','url' => APP_URL."/Ventas/apartado" )
+				'ventasindex'  => array('title'  => 'Reporte Venta','url' => APP_URL."/Ventas/index" ),
+				'ventasproductos'  => array('title'  => 'Reporte por Producto','url' => APP_URL."/Ventas/productos" ),
+				'ventasapartados'  => array('title'  => 'Reporte de Apartados','url' => APP_URL."/Ventas/apartado" )
 		)
 	)
 );

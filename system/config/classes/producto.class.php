@@ -17,23 +17,25 @@ class Producto extends AutoProducto {
 		if($similar){
 			$queryprod =" AND (p.codinter like '%". $similar ."%' OR  p.nombre like '%". $similar ."%'  OR  m.nombre like '%". $similar ."%')";
 		}
+		$querytienda= ($_SESSION['user_info']['id_tienda']==16) ? " AND (p.id_proveedor=14)" : " AND (p.id_proveedor!=14)";
 			
         $sql = "
-			SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,
+			SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
 			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
 			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
 			FROM(
-				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
 					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
 					,SUM(EXISTENCIAS.existencias) existencias
 					FROM(
-						SELECT p.id_producto,codinter,p.nombre,p.costo,p.precio_descuento,p.precio,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+						SELECT p.id_producto,codinter, p.imagen,p.nombre,p.costo,p.precio_descuento,p.precio,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
 						FROM producto p
 						LEFT JOIN marca m on p.id_marca=m.id_marca
 						LEFT JOIN categoria c on p.id_categoria=c.id_categoria
 						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
 						WHERE p.status='ACTIVO'
 						$queryprod
+						$querytienda
 					) AS PRODUCTO LEFT JOIN (
 						SELECT id_producto, existencias, tienda_id_tienda id_tienda
 						FROM producto_tienda 
@@ -42,7 +44,7 @@ class Producto extends AutoProducto {
 					)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
 					
 					group by 
-					PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
+					PRODUCTO.id_producto,PRODUCTO.codinter, PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,
 					PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
 					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
 			) AS TODO
@@ -58,8 +60,9 @@ class Producto extends AutoProducto {
 						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
 						WHERE p.status='ACTIVO'
 					) AS PRODUCTO LEFT JOIN(
-						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,usuario_actualizacion
-						FROM producto_tienda 
+						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,u. id_usuario usuario_actualizacion
+						FROM producto_tienda pt
+						LEFT JOIN usuario u ON  u.id=pt.usuario_actualizacion
 						WHERE tienda_id_tienda='$tienda'
 						group by id_producto,tienda_id_tienda
 					)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
@@ -191,6 +194,26 @@ class Producto extends AutoProducto {
 				{ $set[] = $row; }
 		}
 		return $set;
+
+	}
+
+	//metodo comprueba que un producto existe o no
+	public function existeProducto($code)
+	{
+
+		$code=$this->db->real_escape_string($code);
+		$sql= "SELECT * FROM producto WHERE codinter='".$code."' and status='ACTIVO';";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die('Error getting result');}
+		//echo $sql;
+		$row = $res->fetch_assoc();
+		//echo $this->db->error;
+		$res->close();
+		if(!$row)
+			return false;
+		else
+			return true;
 
 	}
 

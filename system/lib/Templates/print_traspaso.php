@@ -1,7 +1,6 @@
 <?php
 $obj = new Traspaso();
 $data = $obj->getTable($id);
-$obj->getstatus($id);
 if ( !$data ) {
     informError(true,make_url("Traspasos","index"));
 }

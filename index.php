@@ -158,14 +158,14 @@ Routing section
       }
 
       //*****permisos de usuario  */***///
-      if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print"  ){
+      if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print" && $request['page']!="excel"  ){
         
         $objpermuser = new PermisoUsuario();
         
         $datapermuser  = $objpermuser->getpermisouser($_SESSION['user_id'],$request['section'],$page2);
         if ( !$datapermuser ) {
-          echo "ERROR permisos".$_SESSION['user_id']."------".$request['section']."-----".$page2;
-          exit;
+          print_r( "ERROR permisos".$_SESSION['user_id']."------".$request['section']."-----".$page2);
+          
           informPermiss(true,make_url("Home","index"));
         }
       }
@@ -256,7 +256,7 @@ if(!isset($_SESSION['CADENA'])){
   $prod="";
  
   foreach($queryproductos as $producto){   
-      $prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."'";
+      $prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
   }
 
   $cadena = substr($prod,1);

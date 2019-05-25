@@ -28,7 +28,6 @@ else
 
 $obj = new Venta();
 $data = $obj->getTable($id);
-$obj->getstatus($id);
 if ( !$data ) {
     informError(true,make_url("Ventas","index"));
 }
@@ -40,8 +39,10 @@ $datacliente = $cliente->getTable($data['id_persona']);
 $usuario = new Usuario();
 $datauser = $usuario->getTable($data['id_user']);
 $totalpagado = $obj->getpagado($id);
-
+$totalporpagar = $data['total']-$totalpagado;
 $porcentpagado = ($totalpagado * 100  / $data['total']);
+
+$descuento = ($data['descuento']>0) ? number_format($data['descuento'],2) : '';
 
 if ($porcentpagado >= 75)
     $class  = 'label label-success';
@@ -74,7 +75,7 @@ if ($porcentpagado < 50 )
                     <div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                            <h2><?php echo $page_title ?></h2>
+                            <h2><?php echo $page_title." ".$id ?></h2>
                         </header>
                         <div>
                             <div class="jarviswidget-editbox">
@@ -125,7 +126,7 @@ if ($porcentpagado < 50 )
                                                                 ?>
                                                                 <tr>
                                                                     <td style="background-color:#d0d0cf; font-weight:bold; text-align:left; width:30%;"> Por Pagar</td>
-                                                                    <td colspan="2" class="<?php echo $class; ?>"><?php echo $totalpagado."->".number_format($porcentpagado,0)."%";; ?></td>
+                                                                    <td colspan="2" class="<?php echo $class; ?>"><?php echo $totalporpagar."->".number_format($porcentpagado,0)."%";; ?></td>
                                                                 </tr>
                                                                 <?php
                                                             }?>
@@ -169,8 +170,8 @@ if ($porcentpagado < 50 )
                                                                 <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Precio Uni.</td>
                                                                 <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Total </td>
                                                                 <?php if($_SESSION['user_info']['costos']) { ?>
-                                                                <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Total Costo</td>
-                                                                <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Utilidad</td>
+                                                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Total Costo</td>
+                                                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Utilidad</td>
                                                                 <?php } ?>
                                                                 <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Tipo Precio</td>
                                                                 <td colspan="" style="background-color:#d0d0cf; font-weight:bold;"></td>
@@ -196,10 +197,12 @@ if ($porcentpagado < 50 )
                                                                 <td><?php echo htmlentities($row['cantidad']); ?></td>
                                                                 <td><?php echo htmlentities($row['codinter']); ?></td>
                                                                 <td><?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
-                                                                <td><?php echo htmlentities($row['precio_unitario']); ?></td>
-                                                                <td><?php echo htmlentities($row['total']); ?></td>
-                                                                <td><?php echo htmlentities($row['costo']); ?></td>
-                                                                <td><?php echo htmlentities($row['utilidad']); ?></td>
+                                                                <td><?php echo number_format(htmlentities($row['precio_unitario']),2); ?></td>
+                                                                <td><?php echo number_format(htmlentities($row['total']),2); ?></td>
+                                                                <?php if($_SESSION['user_info']['costos']) { ?>
+                                                                    <td><?php echo number_format(htmlentities($row['costo']),2); ?></td>
+                                                                    <td><?php echo number_format(htmlentities($row['utilidad']),2); ?></td>
+                                                                <?php } ?>  
                                                                 <td><?php echo htmlentities($row['tipoprecio']); ?></td>
                                                                 <td class='borrar-td'>
                                                                     <?php if (!$row['cancelado']){ ?> 
@@ -215,10 +218,16 @@ if ($porcentpagado < 50 )
                                                                 <td></td>
                                                                 <td></td>
 																<td></td>
-                                                                <td style='font-weight:bold;'>Total:</td>
-                                                                <td><strong><?php echo $total; ?></strong></td>
-                                                                <td></td> 
-                                                                <td></td> 
+                                                                <td style='font-weight:bold;'>
+                                                                    
+                                                                    <?php echo ($descuento) ? 'Sub Total:<br>Descuento:<br>Total: ' : 'Total:';?>
+
+                                                                </td>
+                                                                <td><strong>$<?php echo ($descuento) ? number_format($total,2)."<br>$".$descuento."<br>$".number_format($total-$descuento,2) : number_format($total,2) ?></strong></td>
+                                                                <?php if($_SESSION['user_info']['costos']) { ?>
+                                                                    <td></td> 
+                                                                    <td></td> 
+                                                                <?php } ?> 
                                                                 <td></td> 
                                                                 <td></td>
                                                             </tr>

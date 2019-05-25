@@ -7,7 +7,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 /*---------------- PHP Custom Scripts ---------
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
-$page_title = "Reporte de Ventas";
+$page_title = "Reporte de Ventas por Producto";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 $page_css[] = "your_style.css";
@@ -30,15 +30,10 @@ $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
 $arrayfilters['id_tienda']     = $idtienda;
-$arrayfilters['page']   	   = 'ventas';
+$arrayfilters['page']   	   = 'ventaproductos';
 $jsonarrayfilters=json_encode($arrayfilters);
-$dataventas     		= $obj->getReporteVentas($arrayfilters);
-$datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
-$dataabonos     		= $obj->getReporteAbonos($arrayfilters);
-$totalAbonosGenerales = 0;
-foreach($dataabonos as $row) {
-	$totalAbonosGenerales+=$row->totalventaabonos;
-}
+$dataventas = $obj->getReporteVentas($arrayfilters);
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -55,7 +50,7 @@ foreach($dataabonos as $row) {
 		<section id="widget-grid" class="">
 			<div class="widget-body" style='padding-bottom: 10px;'>
 			 	<a class="btn btn-success" href="<?php echo make_url("Ventas","add")?>" >Nueva Venta</a>
-				<a class="btn btn-info" id="exportarventa"  target="_blank" href="<?php echo make_url("Ventas","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
+				<a class="btn btn-info" id="exportarVentaProductos"  target="_blank" href="<?php echo make_url("Ventas","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
 			</div>
 			<div class="row">
 				<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -67,7 +62,7 @@ foreach($dataabonos as $row) {
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","productos");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
                                         <div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
 							                <div class="form-group">
@@ -138,7 +133,7 @@ foreach($dataabonos as $row) {
 
 			<?php if(isset($dataventas) && $dataventas!=''){ ?>
 				<div class="row">
-					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
 						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 							<header>
 								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
@@ -147,215 +142,178 @@ foreach($dataabonos as $row) {
 							<div>
 								<div class="jarviswidget-editbox">
 								</div>
-								<div class="widget-body">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+								<div class="widget-body" style="overflow:auto">
+									<table id="" class="table table-striped table-bordered table-hover" width="100%">
 										<thead>
 											<tr>
-												<th class = "col-md-1" data-class="expand">Folio</th>
-												<th class = "col-md-1" data-class="phone,tablet">Vendedor </th>
-												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
-												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
-												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
+												<th class = "col-md-1" data-hide="phone,tablet"> No. Folio</th>
+												<th class = "col-md-1" data-class="expand">Cant.</th>
+												<th class = "col-md-1" data-class="phone,tablet">Codigo </th>
+												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Total</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
+												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Usuario</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Tienda</th>
+												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
+												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-class="phone,tablet"></th>
 											</tr>
 										</thead>
 										<tbody>
 											<?php 
 											$nomtienda = '';
-											$total = 0;
-											foreach($dataventas as $row) {
-												$tienda = new Tienda();
-												$datatienda = $tienda->getTable($row["id_tienda"]);
-												if($datatienda) $nomtienda = $datatienda["nombre"]; 
+											$totalgeneral = $totaldescgral = $totalpagadogral = $totalporpagar = $totalrecargas= $totalexcedente = 0;
+											$idventaanterior='';
+											$descuentos   = "";
 											
-												$descuento = ($row["descuento"]) ? 'Descuento:'.$row["descuento"]."<br>" : ''; 
-												$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
+											$class = $classventa= '';
+											foreach ($dataventas as $rowventa){
 												
-												if ($row['cancelado']==0) {
-													$total += $row['total'];
+												$porpagar=$totalpagado=$totaldesc='';
+												$ventas = new Venta();
+												if(!$rowventa['cancelado']){
+													$totalpagado      = $ventas->getpagado($rowventa["id_venta"]);
+													$totalpagadogral += $totalpagado;
+													$totaldesc       = ($rowventa["descuento"]) ? $rowventa["descuento"] : 0;
+													$totaldescgral	 += $totaldesc;
+													if($rowventa['tipo']=='Credito' || $rowventa['tipo']=='Apartado')
+														if($rowventa['icredito'])
+															$totalporpagar += $porpagar = $rowventa['total']-$totalpagado;
 												}
-												?>
-												<tr <?php echo $class;?>>
-													<td>
-														<a class="" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>">
-															<?php echo htmlentities($row['folio'])?>
-														</a>
-													</td>
-													<td><?php echo htmlentities($row['id_usuario'])?></td>
-													<td><?php echo htmlentities($row['fecha'])?></td>
-													<td>
-														<?php echo htmlentities($row['tipo'])."<br>";
-														if($row['icredito']){
-															echo "<span style='color:red'>En pago</span>";
-														}
-														?>
-													</td>
-													<td><?php echo htmlentities($nomtienda) ?></td>
-													<td>$<?php echo number_format($row['total'], 2); ?></td>
-													<td><?php echo $descuento.htmlentities($row['comentarios']) ?></td>
-													<td>
-														<div class="btn-group">
-															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-																Accion <span class="caret"></span>
-															</button>
-															<ul class="dropdown-menu">
-																<li>
-																	<a title="Ver Venta" class=""  href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
-																</li>
-																<li>
-																	<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta')); ?>">Imprimir</a>
-																</li>
-																<?php 
-																if (!$row['cancelado']){ ?> 
-																	<?php if($row['icredito']){ ?>
-																		<li>
-																			<a data-toggle="modal" class="" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
-																		</li>
-																	<?php } ?>
-																	<li class="divider"></li>
+												$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
+												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"]);
+												foreach($dataventasproductos as $row) {
+													$tienda = new Tienda();
+													$datatienda = $tienda->getTable($row["id_tienda"]);
+													if($datatienda) $nomtienda = $datatienda["nombre"]; 
+													$id_venta=$row["id_venta"];
+													$idventaanterior=$row["id_venta"];
+												
+													$venta = new Venta();
+													$dataventa = $venta->getTable($row["id_venta"]);
+													
+													$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
+													
+													if (!$row['cancelado']) {
+														//calculamos el descuento por producto
+														$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
+														$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
+														$totalgeneral   += $row['total'];
+														$totalrecargas  += ($row['nombre']=='RECARGA')   ? $row['total'] : 0;
+														$totalexcedente += ($row['nombre']=='EXCEDENTE') ? $row['total'] : 0;
+													}
+													?>
+													<tr <?php echo $class;?>>
+														<td>
+															<a class="" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>">
+																<?php echo htmlentities($row['folio'])?>
+															</a>
+														</td>
+														<td><?php echo htmlentities($row['cantidad'])?></td>
+														<td><?php echo htmlentities($row['codinter']).'<br>'.htmlentities($row['nombre'])?></td>
+														<td>$<?php echo number_format($totalxproducto,2)?></td>
+														<td>$<?php echo number_format($row['total'], 2); ?></td>
+														<td>
+															<?php echo htmlentities($row['tipo'])."<br>";
+															if($row['icredito']){
+																echo "<span style='color:red'>En pago</span>";
+															}
+															?>
+														</td>
+														<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
+														<td><?php echo htmlentities($nomtienda) ?></td>
+														<td><?php echo htmlentities($row['tipoprecio'])?></td>
+														<td><?php echo htmlentities($row['fecha']) ?></td>
+														<td>
+															<div class="btn-group">
+																<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+																	Accion <span class="caret"></span>
+																</button>
+																<ul class="dropdown-menu">
 																	<li>
-																		<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
+																		<a title="Ver Venta" class=""  href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
 																	</li>
-																<?php 
-																} ?>
-															</ul>
-														</div>
-													</td>
-												</tr>
-											<?php
+																	<li>
+																		<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta')); ?>">Imprimir</a>
+																	</li>
+																	<?php 
+																	if (!$row['cancelado']){ ?> 
+																		<?php if($row['icredito']){ ?>
+																			<li>
+																				<a data-toggle="modal" style="color:cornflowerblue" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
+																			</li>
+																		<?php } ?>
+																		<li class="divider"></li>
+																		<li>
+																			<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
+																		</li>
+																	<?php 
+																	} ?>
+																</ul>
+															</div>
+														</td>
+													</tr>
+													<?php
+												}
+												if($rowventa["descuento"] || $porpagar){
+													?>
+													<tr <?php echo $classventa;?>>
+														<td></td>
+														<td></td>
+														<td colspan="2">
+															Descuento folio:<?php echo $rowventa["folio"] ?><br>
+															<?php if($porpagar){
+																echo "Por Pagar:";
+															} ?>
+														</td>
+														<td>$<?php echo number_format($rowventa["descuento"],2) ?>
+															<?php if($porpagar){
+																echo "$".number_format($porpagar,2);
+															} ?>
+														</td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+														<td></td>
+													</tr>
+													<?php
+												}
+
 											}
+											
+											echo $descuentos;
 											?>
 										</tbody>
-										<tfoot>
-											<tr>
-												<th colspan="5" style="text-align:right">Total:</th>
-												<th><?php echo $total;?></th>
-												<th></th>
-												<th></th>
-											</tr>
-										</tfoot>
+									
 									</table>
-								</div>
-							</div>
-						</div>
-					</article>
-					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="jarviswidget jarviswidget-color-white" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
-							<header>
-								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-								<h2>Comisiones de Ventas</h2>
-							</header>
-							<div>
-								<div class="jarviswidget-editbox">
-								</div>
-								<div class="widget-body">
-								<h3 class="tit"></h3>
-									<table width="100%" class="table table-striped table-bordered table-hover">
-										<tr>
-											<th>Usuario</th>
-											<th>Total Comisionable </th>
-											<th>Abonos</th>
-											<th>Recargas</th>
-											<th>Execente</th>
-											<th>Total (CAJA)</th>
-											<th>Por Cobrar</th>
-											<th>Total General</th>
-											<th>Comision</th>
-										</tr>
+									<br>
+									<br>
+									<table id="" class="table table-striped table-bordered table-hover" width="50%">
+										<thead>
+											<tr>
+												<th class = "col-md-1" data-hide="expand"> Descuentos</th>
+												<th class = "col-md-1"  data-class="phone,tablet">Por Pagar</th>
+												<th class = "col-md-1" data-class="phone,tablet">Recargas </th>
+												<th class = "col-md-1" data-class="phone,tablet">Excedente </th>
+												<th class = "col-md-1" data-class="phone,tablet"> Venta</th>
+											</tr>
+										</thead>
 										<tbody>
-											<?php 
-											$totalventausuariogral   = 0;
-											 $totalAbonosUsers    = 0;
-											$totalventarecargasgral  = 0;
-											$totalventaexcedentegral = 0;
-											$totalcajagral           = 0;
-											$totalventacreditogral   = 0;
-											$totalventagral          = 0;
-											$totalcomisiongral       = 0;
-											$textusers				 = '';
-											foreach($datacomisionesusuarios as $row) {
-												$textusers			.= $row->id_usuario.","; 
-												$id_usuario          = $row->id_usuario; 
-												$totalventa 		 = $row->totalventa; 
-												$totalventacredito   = $row->totalventacredito; 
-												$totalventacancelada = $row->totalventacancelada; 
-												$totalventamayoreo   = $row->totalventamayoreo; 
-												$totalventaabonos    = $row->totalventaabonos; 
-												$totalventarecargas  = $row->totalventarecargas; 
-												$totalventaexcedente = $row->totalventaexcedente; 
-												$totalventadescuento = $row->totalventadescuento; 
-												$totalventa 		 = $totalventa - $totalventadescuento; // quitamos los decuentos
-												$totalventausuario   = $totalventa - $totalventacredito - ($totalventamayoreo/2) - $totalventarecargas  ;
-												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventaexcedente  + $totalventarecargas +  ($totalventamayoreo/2)  ;
-												$totalcaja           = ( $row->id_usuario_tipo !=  9 )  ? $totalcaja : $totalcaja - $totalventaexcedente;
-												$totalcaja           = ( $row->id_usuario !=  'Lizzy' ) ? $totalcaja : $totalcaja - $totalventaexcedente;
-												$totalgeneral 		 = $totalventa + $totalventaexcedente  ; 
-												$totalcomision		 = ( $row->id_usuario_tipo !=  9 ) ? $totalventausuario * $row->comision :  $totalventaexcedente * $row->comision ;
-												$totalventausuariogral   += $totalventausuario;
-												$totalAbonosUsers        += $totalventaabonos;
-												$totalventarecargasgral  += $totalventarecargas;
-												$totalventaexcedentegral += $totalventaexcedente;
-												$totalcajagral           += $totalcaja;
-												$totalventacreditogral   += $totalventacredito;
-												$totalventagral          += $totalgeneral;
-												$totalcomisiongral       += $totalcomision;
-												?>
-												<tr>
-													<td><?php echo ($row->id_usuario_tipo==9 || $row->id_usuario =='Lizzy' ) ? $id_usuario."->Servicio" : $id_usuario; ?></td>
-													<td><span title="<?php echo "(".$totalventa.'venta)-('.$totalventacredito.'credito)-('.$totalventarecargas.'recargas)-('.($totalventamayoreo/2).'mayoreo)='.$totalventausuario ?>">
-															<?php echo $totalventausuario?>
-														</span>
-													</td>
-													<td><?php echo $totalventaabonos; ?></td>
-													<td><?php echo $totalventarecargas; ?></td>
-													<td><?php echo $totalventaexcedente; ?></td>
-													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)+('.$totalventaexcedente.'excedente)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
-															<?php echo $totalcaja; ?>
-														</span>
-													</td>
-													<td><?php echo $totalventacredito; ?></td>
-													<td><?php echo $totalgeneral; ?></td>
-													<td><?php echo $totalcomision; ?></td>
-												</tr>
-											<?php
-											}
-											$totalAbonosOtros= $totalAbonosGenerales - $totalAbonosUsers;
-											if( $totalAbonosOtros){
-												?>
-												<tr>
-													<td style="text-align:right" title='Un usuario realizo un abono pero no tiene ventas'>Otro:</td>
-													<td></td>
-													<td><?php echo $totalAbonosOtros; ?></td>
-													<td></td>
-													<td></td>
-													<td><?php echo $totalAbonosOtros; ?></td>
-													<td></td>
-													<td><?php echo $totalAbonosOtros; ?></td>
-													<td></td>
-												</tr>
-												<?php 
-											} ?>
+											<th>$<?php echo number_format($totaldescgral,2) ?></th>
+											<th>$<?php echo number_format($totalporpagar,2) ?></th>
+											<th>$<?php echo number_format($totalrecargas,2) ?></th>
+											<th>$<?php echo number_format($totalexcedente,2) ?></th>
+											<th>$<?php echo number_format($totalgeneral,2) ?></th>
 										</tbody>
-										<tfoot>
-											<tr>
-												<th style="text-align:right">Total:</th>
-												<th><?php echo $totalventausuariogral; ?></th>
-												<th><?php echo $totalAbonosGenerales; ?></th>
-												<th><?php echo $totalventarecargasgral; ?></th>
-												<th><?php echo $totalventaexcedentegral; ?></th>
-												<th><?php echo $totalcajagral + $totalAbonosOtros; ?></th>
-												<th><?php echo $totalventacreditogral; ?></th>
-												<th><?php echo $totalventagral + $totalAbonosOtros; ?></th>
-												<th><?php echo $totalcomisiongral; ?></th>
-											</tr>
-										</tfoot>
+									<table>
 									</table>
 								</div>
 							</div>
 						</div>
 					</article>
+				
 				</div>
 			<?php }?>
 			

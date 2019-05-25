@@ -12,10 +12,11 @@ class HistorialInventario extends AutoHistorialInventario {
 		if(! intval( $id ))	return false;
 		
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT hi.id_historialinventario,p.codinter,p.nombre,hi.existencia_anterior,hi.existencia,t.nombre tienda, hi.id_usuario,hi.fecha_registro
+		$sql= "SELECT hi.id_historialinventario,p.codinter,p.nombre,hi.existencia_anterior,hi.existencia,t.nombre tienda, u.id_usuario,hi.fecha_registro
 				FROM historial_inventario hi
 				LEFT JOIN producto_tienda pt ON pt.id_productotienda=hi.id_productotienda
 				LEFT JOIN tienda t ON pt.tienda_id_tienda=t.id_tienda
+				LEFT JOIN usuario u ON u.id=hi.id_user
 				LEFT JOIN producto p ON pt.id_producto=p.id_producto
 					WHERE hi.id_productotienda=$id;";
 		$res=$this->db->query($sql);

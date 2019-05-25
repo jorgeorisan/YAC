@@ -28,7 +28,6 @@ else
 
 $obj = new Salida();
 $data = $obj->getTable($id);
-$obj->getstatus($id);
 if ( !$data ) {
     informError(true,make_url("Salidas","index"));
 }

@@ -99,10 +99,9 @@ class Entrada extends AutoEntrada {
 				$productos  = $_request["id_producto"];
 				
 				$cantidades = $_request["cantidad".$id_tienda];
-				
-				$costos     = $_request["costo"];
-				$mayoreos   = $_request["mayoreo"];
-				$precios    = $_request["precio"];
+				$costos     = (isset($_request["costo"]))   ? $_request["costo"]  : [];
+				$mayoreos   = (isset($_request["mayoreo"])) ? $_request["mayoreo"]: [];
+				$precios    = (isset($_request["precio"]))  ? $_request["precio"] : [];
 				$totalcosto = $totalgral= 0;
 				foreach ($productos as $key2 => $valproducto) {
 					if($cantidades[$key2]>0){

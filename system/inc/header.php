@@ -109,19 +109,22 @@
 		?>
 		
 				<!-- HEADER -->
-				<header id="header" style="background-color: #323950;">
+				<header id="header" style="">
 					<div id="logo-group">
 						<input type="text" id="base" value="<?php echo APP_URL; ?>" hidden>
 						<!-- PLACE YOUR LOGO HERE -->
 						<span id="logo" style="margin-top: 5px;"> <img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="Yo Amo Comprar" style="width:150px "> </span>
 					
 					</div>
-
+					<div class="pull-left" style="padding: 7px;">
+						Usuario: <?php echo $_SESSION['user_info']['id_usuario']."<br>".$_SESSION['user_info']['tienda']."->".$_SESSION['user_info']['usuario_tipo']; ?>
+					</div>
 					<!-- projects dropdown -->
 					<div class="project-context hidden-xs">
 						<span id="project-selector" class="popover-trigger-element dropdown-toggle" data-toggle="dropdown">
-							<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut"><span class="label">Alertas</span></a>
-							
+							<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
+								<span class="label" style="color: #3276b1;">Alertas</span>
+							</a>
 						</span>
 
 
@@ -140,7 +143,14 @@
 
 					<!-- pulled right: nav area -->
 					<div class="pull-right">
-
+						<!-- logout button -->
+						<div id="logout" class="btn-header transparent pull-right">
+							<span> <a href="<?php echo make_url("Login") ?>" title="Sign Out" data-action="userLogout" data-logout-msg="Estas seguro que deseas salir?"><i class="fa fa-sign-out"></i></a> </span>
+						</div>
+						
+						<div id="change-password" class="btn-header pull-right">
+							<span> <a class=""  title="Cambiar de Sucursal"  href="<?php echo make_url("Usuarios","changestore",array('id'=>$_SESSION['user_id'])); ?>"><i class="fa fa-random"></i></a> </span>
+						</div>
 						<!-- collapse menu button -->
 						<div id="hide-menu" class="btn-header pull-right">
 							<span> <a href="javascript:void(0);" title="Collapse Menu" data-action="toggleMenu"><i class="fa fa-reorder"></i></a> </span>
@@ -178,10 +188,7 @@
 							</li>
 						</ul>
 
-						<!-- logout button -->
-						<div id="logout" class="btn-header transparent pull-right">
-							<span> <a href="<?php echo make_url("Login") ?>" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a> </span>
-						</div>
+					
 						<!-- end logout button -->
 						<?php  if (FALSE){?>
 						<!-- search mobile button (this is hidden till mobile view port) -->

@@ -8,7 +8,6 @@ else
 
 $obj = new Venta();
 $data = $obj->getTable($id);
-$obj->getstatus($id);
 if ( !$data ) {
     informError(true,make_url("Ventas","index"));
 }

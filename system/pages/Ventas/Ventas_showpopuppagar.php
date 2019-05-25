@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <th>Fecha Pago</th>
-                    <td ><input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" name="fecha_pago" id="" value='<?php echo date('Y-m-d')?>'/></td>
+                    <td ><input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" name="fecha_abono" id="" value='<?php echo date('Y-m-d')?>'/></td>
                 </tr>
             </table>
         </div>

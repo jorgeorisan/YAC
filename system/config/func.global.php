@@ -123,47 +123,7 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
 }
 /*****/////**********/
 /** CATALOGOS GENERALES/////////////*/
-  function catModelo()
-  {
-    $array= array();
-    $cont=0;
-    for ($i=date('Y'); $i >= 1990; $i--) { 
-      $array[$cont]=$i;
-      $cont++;
-    }
-      return $array;
-  }
-  function getStatusServicio(){
-    $arrayStatus = array();
-    $arrayStatus["active"]     = "Pendiente";
-    $arrayStatus["En Proceso"] = "En Proceso";
-    $arrayStatus["Realizado"]  = "Realizado";
-    $arrayStatus["Stand-By"]   = "Stand-By";
-    $arrayStatus["Garantia"]   = "Garantia";
-
-    return $arrayStatus;
-  }
-  function getStatusRefaccion(){
-    $arrayStatus = array();
-    $arrayStatus["active"]     = "Solicitada";
-    $arrayStatus["Autorizada"] = "Autorizada";
-    $arrayStatus["Rechazada"]  = "Rechazada";
-    $arrayStatus["Recibida"]   = "Recibida";
-    $arrayStatus["Reenvio"]    = "Reenvio";
-    $arrayStatus["Proporcionado-Paciente"]  = "Proporcionado-Paciente";
-    $arrayStatus["Entregada"]  = "Entregada";
-    $arrayStatus["Instalado"]  = "Instalado";
-    $arrayStatus["Perdida-daño"] = "Perdida-daño";
-    return $arrayStatus;
-  }
-  function getStatusAutos(){
-    $arrayStatus = array();
-    $arrayStatus["Pendiente"]           = "Pendiente";
-    $arrayStatus["Terminado sin firma"] = "Terminado sin firma";
-    $arrayStatus["Terminado y firmado"] = "Terminado y firmado";
-
-    return $arrayStatus;
-  }
+ 
   function getTipoPago(){
     $arrayStatus = array();
     $arrayStatus["Efectivo"]        = "Efectivo";
@@ -175,7 +135,15 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
 
     return $arrayStatus;
   }
-
+  function getComsiones(){
+    $arrayStatus = array();
+    $arrayStatus["0.06"] = "6%";
+    $arrayStatus["0.6"]  = "60%";
+    $arrayStatus["0.7"]  = "70%";
+    $arrayStatus["1"]    = "100%";
+    return $arrayStatus;
+  }
+  
 
 /**** ********************/
 /****

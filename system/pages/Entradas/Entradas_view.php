@@ -28,7 +28,6 @@ else
 
 $obj = new Entrada();
 $data = $obj->getTable($id);
-$obj->getstatus($id);
 if ( !$data ) {
     informError(true,make_url("Entradas","index"));
 }

@@ -1,5 +1,6 @@
 <?php
-    $lineId = rand(1000, 100000);
+    $lineId = rand(1000, 100000);    
+    $show   = (!$_SESSION['user_info']['costos']) ? "display:none" : ''; 
 ?>
 <tr class="producto" lineid="<?php echo $lineId; ?>">
     <input type="hidden"                 name="id_producto[]" value="<?php echo $id_producto; ?>"/>
@@ -12,11 +13,9 @@
     <td><?php echo $codigo;   ?></td>
     <td><?php echo $nombre;   ?></td>
     <td>
-        <?php if($_SESSION['user_info']['costos']){ ?>
-            <div title='Existentes : <?php echo $existenciatienda ?>'>
-                $<input type="number" style="width:50px" name="costo[]" readonly  id='costo<?php echo $lineId; ?>'   value="<?php echo ($costo); ?>">
-            </div>
-        <?php } ?>
+        <div title='Existentes : <?php echo $existenciatienda ?>' style="<?php echo $show ?>">
+            $<input type="number" style="width:50px" name="costo[]" readonly  id='costo<?php echo $lineId; ?>'   value="<?php echo ($costo); ?>">
+        </div>
     </td>
     <td> $<input type="number" style="width:50px" name="mayoreo[]" readonly id='mayoreo<?php echo $lineId; ?>' value="<?php echo ($mayoreo); ?>"></td>
     <td> $<input type="number" style="width:50px" name="precio[]"  readonly id='precio<?php echo $lineId; ?>'  value="<?php echo ($precio); ?>"></td>

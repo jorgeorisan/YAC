@@ -69,6 +69,35 @@ class Usuario extends AutoUsuario {
 		if(!$row){
 			return false;
 		}else{
+			$UsuarioTipo = new UsuarioTipo();
+			$dataUsuarioTipo=$UsuarioTipo->getTable($_request["id_usuario_tipo"]);
+			if(isset($_request["id_tienda"])){
+				$objtienda = new Tienda();
+				$datatienda = $objtienda->getTable($_request["id_tienda"]);
+				if($datatienda){
+					$_SESSION['user_info']['id_tienda']=$_request["id_tienda"];
+					$_SESSION['user_info']['tienda']=$datatienda["nombre"];
+					$_SESSION['user_info']['info_adicional']=$datatienda["info_adicional"];
+					// mostrar productos en sesion
+					$_SESSION['CADENA']='';
+					$obj = new Producto();
+					$queryproductos = $obj->getAllArr();
+					
+					$prod="";
+				
+					foreach($queryproductos as $producto){   
+						$prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
+					}
+					$cadena = substr($prod,1);
+					$_SESSION['CADENA']=$cadena;
+				}
+				
+			}
+			$_SESSION['user_info']['id_usuario']     = $_request["id_usuario"];
+			$_SESSION['user_info']['costos']         = $_request["costos"];
+			$_SESSION['user_info']['nombre']         = $dataUsuarioTipo["nombre"];
+			$_SESSION['user_info']['id_usuario_tipo']= $_request["id_usuario_tipo"];
+			$_SESSION['user_info']['usuario_tipo']   = $dataUsuarioTipo["usuario_tipo"];
 			return true;
 		}
 	}

@@ -609,18 +609,15 @@ update xqwmrfeeug.historial_inventario e
 JOIN usuario u ON u.id_usuario=e.id_usuario
 set e.id_user=u.id;
 
-update xqwmrfeeug.productos_venta e 
-LEFT JOIN venta v ON e.usuario_cancelacion=v.id_usuario
-LEFT JOIN usuario u ON u.id_usuario=v.id_usuario
-set e.usuario_cancelacion=u.id;
+
 
 update xqwmrfeeug.productos_venta e 
-LEFT JOIN usuario u ON u.id_usuario=e.usuario_cancelacion
+JOIN usuario u ON binary u.id_usuario= binary e.usuario_cancelacion
 set e.usuario_cancelacion=u.id
 where e.usuario_cancelacion is not null;
 
 update xqwmrfeeug.venta e 
-LEFT JOIN usuario u ON u.id_usuario=e.usuario_cancelacion
+JOIN usuario u ON binary u.id_usuario= binary e.usuario_cancelacion
 set e.usuario_cancelacion=u.id
 where e.usuario_cancelacion is not null;
 
@@ -672,3 +669,37 @@ ALTER TABLE `xqwmrfeeug`.`venta`
 DROP COLUMN `id_usuario`;
 
 INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Clientes View', 'Clientes', 'view');
+
+ALTER TABLE `xqwmrfeeug`.`producto` ADD INDEX `codinter` (`codinter`);
+ALTER TABLE `xqwmrfeeug`.`venta` ADD INDEX `fecha` (`fecha`);
+ALTER TABLE `xqwmrfeeug`.`traspaso` ADD INDEX `fecha` (`fecha`);
+ALTER TABLE `xqwmrfeeug`.`salida` ADD INDEX `fecha` (`fecha`);
+ALTER TABLE `xqwmrfeeug`.`entrada` ADD INDEX `fecha` (`fecha`);
+ALTER TABLE `xqwmrfeeug`.`producto_tienda` ADD INDEX `usuario_actualizacion` (`usuario_actualizacion`);
+ALTER TABLE `xqwmrfeeug`.`venta` ADD INDEX `usuario_cancelacion` (`usuario_cancelacion`);
+ALTER TABLE `xqwmrfeeug`.`productos_venta` ADD INDEX `usuario_cancelacion` (`usuario_cancelacion`);
+
+ALTER TABLE `xqwmrfeeug`.`entrada` ADD INDEX `usuario_validacion` (`usuario_validacion`);
+ALTER TABLE `xqwmrfeeug`.`entrada` ADD INDEX `usuario_deleted` (`usuario_deleted`);
+
+ALTER TABLE `xqwmrfeeug`.`traspaso` ADD INDEX `usuario_validacion` (`usuario_validacion`);
+ALTER TABLE `xqwmrfeeug`.`traspaso` ADD INDEX `usuario_deleted` (`usuario_deleted`);
+ALTER TABLE `xqwmrfeeug`.`salida` ADD INDEX `usuario_validacion` (`usuario_validacion`);
+ALTER TABLE `xqwmrfeeug`.`salida` ADD INDEX `usuario_deleted` (`usuario_deleted`);
+
+ALTER TABLE `xqwmrfeeug`.`producto` 
+DROP COLUMN `exento_ieps`,
+DROP COLUMN `ieps`,
+DROP COLUMN `exento_iva`,
+DROP COLUMN `condiciones`,
+DROP COLUMN `multiplicador`,
+DROP COLUMN `descuento_activado`;
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Ventas Reporte por Producto', 'Ventas', 'productos');
+
+
+INSERT INTO `xqwmrfeeug`.`usuario_tipo` (`id_usuario_tipo`, `usuario_tipo`, `status`) VALUES ('9', 'Servicios', 'active');
+UPDATE `xqwmrfeeug`.`usuario` SET `id_usuario_tipo` = '9' WHERE (`id` = '4');
+UPDATE `xqwmrfeeug`.`usuario` SET `id_usuario_tipo` = '9' WHERE (`id` = '12');
+INSERT INTO `xqwmrfeeug`.`permiso` (`nombre`, `section`, `page`) VALUES ('Cambiar decsucursal', 'Usuarios', 'changestore');
+
+

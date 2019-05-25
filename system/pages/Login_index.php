@@ -38,7 +38,7 @@
 <!-- possible classes: minified, no-right-panel, fixed-ribbon, fixed-header, fixed-width-->
 
 <div id="main" class="main" role="main" style="background-image: #323950;">
-<img style="position: fixed;width: 100%;height: 100%;" src="<?php echo ASSETS_URL; ?>/img/Fondo.png">
+   <img style="position: fixed;width: 100%;height: 100%;" src="<?php echo ASSETS_URL; ?>/img/Fondo.png">
 
    <!-- MAIN CONTENT -->
    <div id="content" class="containerNOT">
@@ -96,7 +96,7 @@
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 <?php
 
-echo $p=password_hash('jorchyac', PASSWORD_DEFAULT);
+//echo $p=password_hash('jorchyac', PASSWORD_DEFAULT);
 		
    //include required scripts
    include(SYSTEM_DIR . "/inc/scripts.php");
@@ -112,6 +112,8 @@ echo $p=password_hash('jorchyac', PASSWORD_DEFAULT);
          echo $_SESSION['user_id']=$id;
          $tienda = new Tienda();
          $dataTienda=$tienda->getTable($u->getIdTienda());
+         $UsuarioTipo = new UsuarioTipo();
+         $dataUsuarioTipo=$UsuarioTipo->getTable($u->getIdUsuarioTipo());
 			$_SESSION['user_info']=array(
             'id'=>$u->getId(),
             'id_usuario'=>$u->getIdUsuario(),
@@ -119,8 +121,11 @@ echo $p=password_hash('jorchyac', PASSWORD_DEFAULT);
 				'costos'=>$u->getCostos(),
 				'info_adicional'=>$dataTienda['info_adicional'],
 				'id_tienda'=>$u->getIdTienda(),
+				'tienda'=>$dataTienda['nombre'],
+				'usuario_tipo'=>$dataUsuarioTipo['usuario_tipo'],
 				'id_usuario_tipo'=>$u->getIdUsuarioTipo()
-				);
+            );
+         
 			$_SESSION['CSRFToken']=CSRFToken();
          $_SESSION['getCSRF']=CSRFToken();
 			// redirect to default page for authenticated user

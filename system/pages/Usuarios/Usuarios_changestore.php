@@ -11,7 +11,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Editar usuario";
+$page_title = "Cambiar de Sucursal";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -43,7 +43,7 @@ if(isPost()){
     if ( $id ) {
         informSuccess(true, make_url("Usuarios","index"));
     }else{
-        informError(true, make_url("Usuarios","edit",array('id'=>$data['id']) ) );
+        informError(true, make_url("Usuarios","changestore",array('id'=>$data['id']) ) );
     }
 }
 ?>
@@ -66,42 +66,14 @@ if(isPost()){
                         <div style="display: ;">
 							<div class="jarviswidget-editbox" style=""></div>
                                 <div class="widget-body">
-									<form id="main-form" class="smart-form" role="form" method=post action="<?php echo make_url("Usuarios","edit",array('id'=>$data['id']));?>" onsubmit="return checkSubmit();">
+									<form id="main-form" class="smart-form" role="form" method=post action="<?php echo make_url("Usuarios","changestore",array('id'=>$data['id']));?>" onsubmit="return checkSubmit();">
 										
 											<section>
 												<label class="input"> <i class="icon-append fa fa-envelope"></i>
 													<?php echo htmlentities($data['id_usuario']); ?>
 												</label>
 											</section>
-											<section>
-												<label class="input"> <i class="icon-append fa fa-user"></i>
-													<input type="text" id="nombre" name="nombre" placeholder="Nombre" value="<?php echo htmlentities($data['nombre']); ?>">
-												</label>
-											</section>
 											
-											<section>
-												<label class="input"> <i class="icon-append fa fa-list-alt"></i>
-													<input type="text" id="direccion" name="direccion" placeholder="Direccion" value="<?php echo htmlentities($data['direccion']); ?>">
-												</label>
-											</section>
-											<section>
-												<label class="label">Selecciona el Perfil</label>
-												<select style="width:100%" class="select2" name="id_usuario_tipo" id="id_usuario_tipo">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new UsuarioTipo();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-																$selected = "";
-															if ($data['id_usuario_tipo'] == $val['id_usuario_tipo'] )  $selected = "selected";
-															
-															echo "<option ".$selected ." value='".$val['id_usuario_tipo']."'>".htmlentities($val['usuario_tipo'])."</option>";
-														}
-													}
-													 ?>
-												</select>
-											</section>
 											<section>
 												<label class="label">Selecciona el tienda</label>
 												<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">													
@@ -120,28 +92,7 @@ if(isPost()){
 													 ?>
 												</select>
 											</section>
-											<section>
-												<label class="label">Comision</label>
-												<select style="width:100%" class="select2 " name="comision"  id="comision">
-													<?php 
-													$list= getComsiones();
-													if (is_array($list)){
-														foreach($list as $key => $val){
-															$selected= ($data['comision'] == $key) ? "selected" :'';
-															echo "<option value='".$key."'>".htmlentities($val)."</option>";
-														}
-													}
-													?>
-												</select>
-											</section>
-											<section>
-												<label class="label">Mostrar costos</label>
-												<select style="width:100%" class="select2" name="costos" id="costos">
-													<option value='0' <?php echo ($data['costos'] == 0 ) ? 'selected' : ''; ?>>No</option>
-													<option value='1' <?php echo ($data['costos'] == 1 ) ? 'selected' : ''; ?>>Si</option>
-														
-												</select>
-											</section>
+											
 									
 										<div class="form-actions" style="text-align: center">
 	                                        <div class="row">
@@ -191,17 +142,6 @@ if(isPost()){
 	function validateForm()
 	{
 		
-		var email = $("#email").val();
-		if (email == ""){ notify("info","Se necesita un email"); return false; }
-		
-		var x = $("#nombre").val();
-		if (x == ""){ notify("warning","Se necesita un nombre"); return false; }
-			
-		var x = $("#apellido_pat").val();
-		if (x == ""){ notify("warning","Se necesita un apellido"); return false; }
-
-		var idclinica = $("#id_tienda").val();
-		if (idclinica == ""){ notify("info","Se necesita un tienda"); return false; }
 	
 	    $("#main-form").submit();		
 	}

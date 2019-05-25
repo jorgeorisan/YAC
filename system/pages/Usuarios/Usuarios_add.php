@@ -117,6 +117,19 @@ if(isPost()){
 											</select>
 										</section>
 										<section>
+											<label class="label">Comision</label>
+											<select style="width:100%" class="select2 " name="comision"  id="comision">
+												<?php 
+												$list= getComsiones();
+												if (is_array($list)){
+													foreach($list as $key => $val){
+														echo "<option value='".$key."'>".htmlentities($val)."</option>";
+													}
+												}
+												?>
+											</select>
+										</section>
+										<section>
 											<label class="label">Mostrar costos</label>
 											<select style="width:100%" class="select2" name="costos" id="costos">
 												<option value='0'>No</option>

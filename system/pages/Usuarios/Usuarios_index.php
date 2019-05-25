@@ -51,18 +51,13 @@ $data = $obj->getAllArr();
 								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 									<thead>
 										<tr>
-											<th class = "col-md-1" data-class="expand">
-												<i class="fa fa-fw  fa-envelope  text-muted hidden-md hidden-sm hidden-xs"></i> Username</th>
-											<th class = "col-md-1" data-class="expand">
-												<i class="fa fa-fw fa-Usuario text-muted hidden-md hidden-sm hidden-xs"></i> Nombre</th>
-											<th class = "col-md-1" data-hide="phone tablet">
-												<i class="fa fa-fw  fa-certificate text-muted hidden-md hidden-sm hidden-xs"></i> Type</th>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i>Status</th>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i>Tienda</th>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  text-muted hidden-md hidden-sm hidden-xs"></i>Action</th>
+											<th class = "col-md-1" data-class="expand"> Username</th>
+											<th class = "col-md-1" data-class="expand"> Nombre</th>
+											<th class = "col-md-1" data-hide="phone tablet">Perfil</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Costos</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Comision</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Tienda</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Action</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -80,11 +75,8 @@ $data = $obj->getAllArr();
 												<td><?php echo htmlentities($row['id_usuario'])?></td>
 												<td><?php echo htmlentities($row['nombre'])?></td>
 												<td><?php echo htmlentities($nomUsuariotype) ?></td>
-												<?php if($row['status']=='active'){?>
-													<td><i class="fa fa-check-square    text-muted hidden-md hidden-sm hidden-xs"></td>
-												<?php }else{?>
-													<td><i class="fa f fa-square-o  text-muted hidden-md hidden-sm hidden-xs"></td>
-												<?php } ?>
+												<td><?php echo ($row['costos']) ? "Si":"No"; ?></td>
+												<td><?php echo htmlentities(($row['comision']*100)."%")?></td>
 												<td><?php echo htmlentities($nomtienda) ?></td>
 												<td>
 													<div class="btn-group">

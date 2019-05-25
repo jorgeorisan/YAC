@@ -13,22 +13,18 @@
 		protected $precio = 0;
 		protected $costo = 0;
 		protected $precio_descuento = 0;
-		protected $descuento_activado = "";
 		protected $status = "";
 		protected $codbarras = "";
-		protected $multiplicador = 0;
 		protected $fecha_registro = "";
 		protected $codinter = "";
-		protected $condiciones = "";
-		protected $exento_iva = 0;
-		protected $ieps = 0;
 		protected $paquete = "";
 		protected $alerta_minima = 0;
-		protected $exento_ieps = "";
 		protected $precio_costo = 0;
 		protected $imagen = "";
 		protected $manual = 0;
 		protected $precio_editable = 0;
+		protected $updated_date = "";
+		protected $deleted_date = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -92,11 +88,6 @@
  				$this->precio_descuento = $value;
 		}
 		
-		public function setDescuentoActivado( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "DESCUENTOACTIVADO","s") ) 
- 				$this->descuento_activado = $value;
-		}
-		
 		public function setStatus( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "STATUS","s") ) 
  				$this->status = $value;
@@ -105,11 +96,6 @@
 		public function setCodbarras( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "CODBARRAS","s") ) 
  				$this->codbarras = $value;
-		}
-		
-		public function setMultiplicador( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "MULTIPLICADOR","d") ) 
- 				$this->multiplicador = $value;
 		}
 		
 		public function setFechaRegistro( $value ){			
@@ -122,21 +108,6 @@
  				$this->codinter = $value;
 		}
 		
-		public function setCondiciones( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "CONDICIONES","s") ) 
- 				$this->condiciones = $value;
-		}
-		
-		public function setExentoIva( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "EXENTOIVA","i") ) 
- 				$this->exento_iva = $value;
-		}
-		
-		public function setIeps( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "IEPS","d") ) 
- 				$this->ieps = $value;
-		}
-		
 		public function setPaquete( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "PAQUETE","s") ) 
  				$this->paquete = $value;
@@ -145,11 +116,6 @@
 		public function setAlertaMinima( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "ALERTAMINIMA","d") ) 
  				$this->alerta_minima = $value;
-		}
-		
-		public function setExentoIeps( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "EXENTOIEPS","s") ) 
- 				$this->exento_ieps = $value;
 		}
 		
 		public function setPrecioCosto( $value ){			
@@ -168,6 +134,16 @@
 		public function setPrecioEditable( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "PRECIOEDITABLE","d") ) 
  				$this->precio_editable = $value;
+		}
+		
+		public function setUpdatedDate( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "UPDATEDDATE","s") ) 
+ 				$this->updated_date = $value;
+		}
+		
+		public function setDeletedDate( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "DELETEDDATE","s") ) 
+ 				$this->deleted_date = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -251,14 +227,6 @@
  			}
 		}
 		
-		public function getDescuentoActivado($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->descuento_activado) ;
- 			}else{
- 				return $this->descuento_activado ;
- 			}
-		}
-		
 		public function getStatus($sanitize=true){ 
  			if($sanitize){
  				return htmlspecialchars($this->status) ;
@@ -272,14 +240,6 @@
  				return htmlspecialchars($this->codbarras) ;
  			}else{
  				return $this->codbarras ;
- 			}
-		}
-		
-		public function getMultiplicador($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->multiplicador) ;
- 			}else{
- 				return $this->multiplicador ;
  			}
 		}
 		
@@ -299,30 +259,6 @@
  			}
 		}
 		
-		public function getCondiciones($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->condiciones) ;
- 			}else{
- 				return $this->condiciones ;
- 			}
-		}
-		
-		public function getExentoIva($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->exento_iva) ;
- 			}else{
- 				return $this->exento_iva ;
- 			}
-		}
-		
-		public function getIeps($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->ieps) ;
- 			}else{
- 				return $this->ieps ;
- 			}
-		}
-		
 		public function getPaquete($sanitize=true){ 
  			if($sanitize){
  				return htmlspecialchars($this->paquete) ;
@@ -336,14 +272,6 @@
  				return htmlspecialchars($this->alerta_minima) ;
  			}else{
  				return $this->alerta_minima ;
- 			}
-		}
-		
-		public function getExentoIeps($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->exento_ieps) ;
- 			}else{
- 				return $this->exento_ieps ;
  			}
 		}
 		
@@ -379,11 +307,46 @@
  			}
 		}
 		
+		public function getUpdatedDate($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->updated_date) ;
+ 			}else{
+ 				return $this->updated_date ;
+ 			}
+		}
+		
+		public function getDeletedDate($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->deleted_date) ;
+ 			}else{
+ 				return $this->deleted_date ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
 		public function getStatusclass(){
 			return  $this->statusclass ;
+		}
+		// Private Support Functions
+		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
+			//if ( ! $this->validclass )
+			//	return $this->validclass;
+
+			if ( ! preg_match($pcre, $input) ){ 
+				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
+			}else{
+				unset($this->statusclass[$field]);
+				if (empty($this->statusclass)){$this->validclass=true;}
+			}
+
+			return true;
+		}
+		protected function killInvalidclass( $msg, $field="General Error" ){
+			$this->statusclass[$field] = $msg;
+			$this->validclass = false;
+			return false;
 		}
 
 	// Public Support Functions
@@ -413,22 +376,18 @@
 			$this->setPrecio( $res['precio'] );
 			$this->setCosto( $res['costo'] );
 			$this->setPrecioDescuento( $res['precio_descuento'] );
-			$this->setDescuentoActivado( $res['descuento_activado'] );
 			$this->setStatus( $res['status'] );
 			$this->setCodbarras( $res['codbarras'] );
-			$this->setMultiplicador( $res['multiplicador'] );
 			$this->setFechaRegistro( $res['fecha_registro'] );
 			$this->setCodinter( $res['codinter'] );
-			$this->setCondiciones( $res['condiciones'] );
-			$this->setExentoIva( $res['exento_iva'] );
-			$this->setIeps( $res['ieps'] );
 			$this->setPaquete( $res['paquete'] );
 			$this->setAlertaMinima( $res['alerta_minima'] );
-			$this->setExentoIeps( $res['exento_ieps'] );
 			$this->setPrecioCosto( $res['precio_costo'] );
 			$this->setImagen( $res['imagen'] );
 			$this->setManual( $res['manual'] );
 			$this->setPrecioEditable( $res['precio_editable'] );
+			$this->setUpdatedDate( $res['updated_date'] );
+			$this->setDeletedDate( $res['deleted_date'] );
 			return true;
 		}
 		// end function load

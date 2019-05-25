@@ -131,7 +131,7 @@ $dataventas = $obj->getReporteVentasApartados();
 															if (!$row['cancelado']){ ?> 
 																<?php if($row['icredito']){ ?>
 																	<li>
-																		<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
+																		<a data-toggle="modal" class="" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
 																	</li>
 																<?php } ?>
 																<li class="divider"></li>

@@ -38,7 +38,8 @@ class Deudores extends AutoDeudores {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
-		$_request['id_user'] = (isset($_request['id_usuario'])) ? $_request['id_usuario'] : $_SESSION['user_id'];
+		$_request['id_user'] 	 = (isset($_request['id_usuario'])) ? $_request['id_usuario']   : $_SESSION['user_id'];
+		$_request['fecha_abono'] = (isset($_request['fecha_abono'])) ? $_request['fecha_abono'] : date('Y-m-d H:m:i');
 		$data=fromArray($_request,'deudores',$this->db,"add");
 		$sql= "INSERT INTO deudores (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
