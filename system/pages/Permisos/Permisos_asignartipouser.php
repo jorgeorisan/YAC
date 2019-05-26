@@ -27,46 +27,69 @@ include(SYSTEM_DIR . "/inc/nav.php");
 
 
 if(isset($request['params']['id'])   && $request['params']['id']>0)
-    $id=$request['params']['id'];
+    $idusuariotipo = $request['params']['id'];
 
 else
     informError(true,make_url("Usuarios","usertype"));
 
 
 
-$obj = new UsuarioTipo();
-$data = $obj->getTable($id);
-if ( !$data ) {
-    informError(true,make_url("Usuarios","usertype"));
-}
-if(isPost()){
-	$objpermuser = new PermisoUsuario();
-    $datapermisosuser = $objpermuser->deleteAll($id);
-    if(!$datapermisosuser){
-    	echo "error al eliminar permisos";
-    	exit;
+    $obj = new UsuarioTipo();
+    $data = $obj->getTable($idusuariotipo);
+    if ( !$data ) {
+        informError(true,make_url("Usuarios","index"));
     }
-    if ( count($_POST["perm"] ) ) {
-    	$error=0;
-    	foreach ($_POST["perm"] as $perm) {
-	        $objpermuser->addAll($perm,$id);
-	        if ($id > 0){
-	        }else{
-	        	$error++;
-	        }
-    	}
-    }else{
-    	echo "No hay permisos";
-    	exit;
+    if(isPost()){
+        $objpermuser = new PermisoUsuariotipo();
+        $datapermisosuser = $objpermuser->deleteAll($idusuariotipo);
+        if(!$datapermisosuser){
+            echo "error al eliminar permisos";
+            exit;
+        }
+        if ( count($_POST["perm"] ) ) {
+            $error=0;
+            foreach ($_POST["perm"] as $perm) {
+                $id=$objpermuser->addAll($perm,$idusuariotipo);
+                if ($id > 0){
+                }else{
+                    $error++;
+                }
+            }
+            $objUsuarios = new Usuario();
+            $dataUsuarios = $objUsuarios->getAllArr(false,$idusuariotipo);
+            foreach ($dataUsuarios as $key => $usuario) {
+                $objpermuser = new PermisoUsuario();
+                $datapermisosuser = $objpermuser->deleteAll($usuario['id']);
+                if(!$datapermisosuser){
+                    echo "error al eliminar permisos";
+                    exit;
+                }
+                if ( count($_POST["perm"] ) ) {
+                    $error=0;
+                    foreach ($_POST["perm"] as $perm) {
+                        $objpermuser->addAll($perm,$usuario['id']);
+                        if ($id > 0){
+                        }else{
+                            $error++;
+                        }
+                    }
+                }else{
+                    echo "No hay permisos usuario";
+                    exit;
+                }
+                
+            }
+        }else{
+            echo "No hay permisos";
+            exit;
+        }
+
+        if( $error == 0  ) {
+             informSuccess(true, make_url("Usuarios","usertype"));
+        }else{
+            informError(true, make_url("Permisos","asignar",array('id'=>$id)),"asignar");
+        }
     }
-  	
-   
-    if( $error == 0  ) {
-         informSuccess(true, make_url("Usuarios","usertype"));
-    }else{
-        informError(true, make_url("Permisos","asignartipousuario",array('id'=>$id)),"asignartipousuario");
-    }
-}
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -106,7 +129,7 @@ if(isPost()){
 							              </th>
 							              <?php
 									        $permisos = array();
-		                                    $objpermuser = new PermisoUsuario();
+		                                    $objpermuser = new PermisoUsuariotipo();
 		                                    $datapermisosuser = $objpermuser->getAllArr($id);
 									        foreach ($datapermisosuser as $rowperm) {
 									          $permisos[] = $rowperm['id_permiso'];

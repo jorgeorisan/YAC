@@ -7,11 +7,16 @@ class Usuario extends AutoUsuario {
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr($id_usuario_tipo=false)
+	public function getAllArr($id_tiendas=false,$id_usuario_tipo=false)
 	{
-		$add = ($id_usuario_tipo) ? " and id_tienda in (" . $id_usuario_tipo . ") " : '';
+		$add = ($id_tiendas) ? " and id_tienda in (" . $id_tiendas . ") " : '';
 		
-		$sql = "SELECT * FROM usuario where status='ACTIVO' $add ;";
+		$addusertype = ($id_usuario_tipo) ? " and id_usuario_tipo =". $id_usuario_tipo : '';
+		
+		$sql = "SELECT * FROM usuario 
+				where status='ACTIVO' 
+				$add 
+				$addusertype;";
 		
 		$res = $this->db->query($sql);
 		$set = array();

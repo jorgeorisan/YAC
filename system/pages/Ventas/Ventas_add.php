@@ -119,6 +119,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                     </form>
                                 </div>
 								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Ventas","add");?>" onsubmit="return checkSubmit();">     
+                                    <input type="hidden" id='tiendaprod' name="id_tienda" value="<?php echo $idtienda ?>">
                                     <div class="col-sm-6 col-md-6 col-lg-6">
                                         <h3 class="tit">Productos</h3>
                                         <input type="hidden" name="total-global" id="total-global" value="0"/>
@@ -430,6 +431,9 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         });
         $("#id_tienda").change(function () {
             var id=$("#id_tienda").val();
+            tiendaprod
+            
+            $("#tiendaprod").val(id);
             $("#catalogo").attr('href',''+id);
             return false;
         });

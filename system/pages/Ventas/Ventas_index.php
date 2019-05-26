@@ -139,7 +139,7 @@ foreach($dataabonos as $row) {
 			
 
 			<?php if(isset($dataventas) && $dataventas!=''){ ?>
-				<div class="row">
+				<div class="row" style="overflow:auto">
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 							<header>
@@ -153,11 +153,11 @@ foreach($dataabonos as $row) {
 									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 										<thead>
 											<tr>
-												<th class = "col-md-1" data-class="expand">Folio</th>
-												<th class = "col-md-1" data-class="phone,tablet">Vendedor </th>
+												<th class = "col-md-1" data-class="">Folio</th>
+												<th class = "col-md-1" data-class="expand">Vendedor </th>
 												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
-												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Total</th>
 												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
 												<th class = "col-md-1" data-class="phone,tablet"></th>

@@ -106,7 +106,6 @@ class PermisoUsuario extends AutoPermisoUsuario {
 				INNER JOIN permiso p on p.id=pu.id_permiso
 				WHERE pu.id_usuario='".$id."'
 				AND p.section='".$section."'
-				AND p.section='".$section."'
 				AND p.id !=5
 				;";
 		$res=$this->db->query($sql);

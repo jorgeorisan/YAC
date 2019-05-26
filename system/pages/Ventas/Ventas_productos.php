@@ -52,7 +52,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 			 	<a class="btn btn-success" href="<?php echo make_url("Ventas","add")?>" >Nueva Venta</a>
 				<a class="btn btn-info" id="exportarVentaProductos"  target="_blank" href="<?php echo make_url("Ventas","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
 			</div>
-			<div class="row">
+			<div class="row" style="overflow:auto">
 				<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 						<header>
