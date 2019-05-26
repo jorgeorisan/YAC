@@ -26,14 +26,14 @@ include(SYSTEM_DIR . "/inc/header.php");
 include(SYSTEM_DIR . "/inc/nav.php");
 if(isPost()){
     $obj = new Producto();
-    if(!$obj->existeProducto($_POST['codigo'])){
+    if(!$obj->existeProducto($_POST['codinter'])){
         $id=$obj->addAll(getPost());
         if($id>0){
             //nuevas imagenes
             if (isset($_FILES['imagen'])){
                 $carpetaimg = PRODUCTOS.'/images';
-                move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codigo'].'.png');
-                $request['imagen']=$id."_".$_POST['codigo'].'.png';
+                move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codinter'].'.png');
+                $request['imagen']=$id."_".$_POST['codinter'].'.png';
                 $id = $obj->updateAll($id,$request);
                 if( $id >0  ) {
                     informSuccess(true, make_url("Productos","view",array('id'=>$id)));
@@ -150,7 +150,7 @@ if(isPost()){
                                             <div class="col-sm-6" style="padding:0px;padding-left: 10px;">
                                                 <div class="form-group">
                                                     <label class="name">Codigo </label>
-                                                    <input type="text" required class="form-control" id="codigo" name="codigo" placeholder="Codigo" onkeypress="nextFocus('codigo', 'nombre')">
+                                                    <input type="text" required class="form-control" id="codigo" name="codinter" placeholder="Codigo" onkeypress="nextFocus('codigo', 'nombre')">
                                                 </div>
                                             </div>
                                         </div>
@@ -251,7 +251,7 @@ if(isPost()){
         if ( ! id_proveedor )  return notify("info","La Seccion es requerida");
         var id_marca = $("#id_marca").val();
         if ( ! id_marca )  return notify("info","La marca es requerida");
-        var codigo = $("input[name=codigo]").val();
+        var codigo = $("input[name=codinter]").val();
         if ( ! codigo )  return notify("info","El codigo es requerido");
         var nombre = $("input[name=nombre]").val();
         if ( ! nombre )  return notify("info","El nombre es requerido");

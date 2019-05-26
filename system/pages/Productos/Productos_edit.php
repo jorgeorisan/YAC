@@ -41,8 +41,8 @@ if(isPost()){
         //nuevas imagenes
         if (isset($_FILES['imagen'])){
             $carpetaimg = PRODUCTOS.'/images';
-            move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codigo'].'.png');
-            $request['imagen']=$id."_".$_POST['codigo'].'.png';
+            move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codinter'].'.png');
+            $request['imagen']=$id."_".$_POST['codinter'].'.png';
             $id = $obj->updateAll($id,$request);
             if( $id >0  ) {
                 informSuccess(true, make_url("Productos","view",array('id'=>$id)));
@@ -275,7 +275,7 @@ if(isPost()){
         var id_marca = $("#id_marca").val();
         if ( ! id_marca )  return notify("info","La marca es requerida");
 
-        var codigo = $("input[name=codigo]").val();
+        var codigo = $("input[name=codinter]").val();
         if ( ! codigo )  return notify("info","El codigo es requerido");
 
         var nombre = $("input[name=nombre]").val();
