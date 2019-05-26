@@ -69,50 +69,54 @@ foreach($dataabonos as $row) {
                             <div class="widget-body">
 								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
-                                        <div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
-							                <div class="form-group">
-							                    <label for="name">Fecha Inicial</label>
-							                    <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
-							                </div>
-							                <div class="form-group">
-							                    <label for="name">Fecha Final</label>
-							                    <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
-							                </div>
+										<div class="row">
+											<div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
+												<div class="form-group">
+													<label for="name">Fecha Inicial</label>
+													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
+												</div>
+												<div class="form-group">
+													<label for="name">Fecha Final</label>
+													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
+												</div>
+											</div>
 										</div>
-										<div class="col-sm-6">
-							                <div class="form-group">
-							                    <label for="name">Tienda</label>
-							                    <select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new Tienda();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-															$selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+										<div class="row">
+											<div class="col-sm-6">
+												<div class="form-group">
+													<label for="name">Tienda</label>
+													<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Tienda();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+															}
 														}
-													}
-													?>
-												</select>
-							                </div>
-							                <div class="form-group">
-							                    <label for="name">Usuario<?php echo $idusuario;?></label>
-							                    <select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new Usuario();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-															$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id_user']."'>".htmlentities($val['id_usuario'])."</option>";
+														?>
+													</select>
+												</div>
+												<div class="form-group">
+													<label for="name">Usuario<?php echo $idusuario;?></label>
+													<select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Usuario();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id_user']."'>".htmlentities($val['id_usuario'])."</option>";
+															}
 														}
-													}
-													?>
-												</select>
-							                </div>
-							            </div>
+														?>
+													</select>
+												</div>
+											</div>
+										</div>
                                     </fieldset> 
                                     <div class="form-actions" style="text-align: center">
                                         <div class="row">

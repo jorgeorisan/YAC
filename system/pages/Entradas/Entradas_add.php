@@ -338,9 +338,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         });
 
 
-        $(".borrar-producto").on('click', function (e) {
-            e.preventDefault();
-
+        $('body').on('click', '.borrar-producto', function(){
             var id = $(this).attr("lineid");
             $("[lineid=" + id + "]").remove();
         });

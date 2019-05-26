@@ -59,67 +59,64 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
                                 <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-8 col-lg-8">
-                                        <form id="barcode-form">
-                                            <input type="hidden" name='action' value='get'>
-                                            <input type="hidden" name='object' value='get_producto'>
-                                            <?php if($disabled){
-                                                ?>
-                                                <input type="hidden" name='id_tienda' value='<?php echo $idtienda ?>'>
-                                                <?php
-                                            }
+                                    <form id="barcode-form">
+                                        <input type="hidden" name='action' value='get'>
+                                        <input type="hidden" name='object' value='get_producto'>
+                                        <?php if($disabled){
                                             ?>
-                                            <table class="table-striped table-bordered table-hover" style="width:100%">
-                                                <tr>
-                                                    <th style="width: 100px;">Sucursal</th>
-                                                    <td>
-                                                        <select style="width:100%" class="select2" name="id_tienda" id="id_tienda" <?php echo $disabled; ?> > 
-                                                            <option value="">--Sucursal--</option>
-                                                            <?php 
-                                                            $obj = new Tienda();
-                                                            $list=$obj->getAllArr();
-                                                            if (is_array($list) || is_object($list)){
-                                                                foreach($list as $val){
-                                                                    $selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
-                                                                    echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
-                                                                }
+                                            <input type="hidden" name='id_tienda' value='<?php echo $idtienda ?>'>
+                                            <?php
+                                        }
+                                        ?>
+                                        <table class="table-striped table-bordered table-hover" style="width:100%">
+                                            <tr>
+                                                <th style="width: 100px;">Sucursal</th>
+                                                <td colspan="2">
+                                                    <select style="width:100%" class="select2" name="id_tienda" id="id_tienda" <?php echo $disabled; ?> > 
+                                                        <option value="">--Sucursal--</option>
+                                                        <?php 
+                                                        $obj = new Tienda();
+                                                        $list=$obj->getAllArr();
+                                                        if (is_array($list) || is_object($list)){
+                                                            foreach($list as $val){
+                                                                $selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
+                                                                echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
                                                             }
-                                                            ?>
-                                                        </select>
-                                                    </td>
-                                                    <th>Precio</th>
-                                                    <td>
-                                                        <select style="width:100%" class="select2" name="tipoprecio" id="tipoprecio">
-                                                            <option value="">--Tipo Precio--</option>
-                                                            <option value="Normal" selected>Normal</option>
-                                                            <option value="Mayoreo">Mayoreo</option>
-                                                            <option value="Promocumple">Promo Cumple</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Código</th>
-                                                    <td>
-                                                        <input type="text" style="width:100%" for='autocomplete' class="form-control" id="barcode" name="codigo" placeholder="Buscar" onkeypress="nextFocus('barcode', 'cantidad')">
-                                                    </td>
-                                                    <td  colspan='2'>
-                                                        <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupcatalogo()" > <i class="fa fa-search"></i></a>                                          
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Cantidad</th>
-                                                    <td  colspan='3'>
-                                                        <input type="number" style="width:50px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
-                                                    </td>
-                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td colspan='4'><br><input style="width:100%; height:100%" type="submit" class="btn btn-success"  id='btn_agregar'  value="Agregar"/> </td>
-                                                    
-                                                </tr>
-                                            </table>
-                                        </form>
-                                    </div>
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select style="width:100%" class="select2" name="tipoprecio" id="tipoprecio">
+                                                        <option value="">--Tipo Precio--</option>
+                                                        <option value="Normal" selected>Normal</option>
+                                                        <option value="Mayoreo">Mayoreo</option>
+                                                        <option value="Promocumple">Promo Cumple</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Código</th>
+                                                <td colspan="2">
+                                                    <input type="text" style="width:100%" for='autocomplete' class="form-control" id="barcode" name="codigo" placeholder="Buscar" onkeypress="nextFocus('barcode', 'cantidad')">
+                                                </td>
+                                                <td  colspan='1'>
+                                                    <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupcatalogo()" > <i class="fa fa-search"></i></a>                                          
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Cantidad</th>
+                                                <td  colspan='3'>
+                                                    <input type="number" style="width:100px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
+                                                </td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td colspan='4'><br><input style="width:100%; height:100%" type="submit" class="btn btn-success"  id='btn_agregar'  value="Agregar"/> </td>
+                                                
+                                            </tr>
+                                        </table>
+                                    </form>
                                 </div>
 								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Ventas","add");?>" onsubmit="return checkSubmit();">     
                                     <div class="col-sm-6 col-md-6 col-lg-6">
@@ -364,10 +361,10 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         $("#barcode-form").submit(function (e) {
             e.preventDefault();
             var res =  $('#barcode').val().split("::");
-            if(res.length>0){
+            if(res.length>0 && res[0]){
                $('#barcode').val(res[0].trim());
+                getproducto($(this).serialize());
             }
-            getproducto($(this).serialize());
             return false;
         });
 
@@ -459,10 +456,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             return false;
         });
 
-
-        $(".borrar-producto").on('click', function (e) {
-            e.preventDefault();
-
+        $('body').on('click', '.borrar-producto', function(){
             var id = $(this).attr("lineid");
             $("[lineid=" + id + "]").remove();
             calcTotal();

@@ -122,7 +122,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                 <tr>
                                                     <th>Cantidad</th>
                                                     <td  colspan='3'>
-                                                        <input type="number" style="width:50px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
+                                                        <input type="number" style="width:100px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
                                                     </td>
                                                     
                                                 </tr>
@@ -322,9 +322,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         });
 
 
-        $(".borrar-producto").on('click', function (e) {
-            e.preventDefault();
-
+        $('body').on('click', '.borrar-producto', function(){
             var id = $(this).attr("lineid");
             $("[lineid=" + id + "]").remove();
         });

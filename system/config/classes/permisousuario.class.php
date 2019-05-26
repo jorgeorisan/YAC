@@ -101,10 +101,14 @@ class PermisoUsuario extends AutoPermisoUsuario {
 		}
 		$id      = $this->db->real_escape_string($id);
 		$section = $this->db->real_escape_string($section);
-		$sql = "SELECT pu.id , p.section , p.page FROM permiso_usuario pu 
+		$sql = "SELECT pu.id , p.section , p.page 
+				FROM permiso_usuario pu 
 				INNER JOIN permiso p on p.id=pu.id_permiso
 				WHERE pu.id_usuario='".$id."'
-				AND p.section='".$section."';";
+				AND p.section='".$section."'
+				AND p.section='".$section."'
+				AND p.id !=5
+				;";
 		$res=$this->db->query($sql);
 		if(!$res)
 			{die("Error getting result getsectionsuser");}

@@ -79,7 +79,7 @@ class Venta extends AutoVenta {
 					$_requestProductosVenta['nombre']        	   = $producto['nombre'];
 					$_requestProductosVenta['costototal']        = $costos[$key];
 					$_requestProductosVenta['total'] 	   		     = $totales[$key];
-					$_requestProductosVenta['tipo_precio']  	   = $tipoprecio[$key];
+					$_requestProductosVenta['tipoprecio']  	     = $tipoprecio[$key];
 					$idHD = $objPV->addAll($_requestProductosVenta);
 					if($idHD>0){}else{ die("Error al insertar historial diagnostico"); }
 					if(!$producto['manual'])

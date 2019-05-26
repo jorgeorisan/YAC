@@ -123,6 +123,7 @@ if ($porcentpagado < 50 )
             $datapv = $objpv->getAllArr($data['id_venta']);
             foreach($datapv as $row) :
                 if($row['cancelado']) continue;
+                $tipoprecio = ($row['tipoprecio']!='Normal') ?  "<br>".htmlentities(ucwords(strtolower($row['tipoprecio']))) : '';
 
                 $total += $row['total'];
                 ?>
@@ -130,7 +131,7 @@ if ($porcentpagado < 50 )
                     <td> <?php echo $row['cantidad']; ?></td>
                     <td> <?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
                     <td>$<?php echo number_format($row['total']/$row['cantidad'], 0); ?></td>
-                    <td>$<?php echo number_format($row['total'], 0); ?></td>
+                    <td>$<?php echo number_format($row['total'], 0).$tipoprecio; ?></td>
                 </tr>
             <?php
             endforeach;
