@@ -30,7 +30,7 @@ public/sistema/documentos
 internal/log
 
 #imagenes de productos
-productos
+productosimages
 
 # Composer
 composer.lock
