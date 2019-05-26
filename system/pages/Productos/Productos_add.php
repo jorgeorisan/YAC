@@ -30,7 +30,7 @@ if(isPost()){
         $id=$obj->addAll(getPost());
         if($id>0){
             //nuevas imagenes
-            if (isset($_FILES['imagen'])){
+            if (isset($_FILES['imagen']) && isset($data['imagen'])){
                 $carpetaimg = PRODUCTOS.'/images';
                 move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codinter'].'.png');
                 $request['imagen']=$id."_".$_POST['codinter'].'.png';

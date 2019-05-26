@@ -39,7 +39,7 @@ if(isPost()){
     $id = $obj->updateAll($id,getPost());
     if( $id >0  ) {
         //nuevas imagenes
-        if (isset($_FILES['imagen'])){
+        if (isset($_FILES['imagen']) && isset($data['imagen'])){
             $carpetaimg = PRODUCTOS.'/images';
             move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codinter'].'.png');
             $request['imagen']=$id."_".$_POST['codinter'].'.png';
@@ -145,7 +145,7 @@ if(isPost()){
                                         </div>
                                         <div class="form-group superbox">
 											<label for="name">Imagen</label>
-                                            <input type="file" id="imagen" name="imagen"  value="<?php echo $data['imagen']; ?>" title="Imagen">
+                                            <input type="file" id="imagen" name="imagen"  value="<?php echo ($data['imagen']) ? $data['imagen']  : ''; ?>" title="Imagen">
                                             <div id='contfileproductos'>
                                                 <?php 
                                                 if($data['imagen']){
