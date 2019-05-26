@@ -11,7 +11,7 @@ class PermisoUsertype extends AutoPermisoUsertype {
 	{
 		if(! intval( $id )){ return false;	}
 		$id  = $this->db->real_escape_string($id);
-		$sql = "SELECT * FROM permiso_usertype where id_usertype=$id ;";
+		$sql = "SELECT * FROM permiso_usuario where id_usuario=$id ;";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
