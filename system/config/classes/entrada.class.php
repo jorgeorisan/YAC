@@ -216,6 +216,24 @@ class Entrada extends AutoEntrada {
 		$res->close();
 		return $set;
 	}
+	//reporte de entradas por autorizar
+	public function getReporteEntradasPendientes()
+	{
+		$sql = "SELECT v.* FROM entrada v
+				where  v.status = 'POR AUTORIZAR'
+			 ";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteEntradasPendientes"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
+	
 	public function getpagado($id){
 		if(! intval( $id )) return false;
 		$sql = "SELECT ifnull(sum(montoabono),0) as total FROM deudores where  id_venta=$id and status='ACTIVA' limit 1;";

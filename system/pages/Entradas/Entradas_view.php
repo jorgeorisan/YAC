@@ -65,7 +65,7 @@ $datauser = $usuario->getTable($data['id_user']);
                     <div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                            <h2><?php echo $page_title ?></h2>
+                            <h2><?php echo $page_title." ".$id ?></h2>
                         </header>
                         <div>
                             <div class="jarviswidget-editbox">

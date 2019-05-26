@@ -33,6 +33,8 @@ $arrayfilters['id_tienda']     = $idtienda;
 
 $dataentradas = $objEntrada->getReporteEntradas($arrayfilters);
 
+$dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -153,7 +155,7 @@ $dataentradas = $objEntrada->getReporteEntradas($arrayfilters);
 													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
 												<?php } ?>
 												<th class = "col-md-1" data-class="phone,tablet">Total Precio</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>>
+												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-hide="phone,tablet">Status</th>
 												<th class = "col-md-1" data-class="phone,tablet"></th>
 											</tr>
@@ -163,6 +165,134 @@ $dataentradas = $objEntrada->getReporteEntradas($arrayfilters);
 											$nomtienda = '';
 											$total = $totalcosto = 0;
 											foreach($dataentradas as $row) {
+												$tienda = new Tienda();
+												$datatienda = $tienda->getTable($row["id_tienda"]);
+												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 
+											
+												$status = htmlentities($row['status']);
+												switch ($status) {
+													case 'BAJA':
+														$status = 'Cancelado';
+														$class  = 'cancelada';
+														break;
+													default:
+														$class  = '';
+														$total += $row['total'];
+														$totalcosto += $row['costo_total'];
+														break;
+												} 
+												?>
+												<tr class="<?php echo $class; ?>">
+													<td>
+														<a class="" href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>">
+															<?php echo htmlentities($row['id_entrada'])?>:Ver
+														</a>
+													</td>
+													<td><?php echo htmlentities($row['folio'])?></td>
+													<td><?php echo htmlentities($nomtienda) ?></td>
+													<td><?php echo htmlentities($row['referencia'])?></td>
+													<td>
+														<?php echo htmlentities($row['tipo_pago'])."<br>";
+														if($row['icredito']){
+															echo "<span style='color:red'>En pago</span>";
+														}
+														?>
+													</td>
+													<td><?php echo htmlentities($row['comentarios']) ?></td>
+													<?php if($_SESSION['user_info']['costos']) { ?>
+														<td>$<?php echo number_format($row['costo_total'], 2); ?></td>
+													<?php } ?>
+													<td>$<?php echo number_format($row['total'], 2); ?></td>
+													<td><?php echo htmlentities($row['fecha'])?></td>
+													<td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion'] ?></td>
+													<td>
+														<div class="btn-group">
+															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+																Accion <span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu">
+																<li>
+																	<a title="Ver Entrada" class=""  href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>"> Ver Entrada</a>
+																</li>
+																<li>
+																	<a title="Imprimir Entrada" class="" target="_blank" href="<?php echo make_url("Entradas","print",array('id'=>$row['id_entrada'],'page'=>'entrada')); ?>">Imprimir</a>
+																</li>
+																<?php 
+																if ($row['status']!='BAJA'){ ?> 
+																	<?php if($row['icredito']){ ?>
+																		<li>
+																			<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_entrada'] ?>)"> Pagar</a>
+																		</li>
+																	<?php } ?>
+																	<li class="divider"></li>
+																	<li>
+																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Entradas","entradadelete",array('id'=>$row['id_entrada'])); ?>',<?php echo $row['id_entrada']; ?>);">Eliminar</a>
+																	</li>
+																<?php 
+																} ?>
+															</ul>
+														</div>
+													</td>
+												</tr>
+											<?php
+											}
+											?>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th colspan="6" style="text-align:right">Total:</th>
+												<?php if($_SESSION['user_info']['costos']) { ?>
+													<th>$<?php echo $totalcosto;?></th>
+												<?php } ?>
+												<th>$<?php echo $total;?></th>
+												<th></th>
+												<th></th>
+												<th></th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</article>
+					
+				</div>
+			<?php }?>
+			<?php if(isset($dataentradaspendientes) && $dataentradaspendientes!=''){ ?>
+				<div class="row">
+					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
+							<header>
+								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+								<h2><?php echo "ENTRADAS POR VALIDAR" ?></h2>
+							</header>
+							<div>
+								<div class="jarviswidget-editbox">
+								</div>
+								<div class="widget-body">
+									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+										<thead>
+											<tr>
+												<th class = "col-md-1" data-hide="phone,tablet"> </th>
+												<th class = "col-md-1" data-class="expand">No. Folio</th>
+												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
+												<th class = "col-md-1" data-class="phone,tablet">Referencia </th>
+												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
+												<?php if($_SESSION['user_info']['costos']) { ?>
+													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
+												<?php } ?>
+												<th class = "col-md-1" data-class="phone,tablet">Total Precio</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Status</th>
+												<th class = "col-md-1" data-class="phone,tablet"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php 
+											$nomtienda = '';
+											$total = $totalcosto = 0;
+											foreach($dataentradaspendientes as $row) {
 												$tienda = new Tienda();
 												$datatienda = $tienda->getTable($row["id_tienda"]);
 												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 

@@ -194,6 +194,22 @@ class Traspaso extends AutoTraspaso {
 		$res->close();
 		return $set;
 	}
+	public function getReporteTraspasosPendientes()
+	{
+		$sql = "SELECT v.* FROM traspaso v
+				where  v.status='POR AUTORIZAR'
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteTraspasos"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
 	public function getpagado($id){
 		if(! intval( $id )) return false;
 		$sql = "SELECT ifnull(sum(montoabono),0) as total FROM deudores where  id_venta=$id and status='ACTIVA' limit 1;";
