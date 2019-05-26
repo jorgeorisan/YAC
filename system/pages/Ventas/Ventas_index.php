@@ -70,7 +70,7 @@ foreach($dataabonos as $row) {
 								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
 										<div class="row">
-											<div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
+											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">
 												<div class="form-group">
 													<label for="name">Fecha Inicial</label>
 													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
@@ -80,9 +80,7 @@ foreach($dataabonos as $row) {
 													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
 												</div>
 											</div>
-										</div>
-										<div class="row">
-											<div class="col-sm-6">
+											<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 												<div class="form-group">
 													<label for="name">Tienda</label>
 													<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
