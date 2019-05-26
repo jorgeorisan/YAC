@@ -62,6 +62,7 @@ $menuProductos = array(
 			"icon" => "fa-archive",
 			"sub" => array(
 				'productosindex' => array('title'  => 'Productos','url' => APP_URL."/Productos/index" ),
+				'productosindexall' => array('title'  => 'Productos Todos','url' => make_url("Productos","index",array('opt'=>'All')) ),
 				'productos' => array('title'  => 'Nuevo Producto','url' => APP_URL."/Productos/add" )
 			)
 	)

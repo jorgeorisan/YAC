@@ -17,9 +17,10 @@ include(SYSTEM_DIR . "/inc/header.php");
 //include left panel (navigation)
 include(SYSTEM_DIR . "/inc/nav.php");
 
+$all= (isset($request['params']['opt'])) ?  true : false;
 
 $obj = new Producto();
-$data = $obj->getAllArr();
+$data = $obj->getAllArr(false,false,false, $all );
 
 //print_r($data);
 ?>
