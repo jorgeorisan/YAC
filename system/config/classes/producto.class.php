@@ -7,14 +7,13 @@ class Producto extends AutoProducto {
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr($id_producto=false,$tienda=false,$similar=false,$TODO=false)
+	public function getAllArr($id_producto=false,$tienda=false,$similar=false,$TODO=true)
 	{
 		if(!$tienda)
 			if(isset($_SESSION['user_info']['id_tienda']))
 				$tienda = $_SESSION['user_info']['id_tienda'] ;
 
-		if(!$TODO)
-			$TODO =" HAVING TIENDA.existencias>0 " ;
+		$TODO =(!$TODO) ? " HAVING TIENDA.existencias>0 " : '' ;
 
 		$queryprod =($id_producto) ? " AND p.id_producto = $id_producto" : '';
 		if($similar){
