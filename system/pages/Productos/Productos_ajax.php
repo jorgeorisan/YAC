@@ -69,7 +69,12 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						echo 0;
 					}
 					break;
-				default:
+				case 'addpopup':
+					include(SYSTEM_DIR.'/pages/Productos/Productos_addpopup.php' );
+					break;
+				
+				
+					default:
 					# code...
 					break;
 			}
@@ -182,6 +187,33 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					}else{
 						echo "Error al recibir datos";
 					}
+					break;
+				case 'savenewproducto':
+					$objproducto = new Producto();
+					if(!$objproducto->existeProducto($_POST['codinter'])){
+						$id=$objproducto->addAll(getPost());
+						if($id>0){
+							//nuevas imagenes
+							if (isset($_FILES['imagen']["tmp_name"])){
+								$carpetaimg = PRODUCTOS.'/images';
+								move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codinter'].'.png');
+								$request['imagen']=$id."_".$_POST['codinter'].'.png';
+								$idimagen = $objproducto->updateAll($id,$request);
+								if( $idimagen >0  ) {
+									echo json_encode(array("status"=>true,'response'=>$id,'code'=>$_POST['codinter']));
+								}else{
+									echo json_encode(array("status"=>true,'response'=>'El la imagen no se agrego correctamente','code'=>$_POST['codinter'])); "";
+								}
+							}else{
+								echo json_encode(array("status"=>true,'response'=>$id,'code'=>$_POST['codinter']));
+							}
+						}else{
+							echo json_encode(array("status"=>false,'response'=>'El no se agrego correctamente el producto','code'=>$_POST['codinter'])); "";
+						}
+					}else{
+						echo json_encode(array("status"=>false,'response'=>'El codigo ya existe','code'=>$_POST['codinter'])); "";
+					}
+					
 					break;
 				default:
 					# code...

@@ -7,7 +7,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 /*---------------- PHP Custom Scripts ---------
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
-$page_title = "Reporte de Entradas";
+$page_title = "Reporte de Pedidos";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 $page_css[] = "your_style.css";
@@ -21,7 +21,7 @@ $idtienda  = '';//$_SESSION['user_info']['id_tienda'];
 $idusuario = '';
 $arrayfilters=[];
 
-$objEntrada = new Entrada();
+$objPedido = new Pedido();
 $begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
 $end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $idusuario = (isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
@@ -30,11 +30,11 @@ $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
 $arrayfilters['id_tienda']     = $idtienda;
-$arrayfilters['page']   	   = 'entradas';
+$arrayfilters['page']   	   = 'pedidos';
 $jsonarrayfilters=json_encode($arrayfilters);
-$dataentradas = $objEntrada->getReporteEntradas($arrayfilters);
+$datapedidos = $objPedido->getReportePedidos($arrayfilters);
 
-$dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
+$datapedidospendientes = $objPedido->getReportePedidosPendientes();
 
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -51,8 +51,8 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 	<div id="content">
 		<section id="widget-grid" class="">
 			<div class="widget-body" style='padding-bottom: 10px;'>
-			 	<a class="btn btn-success" href="<?php echo make_url("Entradas","add")?>" >Nueva Entrada</a>
-				<a class="btn btn-info" id=""  target="_blank" href="<?php echo make_url("Entradas","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
+			 	<a class="btn btn-success" href="<?php echo make_url("Pedidos","add")?>" >Nueva Pedido</a>
+				<a class="btn btn-info" id=""  target="_blank" href="<?php echo make_url("Pedidos","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
 			</div>
 			<div class="row">
 				
@@ -65,7 +65,7 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Entradas","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Pedidos","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
                                         <div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
 							                <div class="form-group">
@@ -134,7 +134,7 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 			</div>
 			
 
-			<?php if(isset($dataentradas) && $dataentradas!=''){ ?>
+			<?php if(isset($datapedidos) && $datapedidos!=''){ ?>
 				<div class="row">
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
@@ -153,7 +153,6 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 												<th class = "col-md-1" data-class="expand">No. Folio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Referencia </th>
-												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
 												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
 												<?php if($_SESSION['user_info']['costos']) { ?>
 													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
@@ -168,7 +167,7 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 											<?php 
 											$nomtienda = '';
 											$total = $totalcosto = 0;
-											foreach($dataentradas as $row) {
+											foreach($datapedidos as $row) {
 												$tienda = new Tienda();
 												$datatienda = $tienda->getTable($row["id_tienda"]);
 												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 
@@ -188,20 +187,14 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 												?>
 												<tr class="<?php echo $class; ?>">
 													<td>
-														<a class="" href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>">
-															<?php echo htmlentities($row['id_entrada'])?>:Ver
+														<a class="" href="<?php echo make_url("Pedidos","view",array('id'=>$row['id_pedido'])); ?>">
+															<?php echo htmlentities($row['id_pedido'])?>:Ver
 														</a>
 													</td>
 													<td><?php echo htmlentities($row['folio'])?></td>
 													<td><?php echo htmlentities($nomtienda) ?></td>
 													<td><?php echo htmlentities($row['referencia'])?></td>
-													<td>
-														<?php echo htmlentities($row['tipo_pago'])."<br>";
-														if($row['icredito']){
-															echo "<span style='color:red'>En pago</span>";
-														}
-														?>
-													</td>
+													
 													<td><?php echo htmlentities($row['comentarios']) ?></td>
 													<?php if($_SESSION['user_info']['costos']) { ?>
 														<td>$<?php echo number_format($row['costo_total'], 2); ?></td>
@@ -216,21 +209,17 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 															</button>
 															<ul class="dropdown-menu">
 																<li>
-																	<a title="Ver Entrada" class=""  href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>"> Ver Entrada</a>
+																	<a title="Ver Pedido" class=""  href="<?php echo make_url("Pedidos","view",array('id'=>$row['id_pedido'])); ?>"> Ver Pedido</a>
 																</li>
 																<li>
-																	<a title="Imprimir Entrada" class="" target="_blank" href="<?php echo make_url("Entradas","print",array('id'=>$row['id_entrada'],'page'=>'entrada')); ?>">Imprimir</a>
+																	<a title="Imprimir Pedido" class="" target="_blank" href="<?php echo make_url("Pedidos","print",array('id'=>$row['id_pedido'],'page'=>'pedido')); ?>">Imprimir</a>
 																</li>
 																<?php 
 																if ($row['status']!='BAJA'){ ?> 
-																	<?php if($row['icredito']){ ?>
-																		<li>
-																			<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_entrada'] ?>)"> Pagar</a>
-																		</li>
-																	<?php } ?>
+																	
 																	<li class="divider"></li>
 																	<li>
-																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Entradas","entradadelete",array('id'=>$row['id_entrada'])); ?>',<?php echo $row['id_entrada']; ?>);">Eliminar</a>
+																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Pedidos","pedidodelete",array('id'=>$row['id_pedido'])); ?>',<?php echo $row['id_pedido']; ?>);">Eliminar</a>
 																	</li>
 																<?php 
 																} ?>
@@ -244,7 +233,7 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 										</tbody>
 										<tfoot>
 											<tr>
-												<th colspan="6" style="text-align:right">Total:</th>
+												<th colspan="5" style="text-align:right">Total:</th>
 												<?php if($_SESSION['user_info']['costos']) { ?>
 													<th>$<?php echo $totalcosto;?></th>
 												<?php } ?>
@@ -262,13 +251,13 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 					
 				</div>
 			<?php }?>
-			<?php if(isset($dataentradaspendientes) && $dataentradaspendientes!=''){ ?>
+			<?php if(isset($datapedidospendientes) && $datapedidospendientes!=''){ ?>
 				<div class="row">
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 							<header>
 								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-								<h2><?php echo "ENTRADAS POR VALIDAR" ?></h2>
+								<h2><?php echo "PEDIDOS POR VALIDAR" ?></h2>
 							</header>
 							<div>
 								<div class="jarviswidget-editbox">
@@ -281,7 +270,6 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 												<th class = "col-md-1" data-class="expand">No. Folio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Referencia </th>
-												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
 												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
 												<?php if($_SESSION['user_info']['costos']) { ?>
 													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
@@ -296,7 +284,7 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 											<?php 
 											$nomtienda = '';
 											$total = $totalcosto = 0;
-											foreach($dataentradaspendientes as $row) {
+											foreach($datapedidospendientes as $row) {
 												$tienda = new Tienda();
 												$datatienda = $tienda->getTable($row["id_tienda"]);
 												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 
@@ -316,20 +304,14 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 												?>
 												<tr class="<?php echo $class; ?>">
 													<td>
-														<a class="" href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>">
-															<?php echo htmlentities($row['id_entrada'])?>:Ver
+														<a class="" href="<?php echo make_url("Pedidos","view",array('id'=>$row['id_pedido'])); ?>">
+															<?php echo htmlentities($row['id_pedido'])?>:Ver
 														</a>
 													</td>
 													<td><?php echo htmlentities($row['folio'])?></td>
 													<td><?php echo htmlentities($nomtienda) ?></td>
 													<td><?php echo htmlentities($row['referencia'])?></td>
-													<td>
-														<?php echo htmlentities($row['tipo_pago'])."<br>";
-														if($row['icredito']){
-															echo "<span style='color:red'>En pago</span>";
-														}
-														?>
-													</td>
+													
 													<td><?php echo htmlentities($row['comentarios']) ?></td>
 													<?php if($_SESSION['user_info']['costos']) { ?>
 														<td>$<?php echo number_format($row['costo_total'], 2); ?></td>
@@ -344,21 +326,17 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 															</button>
 															<ul class="dropdown-menu">
 																<li>
-																	<a title="Ver Entrada" class=""  href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>"> Ver Entrada</a>
+																	<a title="Ver Pedido" class=""  href="<?php echo make_url("Pedidos","view",array('id'=>$row['id_pedido'])); ?>"> Ver Pedido</a>
 																</li>
 																<li>
-																	<a title="Imprimir Entrada" class="" target="_blank" href="<?php echo make_url("Entradas","print",array('id'=>$row['id_entrada'],'page'=>'entrada')); ?>">Imprimir</a>
+																	<a title="Imprimir Pedido" class="" target="_blank" href="<?php echo make_url("Pedidos","print",array('id'=>$row['id_pedido'],'page'=>'pedido')); ?>">Imprimir</a>
 																</li>
 																<?php 
 																if ($row['status']!='BAJA'){ ?> 
-																	<?php if($row['icredito']){ ?>
-																		<li>
-																			<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_entrada'] ?>)"> Pagar</a>
-																		</li>
-																	<?php } ?>
-																	<li class="divider"></li>
+																
+																<li class="divider"></li>
 																	<li>
-																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Entradas","entradadelete",array('id'=>$row['id_entrada'])); ?>',<?php echo $row['id_entrada']; ?>);">Eliminar</a>
+																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Pedidos","pedidodelete",array('id'=>$row['id_pedido'])); ?>',<?php echo $row['id_pedido']; ?>);">Eliminar</a>
 																	</li>
 																<?php 
 																} ?>
@@ -372,7 +350,7 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 										</tbody>
 										<tfoot>
 											<tr>
-												<th colspan="6" style="text-align:right">Total:</th>
+												<th colspan="5" style="text-align:right">Total:</th>
 												<?php if($_SESSION['user_info']['costos']) { ?>
 													<th>$<?php echo $totalcosto;?></th>
 												<?php } ?>
@@ -455,36 +433,8 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 	
 	
 	$(document).ready(function() {
-		var responsiveHelper_dt_basic = undefined;
-		var responsiveHelper_datatable_fixed_column = undefined;
-		var responsiveHelper_datatable_col_reorder = undefined;
-		var responsiveHelper_datatable_tabletools = undefined;
-		
-		var breakpointDefinition = {
-			tablet : 1024,
-			phone : 480
-		};
 		$('#dt_basic').dataTable({
-			"aaSorting": [[ 1,"asc" ]],
-        	"iDisplayLength": 50,
-
-			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-				"t"+
-				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-			"autoWidth" : true,
-			"preDrawCallback" : function() {
-				// Initialize the responsive datatables helper once.
-				if (!responsiveHelper_dt_basic) {
-					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
-				}
-			},
-			"rowCallback" : function(nRow) {
-				responsiveHelper_dt_basic.createExpandIcon(nRow);
-			},
-			"drawCallback" : function(oSettings) {
-				responsiveHelper_dt_basic.respond();
-			}
-			
+			"aaSorting": [[ 1,"asc" ]]
 		});
 		
 	

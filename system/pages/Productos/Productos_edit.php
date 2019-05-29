@@ -336,6 +336,15 @@ if(isPost()){
                 $('#showPhoto').modal('show');
             })
         });
+        $("#costo").keyup(function (e){
+            var precio = (parseFloat($(this).val())*  1.5);
+            var preciod = (parseFloat($(this).val())*  1.3 );
+            var precioc = (parseFloat($(this).val())*  1.1 );
+            $("#precio").val(precio.toFixed(2));
+            $("#precio_descuento").val(preciod.toFixed(2));
+            $("#precio_costo").val(precioc.toFixed(2));
+
+        });
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.
          * It initializes and checks for all basic elements of the page

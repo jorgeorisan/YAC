@@ -67,7 +67,7 @@ else
                 if ( count($_POST["perm"] ) ) {
                     $error=0;
                     foreach ($_POST["perm"] as $perm) {
-                        $objpermuser->addAll($perm,$usuario['id']);
+                        $id = $objpermuser->addAll($perm,$usuario['id']);
                         if ($id > 0){
                         }else{
                             $error++;
@@ -87,7 +87,7 @@ else
         if( $error == 0  ) {
              informSuccess(true, make_url("Usuarios","usertype"));
         }else{
-            informError(true, make_url("Permisos","asignar",array('id'=>$id)),"asignar");
+            informError(true, make_url("Permisos","asignar",array('id'=>$idusuariotipo)),"asignar");
         }
     }
 ?>
@@ -114,7 +114,7 @@ else
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
                                 <form id="main-form" class="" role="form" method=post 
-                                action="<?php echo make_url("Permisos","asignartipouser",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                                action="<?php echo make_url("Permisos","asignartipouser",array('id'=>$idusuariotipo));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
                                     <input type="text" class="" name="idPermiso" hidden>
                                     <fieldset>
                                         <table id="list-datatable" class="datatable-static table table-striped table-bordered table-hover">
@@ -130,7 +130,7 @@ else
 							              <?php
 									        $permisos = array();
 		                                    $objpermuser = new PermisoUsuariotipo();
-		                                    $datapermisosuser = $objpermuser->getAllArr($id);
+		                                    $datapermisosuser = $objpermuser->getAllArr($idusuariotipo);
 									        foreach ($datapermisosuser as $rowperm) {
 									          $permisos[] = $rowperm['id_permiso'];
 									        }

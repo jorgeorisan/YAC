@@ -58,7 +58,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                         </header>
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
-                            <div class="widget-body">
+                            <div class="widget-body"  style="overflow:auto">
                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                     <div class="col-sm-12 col-md-8 col-lg-8">
                                         <form id="barcode-form">
@@ -98,7 +98,10 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                         <input type="text" style="width:100%" for='autocomplete' class="form-control" id="barcode" name="codigo" placeholder="Buscar" onkeypress="nextFocus('barcode', 'cantidad')">
                                                     </td>
                                                     <td>
-                                                        <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupcatalogo()" > <i class="fa fa-search"></i></a>                                          
+                                                        <div class="" style=''>
+                                                            <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupcatalogo()" > <i class="fa fa-search"></i></a>  
+                                                            <a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopupaddnew()" > <i class="fa fa-plus"></i></a>                                                                                  
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -243,7 +246,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 </div>
 <!-- END MAIN PANEL -->
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="myModal"  role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -329,7 +332,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             var productos = $(".producto");  
             if ( ! productos.length )  return notify("info","Los productos son requeridos");
             $("#ticket-items").val($("#productos").html());
-            if ( tipo == 'Credito' && proveedor == 1  )  return notify("info","Se requiere un cliente para los apartados");
+            if ( tipo == 'Credito' && proveedor == 1  )  return notify("info","Se requiere un proveedor para las entradas a credito");
            
             $(this).hide();
             $("#main-form").submit();
@@ -345,54 +348,19 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 
    
 
-        /**********Clients*************/
-        showpopupclientes = function(){
-            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo Cliente</span>');
-            $.get(config.base+"/Clientes/ajax/?action=get&object=showpopup", null, function (response) {
+        /**********Productos*************/
+        showpopupaddnew = function(){
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo Producto</span>');
+            $.get(config.base+"/Productos/ajax/?action=get&object=addpopup", null, function (response) {
                     if ( response ){
                         $("#contentpopup").html(response);
                     }else{
-                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
-                        
+                        swal('Error al obtener los datos del Formulario');
                     }     
             });
+            return false;
         }
-        $('body').on('click', '#savenewclient', function(){
-            var nombre       = $("input[name=nombre]", $(this).parents('form:first')).val();
-            var apellido_pat = $("input[name=ap_paterno]", $(this).parents('form:first')).val();
-            var apellido_mat = $("input[name=ap_materno]", $(this).parents('form:first')).val();
-            var telefono     = $("input[name=telefono]", $(this).parents('form:first')).val();
-            var id_tienda    = $("#id_tienda").val();
-            if(!nombre)  return notify('error',"Se necesita el nombre del Cliente."); 
-            if(!telefono)  return notify('error',"Se necesita el telefono del Cliente."); 
-            var url = config.base+"/Clientes/ajax/?action=get&object=savenewclient"; // El script a dónde se realizará la petición.
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: $(this).parents('form:first').serialize()+'&id_usuario_tipo=1&id_tienda='+id_tienda, // Adjuntar los campos del formulario enviado.
-                success: function(response){
-                    if(response>0){
-                        //alert("Group successfully added");
-                        $('#id_persona').append($('<option>', {
-                            value: response,
-                            text: nombre+" "+apellido_pat+" "+apellido_mat,
-                            selected:true
-                        }));  
-                        $("#id_persona").select2({
-                            multiple: false,
-                            header: "Selecciona una opcion",
-                            noneSelectedText: "Seleccionar",
-                            selectedList: 1
-                        });
-                        $('#myModal').modal('hide');
-                        notify('success',"Cliente agregado correctamente:"+response);
-                    }else{
-                        notify('error',"Oopss error al agregar Cliente"+response);
-                    }
-                }
-             });
-            return false; // Evitar ejecutar el submit del formulario.
-        });
+        
         /**********Catalogos*************/
         showpopupcatalogo = function(){
             var id_tienda    = $("#id_tienda").val();

@@ -59,17 +59,18 @@ Routing section
         $page = "Clientes_index.php";
         $dir  = "Clientes";//si esta en carpeta
         if ($request['page']==='add')      { $page = "Clientes_add.php";      }
-        if ($request['page']==='addpopup') { $page = "Clientes_addpopup.php";  }
+        if ($request['page']==='addpopup') { $page = "Clientes_addpopup.php"; }
         if ($request['page']==='edit')     { $page = "Clientes_edit.php";     }
+        if ($request['page']==='pedidos')  { $page = "Clientes_pedidos.php";  }
         
       }
       if ( $request['section'] === 'Catalogos' ) {
         $page = "Catalogos_clinica.php";
         $dir  = "Catalogos";//si esta en carpeta
-        if ($request['page'] === 'clinica')        { $page = "Catalogos_clinica.php"; }
-        if ($request['page'] === 'marca')          { $page = "Catalogos_marca.php";  }
-        if ($request['page'] === 'categoria')      { $page = "Catalogos_categoria.php";  }
-        if ($request['page'] === 'usuariotipo')    { $page = "Catalogos_usuariotipo.php";  }
+        if ($request['page'] === 'clinica')     { $page = "Catalogos_clinica.php";     }
+        if ($request['page'] === 'marca')       { $page = "Catalogos_marca.php";       }
+        if ($request['page'] === 'categoria')   { $page = "Catalogos_categoria.php";   }
+        if ($request['page'] === 'usuariotipo') { $page = "Catalogos_usuariotipo.php"; }
       }
       if ($request['section']==='Usuarios'){
         $page = "Usuarios_index.php";
@@ -84,16 +85,16 @@ Routing section
       if ($request['section']==='Permisos'){
         $page = "Permisos_index.php";
         $dir  = "Permisos";//si esta en carpeta
-        if ($request['page']==='add')    { $page = "Permisos_add.php"; }
-        if ($request['page']==='edit')   { $page = "Permisos_edit.php"; }
-        if ($request['page']==='ajax')   { $page = "Permisos_ajax.php"; }
+        if ($request['page']==='add')    { $page = "Permisos_add.php";     }
+        if ($request['page']==='edit')   { $page = "Permisos_edit.php";    }
+        if ($request['page']==='ajax')   { $page = "Permisos_ajax.php";    }
         if ($request['page']==='asignar'){ $page = "Permisos_asignar.php"; }
       }
       if ($request['section']==='Personal'){
         $page = "Personal_index.php";
         $dir  = "Personal";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Personal_add.php";      }
-        if ($request['page']==='edit')     { $page = "Personal_edit.php";     }
+        if ($request['page']==='add')      { $page = "Personal_add.php";   }
+        if ($request['page']==='edit')     { $page = "Personal_edit.php";  }
       }
       if ($request['section']==='Citas'){
         $page = "Citas_index.php";
@@ -129,6 +130,13 @@ Routing section
         $dir  = "Entradas";//si esta en carpeta
         if ($request['page']==='add')      { $page = "Entradas_add.php";  }
         if ($request['page']==='view')     { $page = "Entradas_view.php"; }
+        
+      }
+      if ($request['section']==='Pedidos'){
+        $page = "Pedidos_index.php";
+        $dir  = "Pedidos";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Pedidos_add.php";  }
+        if ($request['page']==='view')     { $page = "Pedidos_view.php"; }
         
       }
       if ($request['section']==='Traspasos'){

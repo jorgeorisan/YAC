@@ -11,7 +11,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Salidas Alta";
+$page_title = "Pedidos Alta";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -25,12 +25,12 @@ include(SYSTEM_DIR . "/inc/header.php");
 //follow the tree in inc/config.ui.php
 include(SYSTEM_DIR . "/inc/nav.php");
 if(isPost()){
-    $obj = new Salida();
+    $obj = new Pedido();
     $id=$obj->addAll(getPost());
     if($id>0){
-        informSuccess(true, make_url("Salidas","view",array('id'=>$id)));
+        informSuccess(true, make_url("Pedidos","view",array('id'=>$id,'page'=>'pedidos')));
     }else{
-        informError(true,make_url("Salidas","index"));
+        informError(true,make_url("Pedidos","index"));
     }
 }
 $begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
@@ -42,7 +42,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
-     <?php $breadcrumbs["Salidas"] = APP_URL."/Salidas/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
+     <?php $breadcrumbs["Pedidos"] = APP_URL."/Pedidos/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
         <div class="row">     
@@ -73,35 +73,17 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                             ?>
                                             <table class="table-striped table-bordered table-hover" style="width:100%">
                                                 <tr>
-                                                    <th style="width: 100px;">Sucursal ORIGEN</th>
+                                                    
+                                                    <th style="width: 100px;">Sucursal Pedido</th>
                                                     <td colspan="2">
-                                                        <select style="width:100%" class="select2" name="id_tiendaanteriorsearch" id="id_tiendaanteriorsearch" > 
-                                                            <option value="" disabled>--Sucursal--</option>
+                                                        <select style="width:100%" class="select2" name="id_tienda" id="id_tienda" > 
+                                                            <option value="">--Sucursal--</option>
                                                             <?php 
                                                             $obj = new Tienda();
                                                             $list=$obj->getAllArr();
                                                             if (is_array($list) || is_object($list)){
                                                                 foreach($list as $val){
                                                                     $selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
-                                                                    echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
-                                                                }
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    
-                                                    <th style="width: 100px;">Sucursal DESTINO</th>
-                                                    <td colspan="2">
-                                                        <select style="width:100%" class="select2" name="id_tiendasearch" id="id_tiendasearch" > 
-                                                            <option value="" disabled>--Sucursal--</option>
-                                                            <?php 
-                                                            $obj = new Tienda();
-                                                            $list=$obj->getAllArr();
-                                                            if (is_array($list) || is_object($list)){
-                                                                foreach($list as $val){
-                                                                    $selected =  ($idtienda != $val['id_tienda'] ) ? "selected" : '';
                                                                     echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
                                                                 }
                                                             }
@@ -122,7 +104,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                 <tr>
                                                     <th>Cantidad</th>
                                                     <td  colspan='3'>
-                                                        <input type="number" style="width:50px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
+                                                        <input type="number" style="width:80px" class="form-control" id="cantidad" name="cantidad"  value="1" placeholder="Cantidad" onkeypress="nextFocus('cantidad', 'btn_agregar')">
                                                     </td>
                                                     
                                                 </tr>
@@ -134,12 +116,10 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                         </form>
                                     </div>
                                 </div>
-								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Salidas","add");?>" onsubmit="return checkSubmit();">     
-                                    <input type="hidden" name="total-global" id="total-global" value="0"/>
-                                    <input type="hidden" name="id_tiendaanterior" id="id_tiendaanterior" value=""/>
-                                    <input type="hidden" name="id_tienda" id="id_tienda" value=""/>
+								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Pedidos","add");?>" onsubmit="return checkSubmit();">     
                                     <div class="col-sm-6 col-md-6 col-lg-6">
                                         <h3 class="tit">Productos</h3>
+                                        <input type="hidden" name="total-global" id="total-global" value="0"/>
                                     </div>
                                     <div class="col-sm-6 col-md-6 col-lg-6" style="text-align: right;">
                                         <h3 class="total"><span id="total-num"></span></h3>
@@ -174,13 +154,13 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Fecha Salida</th>
+                                                    <th>Fecha Pedido</th>
                                                     <td colspan="2"><input type="text" class="form-control datepicker" datepicker='past' name="fecha" id="fecha" value='<?php echo date('Y-m-d')?>'/></td>
                                                 </tr>
-                                                <tr>
+                                                <tr> 
                                                     <th>Usuario</th>
                                                     <td colspan="2">
-                                                        <select style="width:100%" class="select2" name="id_usuario" id="id_usuario" <?php echo $disabled?> >
+                                                        <select style="width:100%" class="select2" name="id_usuario" id="id_usuario" >
                                                             <option value="">Selecciona</option>
                                                             <?php 
                                                             $obj = new Usuario();
@@ -272,21 +252,15 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         
        
         var getproducto = function(form){
-            $.get(config.base+"/Salidas/ajax/get_producto", form,
+            $.get(config.base+"/Pedidos/ajax/get_producto", form,
                 function (response) {
-                    if(response == 'Cantidad insuficiente' || response == 'Producto no encontrado'){
-                        console.log(response);
-                        return notify('error',response);
-                    }else{
-                        $("table#productos").append(response);
-                    }
+                    $("table#productos").append(response);
                 });
             $("#cantidad").val(1);
             $("#barcode").val("").focus();
             return false;
         }
         
-      
         $("#barcode-form").submit(function (e) {
             e.preventDefault();
             var res =  $('#barcode').val().split("::");
@@ -297,9 +271,6 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             return false;
         });
 
-             
-       
-     
         $("#id_tienda").change(function () {
             var id=$("#id_tienda").val();
             $("#catalogo").attr('href',''+id);
@@ -311,9 +282,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             var tipo      = $("#tipo").val();       
             var productos = $(".producto");  
             if ( ! productos.length )  return notify("info","Los productos son requeridos");
-            
-           $("#id_tiendaanterior").val($('#id_tiendaanteriorsearch').val());  
-           $("#id_tienda").val($('#id_tiendasearch').val());  
+            $("#ticket-items").val($("#productos").html());
            
             $(this).hide();
             $("#main-form").submit();
@@ -327,6 +296,9 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             $("[lineid=" + id + "]").remove();
         });
 
+   
+
+      
         /**********Catalogos*************/
         showpopupcatalogo = function(){
             var id_tienda    = $("#id_tienda").val();
@@ -340,6 +312,8 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                     }     
             });
         }
+
+
 
         $("#barcode").focus();
         $("#barcode").autocomplete({

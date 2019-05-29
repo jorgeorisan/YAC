@@ -294,11 +294,13 @@ function delete($id,$module,$table){
     case 'personalpuesto':       $obj = new PersonalPuesto();    $pagereturn = $table;    break;
     case 'usuariotipo':          $obj = new UsuarioTipo();       $pagereturn = $table;    break;
     case 'entrada':              $obj = new Entrada();                                    break;
+    case 'pedido':               $obj = new Pedido();                                     break;
     case 'traspaso':             $obj = new Traspaso();                                   break;
     case 'salida':               $obj = new Salida();                                     break;
-    case 'entradaproducto':      $obj = new EntradaProducto();    $pagereturn = $table;    break;
-    case 'traspasoproducto':     $obj = new TraspasoProducto();   $pagereturn = $table;    break;
-    case 'salidaproducto':       $obj = new SalidaProducto();     $pagereturn = $table;    break;
+    case 'entradaproducto':      $obj = new EntradaProducto();    $pagereturn = $table;   break;
+    case 'traspasoproducto':     $obj = new TraspasoProducto();   $pagereturn = $table;   break;
+    case 'salidaproducto':       $obj = new SalidaProducto();     $pagereturn = $table;   break;
+    case 'pedidoproducto':       $obj = new PedidoProducto();     $pagereturn = $table;   break;
     default:
       echo "no se encontro tabla en func.global ".$table;
       exit;
@@ -316,6 +318,10 @@ function delete($id,$module,$table){
       break;
     case 'entradaproducto':
       $array  = array('id'=>$data['id_entrada']); 
+      $pagereturn = "view";
+      break; 
+    case 'pedidoproducto':
+      $array  = array('id'=>$data['id_pedido']); 
       $pagereturn = "view";
       break;
     case 'traspasoproducto':

@@ -146,7 +146,7 @@ class Venta extends AutoVenta {
 		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
 			return false;
 		}
-		$qryusuario = ($id_usuario)  ? " AND v.id_usuario='$id_usuario' " : "";
+		$qryusuario = ($id_usuario)  ? " AND v.id_user='$id_usuario' " : "";
 		$qrytienda  = ($id_tienda>0) ? " AND v.id_tienda='$id_tienda' "   : "";
 		$sql = "SELECT v.*,u.id_usuario id_usuario
 						FROM venta v

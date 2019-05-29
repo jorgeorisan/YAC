@@ -75,6 +75,29 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			}
 			break;
 				
+		case 'getcitasproximas':
+			if( isset($_GET["fecha_inicial"])  ){
+				$objcita = new Cita();
+				$fecha_inicial  = ( isset($_GET['fecha_inicial']) ) ?  date('Y-m-d',strtotime($_GET['fecha_inicial'])) : date('Y-m-d'); 
+				$arrayfilters['fecha_inicial']     = $fecha_inicial;
+				if ( $data = $objcita->getAllArr($arrayfilters) )
+					include(SYSTEM_DIR.'/pages/Citas/Citas_getcitasproximas.php' );
+			}
+			break;
+				
+		case 'existecita':
+			if( isset($_GET["fecha_inicial"]) && isset($_GET["fecha_final"]) && isset($_GET["id_personal"])){
+				$u = new Cita();
+				if($res=$u->getExisteCita($_GET["fecha_inicial"],$_GET["fecha_final"],$_GET["id_personal"])){
+					echo 1;
+				}else{
+					echo 0;
+				}
+			}else{
+				echo 0;
+			}
+			break;
+				
 		default:
 			# code...
 			break;

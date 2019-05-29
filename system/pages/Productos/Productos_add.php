@@ -136,7 +136,8 @@ if(isPost()){
                                         </div>
                                         <div class="form-group">
 											<label for="name">Imagen</label>
-											<input type="file" id="imagen" name="imagen" title="Imagen">
+                                            <input type="file" id="imagen" name="imagen" title="Imagen">
+                                            <div id='contfileproductos'></div>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -259,7 +260,58 @@ if(isPost()){
 			    $("#main-form").submit();		
 			});        
     }
+    num=0;
+    contfotosauto=0;
+    numdel=1;
+    var arraydeleteauto=[];
+    function uploadimages(evt) {
+        document.getElementById('contfileproductos').innerHTML='';
+        var files = evt.target.files; // FileList object
+        $numfotos=0;
+        for (var i = 0, f; f = files[i]; i++) {
+            $numfotos++;
+        }
+        if($numfotos<=15){
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+                var nameimage=files[i].name;
+                if(files[i].size >= 3856819) {
+                  alert("La imagen "+nameimage+" es muy grande, El tamaño maximo es de 3.67 MB");
+                  files[i].value = null;
+                  continue;
+                }
+                contfotosauto++;
+                // Only process image files.
+                if (!f.type.match('image.*')) {
+                    notify("error","Solo puedes seleccionar imagenes");
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function(theFile) {
+                    return function(e) {
+                        var num=Math.floor(Math.random() * 1000); 
+                        var span = document.createElement('span');
+                        span.innerHTML = ['<img style="width:100px" title="click para eliminar" onclick="deleteimage(',num,');  return false;"  class="thumb" id="image_',num,'" max-width="150px" max-height="150px" src="', e.target.result,
+                                        '" nameimage="', escape(theFile.name), '"/>'].join('');
+                      document.getElementById('contfileproductos').insertBefore(span, null);
+                    };
+                })(f);
+                // Read in the image file as a data URL.
+                reader.readAsDataURL(f);     
+            }
+        }else{
+            notify("error","Solo puedes seleccionar 15 imagenes");
+        } 
+    }
     $(document).ready(function() {
+        document.getElementById('imagen').addEventListener('change', uploadimages, false);
+        $(function(){
+            $('.superbox-img').click(function(){
+                $('#showPhoto .modal-body').html($(this).clone().attr("height","100%"));
+                $('#showPhoto').modal('show');
+            })
+        });
         $("#costo").keyup(function (e){
             var precio = (parseFloat($(this).val())*  1.5);
             var preciod = (parseFloat($(this).val())*  1.3 );

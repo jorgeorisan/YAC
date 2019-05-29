@@ -6,10 +6,14 @@ class Cita extends AutoCita {
 	private $DB_TABLE = "cita";
 
 	
-		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr()
+	//metodo que sirve para obtener todos los datos de la tabla
+	public function getAllArr($arrayfilters=false)
 	{
-		$sql = "SELECT * FROM cita where status='active';";
+		$fecha   = (isset($arrayfilters['fecha_inicial'])) ? " AND DATE(fecha_inicial)>='".$arrayfilters['fecha_inicial']."' and DATE(fecha_final)<='".$arrayfilters['fecha_inicial']." 23:59:00'" : '';
+		
+		$sql = "SELECT * FROM cita
+					where status!='deleted'
+					$fecha ;";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
@@ -79,6 +83,27 @@ class Cita extends AutoCita {
 			return true;
 		}
 	}
+	//metodo que sirve sabir si ya existe una cita en fecha y hora
+	public function getExisteCita($fechaini,$fechafin,$idpersonal)
+	{
+		$fechaini 	= validar_fecha($fechaini) ? $fechaini : '';
+		$fechafin 	= validar_fecha($fechafin) ? $fechafin : '';
+		if(! intval( $idpersonal ))	return false;
+		$idpersonal=$this->db->real_escape_string($idpersonal);
 
+		$sql= "SELECT *
+				FROM cita 
+				WHERE id_user=$idpersonal
+				AND fecha_inicial>='".$fechaini."'
+				AND fecha_final<='".$fechafin."'
+				;";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result cita");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row;
+
+	}
 
 }

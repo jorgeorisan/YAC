@@ -107,7 +107,7 @@ foreach($dataabonos as $row) {
 														if (is_array($list) || is_object($list)){
 															foreach($list as $val){
 																$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
-																echo "<option ".$selected ." value='".$val['id_user']."'>".htmlentities($val['id_usuario'])."</option>";
+																echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
 															}
 														}
 														?>

@@ -58,7 +58,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                         </header>
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
-                            <div class="widget-body">
+                            <div class="widget-body" style="overflow:auto">
                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                     <div class="col-sm-12 col-md-8 col-lg-8">
                                         <form id="barcode-form">

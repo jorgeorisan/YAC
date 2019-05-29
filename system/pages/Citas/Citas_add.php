@@ -131,15 +131,13 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-4" id="contpersona">
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-12" >
-                                                    <div class="col-sm-3"></div>
-                                                    <div class="col-sm-6" id="contpersona"></div> 
-                                                    <div class="col-sm-3"></div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12" id="contcitas" style="text-align:center">
                                                 </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -250,6 +248,28 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
             }
         });
       
+        getcitasproximas = function(){
+            var fecha_inicial = $("input[name=fecha_inicial]").val();
+            var fecha_final   = $("input[name=fecha_final]").val();
+            var id_paciente   = $("#id_paciente").val();
+            var id_personal   = $("#id_personal").val();
+            
+            var url = config.base+"/Citas/ajax/?action=get&object=getcitasproximas"; // El script a dónde se realizará la petición.
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: "fecha_inicial="+fecha_inicial+'&fecha_final='+fecha_final+'&id_personal='+id_personal, 
+                success: function(response){
+                    if(response){
+                        $("#contcitas").html(response);
+                    }else{
+                        $("#contcitas").html(''); 
+                    }
+                }
+             });
+            return false; // Evitar ejecutar el submit del formulario.
+        }
+        getcitasproximas();
  
 
         //**********Clients*************/
@@ -328,6 +348,7 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                fechafin.val(nuevafecha);
                fechafintxt.val(nuevafecha);
                $('.fecha_final').attr('data-date',nuevafecha);
+               getcitasproximas();
             }
         });
         

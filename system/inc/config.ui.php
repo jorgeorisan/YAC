@@ -123,6 +123,16 @@ $menuEntradas = array(
 		)
 	)
 );
+$menuPedidos = array(
+	"pedidos" => array(
+		"title" => "Pedidos",
+		"icon"  => "fa-shopping-basket",
+		"sub" => array(
+			'pedidosindex' => array('title'  => 'Pedidos','url' => APP_URL."/Pedidos/index" ),
+			'pedidosadd'   => array('title'  => 'Pedidos Alta','url'    => APP_URL."/Pedidos/add" )
+		)
+	)
+);
 $menuTraspasos = array(
 	"traspasos" => array(
 		"title" => "Traspasos",
@@ -162,6 +172,10 @@ if(isset($_SESSION['user_id'])){
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Entradas');
 	if ( $datapermuser ) { 
 	  $page_nav = array_merge($page_nav, $menuEntradas);
+	}
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Pedidos');
+	if ( $datapermuser ) { 
+	  $page_nav = array_merge($page_nav, $menuPedidos);
 	}
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Traspasos');
 	if ( $datapermuser ) { 
