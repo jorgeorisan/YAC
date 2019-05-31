@@ -525,7 +525,7 @@ foreach($dataabonos as $row) {
                 data: $(this).parents('form:first').serialize(), 
                 success: function(response){
                     if(response>0){
-                        //location.reload();
+                        location.reload();
                     }else{
                         return notify('error',"Oopss error al agregar pago"+response);
                     }
