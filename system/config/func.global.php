@@ -137,10 +137,18 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
   }
   function getComsiones(){
     $arrayStatus = array();
+    $arrayStatus[""] = "N/A";
     $arrayStatus["0.06"] = "6%";
     $arrayStatus["0.6"]  = "60%";
     $arrayStatus["0.7"]  = "70%";
     $arrayStatus["1"]    = "100%";
+    return $arrayStatus;
+  }
+  function statusPedido(){
+    $arrayStatus = array();
+    $arrayStatus["Solicitado"] = "Solicitado";
+    $arrayStatus["Entregado"]  = "Entregado";
+    $arrayStatus["Cancelado"]  = "Cancelado";
     return $arrayStatus;
   }
   

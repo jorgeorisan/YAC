@@ -11,7 +11,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Editar paciente";
+$page_title = "Editar Cliente";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 

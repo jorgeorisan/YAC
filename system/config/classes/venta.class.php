@@ -296,7 +296,7 @@ class Venta extends AutoVenta {
 								AND d.status='ACTIVA'
 								$qryusuario
 								$qrytienda
-							GROUP BY v.id_user
+							GROUP BY d.id_user
 						)AS ventas_abonos ON usuarios_venta.id_user=ventas_abonos.id_user
 						LEFT JOIN (
 							SELECT (SUM(pv.total)-v.descuento) as totalventacredito, v.id_user id_user 

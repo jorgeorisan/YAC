@@ -104,7 +104,9 @@ $data = $obj->getAllArr('clientes');
 															<li>
 																<a class="" href="<?php echo make_url("Clientes","edit",array('id'=>$row['id_persona'])); ?>">Editar</a>
 															</li>
-															
+															<li>
+																<a class="" href="<?php echo make_url("Clientes","pedido",array('id'=>$row['id_persona'])); ?>">Pedidos</a>
+															</li>
 															<li class="divider"></li>
 															<li>
 																<a href="#" class="red" onclick="borrar('<?php echo make_url("Clientes","personadelete",array('id'=>$row['id_persona'])); ?>',<?php echo $row['id_persona']; ?>);">Eliminar</a>

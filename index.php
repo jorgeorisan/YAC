@@ -61,7 +61,7 @@ Routing section
         if ($request['page']==='add')      { $page = "Clientes_add.php";      }
         if ($request['page']==='addpopup') { $page = "Clientes_addpopup.php"; }
         if ($request['page']==='edit')     { $page = "Clientes_edit.php";     }
-        if ($request['page']==='pedidos')  { $page = "Clientes_pedidos.php";  }
+        if ($request['page']==='pedido')   { $page = "Clientes_pedido.php";  }
         
       }
       if ( $request['section'] === 'Catalogos' ) {
@@ -173,6 +173,8 @@ Routing section
         $datapermuser  = $objpermuser->getpermisouser($_SESSION['user_id'],$request['section'],$page2);
         if ( !$datapermuser ) {
           print_r( "ERROR permisos".$_SESSION['user_id']."------".$request['section']."-----".$page2);
+          if($_SESSION['user_info']['id_usuario_tipo']==5) exit;
+
           if($_SESSION['user_info']['id_usuario_tipo']!=4){
             informPermiss(true,make_url("Home","index"));
           }else{

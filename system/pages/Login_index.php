@@ -103,7 +103,7 @@
    if ( isset($_POST['email']) && trim(strtolower($_POST['password'])) ) {
 		$id=0;
 		$a = new Auth();
-		$id =  $a->validateCredentials($_POST['email'],$_POST['password']);
+		$id =  $a->validateCredentials(trim($_POST['email']),trim($_POST['password']));
 		if ($id>0){
 			// is authorized
 			// load user / start session
