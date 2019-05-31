@@ -26,7 +26,7 @@ class Deudores extends AutoDeudores {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM deudores WHERE id=$id;";
+		$sql= "SELECT * FROM deudores WHERE id_deudores=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
 			{die("Error getting result deudores");}
@@ -38,7 +38,7 @@ class Deudores extends AutoDeudores {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
-		$_request['id_user'] 	 = (isset($_request['id_usuario'])) ? $_request['id_usuario']   : $_SESSION['user_id'];
+		$_request['id_user'] 	 =  $_SESSION['user_id'];
 		$_request['fecha_abono'] = (isset($_request['fecha_abono'])) ? $_request['fecha_abono'] : date('Y-m-d H:m:i');
 		$data=fromArray($_request,'deudores',$this->db,"add");
 		$sql= "INSERT INTO deudores (".$data[0].") VALUES(".$data[1]."); ";
@@ -51,6 +51,19 @@ class Deudores extends AutoDeudores {
 		else{
 			while ($row = $res->fetch_assoc())
 				$id= $row;
+				
+			$objVenta = new Venta();
+			$dataVenta = $objVenta->getTable($_request['id_venta']);
+			if($dataVenta){
+				if($dataVenta['icredito']==1){
+					$totalpagado   = $objVenta->getpagado($_request['id_venta']);
+					$totalporpagar = $dataVenta['total']-$totalpagado;
+					if($totalporpagar<=0){
+						$_requestVenta['icredito'] 	=  0;
+						$idvta=$objVenta->updateAll($_request['id_venta'],$_requestVenta);
+					}
+				}
+			}
 		}
 		return $id["LAST_INSERT_ID()"];
 	}
