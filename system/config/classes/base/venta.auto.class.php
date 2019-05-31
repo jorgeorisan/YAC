@@ -11,9 +11,9 @@
 		protected $tipo = "";
 		protected $factura = "";
 		protected $cancelado = "";
-		protected $id_usuario = "";
 		protected $id_persona = "";
 		protected $id_tienda = 0;
+		protected $id_user = 0;
 		protected $icredito = "";
 		protected $folio = 0;
 		protected $comentarios = "";
@@ -22,6 +22,8 @@
 		protected $razon_cancelacion = "";
 		protected $usuario_cancelacion = "";
 		protected $descuento = 0;
+		protected $fecha_registro = "";
+		protected $id_user_registro = 0;
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -75,11 +77,6 @@
  				$this->cancelado = $value;
 		}
 		
-		public function setIdUsuario( $value ){			
-			if ( $this->validclassateInput("/^.*$/", $value, "IDUSUARIO","s") ) 
- 				$this->id_usuario = $value;
-		}
-		
 		public function setIdPersona( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "IDPERSONA","s") ) 
  				$this->id_persona = $value;
@@ -88,6 +85,11 @@
 		public function setIdTienda( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "IDTIENDA","i") ) 
  				$this->id_tienda = $value;
+		}
+		
+		public function setIdUser( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDUSER","i") ) 
+ 				$this->id_user = $value;
 		}
 		
 		public function setIcredito( $value ){			
@@ -122,6 +124,16 @@
 		public function setDescuento( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "DESCUENTO","d") ) 
  				$this->descuento = $value;
+		}
+		
+		public function setFechaRegistro( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "FECHAREGISTRO","s") ) 
+ 				$this->fecha_registro = $value;
+		}
+		
+		public function setIdUserRegistro( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDUSERREGISTRO","i") ) 
+ 				$this->id_user_registro = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -189,14 +201,6 @@
  			}
 		}
 		
-		public function getIdUsuario($sanitize=true){ 
- 			if($sanitize){
- 				return htmlspecialchars($this->id_usuario) ;
- 			}else{
- 				return $this->id_usuario ;
- 			}
-		}
-		
 		public function getIdPersona($sanitize=true){ 
  			if($sanitize){
  				return htmlspecialchars($this->id_persona) ;
@@ -210,6 +214,14 @@
  				return htmlspecialchars($this->id_tienda) ;
  			}else{
  				return $this->id_tienda ;
+ 			}
+		}
+		
+		public function getIdUser($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id_user) ;
+ 			}else{
+ 				return $this->id_user ;
  			}
 		}
 		
@@ -277,11 +289,46 @@
  			}
 		}
 		
+		public function getFechaRegistro($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->fecha_registro) ;
+ 			}else{
+ 				return $this->fecha_registro ;
+ 			}
+		}
+		
+		public function getIdUserRegistro($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id_user_registro) ;
+ 			}else{
+ 				return $this->id_user_registro ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
 		public function getStatusclass(){
 			return  $this->statusclass ;
+		}
+		// Private Support Functions
+		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
+			//if ( ! $this->validclass )
+			//	return $this->validclass;
+
+			if ( ! preg_match($pcre, $input) ){ 
+				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
+			}else{
+				unset($this->statusclass[$field]);
+				if (empty($this->statusclass)){$this->validclass=true;}
+			}
+
+			return true;
+		}
+		protected function killInvalidclass( $msg, $field="General Error" ){
+			$this->statusclass[$field] = $msg;
+			$this->validclass = false;
+			return false;
 		}
 
 	// Public Support Functions
@@ -309,9 +356,9 @@
 			$this->setTipo( $res['tipo'] );
 			$this->setFactura( $res['factura'] );
 			$this->setCancelado( $res['cancelado'] );
-			$this->setIdUsuario( $res['id_usuario'] );
 			$this->setIdPersona( $res['id_persona'] );
 			$this->setIdTienda( $res['id_tienda'] );
+			$this->setIdUser( $res['id_user'] );
 			$this->setIcredito( $res['icredito'] );
 			$this->setFolio( $res['folio'] );
 			$this->setComentarios( $res['comentarios'] );
@@ -320,6 +367,8 @@
 			$this->setRazonCancelacion( $res['razon_cancelacion'] );
 			$this->setUsuarioCancelacion( $res['usuario_cancelacion'] );
 			$this->setDescuento( $res['descuento'] );
+			$this->setFechaRegistro( $res['fecha_registro'] );
+			$this->setIdUserRegistro( $res['id_user_registro'] );
 			return true;
 		}
 		// end function load

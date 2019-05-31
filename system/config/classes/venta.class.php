@@ -45,6 +45,7 @@ class Venta extends AutoVenta {
 		$_request['descuento'] 	= (isset($_request['monto'])) ? ($_request['monto']) : 0;
 		$_request['fecha'] 		  = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
 		$_request['icredito'] 	= ($_request['tipo']=="Credito" || $_request['tipo']=="Apartado") ? 1 : 0;
+		$_request['id_user_registro']	= $_SESSION['user_id'];
 		
 		$data=fromArray($_request,'venta',$this->db,"add");
 		$sql= "INSERT INTO venta (".$data[0].") VALUES(".$data[1]."); ";
