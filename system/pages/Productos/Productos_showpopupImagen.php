@@ -1,40 +1,57 @@
 <section id="widget-grid" class="">
-    <form id="main-form" enctype="multipart/form-data" action="" method="post" >     
-        <input type="hidden" id="id_producto" name="id_producto"  value="<?php echo $data['id_producto']; ?>">
-        <div class="col-sm-6">
-            <div class="form-group superbox">
-                <label for="name">Imagen</label>
-                <input type="file" id="imagen" name="imagen"  value="<?php echo $data['imagen']; ?>" required title="Imagen">
-                <div id='contfileproductos'>
-                    <?php 
-                    if($data['imagen']){
-                        $carpetaimg = ASSETS_URL.'/productos/images';
-                        echo "<div class='superbox-list'>
-                                <img src='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."' 
-                                data-img='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."'
-                                alt='".$data['imagen']."' title='".$data['imagen']."'
-                                style='max-width:150px;max-height:150px;min-width:100px'
-                                class='superbox-img'>
-                            </div>";
-                    }
-                    ?> 
+    <?php if(!$data['imagen']){ ?>
+        <form id="main-form" enctype="multipart/form-data" action="" method="post" >     
+            <input type="hidden" id="id_producto" name="id_producto"  value="<?php echo $data['id_producto']; ?>">
+            <div class="col-sm-6">
+                <div class="form-group superbox">
+                    <label for="name">Imagen</label>
+                    <input type="file" id="imagen" name="imagen"  value="<?php echo $data['imagen']; ?>" required title="Imagen">
+                    <div id='contfileproductos'>
+                        <?php 
+                        if($data['imagen']){
+                            $carpetaimg = ASSETS_URL.'/productos/images';
+                            echo "<div class='superbox-list'>
+                                    <img src='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."' 
+                                    data-img='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."'
+                                    alt='".$data['imagen']."' title='".$data['imagen']."'
+                                    style='max-width:150px;max-height:150px;min-width:100px'
+                                    class='superbox-img'>
+                                </div>";
+                        }
+                        ?> 
+                    </div>
                 </div>
             </div>
+            <div class="form-actions" style="text-align: center;width: 100%;margin-left: 0px;">
+                <div class="row">
+                <div class="col-md-12">
+                        <button class="btn btn-default btn-md" type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            Cancelar
+                        </button>
+                        <button class="btn btn-primary btn-md" type="submit" id="saveform">
+                            <i class="fa fa-save"></i>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>                               
+        </form>
+    <?php }else{ ?>
+        <div id='' style="display:">
+            <?php 
+            if($data['imagen']){
+                $carpetaimg = ASSETS_URL.'/productosimages/images';
+                echo "<div class=''>
+                        <img src='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."' 
+                            data-img='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."'
+                            alt='".$data['imagen']."' title='".$data['imagen']."'
+                            style=''
+                            class='superbox-img'>
+                    </div>";
+            }
+            ?> 
         </div>
-        <div class="form-actions" style="text-align: center;width: 100%;margin-left: 0px;">
-            <div class="row">
-               <div class="col-md-12">
-                    <button class="btn btn-default btn-md" type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        Cancelar
-                    </button>
-                    <button class="btn btn-primary btn-md" type="submit" id="saveform">
-                        <i class="fa fa-save"></i>
-                        Guardar
-                    </button>
-                </div>
-            </div>
-        </div>                               
-    </form>
+    <?php } ?>
 </section>
 
 <script>

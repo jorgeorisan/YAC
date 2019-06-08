@@ -137,7 +137,7 @@ if(isPost()){
 											</select>
                                         </div>
                                         <div class="form-group">
-											<label for="name">Precio Editable</label>
+											<label for="name">Servicio</label>
 											<select style="width:20%" class="select2" name="manual" id="manual">
                                                 <option value="0" <?php echo ($data['manual'] == 0 ) ? "selected" : '' ?>>No</option>
                                                 <option value="1" <?php echo ($data['manual'] == 1 ) ? "selected" : '' ?>>Si</option>
@@ -145,7 +145,7 @@ if(isPost()){
                                         </div>
                                         <div class="form-group superbox">
 											<label for="name">Imagen</label>
-                                            <input type="file" id="imagen" name="imagen"  value="<?php echo ($data['imagen']) ? $data['imagen']  : ''; ?>" title="Imagen">
+                                            <input type="file" id="imagen" name="imagen"  value="<?php echo ($data['imagen']!='') ? $data['imagen']  : ''; ?>" title="Imagen">
                                             <div id='contfileproductos'>
                                                 <?php 
                                                 if($data['imagen']){

@@ -59,6 +59,7 @@ $data = $obj->getAllArr(false,false,false, $all );
 											<th class = "col-md-1" data-hide="phone,tablet"> Mayoreo</th>
 											<th class = "col-md-1" data-hide="phone,tablet"> Precio</th>
 											<th class = "col-md-1" data-hide="phone,tablet"> Exist.</th>
+											<th class = "col-md-1" data-hide="phone,tablet"> Servicio</th>
 											<th class = "col-md-1" data-hide="phone,tablet"> Act.</th>
 											<th class = "col-md-1" data-hide="phone,tablet">Action</th>
 										</tr>
@@ -73,23 +74,10 @@ $data = $obj->getAllArr(false,false,false, $all );
 												<td><?php echo htmlentities($row['codinter'])?></td>
 												<td>
 													<?php 
-														if($row['imagen']){
+														if($row['imagen']!=''){
 														?>
-															<a href="#"><span onclick="$('#contfileproductos'+<?php echo $row['id_producto'] ?>).toggle(); "><?php echo htmlentities($row['nombre'])?><span></a>
-															<div id='contfileproductos<?php echo $row['id_producto'] ?>' style="display:none">
-																<?php 
-																if($row['imagen']){
-																	$carpetaimg = ASSETS_URL.'/productosimages/images';
-																	echo "<div class='superbox-list'>
-																			<img src='".$carpetaimg.DIRECTORY_SEPARATOR.$row['imagen']."' 
-																				data-img='".$carpetaimg.DIRECTORY_SEPARATOR.$row['imagen']."'
-																				alt='".$row['imagen']."' title='".$row['imagen']."'
-																				style='max-width:150px;max-height:150px;min-width:100px'
-																				class='superbox-img'>
-																		</div>";
-																}
-																?> 
-															</div>
+															<a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen(<?php echo $row['id_producto'] ?>)"><?php echo htmlentities($row['nombre'])?></a>
+															
 															<?php
 														}else{ ?>
 														<?php echo htmlentities($row['nombre'])?>
@@ -112,6 +100,8 @@ $data = $obj->getAllArr(false,false,false, $all );
 														<?php echo htmlentities($row['existenciastienda'].'/'.$row['existencias']) ?>
 													</div>
 												</td>
+												
+												<td><?php echo ($row['manual']) ? 'Si' : 'No' ?></td>
 												<td style="font-size:10px">
 													<div  id='contactualizaciones<?php echo $row['id_producto'] ?>'>
 													<?php 
@@ -232,7 +222,7 @@ $data = $obj->getAllArr(false,false,false, $all );
             return false;
         }
 		showpopupImagen = function(id){
-            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i>Subir Imagen</span>');
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i>Imagen</span>');
             $.get(config.base+"/Productos/ajax/?action=get&object=showpopupImagen&id="+id, null, function (response) {
                     if ( response ){
                         $("#contentpopup").html(response);

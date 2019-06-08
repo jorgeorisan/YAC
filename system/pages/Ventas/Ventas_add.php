@@ -223,7 +223,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                         <td>
                                                             <label>Fecha Venta</label>
                                                         </td>
-                                                        <td colspan="2"><input type="text" class="form-control datepicker"  data-dateformat='yy-mm-dd' autocomplete="off" datepicker='past' name="fecha" id="fecha" value='<?php echo date('Y-m-d')?>'/></td>
+                                                        <td colspan="2"><input type="text" class="form-control datepicker"  data-dateformat='yy-mm-dd' autocomplete="off" name="fecha" id="fecha" value='<?php echo date('Y-m-d')?>'/></td>
                                                     </tr>
                                                     <tr>
                                                         <td>

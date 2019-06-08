@@ -128,7 +128,7 @@ if(isPost()){
 											</select>
                                         </div>
                                         <div class="form-group">
-											<label for="name">Precio Editable</label>
+											<label for="name">Servicio</label>
 											<select style="width:20%" class="select2" name="manual" id="manual">
                                                 <option value="0">No</option>
                                                 <option value="1">Si</option>

@@ -22,15 +22,15 @@ class Producto extends AutoProducto {
 		$querytienda= ($_SESSION['user_info']['id_tienda']==16) ? " AND (p.id_proveedor=14)" : " AND (p.id_proveedor!=14)";
 			
         $sql = "
-			SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
+			SELECT TODO.id_producto,TODO.codinter,TODO.manual,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
 			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
 			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
 			FROM(
-				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.manual,PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
 					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
 					,SUM(EXISTENCIAS.existencias) existencias
 					FROM(
-						SELECT p.id_producto,codinter, p.imagen,p.nombre,p.costo,p.precio_descuento,p.precio,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+						SELECT p.id_producto,p.codinter,p.manual, p.imagen,p.nombre,p.costo,p.precio_descuento,p.precio,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
 						FROM producto p
 						LEFT JOIN marca m on p.id_marca=m.id_marca
 						LEFT JOIN categoria c on p.id_categoria=c.id_categoria
