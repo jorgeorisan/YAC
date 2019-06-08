@@ -51,8 +51,7 @@ $datatraspasospendientes = $objTraspaso->getReporteTraspasosPendientes();
 	<div id="content">
 		<section id="widget-grid" class="">
 			 
-			<div class="row">
-				
+		<div class="row">
 				<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 						<header>
@@ -64,67 +63,69 @@ $datatraspasospendientes = $objTraspaso->getReporteTraspasosPendientes();
                             <div class="widget-body">
 								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Traspasos","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
-                                        <div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
-							                <div class="form-group">
-							                    <label for="name">Fecha Inicial</label>
-							                    <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
-							                </div>
-											<div class="form-group">
+										<div class="row">
+											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">
+												<div class="form-group">
+													<label for="name">Fecha Inicial</label>
+													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
+												</div>
+												<div class="form-group">
+													<label for="name">Fecha Final</label>
+													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
+												</div>
+												<div class="form-group">
 							                    <label for="name">Origen</label>
-							                    <select style="width:100%" class="select2" name="id_tiendaanterior" id="id_tiendaanterior">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new Tienda();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-															$selected =  ($idtiendaant == $val['id_tienda'] ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+													<select style="width:100%" class="select2" name="id_tiendaanterior" id="id_tiendaanterior">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Tienda();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($idtiendaant == $val['id_tienda'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+															}
 														}
-													}
-													?>
-												</select>
+														?>
+													</select>
+												</div>
 											</div>
-											<div class="form-group">
-							                    <label for="name">Usuario</label>
-							                    <select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new Usuario();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-															$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
+											<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+												<div class="form-group">
+													<label for="name">Destino</label>
+													<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Tienda();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+															}
 														}
-													}
-													?>
-												</select>
-							                </div>
+														?>
+													</select>
+												</div>
+												
+												<div class="form-group">
+													<label for="name">Usuario<?php echo $idusuario;?></label>
+													<select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Usuario();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
+															}
+														}
+														?>
+													</select>
+												</div>
+											</div>
 										</div>
-										<div class="col-sm-6">
-											<div class="form-group">
-							                    <label for="name">Fecha Final</label>
-							                    <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
-							                </div>
-											<div class="form-group">
-							                    <label for="name">Destino</label>
-							                    <select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new Tienda();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-															$selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
-														}
-													}
-													?>
-												</select>
-							                </div>
-							               
-							            </div>
                                     </fieldset> 
                                     <div class="form-actions" style="text-align: center">
                                         <div class="row">

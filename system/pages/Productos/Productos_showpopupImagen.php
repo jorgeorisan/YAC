@@ -100,50 +100,52 @@
             notify("error","Solo puedes seleccionar 15 imagenes");
         } 
     }
-    $(document).ready(function(e) {
-        document.getElementById('imagen').addEventListener('change', uploadimages, false);
-        $(function(){
-            $('.superbox-img').click(function(){
-                $('#content').html($(this).clone().attr("height","100%"));
-                $('#myModal').modal('show');
-            })
-        });
+    <?php if(!$data['imagen']){ ?>
+        $(document).ready(function(e) {
+            document.getElementById('imagen').addEventListener('change', uploadimages, false);
+            $(function(){
+                $('.superbox-img').click(function(){
+                    $('#content').html($(this).clone().attr("height","100%"));
+                    $('#myModal').modal('show');
+                })
+            });
+            
         
-    
-        $("#main-form").on('submit', function(){
-            var formData = new FormData($("#main-form")[0]);
-            $.ajax({
-                type: "POST",
-                url: config.base+"/Productos/ajax/?action=post&object=updateimagen",
-                data: formData, 
-                contentType: false,
-                processData: false,
-                success: function(id){
-                    if(id){
-                        console.log(id);
-                        if(id >0){
-                            notify('success','Exito Al guardar la imagen.');
-                            $('#myModal').modal('hide');
-                        }else{
-                            notify('error','Error al cargar imagen.');
+            $("#main-form").on('submit', function(){
+                var formData = new FormData($("#main-form")[0]);
+                $.ajax({
+                    type: "POST",
+                    url: config.base+"/Productos/ajax/?action=post&object=updateimagen",
+                    data: formData, 
+                    contentType: false,
+                    processData: false,
+                    success: function(id){
+                        if(id){
+                            console.log(id);
+                            if(id >0){
+                                notify('success','Exito Al guardar la imagen.');
+                                $('#myModal').modal('hide');
+                            }else{
+                                notify('error','Error al cargar imagen.');
+                            }
                         }
                     }
-                }
+                });
+                return false;
             });
-            return false;
+            
+            //file type validation
+            $("#imagen").change(function() {
+                var file = this.files[0];
+                var imagefile = file.type;
+                var match= ["image/jpeg","image/png","image/jpg"];
+                if(!((imagefile==match[0]) || (imagefile==match[1]) || (imagefile==match[2]))){
+                    alert('Please select a valid image file (JPEG/JPG/PNG).');
+                    $("#imagen").val('');
+                    
+                }
+                return false;
+            });
         });
-        
-        //file type validation
-        $("#imagen").change(function() {
-            var file = this.files[0];
-            var imagefile = file.type;
-            var match= ["image/jpeg","image/png","image/jpg"];
-            if(!((imagefile==match[0]) || (imagefile==match[1]) || (imagefile==match[2]))){
-                alert('Please select a valid image file (JPEG/JPG/PNG).');
-                $("#imagen").val('');
-                
-            }
-            return false;
-        });
-    });
+    <?php } ?>
 </script>

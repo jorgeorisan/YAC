@@ -55,7 +55,6 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 				<a class="btn btn-info" id=""  target="_blank" href="<?php echo make_url("Entradas","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
 			</div>
 			<div class="row">
-				
 				<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 						<header>
@@ -67,50 +66,52 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
                             <div class="widget-body">
 								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Entradas","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
-                                        <div class="col-xs-12  col-sm-12 col-md-6 col-lg-6">
-							                <div class="form-group">
-							                    <label for="name">Fecha Inicial</label>
-							                    <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
-							                </div>
-							                <div class="form-group">
-							                    <label for="name">Fecha Final</label>
-							                    <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
-							                </div>
+										<div class="row">
+											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">
+												<div class="form-group">
+													<label for="name">Fecha Inicial</label>
+													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $begin; ?>" placeholder="Fecha Inicial" name="fecha_inicial" >
+												</div>
+												<div class="form-group">
+													<label for="name">Fecha Final</label>
+													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
+												</div>
+											</div>
+											<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+												<div class="form-group">
+													<label for="name">Tienda</label>
+													<select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Tienda();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($idtienda == $val['id_tienda'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+															}
+														}
+														?>
+													</select>
+												</div>
+												<div class="form-group">
+													<label for="name">Usuario<?php echo $idusuario;?></label>
+													<select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Usuario();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
+															}
+														}
+														?>
+													</select>
+												</div>
+											</div>
 										</div>
-										<div class="col-sm-6">
-							                <div class="form-group">
-							                    <label for="name">Tienda</label>
-							                    <select style="width:100%" class="select2" name="id_tienda" id="id_tienda">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new Tienda();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-															$selected =  ($idtienda == $val['id_tienda']  ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
-														}
-													}
-													?>
-												</select>
-							                </div>
-							                <div class="form-group">
-							                    <label for="name">Usuario</label>
-							                    <select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
-													<option value="">Selecciona</option>
-													<?php 
-													$obj = new Usuario();
-													$list=$obj->getAllArr();
-													if (is_array($list) || is_object($list)){
-														foreach($list as $val){
-															$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
-															echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
-														}
-													}
-													?>
-												</select>
-							                </div>
-							            </div>
                                     </fieldset> 
                                     <div class="form-actions" style="text-align: center">
                                         <div class="row">
@@ -133,135 +134,6 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 				
 			</div>
 			
-
-			<?php if(isset($dataentradas) && $dataentradas!=''){ ?>
-				<div class="row">
-					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
-							<header>
-								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-								<h2><?php echo $page_title ?></h2>
-							</header>
-							<div>
-								<div class="jarviswidget-editbox">
-								</div>
-								<div class="widget-body">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-										<thead>
-											<tr>
-												<th class = "col-md-1" data-hide="phone,tablet"> </th>
-												<th class = "col-md-1" data-class="expand">No. Folio</th>
-												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
-												<th class = "col-md-1" data-class="phone,tablet">Referencia </th>
-												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
-												<?php if($_SESSION['user_info']['costos']) { ?>
-													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
-												<?php } ?>
-												<th class = "col-md-1" data-class="phone,tablet">Total Precio</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Status</th>
-												<th class = "col-md-1" data-class="phone,tablet"></th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php 
-											$nomtienda = '';
-											$total = $totalcosto = 0;
-											foreach($dataentradas as $row) {
-												$tienda = new Tienda();
-												$datatienda = $tienda->getTable($row["id_tienda"]);
-												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 
-											
-												$status = htmlentities($row['status']);
-												switch ($status) {
-													case 'BAJA':
-														$status = 'Cancelado';
-														$class  = 'cancelada';
-														break;
-													default:
-														$class  = '';
-														$total += $row['total'];
-														$totalcosto += $row['costo_total'];
-														break;
-												} 
-												?>
-												<tr class="<?php echo $class; ?>">
-													<td>
-														<a class="" href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>">
-															<?php echo htmlentities($row['id_entrada'])?>:Ver
-														</a>
-													</td>
-													<td><?php echo htmlentities($row['folio'])?></td>
-													<td><?php echo htmlentities($nomtienda) ?></td>
-													<td><?php echo htmlentities($row['referencia'])?></td>
-													<td>
-														<?php echo htmlentities($row['tipo_pago'])."<br>";
-														if($row['icredito']){
-															echo "<span style='color:red'>En pago</span>";
-														}
-														?>
-													</td>
-													<td><?php echo htmlentities($row['comentarios']) ?></td>
-													<?php if($_SESSION['user_info']['costos']) { ?>
-														<td>$<?php echo number_format($row['costo_total'], 2); ?></td>
-													<?php } ?>
-													<td>$<?php echo number_format($row['total'], 2); ?></td>
-													<td><?php echo htmlentities($row['fecha'])?></td>
-													<td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion'] ?></td>
-													<td>
-														<div class="btn-group">
-															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-																Accion <span class="caret"></span>
-															</button>
-															<ul class="dropdown-menu">
-																<li>
-																	<a title="Ver Entrada" class=""  href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>"> Ver Entrada</a>
-																</li>
-																<li>
-																	<a title="Imprimir Entrada" class="" target="_blank" href="<?php echo make_url("Entradas","print",array('id'=>$row['id_entrada'],'page'=>'entrada')); ?>">Imprimir</a>
-																</li>
-																<?php 
-																if ($row['status']!='BAJA'){ ?> 
-																	<?php if($row['icredito']){ ?>
-																		<li>
-																			<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_entrada'] ?>)"> Pagar</a>
-																		</li>
-																	<?php } ?>
-																	<li class="divider"></li>
-																	<li>
-																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Entradas","entradadelete",array('id'=>$row['id_entrada'])); ?>',<?php echo $row['id_entrada']; ?>);">Eliminar</a>
-																	</li>
-																<?php 
-																} ?>
-															</ul>
-														</div>
-													</td>
-												</tr>
-											<?php
-											}
-											?>
-										</tbody>
-										<tfoot>
-											<tr>
-												<th colspan="6" style="text-align:right">Total:</th>
-												<?php if($_SESSION['user_info']['costos']) { ?>
-													<th>$<?php echo $totalcosto;?></th>
-												<?php } ?>
-												<th>$<?php echo $total;?></th>
-												<th></th>
-												<th></th>
-												<th></th>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-							</div>
-						</div>
-					</article>
-					
-				</div>
-			<?php }?>
 			<?php if(isset($dataentradaspendientes) && $dataentradaspendientes!=''){ ?>
 				<div class="row">
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -390,6 +262,135 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 					
 				</div>
 			<?php }?>
+			<?php if(isset($dataentradas) && $dataentradas!=''){ ?>
+				<div class="row">
+					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
+							<header>
+								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+								<h2><?php echo $page_title ?></h2>
+							</header>
+							<div>
+								<div class="jarviswidget-editbox">
+								</div>
+								<div class="widget-body">
+									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+										<thead>
+											<tr>
+												<th class = "col-md-1" data-hide="phone,tablet"> </th>
+												<th class = "col-md-1" data-class="expand">No. Folio</th>
+												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
+												<th class = "col-md-1" data-class="phone,tablet">Referencia </th>
+												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
+												<?php if($_SESSION['user_info']['costos']) { ?>
+													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
+												<?php } ?>
+												<th class = "col-md-1" data-class="phone,tablet">Total Precio</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Status</th>
+												<th class = "col-md-1" data-class="phone,tablet"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php 
+											$nomtienda = '';
+											$total = $totalcosto = 0;
+											foreach($dataentradas as $row) {
+												$tienda = new Tienda();
+												$datatienda = $tienda->getTable($row["id_tienda"]);
+												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 
+											
+												$status = htmlentities($row['status']);
+												switch ($status) {
+													case 'BAJA':
+														$status = 'Cancelado';
+														$class  = 'cancelada';
+														break;
+													default:
+														$class  = '';
+														$total += $row['total'];
+														$totalcosto += $row['costo_total'];
+														break;
+												} 
+												?>
+												<tr class="<?php echo $class; ?>">
+													<td>
+														<a class="" href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>">
+															<?php echo htmlentities($row['id_entrada'])?>:Ver
+														</a>
+													</td>
+													<td><?php echo htmlentities($row['folio'])?></td>
+													<td><?php echo htmlentities($nomtienda) ?></td>
+													<td><?php echo htmlentities($row['referencia'])?></td>
+													<td>
+														<?php echo htmlentities($row['tipo_pago'])."<br>";
+														if($row['icredito']){
+															echo "<span style='color:red'>En pago</span>";
+														}
+														?>
+													</td>
+													<td><?php echo htmlentities($row['comentarios']) ?></td>
+													<?php if($_SESSION['user_info']['costos']) { ?>
+														<td>$<?php echo number_format($row['costo_total'], 2); ?></td>
+													<?php } ?>
+													<td>$<?php echo number_format($row['total'], 2); ?></td>
+													<td><?php echo htmlentities($row['fecha'])?></td>
+													<td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion'] ?></td>
+													<td>
+														<div class="btn-group">
+															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+																Accion <span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu">
+																<li>
+																	<a title="Ver Entrada" class=""  href="<?php echo make_url("Entradas","view",array('id'=>$row['id_entrada'])); ?>"> Ver Entrada</a>
+																</li>
+																<li>
+																	<a title="Imprimir Entrada" class="" target="_blank" href="<?php echo make_url("Entradas","print",array('id'=>$row['id_entrada'],'page'=>'entrada')); ?>">Imprimir</a>
+																</li>
+																<?php 
+																if ($row['status']!='BAJA'){ ?> 
+																	<?php if($row['icredito']){ ?>
+																		<li>
+																			<a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_entrada'] ?>)"> Pagar</a>
+																		</li>
+																	<?php } ?>
+																	<li class="divider"></li>
+																	<li>
+																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Entradas","entradadelete",array('id'=>$row['id_entrada'])); ?>',<?php echo $row['id_entrada']; ?>);">Eliminar</a>
+																	</li>
+																<?php 
+																} ?>
+															</ul>
+														</div>
+													</td>
+												</tr>
+											<?php
+											}
+											?>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th colspan="6" style="text-align:right">Total:</th>
+												<?php if($_SESSION['user_info']['costos']) { ?>
+													<th>$<?php echo $totalcosto;?></th>
+												<?php } ?>
+												<th>$<?php echo $total;?></th>
+												<th></th>
+												<th></th>
+												<th></th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</article>
+					
+				</div>
+			<?php }?>
+			
 			
 		</section>
 	</div>

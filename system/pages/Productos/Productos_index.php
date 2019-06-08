@@ -198,10 +198,8 @@ $data = $obj->getAllArr(false,false,false, $all );
 
 <!-- PAGE RELATED PLUGIN(S) -->
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/jquery.dataTables.min.js"></script>
-<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.colVis.min.js"></script>
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.tableTools.min.js"></script>
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
-<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
 
 <script>
 
@@ -267,12 +265,6 @@ $data = $obj->getAllArr(false,false,false, $all );
 			$('#txt1').val(existenciatienda);
 			return false;
 		}
-        $(function(){
-            $('.superbox-img').click(function(){
-                $('#contentpopup').html($(this).clone().attr("height","100%"));
-                $('#myModal').modal('show');
-            })
-        });
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 		 *
 		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS
