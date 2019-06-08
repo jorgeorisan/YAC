@@ -74,21 +74,22 @@ $datatraspasospendientes = $objTraspaso->getReporteTraspasosPendientes();
 													<input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" value="<?php echo $end; ?>" placeholder="Fecha Final" name="fecha_final" >
 												</div>
 												<div class="form-group">
-							                    <label for="name">Origen</label>
-													<select style="width:100%" class="select2" name="id_tiendaanterior" id="id_tiendaanterior">
+													<label for="name">Usuario<?php echo $idusuario;?></label>
+													<select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
 														<option value="">Selecciona</option>
 														<?php 
-														$obj = new Tienda();
+														$obj = new Usuario();
 														$list=$obj->getAllArr();
 														if (is_array($list) || is_object($list)){
 															foreach($list as $val){
-																$selected =  ($idtiendaant == $val['id_tienda'] ) ? "selected" : '';
-																echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
+																$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
 															}
 														}
 														?>
 													</select>
 												</div>
+												
 											</div>
 											<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 												<div class="form-group">
@@ -107,23 +108,23 @@ $datatraspasospendientes = $objTraspaso->getReporteTraspasosPendientes();
 														?>
 													</select>
 												</div>
-												
 												<div class="form-group">
-													<label for="name">Usuario<?php echo $idusuario;?></label>
-													<select style="width:100%" class="select2" name="id_usuario" id="id_usuario">
+							                    	<label for="name">Origen</label>
+													<select style="width:100%" class="select2" name="id_tiendaanterior" id="id_tiendaanterior">
 														<option value="">Selecciona</option>
 														<?php 
-														$obj = new Usuario();
+														$obj = new Tienda();
 														$list=$obj->getAllArr();
 														if (is_array($list) || is_object($list)){
 															foreach($list as $val){
-																$selected =  ($idusuario == $val['id'] ) ? "selected" : '';
-																echo "<option ".$selected ." value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
+																$selected =  ($idtiendaant == $val['id_tienda'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id_tienda']."'>".htmlentities($val['nombre'])."</option>";
 															}
 														}
 														?>
 													</select>
 												</div>
+												
 											</div>
 										</div>
                                     </fieldset> 
@@ -148,128 +149,6 @@ $datatraspasospendientes = $objTraspaso->getReporteTraspasosPendientes();
 				
 			</div>
 			
-
-			<?php if(isset($datatraspasos) && $datatraspasos!=''){ ?>
-				<div class="row">
-					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
-							<header>
-								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-								<h2><?php echo $page_title ?></h2>
-							</header>
-							<div>
-								<div class="jarviswidget-editbox">
-								</div>
-								<div class="widget-body">
-									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-										<thead>
-											<tr>
-												<th class = "col-md-1" data-hide="phone,tablet"> </th>
-												<th class = "col-md-1" data-class="expand">No. Folio</th>
-												<th class = "col-md-1" data-class="phone,tablet">Origen</th>
-												<th class = "col-md-1" data-class="phone,tablet">Destino</th>
-												<th class = "col-md-1" data-class="phone,tablet">Referencia </th>
-												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
-												<?php if($_SESSION['user_info']['costos']) { ?>
-													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
-												<?php } ?>
-												<th class = "col-md-1" data-class="phone,tablet">Total Precio</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Status</th>
-												<th class = "col-md-1" data-class="phone,tablet"></th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php 
-											$nomtienda = '';
-											$total = $totalcosto = 0;
-											foreach($datatraspasos as $row) {
-												$tienda = new Tienda();
-												$datatienda = $tienda->getTable($row["id_tienda"]);
-												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 
-												
-												$datatiendaOrigen = $tienda->getTable($row["id_tiendaanterior"]);
-												if($datatiendaOrigen) $nomtiendaOrigen = $datatiendaOrigen["abreviacion"]; 
-											
-												$status = htmlentities($row['status']);
-												switch ($status) {
-													case 'BAJA':
-														$status = 'Cancelado';
-														$class  = 'cancelada';
-														break;
-													default:
-														$class  = '';
-														$total += $row['total'];
-														$totalcosto += $row['costo_total'];
-														break;
-												} 
-												?>
-												<tr class="<?php echo $class; ?>">
-													<td>
-														<a class="" href="<?php echo make_url("Traspasos","view",array('id'=>$row['id_traspaso'])); ?>">
-															<?php echo htmlentities($row['id_traspaso'])?>:Ver
-														</a>
-													</td>
-													<td><?php echo htmlentities($row['folio'])?></td>
-													<td><?php echo htmlentities($nomtiendaOrigen) ?></td>
-													<td><?php echo htmlentities($nomtienda) ?></td>
-													<td><?php echo htmlentities($row['referencia'])?></td>
-													
-													<td><?php echo htmlentities($row['comentarios']) ?></td>
-													<?php if($_SESSION['user_info']['costos']) { ?>
-														<td>$<?php echo number_format($row['costo_total'], 2); ?></td>
-													<?php } ?>
-													<td>$<?php echo number_format($row['total'], 2); ?></td>
-													<td><?php echo htmlentities($row['fecha'])?></td>
-													<td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion'] ?></td>
-													<td>
-														<div class="btn-group">
-															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-																Accion <span class="caret"></span>
-															</button>
-															<ul class="dropdown-menu">
-																<li>
-																	<a title="Ver Traspaso" class=""  href="<?php echo make_url("Traspasos","view",array('id'=>$row['id_traspaso'])); ?>"> Ver Traspaso</a>
-																</li>
-																<li>
-																	<a title="Imprimir Traspaso" class="" target="_blank" href="<?php echo make_url("Traspasos","print",array('id'=>$row['id_traspaso'],'page'=>'traspaso')); ?>">Imprimir</a>
-																</li>
-																<?php 
-																if ($row['status']!='BAJA'){ ?> 
-																	<li class="divider"></li>
-																	<li>
-																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Traspasos","traspasodelete",array('id'=>$row['id_traspaso'])); ?>',<?php echo $row['id_traspaso']; ?>);">Eliminar</a>
-																	</li>
-																<?php 
-																} ?>
-															</ul>
-														</div>
-													</td>
-												</tr>
-											<?php
-											}
-											?>
-										</tbody>
-										<tfoot>
-											<tr>
-												<th colspan="6" style="text-align:right">Total:</th>
-												<?php if($_SESSION['user_info']['costos']) { ?>
-													<th>$<?php echo $totalcosto;?></th>
-												<?php } ?>
-												<th>$<?php echo $total;?></th>
-												<th></th>
-												<th></th>
-												<th></th>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
-							</div>
-						</div>
-					</article>
-					
-				</div>
-			<?php }?>
 			<?php if(isset($datatraspasospendientes) && $datatraspasospendientes!=''){ ?>
 				<div class="row">
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -391,6 +270,128 @@ $datatraspasospendientes = $objTraspaso->getReporteTraspasosPendientes();
 					
 				</div>
 			<?php }?>
+			<?php if(isset($datatraspasos) && $datatraspasos!=''){ ?>
+				<div class="row">
+					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
+							<header>
+								<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+								<h2><?php echo $page_title ?></h2>
+							</header>
+							<div>
+								<div class="jarviswidget-editbox">
+								</div>
+								<div class="widget-body">
+									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+										<thead>
+											<tr>
+												<th class = "col-md-1" data-hide="phone,tablet"> </th>
+												<th class = "col-md-1" data-class="expand">No. Folio</th>
+												<th class = "col-md-1" data-class="phone,tablet">Origen</th>
+												<th class = "col-md-1" data-class="phone,tablet">Destino</th>
+												<th class = "col-md-1" data-class="phone,tablet">Referencia </th>
+												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
+												<?php if($_SESSION['user_info']['costos']) { ?>
+													<th class = "col-md-1" data-class="phone,tablet">Total Costo</th>
+												<?php } ?>
+												<th class = "col-md-1" data-class="phone,tablet">Total Precio</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
+												<th class = "col-md-1" data-hide="phone,tablet">Status</th>
+												<th class = "col-md-1" data-class="phone,tablet"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php 
+											$nomtienda = '';
+											$total = $totalcosto = 0;
+											foreach($datatraspasos as $row) {
+												$tienda = new Tienda();
+												$datatienda = $tienda->getTable($row["id_tienda"]);
+												if($datatienda) $nomtienda = $datatienda["abreviacion"]; 
+												
+												$datatiendaOrigen = $tienda->getTable($row["id_tiendaanterior"]);
+												if($datatiendaOrigen) $nomtiendaOrigen = $datatiendaOrigen["abreviacion"]; 
+											
+												$status = htmlentities($row['status']);
+												switch ($status) {
+													case 'BAJA':
+														$status = 'Cancelado';
+														$class  = 'cancelada';
+														break;
+													default:
+														$class  = '';
+														$total += $row['total'];
+														$totalcosto += $row['costo_total'];
+														break;
+												} 
+												?>
+												<tr class="<?php echo $class; ?>">
+													<td>
+														<a class="" href="<?php echo make_url("Traspasos","view",array('id'=>$row['id_traspaso'])); ?>">
+															<?php echo htmlentities($row['id_traspaso'])?>:Ver
+														</a>
+													</td>
+													<td><?php echo htmlentities($row['folio'])?></td>
+													<td><?php echo htmlentities($nomtiendaOrigen) ?></td>
+													<td><?php echo htmlentities($nomtienda) ?></td>
+													<td><?php echo htmlentities($row['referencia'])?></td>
+													
+													<td><?php echo htmlentities($row['comentarios']) ?></td>
+													<?php if($_SESSION['user_info']['costos']) { ?>
+														<td>$<?php echo number_format($row['costo_total'], 2); ?></td>
+													<?php } ?>
+													<td>$<?php echo number_format($row['total'], 2); ?></td>
+													<td><?php echo htmlentities($row['fecha'])?></td>
+													<td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion'] ?></td>
+													<td>
+														<div class="btn-group">
+															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+																Accion <span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu">
+																<li>
+																	<a title="Ver Traspaso" class=""  href="<?php echo make_url("Traspasos","view",array('id'=>$row['id_traspaso'])); ?>"> Ver Traspaso</a>
+																</li>
+																<li>
+																	<a title="Imprimir Traspaso" class="" target="_blank" href="<?php echo make_url("Traspasos","print",array('id'=>$row['id_traspaso'],'page'=>'traspaso')); ?>">Imprimir</a>
+																</li>
+																<?php 
+																if ($row['status']!='BAJA'){ ?> 
+																	<li class="divider"></li>
+																	<li>
+																		<a href="#" class="red" onclick="borrar('<?php echo make_url("Traspasos","traspasodelete",array('id'=>$row['id_traspaso'])); ?>',<?php echo $row['id_traspaso']; ?>);">Eliminar</a>
+																	</li>
+																<?php 
+																} ?>
+															</ul>
+														</div>
+													</td>
+												</tr>
+											<?php
+											}
+											?>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th colspan="6" style="text-align:right">Total:</th>
+												<?php if($_SESSION['user_info']['costos']) { ?>
+													<th>$<?php echo $totalcosto;?></th>
+												<?php } ?>
+												<th>$<?php echo $total;?></th>
+												<th></th>
+												<th></th>
+												<th></th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</article>
+					
+				</div>
+			<?php }?>
+			
 			
 		</section>
 	</div>
