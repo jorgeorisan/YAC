@@ -453,12 +453,12 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             $("#ticket-items").val($("#productos").html());
             if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
            
-            $("#montoabono").val(0);
-            $("#monto").val(''); 
-            $("#comentarios").val(''); 
-            $('#tipoprecio').val('Normal').select2();
-            $('#id_persona').val('Efectivo').select2();
-            $('#tipo').val('Efectivo').select2();
+            //$("#montoabono").val(0);
+            //$("#monto").val(''); 
+            //$("#comentarios").val(''); 
+            //$('#tipoprecio').val('Normal').select2();
+            //$('#id_persona').val('Efectivo').select2();
+            //$('#tipo').val('Efectivo').select2();
             $(this).hide();
             $("#main-form").submit();
 
