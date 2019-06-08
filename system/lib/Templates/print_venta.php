@@ -91,7 +91,7 @@ if ($porcentpagado < 50 )
             <th>Tipo Pago</th>
             <td><?php echo $data['tipo']; ?></td>
         </tr>
-        <?php if($data['tipo']=="Credito") {
+        <?php if($data['tipo']=="Credito" || $data['tipo']=="Apartado") {
                 $totalpagado = $obj->getpagado($id);
             ?>
             <tr>
@@ -161,11 +161,11 @@ if ($porcentpagado < 50 )
     </table>
     <p class="title" style="    width: 200px;">
         <?php 
-        if($data['tipo']=="Credito") { ?>
+        if($data['tipo']=="Credito" || $data['tipo']=="Apartado") { ?>
             GRACIAS POR SU COMPRA<br>
             USTED CUENTA CON 30 DIAS A PARTIR DE HOY PARA RECOGER SU PRODUCTO, AL FINALIZAR EL PERIODO DE TIEMPO EL ABONO NO ES REEMBOLSABLE.
             <?php 
-        }ELSE{ ?>
+        }else{ ?>
             GRACIAS POR SU COMPRA<br>
             REVISE SU PRODUCTO,
             SALIDA LA MERCANCIA NO SE ACEPTAN DEVOLUCIONES
