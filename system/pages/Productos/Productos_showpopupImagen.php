@@ -45,8 +45,8 @@
                         <img src='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."' 
                             data-img='".$carpetaimg.DIRECTORY_SEPARATOR.$data['imagen']."'
                             alt='".$data['imagen']."' title='".$data['imagen']."'
-                            style=''
-                            class='superbox-img'>
+                            style='max-width: 500px;'
+                            class=''>
                     </div>";
             }
             ?> 
