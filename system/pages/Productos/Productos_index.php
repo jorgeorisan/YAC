@@ -47,19 +47,18 @@ $data = $obj->getAllArr(false,false,false, $all );
 								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 									<thead>
 										<tr>
-											<th class = "col-md-1" data-hide="phone,tablet"> ID</th>
-											<th class = "col-md-1" data-class="expand"> Codigo</th>
-											<th class = "col-md-1" data-hide="phone"> Nombre</th>
+											<th class = "col-md-1" data-class="expand"> ID</th>
+											<th class = "col-md-1" data-hide=""> Codigo</th>
+											<th class = "col-md-1" data-hide=""> Nombre</th>
 											<th class = "col-md-1" data-hide=""> Marca</th>
 											<th class = "col-md-1" data-hide="phone,tablet"> Categ.</th>
 											<th class = "col-md-1" data-hide="phone,tablet"> Prov.</th>
 											<?php if($_SESSION['user_info']['costos']) { ?>
-												<th class = "col-md-1" data-hide="phone,tablet"> Costo</th>
+												<th class = "col-md-1" data-hide=""> Costo</th>
 											<?php } ?>
-											<th class = "col-md-1" data-hide="phone,tablet"> Mayoreo</th>
-											<th class = "col-md-1" data-hide="phone,tablet"> Precio</th>
-											<th class = "col-md-1" data-hide="phone,tablet"> Exist.</th>
-											<th class = "col-md-1" data-hide="phone,tablet"> Servicio</th>
+											<th class = "col-md-1" data-hide=""> Mayoreo</th>
+											<th class = "col-md-1" data-hide=""> Precio</th>
+											<th class = "col-md-1" data-hide=""> Exist.</th>
 											<th class = "col-md-1" data-hide="phone,tablet"> Act.</th>
 											<th class = "col-md-1" data-hide="phone,tablet">Action</th>
 										</tr>
@@ -74,10 +73,8 @@ $data = $obj->getAllArr(false,false,false, $all );
 												<td><?php echo htmlentities($row['codinter'])?></td>
 												<td>
 													<?php 
-														if($row['imagen']!=''){
-														?>
-															<a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen(<?php echo $row['id_producto'] ?>)"><?php echo htmlentities($row['nombre'])?></a>
-															
+														if($row['imagen']!=''){	?>
+															<a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen(<?php echo $row['id_producto'] ?>)"><?php echo htmlentities($row['nombre'])?><br><?php echo ($row['manual']) ? 'Servicio' : '' ?></a>
 															<?php
 														}else{ ?>
 														<?php echo htmlentities($row['nombre'])?>
@@ -101,7 +98,6 @@ $data = $obj->getAllArr(false,false,false, $all );
 													</div>
 												</td>
 												
-												<td><?php echo ($row['manual']) ? 'Si' : 'No' ?></td>
 												<td style="font-size:10px">
 													<div  id='contactualizaciones<?php echo $row['id_producto'] ?>'>
 													<?php 

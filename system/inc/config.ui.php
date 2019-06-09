@@ -98,7 +98,7 @@ $menuVentas = array(
 				'ventasadd'  => array('title'  => 'Ventas Alta','url'    => APP_URL."/Ventas/add" ),
 				'ventasindex'  => array('title'  => 'Reporte Venta','url' => APP_URL."/Ventas/index" ),
 				'ventasproductos'  => array('title'  => 'Reporte por Producto','url' => APP_URL."/Ventas/productos" ),
-				'ventasapartados'  => array('title'  => 'Reporte de Apartados','url' => APP_URL."/Ventas/apartado" )
+				'ventasapartados'  => array('title'  => 'Vtas Apartados/Credito','url' => APP_URL."/Ventas/apartado" )
 		)
 	)
 );

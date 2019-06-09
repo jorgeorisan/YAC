@@ -1,11 +1,4 @@
 <?php
-//include left panel (navigation)
-if(isset($request['params']['id'])   && $request['params']['id']>0)
-    $id=$request['params']['id'];
-else
-    informError(true,make_url("Venta","index"));
-
-
 $obj = new Venta();
 $data = $obj->getTable($id);
 if ( !$data ) {
@@ -38,9 +31,6 @@ if ($porcentpagado < 50 )
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title><?php echo $datatienda['nombre']?></title>
 
-    <script type="text/javascript">
-        window.print();
-    </script>
 
     <style type="text/css">
         body {
@@ -51,52 +41,71 @@ if ($porcentpagado < 50 )
             font-family: Arial;
             font-size: 11px;
         }
-        title{
+        .title{
             font-family: Arial;
-            font-size: 12px;
+            font-size: 10px;
+        }
+        .font10{
+            font-family: Arial;
+            font-size: 10px;
         }
     </style>
 </head>
 <body style="text-align: center; width: 175px;">
     <table style="text-align:center; width:100%">
         <tr>
-            <td colspan="2">
+            <td colspan="2" style="">
                 <img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="Yo Amo Comprar" style="width:150px; height:40">
             </td>
         </tr>
         <tr>
-            <td colspan="2">
-                <label style="font-size: 10px"> <?php echo $ubicacion ?>
-                </label>
+            <td colspan="2"  class="font10">
+                <label> <?php echo $ubicacion ?> </label>
             </td>
         </tr>
-        <tr>
+        <tr class="font10">
             <th>Folio</th>
             <td> <strong> <u><?php echo $data['folio']; ?></u></strong></td>
         </tr>
-        <tr>
+        <tr  class="font10">
             <th>Fecha</th>
-            <td><?php echo $data['fecha']; ?></td>
+            <td><?php echo date('Y-m-d H:m A',strtotime($data['fecha'])); ?></td>
         </tr>
-        <tr>
+        <tr class="font10">
             <th>Vendedor</th>
-            <td><?php
-                echo  $datauser['id_usuario']; ?></td>
+            <td><?php echo  $datauser['id_usuario']; ?></td>
         </tr>
-        <tr>
+        <tr class="font10">
             <th>Cliente</th>
-            <td><?php echo $datacliente['nombre']." ".$datacliente['ap_materno']." ".$datacliente['ap_paterno']; ?></td>
+            <td><?php echo $datacliente['nombre']." ".$datacliente['ap_materno']; ?></td>
         </tr>
-        <tr>
-            <th>Tipo Pago</th>
+        <tr class="font10">
+            <th>Tipo </th>
             <td><?php echo $data['tipo']; ?></td>
         </tr>
         <?php if($data['tipo']=="Credito" || $data['tipo']=="Apartado") {
                 $totalpagado = $obj->getpagado($id);
+
+                $pagosventa = $obj->getpagos($id);
+
+                foreach($pagosventa as $key => $pago){
+                    $key ++;
+                    $concepto = ($key==1) ? 'Abono Ini.' : date('Y-m-d',strtotime($pago['fecha_abono']));
+                    
+                   echo "<tr class='font10'>
+                            <th>".$concepto."</th>
+                            <td>$".number_format($pago['montoabono'],2)."</td>
+                        </tr>";
+
+                }
             ?>
-            <tr>
-                <th>Abono Inicial</th>
-                <td><?php echo $totalpagado; ?></td>
+            <tr class="font10">
+                <th>Pagado</th>
+                <td><strong>$<?php echo number_format($totalpagado,2); ?><strong></td>
+            </tr>
+            <tr class="font10">
+                <th>Por Pagar</th>
+                <td><strong>$<?php echo number_format($data['total']-$totalpagado,2); ?><strong></td>
             </tr>
         <?php
         }
@@ -108,8 +117,8 @@ if ($porcentpagado < 50 )
             <tr>
                 <th>Cant.</th>
                 <th style="width: 70px">Producto</th>
-                <th>Sub.</th>
-                <th>Total</th>
+                <th>Precio</th>
+                <th>Importe</th>
 
             </tr>
             <?php
@@ -124,13 +133,14 @@ if ($porcentpagado < 50 )
             foreach($datapv as $row) :
                 if($row['cancelado']) continue;
                 $tipoprecio = ($row['tipoprecio']!='Normal') ?  "<br>".htmlentities(ucwords(strtolower($row['tipoprecio']))) : '';
+                $precio = number_format($row['total']/$row['cantidad'], 0);
 
                 $total += $row['total'];
                 ?>
-                <tr >
+                <tr class="font10">
                     <td> <?php echo $row['cantidad']; ?></td>
                     <td> <?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
-                    <td>$<?php echo number_format($row['total']/$row['cantidad'], 0); ?></td>
+                    <td>$<?php echo $precio; ?></td>
                     <td>$<?php echo number_format($row['total'], 0).$tipoprecio; ?></td>
                 </tr>
             <?php
@@ -142,24 +152,28 @@ if ($porcentpagado < 50 )
             ?>
             <tr> 
                 <td colspan="3" align="right"><strong>Subtotal $</strong></td>
-                <td colspan="" align="right"><strong><?php echo number_format($total, 2); ?></strong></td>
+                <td colspan="" align="right"><?php echo number_format($total, 2); ?></td>
             </tr>
             <tr>
                 <td colspan="3" align="right"><strong>Descuento $</strong></td>
-                <td colspan="" align="right"><strong><?php echo number_format($data['descuento'], 2); ?></strong></td>
+                <td colspan="" align="right"><?php echo number_format($data['descuento'], 2); ?></td>
             </tr>
             <?php 
         } 
         $totaldesc = ($data['descuento']) ? $data['descuento'] : 0;
         ?>
+       
         <tr>
+           
             <td colspan="3" align="right"><strong>Total $</strong></td>
+            
             <td colspan="" align="right"><strong><?php echo number_format($total-$totaldesc, 2); ?></strong></td>
+            
         </tr>
 
 
     </table>
-    <p class="title" style="    width: 200px;">
+    <p class="title" style="width: 200px;">
         <?php 
         if($data['tipo']=="Credito" || $data['tipo']=="Apartado") { ?>
             GRACIAS POR SU COMPRA<br>
@@ -174,4 +188,14 @@ if ($porcentpagado < 50 )
         } ?>
     </p>
 </body>
+
+    <script type="text/javascript">
+        window.print();
+        <?php 
+        if($close=='true'){
+            echo "setInterval(function(){ window.close(); }, 2000); ";
+        }
+        ?>
+        
+    </script>
 </html>

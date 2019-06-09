@@ -64,13 +64,16 @@ class Venta extends AutoVenta {
 			$objPV = new ProductosVenta();
 			$objproductos = new Producto();
 			$objproductostienda = new ProductoTienda();
-			//ProductosVenta
+			
+			if($objproductos){
+			
+				//ProductosVenta
 				//arrays
 				$cantidades      = $_request["cantidad"];
 				$productos       = $_request["id_producto"];
 				$productotienda  = $_request["id_productotienda"];
 				$totales         = $_request["total_producto"];
-				$costos          = $_request["costototal"];
+				$costos          = (isset($_request["costototal"]))? $_request["costototal"] : 0;
 				$tipoprecio      = $_request["tipoprecio"];
 				foreach ($productotienda as $key => $value) {
 					$producto = $objproductos->gettable($productos[$key]);
@@ -100,7 +103,9 @@ class Venta extends AutoVenta {
 					$objdeudores = new Deudores();
 					$objdeudores->addAll($_requesDeudores);
 				}
-			
+			}else{
+				die('el producto no existe');
+			}
 		}
 		return $id;
 	}
@@ -393,6 +398,20 @@ class Venta extends AutoVenta {
 		$row = $res->fetch_assoc();
 		$res->close();
 		return $row['total'];
+	}
+	public function getpagos($id){
+		if(! intval( $id )) return false;
+		$sql = "SELECT * FROM deudores where  id_venta=$id and status='ACTIVA'";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result  getReporteVentasApartados"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
 	}
 	// ventas por producto
 	public function getReporteVentasProductos($id)

@@ -8,6 +8,7 @@ $lineId = rand(1000, 100000);
             <?php 
             }
         ?>    
+        <input type="hidden" class=""        name="costototal[]"  value="<?php echo ($costo*$cantidad); ?>"/>
         <input type="hidden" class=""        name="tipoprecio[]"  value="<?php echo $tipoprecio; ?>"/>
         <input type="hidden"                 name="cantidad[]"    value="<?php echo $cantidad; ?>"/>
         <input type="hidden"                 name="id_producto[]" value="<?php echo $id_producto; ?>"/>

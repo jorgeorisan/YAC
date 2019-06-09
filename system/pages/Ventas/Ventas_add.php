@@ -24,19 +24,17 @@ include(SYSTEM_DIR . "/inc/header.php");
 //include left panel (navigation)
 //follow the tree in inc/config.ui.php
 include(SYSTEM_DIR . "/inc/nav.php");
-if(isPost()){
-    $obj = new Venta();
-    $id=$obj->addAll(getPost());
-    if($id>0){
-        informSuccess(true, make_url("Ventas","print",array('id'=>$id,'page'=>'venta')));
-    }else{
-        informError(true,make_url("Ventas","index"));
-    }
-}
+
 $idtienda = $_SESSION['user_info']['id_tienda'];
 $tipousu  = $_SESSION['user_info']['id_usuario_tipo'];
 $idusuario= $_SESSION['user_id'];
 $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
+
+$id='';
+if(isPost()){
+    $obj = new Venta();
+    $id=$obj->addAll(getPost());
+}
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -286,9 +284,13 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                 </h4>
             </div>
             <div class="modal-body no-padding" >
-                <div id="contentpopup">
+                <div id="contentpopup" class="printMe">
 
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnPrint" >Print</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -333,6 +335,19 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         $("#total-num").html(total);
         $("#total-global").val(total);
     }
+    //imprimir venta
+    var showimprimir = function(idventa=false){
+        $.get(config.base+"/Ventas/ajax/?action=get&object=showimprimir&id_venta="+idventa, null, function (response) {
+                if ( response ){
+                    //console.log(response);
+                    window.open(response,'Imprimir Ticket', 'width=600, height=600');
+                }else{
+                    return notify('error', 'Error al obtener el ticket');
+                    
+                }     
+        });
+    }
+
     $(document).ready(function() {
        
         
@@ -451,7 +466,9 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             var productos = $(".producto");  
             if ( ! productos.length )  return notify("info","Los productos son requeridos");
             $("#ticket-items").val($("#productos").html());
-            if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  return notify("info","Se requiere un cliente para los apartados");
+            if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  
+                return notify("info","Se requiere un cliente para los apartados");
+           
            
             //$("#montoabono").val(0);
             //$("#monto").val(''); 
@@ -459,6 +476,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
             //$('#tipoprecio').val('Normal').select2();
             //$('#id_persona').val('Efectivo').select2();
             //$('#tipo').val('Efectivo').select2();
+          
             $(this).hide();
             $("#main-form").submit();
 
@@ -539,8 +557,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                     }     
             });
         }
-
-
+        
 
         $("#barcode").focus();
         $("#barcode").autocomplete({
@@ -562,6 +579,13 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 </script>
 
 <?php
+    if($id>0){
+    echo "
+        <script> 
+            showimprimir(".$id.");
+        </script>";
+        //informSuccess(true, make_url("Ventas","print",array('id'=>$id,'page'=>'venta')));
+    }    
     //include footer
     include(SYSTEM_DIR . "/inc/close-html.php");
 

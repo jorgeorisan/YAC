@@ -62,7 +62,7 @@ if ($porcentpagado < 50 )
         <section id="widget-grid" class="">
 			<div class="row">   
                 <div class="widget-body" style='padding-left: 15px;'>
-					<a class="btn btn-success" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$id,'page'=>'venta'))?>" ><i class="fa fa-print"></i> &nbsp;Imprimir</a>
+					<a class="btn btn-success" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$id,'page'=>'venta','close'=>'false'))?>" ><i class="fa fa-print"></i> &nbsp;Imprimir</a>
 			
                     <?php if($data['icredito']){ ?>
                         <a data-toggle="modal" class="btn btn-info" href="#myModal" onclick="showpopuppagar(<?php echo $id ?>)" > <i class="fa fa-plus"></i>&nbsp;Pagar</a>

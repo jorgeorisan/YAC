@@ -97,6 +97,17 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 				}
 			}
 			break;
+		case 'showimprimir':
+			if( isset($_GET["id_venta"]) && intval($_GET["id_venta"]) ){
+				$id=$_GET['id_venta'];
+				$obj = new Venta();
+				$data = $obj->getTable($id);
+				if ( $data ) {
+					 echo make_url("Ventas","print",array('id'=>$id,'page'=>'venta','close'=>'true'));
+				}
+			}
+			break;
+		
 		case 'savenewpago':
 			if(isPost()){
 			    $obj = new Deudores();

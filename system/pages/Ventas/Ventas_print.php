@@ -14,8 +14,9 @@ $page_title = "Venta";
 
 //include left panel (navigation)
 if(isset($request['params']['id'])   && $request['params']['id']>0){
-    $id=$request['params']['id'];
-    $page=$request['params']['page'];
+    $id    = $request['params']['id'];
+    $page  = $request['params']['page'];
+    $close = (isset($request['params']['close'])) ? $request['params']['close'] : false;
 }else{
     informError(true,make_url("Ventas","index"));
 }

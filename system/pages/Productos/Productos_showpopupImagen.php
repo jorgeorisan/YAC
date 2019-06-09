@@ -1,4 +1,4 @@
-<section id="widget-grid" class="">
+<section id="widget-grid" class="" style="overflow:auto">
     <?php if(!$data['imagen']){ ?>
         <form id="main-form" enctype="multipart/form-data" action="" method="post" >     
             <input type="hidden" id="id_producto" name="id_producto"  value="<?php echo $data['id_producto']; ?>">

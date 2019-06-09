@@ -207,7 +207,7 @@ foreach($dataabonos as $row) {
 																	<a title="Ver Venta" class=""  href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
 																</li>
 																<li>
-																	<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta')); ?>">Imprimir</a>
+																	<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta','close'=>'true')); ?>">Imprimir</a>
 																</li>
 																<?php 
 																if (!$row['cancelado']){ ?> 

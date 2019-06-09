@@ -7,7 +7,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 /*---------------- PHP Custom Scripts ---------
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
-$page_title = "Reporte de Ventas a Apartados";
+$page_title = "Reporte de Apartados";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 $page_css[] = "your_style.css";
@@ -47,17 +47,16 @@ $dataventas = $obj->getReporteVentasApartados();
 								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 									<thead>
 										<tr>
-											<th class = "col-md-1" data-hide="phone,tablet"> </th>
-											<th class = "col-md-1" data-class="expand">Folio</th>
+											<th class = "col-md-1" data-hide="expand">Folio </th>
 											<th class = "col-md-1" data-class="phone,tablet">Vendedor </th>
 											<th class = "col-md-1" data-class="phone,tablet">Cliente </th>
+											<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 											<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
 											<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
-											<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 											<th class = "col-md-1" data-class="phone,tablet">Total</th>
 											<th class = "col-md-1" data-class="phone,tablet">Pagado</th>
 											<th class = "col-md-1" data-class="phone,tablet">%Pagado</th>
-											<th class = "col-md-1" data-class="phone,tablet">Deuda</th>
+											<th class = "col-md-1" data-class="phone,tablet">Por Pagar</th>
 											<th class = "col-md-1" data-class="phone,tablet">Dias</th>
 											<th class = "col-md-1" data-class="phone,tablet"></th>
 										</tr>
@@ -90,15 +89,15 @@ $dataventas = $obj->getReporteVentasApartados();
 											<tr <?php echo $class;?>>
 												<td>
 													<a class="" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>">
-														<?php echo htmlentities($row['id_venta'])?>:Ver
+														<?php echo htmlentities($row['folio'])?>:Ver
 													</a>
 												</td>
-												<td><?php echo htmlentities($row['folio'])?></td>
 												<td><?php echo htmlentities($row['id_usuario'])?></td>
 												<td><a class="" href="<?php echo make_url("Clientes","view",array('id'=>$row['id_persona'])); ?>">
 														<?php echo htmlentities($row['cliente'])."<br>".htmlentities($row['telefono'])?>
 													</a>
 												</td>
+												<td> <?php echo htmlentities($nomtienda) ?></td>
 												<td><?php echo htmlentities($row['fecha'])?></td>
 												<td>
 													<?php echo htmlentities($row['tipo'])."<br>";
@@ -107,7 +106,6 @@ $dataventas = $obj->getReporteVentasApartados();
 													}
 													?>
 												</td>
-												<td> <?php echo htmlentities($nomtienda) ?></td>
 												<td>$<?php echo number_format($row['total'], 2); ?></td>
 												<td>$<?php echo number_format($totalpagado, 2); ?></td>
 												<td> <?php echo "<span class='".$class."'>".number_format($porcentpagado,0)."%</span>"; ?></td>
@@ -226,7 +224,7 @@ $dataventas = $obj->getReporteVentasApartados();
 			phone : 480
 		};
 		$('#dt_basic').dataTable({
-			"aaSorting": [[ 1,"asc" ]],
+			"aaSorting": [[ 10,"asc" ]],
         	"iDisplayLength": 50,
 
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
