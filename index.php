@@ -181,7 +181,7 @@ Routing section
         $datapermuser  = $objpermuser->getpermisouser($_SESSION['user_id'],$request['section'],$page2);
         if ( !$datapermuser ) {
           print_r( "ERROR permisos".$_SESSION['user_id']."------".$request['section']."-----".$page2);
-          if($_SESSION['user_info']['id_usuario_tipo']==5) exit;
+          //if($_SESSION['user_info']['id_usuario_tipo']==5) exit;
 
           if($_SESSION['user_info']['id_usuario_tipo']!=4){
             informPermiss(true,make_url("Home","index"));
