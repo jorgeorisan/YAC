@@ -342,10 +342,10 @@ if($res=$citas->getAllArr()){
         }
         $('body').on('click', '#savenewcliente', function(){
             
-            var nombre       = $("input[name=nombre]", $(this).parents('form:first')).val();
-            var ap_paterno = $("input[name=ap_paterno]", $(this).parents('form:first')).val();
-            var ap_materno = $("input[name=ap_materno]", $(this).parents('form:first')).val();
-            var telefono     = $("input[name=telefono]", $(this).parents('form:first')).val();
+            var nombre       = $("input[name=nombre]",     $(this).parents('form:first')).val();
+            var ap_paterno   = $("input[name=ap_paterno]", $(this).parents('form:first')).val();
+            var ap_materno   = $("input[name=ap_materno]", $(this).parents('form:first')).val();
+            var telefono     = $("input[name=telefono]",   $(this).parents('form:first')).val();
             
             if(!nombre)   {  swal("Se necesita el nombre del cliente.");   return false; }
             if(!telefono) {  swal("Se necesita el telefono del cliente."); return false; }
