@@ -288,10 +288,7 @@ if(isPost()){
 
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btnPrint" >Print</button>
-            </div>
+           
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
@@ -520,7 +517,7 @@ if(isPost()){
             $.ajax({
                 type: "POST",
                 url: url,
-                data: $(this).parents('form:first').serialize()+'&id_usuario_tipo=1&id_tienda='+id_tienda, // Adjuntar los campos del formulario enviado.
+                data: $(this).parents('form:first').serialize()+'&id_tienda='+id_tienda, // Adjuntar los campos del formulario enviado.
                 success: function(response){
                     if(response>0){
                         //alert("Group successfully added");

@@ -56,6 +56,16 @@ $menuCitas = array(
 			)
 	)
 );
+$menuPacientes = array(
+	"Pacientes" => array(
+			"title" => "Pacientes",
+			"icon" => "fa-user-md",
+			"sub" => array(
+				'pacientesindex' => array('title'  => 'Pacientes','url' => APP_URL."/Pacientes/index" ),
+				'pacientesadd' => array('title'  => 'Nuevo Paciente','url' => APP_URL."/Pacientes/add" ),
+			)
+	)
+);
 $menuProductos = array(
 	"Productos" => array(
 			"title" => "Productos",
@@ -198,6 +208,10 @@ if(isset($_SESSION['user_id'])){
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Clientes');
 	if ( $datapermuser ) { 
 	  $page_nav = array_merge($page_nav, $menuClientes);
+	}
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Pacientes');
+	if ( $datapermuser ) { 
+	  $page_nav = array_merge($page_nav, $menuPacientes);
 	}
 	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Usuarios');
 	if ( $datapermuser ) { 

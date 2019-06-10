@@ -6,14 +6,18 @@ class Cita extends AutoCita {
 	private $DB_TABLE = "cita";
 
 	
-	//metodo que sirve para obtener todos los datos de la tabla
+		//metodo que sirve para obtener todos los datos de la tabla
 	public function getAllArr($arrayfilters=false)
 	{
-		$fecha   = (isset($arrayfilters['fecha_inicial'])) ? " AND DATE(fecha_inicial)>='".$arrayfilters['fecha_inicial']."' and DATE(fecha_final)<='".$arrayfilters['fecha_inicial']." 23:59:00'" : '';
-		
+		$fecha        = (isset($arrayfilters['fecha_inicial'])) ? " AND DATE(fecha_inicial)>='".$arrayfilters['fecha_inicial']."' and DATE(fecha_final)<='".$arrayfilters['fecha_inicial']." 23:59:00'" : '';
+		$id_cliente  = (isset($arrayfilters['id_cliente']) && $arrayfilters['id_cliente']>0) ? " AND id_persona='".$arrayfilters['id_cliente']."'" : '';
+		$status		  = (isset($arrayfilters['status']) ) ? " AND status='".$arrayfilters['status']."'" : '';
 		$sql = "SELECT * FROM cita
-					where status!='deleted'
-					$fecha ;";
+				 where status!='deleted'
+				 $fecha
+				 $id_cliente
+				 $status ;";
+		
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
@@ -30,7 +34,24 @@ class Cita extends AutoCita {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM cita WHERE id=$id;";
+		$sql= "SELECT c.*, CONCAT(p.nombre,' ',p.ap_paterno) persona
+				FROM cita c
+				LEFT JOIN persona p ON c.id_persona=p.id_persona
+				WHERE c.id=$id;";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result cita");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row;
+
+	}
+	//
+	public function getTableFilter($filter=false)
+	{
+		$addquery =(count($filter)>0) ? $filter[0]."=".$filter[1] : die('no filtros');
+		
+		$sql= "SELECT * FROM cita WHERE ".$addquery;
 		$res=$this->db->query($sql);
 		if(!$res)
 			{die("Error getting result cita");}
@@ -42,6 +63,9 @@ class Cita extends AutoCita {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
+		
+		$_request["id_tienda"] = $_SESSION['user_info']['id_tienda'];
+		$_request["id_user"] = $_SESSION['user_id'];
 		$data=fromArray($_request,'cita',$this->db,"add");
 		$sql= "INSERT INTO cita (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
@@ -83,7 +107,7 @@ class Cita extends AutoCita {
 			return true;
 		}
 	}
-	//metodo que sirve sabir si ya existe una cita en fecha y hora
+		//metodo que sirve sabir si ya existe una cita en fecha y hora
 	public function getExisteCita($fechaini,$fechafin,$idpersonal)
 	{
 		$fechaini 	= validar_fecha($fechaini) ? $fechaini : '';

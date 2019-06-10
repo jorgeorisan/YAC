@@ -8,7 +8,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 /*---------------- PHP Custom Scripts ---------
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
-$page_title = "Clientes";
+$page_title = "Pacientes";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 $page_css[] = "your_style.css";
@@ -19,11 +19,11 @@ include(SYSTEM_DIR . "/inc/nav.php");
 
 
 $obj = new Persona();
-$arrayfilters['tipo'] = '1';
-$arrayfilters['page'] = 'clientes';
+$arrayfilters['tipo'] = '11';
+$arrayfilters['page'] = 'pacientes';
 $data = $obj->getAllArr($arrayfilters);
 
-//print_r($data);
+//print_r($users);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -38,7 +38,7 @@ $data = $obj->getAllArr($arrayfilters);
 	<!-- MAIN CONTENT -->
 	<div id="content">
 		<section id="widget-grid" class="">
-			 <p><a class="btn btn-success" href="<?php echo make_url("Clientes","add")?>" ><i class="fas fa-plus"></i> Nuevo Cliente</a></p>
+			 <p><a class="btn btn-success" href="<?php echo make_url("Pacientes","add")?>" ><i class="fas fa-plus"></i> Nuevo Paciente</a></p>
 			<div class="row">
 				<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
@@ -53,46 +53,41 @@ $data = $obj->getAllArr($arrayfilters);
 								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 									<thead>
 										<tr>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw fa-list-ol text-muted hidden-md hidden-sm hidden-xs"></i> No. Persona
-											</th>
-											<th class = "col-md-1" data-class="expand">
-												<i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Nombre
-											</th>
-											<th class = "col-md-1" data-hide="phone">
-												<i class="fa fa-fw  fa-envelope  text-muted hidden-md hidden-sm hidden-xs"></i> Email
-											</th>
-											<th class = "col-md-1" data-hide="">
-												<i class="fa fa-fw  fa-phone-square text-muted hidden-md hidden-sm hidden-xs"></i> Telefono
-											</th>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i> Direccion
-											</th>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  fa-exclamation-triangle  text-muted hidden-md hidden-sm hidden-xs"></i> Alergico
-											</th>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  fa-check-square  text-muted hidden-md hidden-sm hidden-xs"></i> Fecha Alta
-											</th>
-											<th class = "col-md-1" data-hide="phone,tablet">
-												<i class="fa fa-fw  text-muted hidden-md hidden-sm hidden-xs"></i>Action
-											</th>
+											<th class = "col-md-1" data-hide="phone,tablet">No. Paciente</th>
+											<th class = "col-md-1" data-class="expand">Nombre</th>
+											<th class = "col-md-1" data-hide="phone"> Email</th>
+											<th class = "col-md-1" data-hide=""> Telefono</th>
+											<th class = "col-md-1" data-hide="phone,tablet"> Direccion</th>
+											<th class = "col-md-1" data-hide="phone,tablet"> Alergico</th>
+											<th class = "col-md-1" data-hide="phone,tablet"> Edad</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Fecha Alta</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Action</th>
 										</tr>
 									</thead>
 									<tbody>
 										<?php  foreach($data as $row) {
-											$nomtienda="";
+											$nomtienda = $ano_diferencia  ="";
 											$objtienda = new Tienda();
 											$datatienda = $objtienda->getTable($row["id_tienda"]);
 											if($datatienda){ $nomtienda = $datatienda["nombre"]; }
+											
+											if($row['fecha_nacimiento']!=""){
+												list($ano,$mes,$dia) = explode("-",$row['fecha_nacimiento']);
+												$ano_diferencia  = date("Y") - $ano;
+												$mes_diferencia = date("m") - $mes;
+												$dia_diferencia   = date("d") - $dia;
+												if ($dia_diferencia < 0 || $mes_diferencia < 0)
+													$ano_diferencia--;
+											}
 											?>
 											<tr>
 												<td><?php echo htmlentities($row['id_persona'])?></td>
-												<td><?php echo htmlentities($row['nombre'].' '.$row['ap_paterno'].' '.$row['ap_materno'])?></td>
+												<td><a class="" href="<?php echo make_url("Pacientes","consulta",array('id'=>$row['id'])); ?>"><?php echo htmlentities($row['nombre'].' '.$row['ap_paterno'].' '.$row['ap_materno'])?></a></td>
 												<td><?php echo htmlentities($row['email'])?></td>
 												<td><?php echo htmlentities($row['telefono']) ?></td>
 												<td><?php echo htmlentities($row['ciudad']." ".$row['estado']." Col. ".$row['colonia']." Calle. ".$row['calle']." Num. ".$row['num_exterior']." ".$row['num_interior']) ?></td>
-												<td><?php echo htmlentities($row['alergias']) ?></td>
+												<td><?php //echo htmlentities($row['alergias']); ?></td>
+												<td><?php echo $ano_diferencia; ?></td>
 												<td><?php echo htmlentities($row['fecha_registro']) ?></td>
 												<td>
 													<div class="btn-group">
@@ -101,17 +96,17 @@ $data = $obj->getAllArr($arrayfilters);
 														</button>
 														<ul class="dropdown-menu">
 															<li>
-																<a class="" href="<?php echo make_url("Clientes","view",array('id'=>$row['id_persona'])); ?>">Ver</a>
+																<a data-toggle="modal" href="#myModal" onclick="getcitasproximas(<?php echo $row['id_persona']?>)" >
+																	Generar Consulta
+																</a>
 															</li>
 															<li>
-																<a class="" href="<?php echo make_url("Clientes","edit",array('id'=>$row['id_persona'])); ?>">Editar</a>
+																<a class="" href="<?php echo make_url("Historial","view",array('id'=>$row['id_historial'])); ?>">Ver Historial</a>
 															</li>
-															<li>
-																<a class="" href="<?php echo make_url("Clientes","pedido",array('id'=>$row['id_persona'])); ?>">Pedidos</a>
-															</li>
+															
 															<li class="divider"></li>
 															<li>
-																<a href="#" class="red" onclick="borrar('<?php echo make_url("Clientes","personadelete",array('id'=>$row['id_persona'])); ?>',<?php echo $row['id_persona']; ?>);">Eliminar</a>
+																<a href="#" class="red" onclick="borrar('<?php echo make_url("Pacientes","personadelete",array('id'=>$row['id_persona'])); ?>',<?php echo $row['id_persona']; ?>);">Eliminar</a>
 															</li>
 														</ul>
 													</div>
@@ -130,6 +125,31 @@ $data = $obj->getAllArr($arrayfilters);
 	<!-- END MAIN CONTENT -->
 </div>
 <!-- END MAIN PANEL -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" width="100" alt="SmartAdmin">
+                    <div id='titlemodal' style="float:right; margin-right: 20px;">
+                        <span class="widget-icon"><i class="fa fa-plus"></i> Citas Proximas</span>
+                    </div>
+                    
+                </h4>
+            </div>
+            <div class="modal-body no-padding" >
+                <div id="contentpopup">
+
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 <!-- ==========================CONTENT ENDS HERE ========================== -->
 
 <!-- PAGE FOOTER -->
@@ -181,7 +201,24 @@ $data = $obj->getAllArr($arrayfilters);
 				responsiveHelper_dt_basic.respond();
 			}
 		});
-	
+		getcitasproximas = function(id_paciente){
+            var id_personal   = $("#id_personal").val();
+            var url = config.base+"/Citas/ajax/?action=get&object=getcitasproximas"; // El script a dónde se realizará la petición.
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: 'id_paciente='+id_paciente, 
+                success: function(response){
+                    if(response){
+						$("#titlemodal").html('Selecciona la cita del paciente');
+						$("#contentpopup").html(response);
+                    }else{
+                        $("#contentpopup").html(''); 
+                    }
+                }
+             });
+            return false; // Evitar ejecutar el submit del formulario.
+        }
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 		 *
 		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS

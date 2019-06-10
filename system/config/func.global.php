@@ -151,6 +151,14 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
     $arrayStatus["Cancelado"]  = "Cancelado";
     return $arrayStatus;
   }
+  function getTipoPersona(){
+    $arrayStatus = array();
+    $arrayStatus["1"] = "Cliente";
+    $arrayStatus["11"]  = "Paciente";
+    return $arrayStatus;
+  }
+
+  
   
 
 /**** ********************/

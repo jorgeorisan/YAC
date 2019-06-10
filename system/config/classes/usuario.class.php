@@ -7,16 +7,19 @@ class Usuario extends AutoUsuario {
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr($id_tiendas=false,$id_usuario_tipo=false)
+	public function getAllArr($arrayfilters=false)
 	{
-		$add = ($id_tiendas) ? " and id_tienda in (" . $id_tiendas . ") " : '';
-		
-		$addusertype = ($id_usuario_tipo) ? " and id_usuario_tipo =". $id_usuario_tipo : '';
+		$tiendas = (isset($arrayfilters['id_tienda'])) ? $arrayfilters['id_tienda']    : '';
+		$qrytienda = ($tiendas)  ? " and id_tienda in (" . $tiendas . ") " : "";
+
+		$tipo = (isset($arrayfilters['tipo'])) ? $arrayfilters['tipo']    : '';
+		$qrytipo = ($tipo)  ? " AND id_usuario_tipo in($tipo) " : "";
 		
 		$sql = "SELECT * FROM usuario 
 				where status='ACTIVO' 
-				$add 
-				$addusertype;";
+				$qrytienda 
+				$qrytipo
+				;";
 		
 		$res = $this->db->query($sql);
 		$set = array();

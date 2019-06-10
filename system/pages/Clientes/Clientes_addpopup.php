@@ -5,21 +5,27 @@
         <fieldset>    
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="name">Nombre</label>
+                    <label for="name">Tipo</label>
+                    <select style="width:100%" class="select2 " name="id_usuario_tipo"  id="id_usuario_tipo">
+                        <?php 
+                        $listref= getTipoPersona();
+                        if (is_array($listref)){
+                            foreach($listref as $key => $valref){
+                                echo "<option value='".$key."'>".htmlentities($valref)."</option>";
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nombre*</label>
                     <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre" onkeypress="nextFocus('nombre', 'ap_paterno')" > 
                 </div>
                 <div class="form-group">
                     <label for="name">Correo</label>
                     <input type="email" class="form-control" placeholder="example@email.com" name="email" id="email" onkeypress="nextFocus('email', 'telefono')">                                                          
                 </div>
-                <div class="form-group">
-                    <label for="name">Calle</label>
-                    <input type="text" class="form-control" placeholder="Calle" name="calle"  id="calle" onkeypress="nextFocus('calle', 'num_exterior')">                                                                                               
-                </div>
-                <div class="form-group">
-                    <label for="name">Colonia</label>
-                    <input type="text" class="form-control" placeholder="Colonia" name="colonia" id="colonia" onkeypress="nextFocus('colonia', 'ciudad')">                                                                                               
-                </div>
+              
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
@@ -27,35 +33,17 @@
                     <input type="text" class="form-control" placeholder="Apellido Paterno" name="ap_paterno" id="ap_paterno" onkeypress="nextFocus('ap_paterno', 'ap_materno')" >                                                                                               
                 </div>
                 <div class="form-group">
-                    <label for="name">Teléfono</label>
-                    <input type="text" class="form-control" placeholder="Teléfono" name="telefono" id="telefono" onkeypress="nextFocus('telefono', 'estado')" >                                                                                               
+                    <label for="name">Teléfono*</label>
+                    <input type="text" class="form-control" placeholder="Teléfono" name="telefono" id="telefono" onkeypress="nextFocus('telefono', 'observaciones')" >                                                                                               
                 </div>
-                <div class="form-group">
-                    <label for="name">Número Exterior</label>
-                    <input type="text" class="form-control" placeholder="Número Exterior" name="num_exterior" id="num_exterior" onkeypress="nextFocus('num_exterior', 'num_interior')" >                                                                                               
-                </div>
-                <div class="form-group">
-                    <label for="name">Ciudad</label>
-                    <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" id="ciudad" onkeypress="nextFocus('ciudad', 'codigo_postal')" >                                                                                               
-                </div>
+                
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="name">Apellido Materno</label>
                     <input type="text" class="form-control" placeholder="Apellido Materno" name="ap_materno" id="ap_materno" onkeypress="nextFocus('ap_materno', 'email')" >                                                                                               
                 </div>
-                <div class="form-group">
-                    <label for="name">Estado</label>
-                    <input type="text" class="form-control" placeholder="Estado" name="estado" id="estado"  onkeypress="nextFocus('estado', 'calle')"  >                                                                                               
-                </div>
-                <div class="form-group">
-                    <label for="name">Número Interior</label>
-                    <input type="text" class="form-control" placeholder="Número Interior" name="num_interior" id="num_interior" onkeypress="nextFocus('num_interior', 'colonia')"  >                                                                                               
-                </div>
-                <div class="form-group">
-                    <label for="name">CP</label>
-                    <input type="text" class="form-control" placeholder="CP" name="codigo_postal" id="codigo_postal" onkeypress="nextFocus('codigo_postal', 'observaciones')" >                                                                                               
-                </div>
+              
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
@@ -88,4 +76,5 @@
             }
         });
     }
+    $('.select2').select2();
 </script>

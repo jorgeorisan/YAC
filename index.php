@@ -153,6 +153,14 @@ Routing section
         if ($request['page']==='view')     { $page = "Salidas_view.php"; }
         
       }
+      if ($request['section']==='Pacientes'){
+        $page = "Pacientes_index.php";
+        $dir  = "Pacientes";//si esta en carpeta
+        if ($request['page']==='add')      { $page = "Pacientes_add.php";      }
+        if ($request['page']==='consulta') { $page = "Pacientes_consulta.php";     }
+        if ($request['page']==='view')     { $page = "Pacientes_view.php";  }
+        
+      }
      
       //delete pages
       if(isset($request['params']['id'])){

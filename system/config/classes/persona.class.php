@@ -7,16 +7,28 @@ class Persona extends AutoPersona {
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr($tipo=false)
+	public function getAllArr($arrayfilters=false)
 	{
-		$tipo='';
-		if($tipo=='clientes'){
-			$tipo=' AND id_usuario_tipo=1';
-		}
+		/*
+		1	Cliente
+		2	Administrador
+		3	Proveedor
+		4	Empleado
+		5	GERENTE GENERAL
+		6	ATENCION A CLIENTES
+		7	INVENTARIOS
+		8	MARKETING
+		9	Servicios
+		10	Independiente
+		11	Paciente
+		*/
+		$tipo = (isset($arrayfilters['tipo'])) ? $arrayfilters['tipo']    : '';
+		$qrytipo = ($tipo)  ? " AND id_usuario_tipo in($tipo) " : "";
+		
 		$sql = "SELECT * FROM persona 
 				where 
 				status='ACTIVO' 
-				$tipo
+				$qrytipo
 				order by nombre;";
 		$res = $this->db->query($sql);
 		$set = array();

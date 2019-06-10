@@ -23,24 +23,66 @@ include(SYSTEM_DIR . "/inc/header.php");
 //follow the tree in inc/config.ui.php
 //$page_nav["misc"]["sub"]["blank"]["active"] = true;
 include(SYSTEM_DIR . "/inc/nav.php");
-$date = '';
-if(isset($request['params']['date']))
-    $date=$request['params']['date'];
+$idhistorialtratamiento = '';
 
+$id_cita=(isset($request['params']['id_cita'])) ? $request['params']['id_cita'] : '';
+
+if(isset($request['params']['id'])   && $request['params']['id']>0)
+    $idhistorialtratamiento=$request['params']['id'];
+
+if($idhistorialtratamiento){
+    $objHtratamiento  = new HistorialTratamiento();
+    $datatratamiento = $objHtratamiento->getTable($idhistorialtratamiento);
+    $motivo         = $datatratamiento['tratamiento'];
+    $id_paciente    = $datatratamiento['id_paciente'];
+    $id_personal    = $datatratamiento['id_personal'];
+    $fecha_inicial  = ($datatratamiento['fecha_recomendada']) ? $datatratamiento['fecha_recomendada'] : $fecha_inicial;
+}
+$date = date('Y-m-d H:i');
+$title   = 'Agendar Cita';
+$motivo = $id_paciente = $id_personal = '';
+$statuscita ='active';
+if ( intval ($id_cita) ) {
+    $citas = new Cita();
+    $cita  = $citas->getTable($id_cita);
+    $date  = ($cita['fecha_inicial']) ? $cita['fecha_inicial'] : $date;
+    $motivo        = $cita['motivo'];
+    $id_paciente   = $cita['id_paciente'];
+    $id_personal   = $cita['id_personal'];
+    $date  		   =  date('Y-m-d H:i',strtotime ( $date ) );
+    $statuscita    = $cita['status'];
+    $title   	   = 'Reagendar Cita';
+}
+if(isset($request['params']['id_paciente'])   && $request['params']['id_paciente']>0)
+    $id_paciente=$request['params']['id_paciente'];
+
+
+$fecha_inicial = ($date) ? $date : date('Y-m-d H:i');
+$hora_inicial  = ($date) ? date('H:i',strtotime($date)) : date('H:i');
+$fecha_final   = strtotime ( '+1 hour' , strtotime ( $fecha_inicial ) ) ;
+$hora_final    = date('H:i',$fecha_final);
 if(isPost()){
     $obj = new Cita();
-    $id  = $obj->addAll(getPost());
+    if (intval($_POST['id_cita'])) {
+        //update
+        $requestCita['fecha_inicial'] = (isset($_POST['fecha_inicial'])) ? $_POST['fecha_inicial'] : '';
+        $requestCita['fecha_final']   = (isset($_POST['fecha_final']))   ? $_POST['fecha_final']   : '';
+        $requestCita['motivo'] 		  = (isset($_POST['motivo']))        ? $_POST['motivo']        : '';
+        $requestCita['id_personal']   = (isset($_POST['id_personal']))   ? $_POST['id_personal']   : '';
+        $requestCita['id_paciente']   = (isset($_POST['id_paciente']))   ? $_POST['id_paciente']   : '';
+        $id=$obj->updateAll($_POST['id_cita'],$requestCita);
+    }else{
+        //add new
+        $id=$obj->addAll(getPost());
+    }		
     //$id=240;
     
     if ($id > 0){
-        informSuccess(true, make_url("Citas","index"));
+            informSuccess(true, make_url());
     }else{
         informError(true,make_url("Citas","add"));
     }
 }
-$fecha_inicial = ($date) ? $date.' '.date('H:i') : date('Y-m-d H:i');
-$fecha_final   = strtotime ( '+1 hour' , strtotime ( $fecha_inicial ) ) ;
-$fecha_final   = date('Y-m-d H:i',$fecha_final);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 
@@ -49,21 +91,28 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
     <?php $breadcrumbs["Citas"] = APP_URL."/Citas/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
+        <?php if($statuscita!='active'){ ?>
+            <h6 class="alert alert-warning semi-bold">
+                <i class="fa fa-times"></i> Esta cita no se puede editar por que ya esta  <strong><?php echo $statuscita; ?></strong>.
+            </h6>
+        <?php } ?>
         <div class="row"> 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">   
                 <div class="well ">
                     <header>
-                            <h2><i class="fa fa-automobile"></i>&nbsp;<?php echo $page_title ?></h2>
+                            <h2><i class="fa fa-clock"></i>&nbsp;<?php echo 'CITAS' ?></h2>
                     </header>
                     <fieldset>          
                         <form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Citas","add");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">    
-
+                            <input type="hidden" value="<?php echo $id_cita?>" name="id_cita">
+                            <input type="hidden" name="fecha_inicial"  required id="fecha_inicial" value="<?php echo $fecha_inicial;?>" />
+                            <input type="hidden" name="fecha_final"    required id="fecha_final"   value="<?php echo date('Y-m-d H:i',$fecha_final);?>" />
                             <section id="widget-grid" class="">
                                 <article class="col-sm-12 col-md-12 col-lg-12"  id="article-1">
                                     <div class="jarviswidget  jarviswidget-sortable jarviswidget-collapsed" id="wid-recepcion" 
                                     data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-editbutton="false"  data-widget-fullscreenbutton="false" data-widget-collapsed="false" >
                                         <header onclick="$('.showrecepcion').toggle()"> <span class="widget-icon"> 
-                                            <i class="far fa-building"></i> </span><h2>Recepcion</h2>
+                                            <i class="far fa-calendar"></i> </span><h2><?php echo $title ?></h2>
                                         </header>
                                         <div class="showrecepcion" style="display: ;">
                                             <!-- widget edit box -->
@@ -71,30 +120,40 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                                             <div class="widget-body">
                                                 <div class="col-sm-12">
                                                     <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <label for="name">Fecha Inicial </label>
-                                                            <div class="input-group date form_datetime col-md-12 fecha_inicial" data-date="<?php echo $fecha_inicial ;?>"  data-link-field="fecha_inicial">
-                                                                <input class="form-control" size="16" type="text" value="<?php echo $fecha_inicial;?>" readonly>
-                                                                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                                                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                                                            </div>
-                                                            <input type="hidden" name="fecha_inicial"  required id="fecha_inicial" value="<?php echo $fecha_inicial;?>" />
+                                                        <div class="form-group row">
+                                                            <label for="name">Fecha Cita </label>
+                                                            <input class="form-control datepicker" size="16"  id="fecha" type="text" data-dateformat='yy-mm-dd' value="<?php echo date('Y-m-d',strtotime ( $fecha_inicial ) ) ;?>" readonly>
                                                         </div> 
-                                                        <div class="form-group">
-                                                            <div class="form-group">
-                                                                <input type="text" class="form-control" required  placeholder="Motivo de Cita" name="motivo" id="motivo" >
+                                                        <div class="form-group row">
+                                                            <div class="col-sm-10 col-xs-10 row">
+                                                                <select style="width:100%" class="select2"  required name="id_paciente" id="id_paciente">
+                                                                    <option value="" selected disabled>Selecciona paciente</option>
+                                                                    <?php 
+                                                                    $obj = new Paciente();
+                                                                    $list=$obj->getAllArr();
+                                                                    if (is_array($list) || is_object($list)){
+                                                                        foreach($list as $val){
+                                                                            $selected = ($id_paciente == $val['id']) ? "selected" : "";
+                                                                            echo "<option $selected value='".$val['id']."'>".htmlentities($val['nombre'].' '.$val['apellido_pat']." ".$val['apellido_mat'])."</option>";
+                                                                        }
+                                                                    }
+                                                                    ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-2 col-xs-2 ">
+                                                                <a data-toggle="modal" class="btn btn-success" href="#myModalSecond" onclick="showpopuppacientes()" > <i class="fa fa-plus"></i></a>                                          
                                                             </div>
                                                         </div>
-                                                        <div class="form-group">
-                                                            
-                                                            <select style="width:100%" class="select2"  required name="id_usuario" id="id_usuario">
-                                                                <option value="" selected disabled>Selecciona Usuario</option>
+                                                        <div class="form-group row">
+                                                            <select style="width:100%" class="select2"  required name="id_personal" id="id_personal">
+                                                                <option value="" selected disabled>Selecciona Medico</option>
                                                                 <?php 
-                                                                $obj = new Usuario();
-                                                                $list=$obj->getAllArr("17,18"); // medicos
+                                                                $obj = new Personal();
+                                                                $list=$obj->getAllArr(2); // medicos
                                                                 if (is_array($list) || is_object($list)){
                                                                     foreach($list as $val){
-                                                                        echo "<option value='".$val['id']."'>".htmlentities($val['id_usuario'])."</option>";
+                                                                        $selected = ($id_personal == $val['id']) ? "selected" : "";
+                                                                        echo "<option $selected value='".$val['id']."'>".htmlentities($val['nombre'].' '.$val['apellido_pat']." ".$val['apellido_mat'])."</option>";
                                                                     }
                                                                 }
                                                                 ?>
@@ -102,42 +161,54 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <label for="name">Fecha Final</label>
-                                                            <div class="input-group date form_datetime col-md-12 fecha_final" data-date="<?php echo $fecha_final;?>"  data-link-field="fecha_final">
-                                                                <input class="form-control fecha_finaltxt" size="16" type="text" value="<?php echo $fecha_final;?>" readonly>
-                                                                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                                                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                                        <div class="form-group ">
+                                                            <label for="name"><i class="fal fa-info-circle" title="Selecciona las horas para la cita"></i>&nbsp; Hora </label>
+                                                            <div class="input-group row ">
+                                                                <div class="col-md-4 ">
+                                                                    <div class="allowed-time">
+                                                                        <input class="form-control hora" style="width: 130px;"  type="time"  name="hora_inicial" id="hora_inicial" value="<?php echo $hora_inicial?>">
+                                                                    
+                                                                    </div>
+                                                                </div>
+                                                                <label class="col-md-2 col-sm-1" style="texl-align:center">a</label>
+                                                                <div class="col-md-4">
+                                                                    <div class="allowed-time">
+                                                                        <input class="form-control hora" style="width: 130px;" type="time"  name="hora_fin" id="hora_fin" value="<?php echo $hora_final?>">
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <input type="hidden" name="fecha_final" id="fecha_final" value="<?php echo $fecha_final;?>" />
                                                         </div> 
-                                                        <div class="form-group">
-                                                            <div class="col-sm-10">
-                                                                <select style="width:100%" class="select2"  required name="id_persona" id="id_persona">
-                                                                    <option value="" selected disabled>Selecciona Cliente</option>
-                                                                    <?php 
-                                                                    $obj = new Persona();
-                                                                    $list=$obj->getAllArr();
-                                                                    if (is_array($list) || is_object($list)){
-                                                                        foreach($list as $val){
-                                                                            echo "<option value='".$val['id_persona']."'>".htmlentities($val['nombre'])."</option>";
-                                                                        }
-                                                                    }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-sm-2">
-                                                                <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopuppersonas()" > <i class="fa fa-plus"></i></a>                                          
-                                                            </div>
+                                                        <div class="form-group ">
+                                                            <input type="text" class="form-control" required  placeholder="Tratamiento" name="motivo" id="motivo" value="<?php echo $motivo;?>" >
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-4" id="contpersona">
                                                         
                                                     </div>
+                                                    <div class="col-sm-4" id="contpaciente">
+                                                    </div>
                                                 </div>
-                                                <div class="col-sm-12 col-md-12 col-lg-12" id="contcitas" style="text-align:center">
+                                                <div class="col-sm-12" style="text-align: center">
+                                                    <div class="row">
+                                                        <?php if($statuscita=='active'){ ?>     
+                                                            <div class="col-md-12">
+                                                                <?php if($id_cita){ ?>
+                                                                    <a href="<?php echo make_url("Historial","consulta",array('id_cita'=>$id_cita)); ?>">
+                                                                        <button class="btn btn-success btn-md" type="button" id="">
+                                                                            <i class="fa fa-file"></i>
+                                                                            Generar Consulta
+                                                                        </button>
+                                                                    </a>
+                                                                <?php } ?>
+                                                                <button class="btn btn-default btn-md" type="button" onclick="window.history.go(-1); return false;">
+                                                                    Cancelar
+                                                                </button>
+                                                                <button class="btn btn-primary btn-md" type="button" onclick=" validateForm();">
+                                                                    <i class="fa fa-save"></i>
+                                                                    Guardar
+                                                                </button>
+                                                            </div>
+                                                        <?php } ?>
+                                                    </div>
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -145,21 +216,11 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                             </section>                                       
                         </form>
                     </fieldset>
-                    <footer>
-                        <div class="form-actions" style="text-align: center">
-                            <div class="row">
-                               <div class="col-md-12">
-                                    <button class="btn btn-default btn-md" type="button" onclick="window.history.go(-1); return false;">
-                                        Cancelar
-                                    </button>
-                                    <button class="btn btn-primary btn-md" type="button" onclick=" validateForm();">
-                                        <i class="fa fa-save"></i>
-                                        Guardar
-                                    </button>
-                                </div>
-                            </div>
+                    
+                    <fieldset>
+                        <div class="col-sm-12 col-md-12 col-lg-12" id="contcitas" style="text-align:">
                         </div>
-                    </footer>
+                    </fieldset>
                 </div>
             </div>
         </div>
@@ -167,14 +228,14 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
 </div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" width="50" alt="SmartAdmin">
+                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" width="100" alt="SmartAdmin">
                     <div id='titlemodal' style="float:right; margin-right: 20px;">
                         <span class="widget-icon"><i class="fa fa-plus"></i> Nuevo</span>
                     </div>
@@ -210,36 +271,23 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
 
 <script>
    $(document).ready(function() {
-         //datetime
-         $('.form_datetime').datetimepicker({
-            format: "yyyy-mm-dd hh:ii",
-            language:  'es',
-            weekStart: 0,
-            todayBtn:  1,
-            autoclose: 1,
-            todayHighlight: 1,
-            startView: 2,
-            forceParse: 0,
-            showMeridian: 0,
-            minuteStep :30
-        });
-        
+         
         /*GENERALES*/
        
         validateForm =function(){
-            var fecha_alta    = $("input[name=fecha_inicial]").val();
+            var fecha_inicial = $("input[name=fecha_inicial]").val();
             var fecha_final   = $("input[name=fecha_final]").val();
-            var id_persona   = $("#id_persona").val();
-            var id_usuario   = $("#id_usuario").val();
+            var id_paciente   = $("#id_paciente").val();
+            var id_personal   = $("#id_personal").val();
             var motivo        = $("#motivo").val();
-            if ( ! fecha_alta )              return notify("info","La fecha de inicio es requerida");
-            if ( ! fecha_final )             return notify("info","La fecha final es requerida");
-            if ( fecha_final < fecha_alta )  return notify("info","La fecha final no puede ser menor a la fecha de inicio");      
-            if ( ! id_persona )             return notify("info","El Paciente es requerido");
-            if ( ! id_usuario )             return notify("info","El Usuario es requerido");
-            if ( ! motivo )                  return notify("info","El motivo es requerido");
-            
-            $("#main-form").submit();       
+            if ( ! fecha_inicial )              return notify("info","La fecha de inicio es requerida");
+            if ( ! fecha_final )                return notify("info","La Hora final es requerida");
+            if ( fecha_final < fecha_inicial )  return notify("info","La Hora final no puede ser menor a la fecha de inicio");      
+            if ( ! id_paciente )                return notify("info","El Paciente es requerido");
+            if ( ! id_personal )                return notify("info","El Medico es requerido");
+            if ( ! motivo )                     return notify("info","El Tratamiento es requerido");
+            existecita();
+                   
         }
         $(document).keydown(function(event) {
             if (event.ctrlKey==true && (event.which == '106' || event.which == '74')) {
@@ -247,7 +295,40 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                 event.preventDefault();
             }
         });
-      
+        existecita = function(){
+            var fecha_inicial = $("input[name=fecha_inicial]").val();
+            var fecha_final   = $("input[name=fecha_final]").val();
+            var id_paciente   = $("#id_paciente").val();
+            var id_personal   = $("#id_personal").val();
+            var motivo        = $("#motivo").val();
+            
+            var url = config.base+"/Citas/ajax/?action=get&object=existecita"; // El script a dónde se realizará la petición.
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: "fecha_inicial="+fecha_inicial+'&fecha_final='+fecha_final+'&id_personal='+id_personal, 
+                success: function(response){
+                    if(response>0){
+                        swal({
+                            title: "Cita existente en este horario",
+                            text: "Deseas agendar esta cita?",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: '#DD6B55',
+                            confirmButtonText: 'Si, Agendar!',
+                            closeOnConfirm: true
+                            },
+                            function(){
+                                $("#main-form").submit();
+                            }
+                        );
+                    }else{
+                        $("#main-form").submit();
+                    }
+                }
+             });
+            return false; // Evitar ejecutar el submit del formulario.
+        }
         getcitasproximas = function(){
             var fecha_inicial = $("input[name=fecha_inicial]").val();
             var fecha_final   = $("input[name=fecha_final]").val();
@@ -273,37 +354,38 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
  
 
         //**********Clients*************/
-        showpopuppersonas = function(){
-            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo persona</span>');
-            $.get(config.base+"/Clientes/ajax/?action=get&object=showpopup", null, function (response) {
+        showpopuppacientes = function(){
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo paciente</span>');
+            $.get(config.base+"/Pacientes/ajax/?action=get&object=showpopup", null, function (response) {
                     if ( response ){
                         $("#contentpopup").html(response);
                     }else{
-                        return notify('error', 'Error al obtener los datos del Formulario de personas');
+                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
                         
                     }     
             });
         }
-        getpersona =function(id){
+        getpaciente =function(id){
             if ( ! id ) return;
-            $("#contpersona").html("<div align='center'><i class='far fa-cog fa-spin fa-5x'></i></div>");
-            $.get(config.base+"/Citas/ajax/?action=get&object=getcliente&id=" + id, null, function (response) {
+            $("#contpaciente").html("<div align='center'><i class='far fa-cog fa-spin fa-5x'></i></div>");
+            $.get(config.base+"/Citas/ajax/?action=get&object=getpaciente&id=" + id, null, function (response) {
                     if ( response ){
-                        $("#contpersona").html(response);
+                        $("#contpaciente").html(response);
                     }else{
-                        notify('error', 'Error al obtener los datos del persona');
+                        notify('error', 'Error al obtener los datos del paciente');
                         return false;
                     }     
             });
         }
-        $('body').on('click', '#savenewclient', function(){
+        $('body').on('click', '#savenewpaciente', function(){
             var nombre       = $("input[name=nombre]", $(this).parents('form:first')).val();
             var apellido_pat = $("input[name=apellido_pat]", $(this).parents('form:first')).val();
             var apellido_mat = $("input[name=apellido_mat]", $(this).parents('form:first')).val();
             var telefono     = $("input[name=telefono]", $(this).parents('form:first')).val();
             
-            if(!nombre) {  notify('error',"Se necesita el nombre del persona."); return false; }
-            var url = config.base+"/Clientes/ajax/?action=get&object=savenewclient"; // El script a dónde se realizará la petición.
+            if(!nombre)   {  swal("Se necesita el nombre del paciente.");   return false; }
+            if(!telefono) {  swal("Se necesita el telefono del paciente."); return false; }
+            var url = config.base+"/Pacientes/ajax/?action=get&object=savenewclient"; // El script a dónde se realizará la petición.
             $.ajax({
                 type: "POST",
                 url: url,
@@ -311,35 +393,37 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                 success: function(response){
                     if(response>0){
                         //alert("Group successfully added");
-                        $('#id_persona').append($('<option>', {
+                        $('#id_paciente').append($('<option>', {
                             value: response,
                             text: nombre+" "+apellido_pat+" "+apellido_mat,
                             selected:true
                         }));  
-                        $("#id_persona").select2({
+                        $("#id_paciente").select2({
                             multiple: false,
                             header: "Selecciona una opcion",
                             noneSelectedText: "Seleccionar",
                             selectedList: 1
                         });
                         $('#myModal').modal('hide');
-                        notify('success',"persona agregado correctamente:"+response);
-                        getpersona(response);
+                        notify('success',"paciente agregado correctamente:"+response);
+                        getpaciente(response);
                     }else{
-                        notify('error',"Oopss error al agregar persona"+response);
+                        notify('error',"Oopss error al agregar paciente"+response);
                     }
                 }
              });
             return false; // Evitar ejecutar el submit del formulario.
         });
-        $('body').on('change', '#id_persona', function(){
+        $('body').on('change', '#id_paciente', function(){
             if( $(this).val() ){
-                var id = $("#id_persona").val();
-                getpersona(id);
+                var id = $("#id_paciente").val();
+                getpaciente(id);
             }
         });
-        $('body').on('change', '.fecha_inicial', function(){
-            if( $(this).attr('data-date') ){
+        $('body').on('change', '#fecha', function(){
+            $('#fecha_inicial').val( $(this).val() + ' ' + $('#hora_inicial').val() );
+            $('#fecha_final').val( $(this).val() + ' ' + $('#hora_fin').val() );
+            if( $(this).val() ){
                var fechaini    = new Date($('#fecha_inicial').val());
                var fechafin    = $('#fecha_final');
                var fechafintxt = $('.fecha_finaltxt');
@@ -351,6 +435,20 @@ $fecha_final   = date('Y-m-d H:i',$fecha_final);
                getcitasproximas();
             }
         });
+        $('body').on('change', '#hora_inicial', function(){
+            $('#fecha_inicial').val( $('#fecha').val() + ' ' + $(this).val() );
+        });
+        $('body').on('change', '#hora_fin', function(){
+            $('#fecha_final').val(   $('#fecha').val() + ' ' + $(this).val() );
+        });
+        <?php
+        if($id_paciente){
+            ?>
+            $('#id_paciente').change();
+            <?php
+        }
+        
+        ?>
         
        
      
