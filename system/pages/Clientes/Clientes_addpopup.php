@@ -58,7 +58,7 @@
                     <button class="btn btn-default btn-md" type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         Cancelar
                     </button>
-                    <button class="btn btn-primary btn-md" type="button" id="savenewclient">
+                    <button class="btn btn-primary btn-md" type="button" id="savenewcliente">
                         <i class="fa fa-save"></i>
                         Guardar
                     </button>
