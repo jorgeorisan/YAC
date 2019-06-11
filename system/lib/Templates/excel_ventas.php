@@ -52,6 +52,7 @@ header("Expires: 0");
 											<?php 
 											$nomtienda = '';
 											$total = 0;
+											$totaldevoluciones = 0;
 											foreach($dataventas as $row) {
 												$tienda = new Tienda();
 												$datatienda = $tienda->getTable($row["id_tienda"]);
@@ -62,6 +63,7 @@ header("Expires: 0");
 												
 												if ($row['cancelado']==0) {
 													$total += $row['total'];
+													$totaldevoluciones += $obj->getcancelaciones($row['id_venta']);
 												}
 												?>
 												<tr <?php echo $class;?>>
@@ -85,6 +87,14 @@ header("Expires: 0");
 											?>
 										</tbody>
 										<tfoot>
+											<?php if($totaldevoluciones>0) {?>
+												<tr>
+													<th colspan="5" style="text-align:right">Devoluciones:</th>
+													<th><?php echo $totaldevoluciones;?></th>
+													<th></th>
+													<th></th>
+												</tr>
+											<?php } ?>
 											<tr>
 												<th colspan="5" style="text-align:right">Total:</th>
 												<th><?php echo $total;?></th>

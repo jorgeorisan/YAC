@@ -304,7 +304,7 @@ foreach($dataabonos as $row) {
 												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventaexcedente  + $totalventarecargas +  ($totalventamayoreo/2)  ;
 												$totalcaja           = ( $row->id_usuario_tipo !=  9 )  ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalcaja           = ( $row->id_usuario !=  'Lizzy' ) ? $totalcaja : $totalcaja - $totalventaexcedente;
-												$totalgeneral 		 = $totalventa + $totalventaexcedente  ; 
+												$totalgeneral 		 = $totalventa   ; 
 												$totalcomision		 = ( $row->id_usuario_tipo !=  9 ) ? $totalventausuario * $row->comision :  $totalventaexcedente * $row->comision ;
 												$totalventausuariogral   += $totalventausuario;
 												$totalAbonosUsers        += $totalventaabonos;
@@ -330,7 +330,7 @@ foreach($dataabonos as $row) {
 													</td>
 													<td><?php echo $totalventacredito; ?></td>
 													<td>
-														<span title="<?php echo "(".$totalventa.'venta)+('.$totalventaexcedente.'excedente) ='.$totalgeneral ?>">
+														<span title="<?php echo "(".$totalventa.'venta) ='.$totalgeneral ?>">
 															<?php echo $totalgeneral; ?>
 														</span>	
 													</td>
