@@ -80,7 +80,7 @@ header("Expires: 0");
 													$dataventa = $venta->getTable($row["id_venta"]);
 													
 													$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
-													
+													$totalxproducto = 0;
 													if (!$row['cancelado']) {
 														//calculamos el descuento por producto
 														$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
