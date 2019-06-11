@@ -318,7 +318,11 @@ foreach($dataabonos as $row) {
 														</span>
 													</td>
 													<td><?php echo $totalventacredito; ?></td>
-													<td><?php echo $totalgeneral; ?></td>
+													<td>
+														<span title="<?php echo "(".$totalventa.'venta)+('.$totalventaexcedente.'excedente) ='.$totalgeneral ?>">
+															<?php echo $totalgeneral; ?>
+														</span>	
+													</td>
 													<td><?php echo $totalcomision; ?></td>
 												</tr>
 											<?php
