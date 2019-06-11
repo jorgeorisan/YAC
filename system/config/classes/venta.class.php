@@ -94,7 +94,7 @@ class Venta extends AutoVenta {
 				
 					$_requesDeudores['id_venta'] 	  = $id;
 					$_requesDeudores['id_tienda'] 	= $_request['id_tienda'];
-					$_requesDeudores['id_usuario']  = $_request['id_usuario'];
+					$_requesDeudores['id_usuario']  = (isset($_request['id_usuario'])) ? $_request['id_usuario'] : '';
 					$_requesDeudores['montoabono']  = $_request['montoabono'];
 					$_requesDeudores['fecha_abono'] = $_request['fecha']." ".date('H:i:s');
 					$_requesDeudores['tipo_pago']	  = $_request['tipo'];
