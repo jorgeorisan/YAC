@@ -226,6 +226,22 @@ class Venta extends AutoVenta {
 		$res->close();
 		return $set;
 	}
+	public function getcancelaciones($id)
+	{
+	
+		$sql = "SELECT ifnull(sum(pv.total),0) totalcancelado
+						FROM productos_venta pv
+							LEFT JOIN venta v ON v.id_venta=pv.id_venta
+						where  pv.id_venta=$id 
+							AND 	pv.cancelado=1
+							AND 	v.cancelado=0";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result venta");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row['totalcancelado'];
+	}
 	public function getReporteComisionesUsuarios($arrayfilters)
 	{
 		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
