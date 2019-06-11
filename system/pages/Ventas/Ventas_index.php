@@ -273,7 +273,7 @@ foreach($dataabonos as $row) {
 											<th>Recargas</th>
 											<th>Execente</th>
 											<th>Total (CAJA)</th>
-											<th>Por Cobrar</th>
+											<th>Apartados/Credito</th>
 											<th>Total General</th>
 											<th>Comision</th>
 										</tr>

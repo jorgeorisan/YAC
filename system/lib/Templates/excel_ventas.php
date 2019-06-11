@@ -125,7 +125,7 @@ header("Expires: 0");
 											<th>Recargas</th>
 											<th>Execente</th>
 											<th>Total (CAJA)</th>
-											<th>Por Cobrar</th>
+											<th>Apartados/Credito</th>
 											<th>Total General</th>
 											<th>Comision</th>
 										</tr>
@@ -154,7 +154,7 @@ header("Expires: 0");
 												$totalventa 		 = $totalventa - $totalventadescuento; // quitamos los decuentos
 												$totalventausuario   = $totalventa - $totalventacredito - ($totalventamayoreo/2) - $totalventarecargas  ;
 												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventaexcedente  + $totalventarecargas +  ($totalventamayoreo/2)  ;
-												$totalgeneral 		 = $totalventa + $totalventaexcedente  ; 
+												$totalgeneral 		 = $totalventa   ; 
 												$totalcomision		 = ( $row->id_usuario_tipo !=  9 ) ? $totalventausuario * $row->comision :  $totalventaexcedente * $row->comision ;
 												$totalventausuariogral   += $totalventausuario;
 												$totalAbonosUsers        += $totalventaabonos;
@@ -179,7 +179,10 @@ header("Expires: 0");
 														</span>
 													</td>
 													<td><?php echo $totalventacredito; ?></td>
-													<td><?php echo $totalgeneral; ?></td>
+													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)+('.$totalventaexcedente.'excedente)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
+															<?php echo $totalcaja; ?>
+														</span>
+													</td>
 													<td><?php echo $totalcomision; ?></td>
 												</tr>
 											<?php
