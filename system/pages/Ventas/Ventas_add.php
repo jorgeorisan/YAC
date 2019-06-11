@@ -505,7 +505,7 @@ if(isPost()){
                     }     
             });
         }
-        $('body').on('click', '#savenewclient', function(){
+        $('body').on('click', '#savenewcliente', function(){
             var nombre       = $("input[name=nombre]", $(this).parents('form:first')).val();
             var apellido_pat = $("input[name=ap_paterno]", $(this).parents('form:first')).val();
             var apellido_mat = $("input[name=ap_materno]", $(this).parents('form:first')).val();
