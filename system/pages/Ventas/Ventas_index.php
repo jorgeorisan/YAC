@@ -178,6 +178,7 @@ foreach($dataabonos as $row) {
 												
 												if ($row['cancelado']==0) {
 													$total += $row['total'];
+													$obj = new Venta();
 													$totaldevoluciones = $obj->getcancelaciones($row['id_venta']);
 												}
 												?>
@@ -234,12 +235,12 @@ foreach($dataabonos as $row) {
 										</tbody>
 										<tfoot>
 											<?php if($totaldevoluciones>0) {?>
-											<tr>
-												<th colspan="5" style="text-align:right">Devoluciones:</th>
-												<th><?php echo $totaldevoluciones;?></th>
-												<th></th>
-												<th></th>
-											</tr>
+												<tr>
+													<th colspan="5" style="text-align:right">Devoluciones:</th>
+													<th><?php echo $totaldevoluciones;?></th>
+													<th></th>
+													<th></th>
+												</tr>
 											<?php } ?>
 											<tr>
 												<th colspan="5" style="text-align:right">Total:</th>
