@@ -179,7 +179,7 @@ foreach($dataabonos as $row) {
 												if ($row['cancelado']==0) {
 													$total += $row['total'];
 													$obj = new Venta();
-													$totaldevoluciones = $obj->getcancelaciones($row['id_venta']);
+													$totaldevoluciones += $obj->getcancelaciones($row['id_venta']);
 												}
 												?>
 												<tr <?php echo $class;?>>
