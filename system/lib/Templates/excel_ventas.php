@@ -97,7 +97,7 @@ header("Expires: 0");
 											<?php } ?>
 											<tr>
 												<th colspan="5" style="text-align:right">Total:</th>
-												<th><?php echo $total;?></th>
+												<th><?php echo $total-$totaldevoluciones;?></th>
 												<th></th>
 											</tr>
 										</tfoot>
