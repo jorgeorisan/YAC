@@ -157,7 +157,10 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						$fecha_inicial = ($date) ? $date : date('Y-m-d H:i');
 						$hora_inicial  = ($date) ? date('H:i',strtotime($date)) : date('H:i');
 					}
-					
+					if($hora_inicial=='00:00'){
+						$hora_inicial  = date('H:i');
+						$fecha_inicial =  date('Y-m-d',strtotime($date)).' '.$hora_inicial;
+					} 
 					$fecha_final   = strtotime ( '+1 hour' , strtotime ( $fecha_inicial ) ) ;
 					$hora_final    = date('H:i',$fecha_final);
 					include(SYSTEM_DIR.'/pages/Citas/Citas_addpopup.php' );
