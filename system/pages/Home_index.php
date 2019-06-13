@@ -306,7 +306,7 @@ if($res=$citas->getAllArr()){
             if ( fecha_final < fecha_inicial )  return swal("La Hora final no puede ser menor a la fecha de inicio");      
             if ( ! id_persona )                 return swal("El Cliente es requerido");
             if ( ! id_personal )                return swal("El Usuario es requerido");
-            if ( ! motivo )                     return swal("El Tratamiento es requerido");
+            if ( ! motivo )                     return swal("El Motivo es requerido");
             saveNewCita();
         }
         $(document).keydown(function(event) {
