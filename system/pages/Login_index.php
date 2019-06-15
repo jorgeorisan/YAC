@@ -121,7 +121,7 @@
 				'costos'=>$u->getCostos(),
 				'info_adicional'=>$dataTienda['info_adicional'],
 				'id_tienda'=>$u->getIdTienda(),
-				'tienda'=>$dataTienda['nombre'],
+				'tienda'=>$dataTienda['abreviacion'],
 				'usuario_tipo'=>$dataUsuarioTipo['usuario_tipo'],
 				'id_usuario_tipo'=>$u->getIdUsuarioTipo()
             );
