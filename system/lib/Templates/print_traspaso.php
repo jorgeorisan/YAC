@@ -6,8 +6,8 @@ if ( !$data ) {
 }
 
 $tienda = new Tienda();
-$datatienda = $tienda->getTable($data['id_tienda']);
-$datatiendaanterior = $tienda->getTable($data['id_tiendaanterior']);
+$datatienda = $tienda->getTable($data['id_tiendaanterior']);
+$datatiendaanterior = $tienda->getTable($data['id_tienda']);
 
 $usuario = new Usuario();
 $datauser = $usuario->getTable($data['id_user']);
@@ -36,7 +36,7 @@ $datauser = $usuario->getTable($data['id_user']);
 </head>
 
 <body>
-    <table style="max-width:1280px; width:100%;">
+    <table style="width:100%;">
         <tr>
             <td>
                 <table>
@@ -111,74 +111,57 @@ $datauser = $usuario->getTable($data['id_user']);
                                     <td colspan="11" style="background-color:#d0d0cf; font-weight:bold; text-align: center"> </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Cant. Ant</td>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Cant</td>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Codigo</td>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Producto</td>
-                                    <?php if($_SESSION['user_info']['costos']) { ?>
-                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Costo </td>
-                                    <?php } ?>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Mayoreo </td>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Precio </td>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Total </td>
-                                    <?php if($_SESSION['user_info']['costos']) { ?>
-                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Total Costo</td>
-                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Utilidad</td>
-                                    <?php } ?>
-                                    <td colspan="" style="background-color:#d0d0cf; font-weight:bold;"></td>
-                                </tr>
-                                <?php 
-                                $objpv = new TraspasoProducto();
-                                $datapv = $objpv->getAllArr($id);
-                                $totalgral  =  $totalcostogral = $totalutigral = 0;
-                                foreach($datapv as $row) {
-                                    $objproductos = new Producto();
-                                    $dataproducto = $objproductos->getTable($row['id_producto']);
-                                    $totalcosto   = $row['totalcosto'];
-                                    $total        = $row['cantidad']*$row['precio'];
-                                    $totalcostogral += $totalcosto;
-                                    $totalgral      += $total;
-                                    $utilidad        = $total - $totalcosto;
-                                    $totalutigral   += $total - $totalcosto;
-                                
-                                ?>
-                                    <tr >
-                                        <td><?php echo htmlentities($row['cantidad_anterior']); ?></td>
-                                        <td><?php echo htmlentities($row['cantidad']); ?></td>
-                                        <td><?php echo htmlentities($dataproducto['codinter']); ?></td>
-                                        <td><?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
-                                        <?php if($_SESSION['user_info']['costos']) { ?>
-                                            <td><?php echo htmlentities($row['costo']); ?></td>
-                                        <?php } ?>
-                                        <td><?php echo htmlentities($row['mayoreo']); ?></td>
-                                        <td><?php echo htmlentities($row['precio']); ?></td>
-                                        <td><?php echo $total; ?></td>
-                                        <?php if($_SESSION['user_info']['costos']) { ?>
-                                            <td><?php echo $totalcosto; ?></td>
-                                            <td><?php echo $utilidad; ?></td>
-                                        <?php } ?>
-                                        <td class='borrar-td'>
-                                            <?php if ($row['status']!='BAJA'){ ?> 
-                                                <a href="#" title="Cancelar Producto" id="cancelar_Traspaso<?php echo $row['id_traspaso_producto']; ?>" idTraspaso='<?php echo $row['id_traspaso_producto']; ?>' folio='<?php echo $row['nombre']; ?>' class="btn btn-danger deleteTraspaso"> <i class="fas fa-ban"></i></a>
-                                            <?php } ?>
-                                        </td>
+                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Cantidad Ant/Nva</td>
+                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Producto</td>
+                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Mayoreo </td>
+                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Precio </td>
+                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Total </td>
+                                        <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Status</td>
                                     </tr>
+                                    <?php 
+                                    $objpv = new TraspasoProducto();
+                                    $datapv = $objpv->getAllArr($id,true);
+                                    $totalgral  =  $totalcostogral = $totalutigral = 0;
+                                    foreach($datapv as $row) {
+                                        $objproductos = new Producto();
+                                        $dataproducto = $objproductos->getTable($row['id_producto']);
+                                        $totalcosto   = $row['totalcosto'];
+                                        $total        = $row['cantidad']*$row['precio'];
+                                        $utilidad        = $total - $totalcosto;
+                                        $status = htmlentities($row['status']);
+                                        switch ($status) {
+                                            case 'BAJA':
+                                                $status = 'Cancelado';
+                                                $class  = 'cancelada';
+                                                break;
+                                            default:
+                                                $class  = '';
+                                                $totalcostogral += $totalcosto;
+                                                $totalgral      += $total;
+                                                $totalutigral   += $total - $totalcosto;
+                                                break;
+                                        } 
+                                        ?>
+                                        <tr class="<?php echo $class; ?>">
+                                            <td><?php echo htmlentities($row['cantidad_anterior']).'/'.htmlentities($row['cantidad']); ?></td>
+                                        
+                                            <td><?php echo htmlentities($dataproducto['codinter']).'|'.htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
+                                            
+                                            <td><?php echo htmlentities($row['mayoreo']); ?></td>
+                                            <td><?php echo htmlentities($row['precio']); ?></td>
+                                            <td><?php echo $total; ?></td>
+                                            <td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion']; ?></td>
+                                           
+                                        </tr>
 
-                                <?php
-                                } 
+                                    <?php
+                                    } 
                                 ?>
                                 <tr>  
-                                    <td colspan="4"></td>
-                                    <?php if($_SESSION['user_info']['costos']) { ?>
-                                        <td></td> 
-                                    <?php } ?>
-                                    <td ></td> 
+                                    <td colspan="3"></td>
                                     <td style='font-weight:bold;'>Total:</td>
                                     <td><strong><?php echo $totalgral; ?></strong></td>
-                                    <?php if($_SESSION['user_info']['costos']) { ?>
-                                        <td><strong><?php echo $totalcostogral; ?></strong></td>
-                                        <td><strong><?php echo $totalutigral; ?></strong></td>
-                                    <?php } ?>
+                                   
                                     <td></td> 
                                 </tr>
                                 

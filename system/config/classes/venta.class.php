@@ -85,7 +85,7 @@ class Venta extends AutoVenta {
 					$_requestProductosVenta['total'] 	   		     = $totales[$key];
 					$_requestProductosVenta['tipoprecio']  	     = $tipoprecio[$key];
 					$idHD = $objPV->addAll($_requestProductosVenta);
-					if($idHD>0){}else{ die("Error al insertar historial diagnostico"); }
+					if($idHD>0){}else{ die("Error al insertar productos venta"); }
 					if(!$producto['manual'])
 						$objproductostienda->actualizaexistencia($value,$cantidades[$key],'decrement');
 				}

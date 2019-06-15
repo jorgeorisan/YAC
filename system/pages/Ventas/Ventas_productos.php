@@ -108,6 +108,22 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 														?>
 													</select>
 												</div>
+												<div class="form-group">
+													<label for="name">Producto<?php echo $idusuario;?></label>
+													<select style="width:100%" class="select2" name="id_producto" id="id_producto">
+														<option value="">Selecciona</option>
+														<?php 
+														$obj = new Producto();
+														$list=$obj->getAllArr();
+														if (is_array($list) || is_object($list)){
+															foreach($list as $val){
+																$selected =  ($codeproducto == $val['codinter'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['codinter']."'>".htmlentities($val['codinter']).'|'.htmlentities($val['nombre'])."</option>";
+															}
+														}
+														?>
+													</select>
+												</div>
 											</div>
 										</div>
                                     </fieldset> 
@@ -148,14 +164,14 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 									<table id="" class="table table-striped table-bordered table-hover" width="100%">
 										<thead>
 											<tr>
-												<th class = "col-md-1" data-hide="phone,tablet"> No. Folio</th>
-												<th class = "col-md-1" data-class="expand">Cant.</th>
+												<th class = "col-md-1" data-hide="expand"> No. Folio</th>
+												<th class = "col-md-1" data-class="phone,tablet">Cant.</th>
 												<th class = "col-md-1" data-class="phone,tablet">Codigo </th>
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Total</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Usuario</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Tienda</th>
+												<th class = "col-md-1" data-class="phone,tablet">Usuario</th>
+												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-class="phone,tablet"></th>

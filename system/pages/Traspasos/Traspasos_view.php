@@ -33,8 +33,8 @@ if ( !$data ) {
 }
 
 $tienda = new Tienda();
-$datatienda = $tienda->getTable($data['id_tienda']);
-$datatiendaanterior = $tienda->getTable($data['id_tiendaanterior']);
+$datatienda = $tienda->getTable($data['id_tiendaanterior']);
+$datatiendaanterior = $tienda->getTable($data['id_tienda']);
 
 
 ?>

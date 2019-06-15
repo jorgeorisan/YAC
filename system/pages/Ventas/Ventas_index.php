@@ -153,13 +153,13 @@ foreach($dataabonos as $row) {
 									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 										<thead>
 											<tr>
-												<th class = "col-md-1" data-class="">Folio</th>
-												<th class = "col-md-1" data-class="expand">Vendedor </th>
-												<th class = "col-md-1" data-hide="phone,tablet">Fecha</th>
+												<th class = "col-md-1" data-class="expand">Folio</th>
+												<th class = "col-md-1" data-class="">Vendedor </th>
+												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Tienda</th>
+												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Total</th>
-												<th class = "col-md-1" data-hide="phone,tablet">Comentarios</th>
+												<th class = "col-md-1" data-class="phone,tablet">Comentarios</th>
 												<th class = "col-md-1" data-class="phone,tablet"></th>
 											</tr>
 										</thead>
