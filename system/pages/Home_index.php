@@ -178,7 +178,7 @@ if($res=$citas->getAllArr()){
 		<i class="fa fa-history"></i>&nbsp;Nueva cita</a>
 </li>
 <!-- Modal  to Add Event -->
-<div class="modal fade" id="myModal"  role="dialog" style="overflow-y: scroll;">
+<div class="modal fade" id="myModal"  role="dialog" style="overflow: auto;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="width:110%">
             <div class="modal-header">
