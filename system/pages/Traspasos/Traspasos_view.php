@@ -202,7 +202,8 @@ $datatiendaanterior = $tienda->getTable($data['id_tienda']);
                                                                     <td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion']; ?></td>
                                                                     <td class='borrar-td'>
                                                                         <?php if ($row['status']!='BAJA'){ ?> 
-                                                                            <a href="#" title="Cancelar Producto" id="cancelar_Traspaso<?php echo $row['id_traspaso_producto']; ?>" idTraspaso='<?php echo $row['id_traspaso_producto']; ?>' folio='<?php echo $row['nombre']; ?>' class="btn btn-danger deleteTraspaso"> <i class="fas fa-ban"></i></a>
+                                                                            <a href="#" class="btn btn-danger" onclick="borrar('<?php echo make_url("Traspasos","traspasoproductodelete",array('id'=>$row['id_traspaso_producto'])); ?>',<?php echo $row['id_traspaso_producto']; ?>);" > <i class="fas fa-ban"></i></a>
+                                                                            
                                                                         <?php } ?>
                                                                     </td>
                                                                 </tr>
