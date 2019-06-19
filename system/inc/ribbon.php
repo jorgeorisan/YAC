@@ -1,6 +1,10 @@
 	<!-- RIBBON -->
 	<div id="ribbon">
-
+		<div class="col-sm-1">
+			<div class="" style="padding: 7px; font-size: 8px;">
+				<?php echo $_SESSION['user_info']['tienda']."-".$_SESSION['user_info']['usuario_tipo']; ?>
+			</div>
+		</div>
 		<span class="ribbon-button-alignment"> 
 			<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh" rel="tooltip" data-placement="bottom" 
 			data-original-title="<i class='text-warning fa fa-warning'></i> Warning! Actualizar" 

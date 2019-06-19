@@ -113,14 +113,18 @@
 					<div id="logo-group">
 						<input type="text" id="base" value="<?php echo APP_URL; ?>" hidden>
 						<!-- PLACE YOUR LOGO HERE -->
-						<span id="logo" style="margin-top: 5px;"> <img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="Yo Amo Comprar" style="width:150px "> </span>
+						<span id="logo" style="margin-top: 5px;"> 
+							<img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="Yo Amo Comprar" style="width:150px "> 
+						</span>
+					</div>
 					
-					</div>
-					<div class="pull-left" style="padding: 7px;">
-						Usuario: <?php echo $_SESSION['user_info']['id_usuario']."<br>".$_SESSION['user_info']['tienda']."->".$_SESSION['user_info']['usuario_tipo']; ?>
-					</div>
 					<!-- projects dropdown -->
 					<div class="project-context hidden-xs">
+						<div class="col-sm-5  col-xs-5">
+							<div class="" style="padding: 7px; font-size: 8px;">
+								<?php echo $_SESSION['user_info']['tienda']."-".$_SESSION['user_info']['usuario_tipo']; ?>
+							</div>
+						</div>
 						<span id="project-selector" class="popover-trigger-element dropdown-toggle" data-toggle="dropdown">
 							<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
 								<span class="label" style="color: #3276b1;">Alertas</span>
@@ -143,6 +147,7 @@
 
 					<!-- pulled right: nav area -->
 					<div class="pull-right">
+						
 						<!-- logout button -->
 						<div id="logout" class="btn-header transparent pull-right">
 							<span> <a href="<?php echo make_url("Login") ?>" title="Sign Out" data-action="userLogout" data-logout-msg="Estas seguro que deseas salir?"><i class="fa fa-sign-out"></i></a> </span>
