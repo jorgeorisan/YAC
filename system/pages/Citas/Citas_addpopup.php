@@ -35,6 +35,7 @@
                                                 $obj = new Persona();
                                                 $arrayfilters['tipo'] = '11';
                                                 $list = $obj->getAllArr($arrayfilters);
+                                                $persona=$obj->getTable($id_persona);
                                                 if (is_array($list) || is_object($list)){
                                                     foreach($list as $val){
                                                         $selected = ($id_persona == $val['id_persona']) ? "selected" : "";
@@ -99,13 +100,14 @@
         </section>        
         </fieldset> 
         <div class="form-actions" style="text-align: center;width: 100%;margin-left: 0px;">
+        <?php echo ($persona['status']=='BAJA') ? 'Cliente eliminado' : ''; ?>
         <?php if($statuscita=='active'){ ?>
             <div class="row">
                <div class="col-md-12">
-                    <?php if($id_cita){ ?>
+                    <?php if($id_cita && $persona['status']!='BAJA'){ ?>
                         <button class="btn btn-danger btn-md" type="button" id="deletecita">
                             <i class="fa fa-trash"></i>
-                            Eliminar
+                            Eliminar Cita
                         </button>
                         <button class="btn btn-success btn-md" type="button" id="generarconsulta">
                             <i class="fa fa-file"></i>
@@ -126,7 +128,7 @@
                     <div class="col-md-12">
                         <button class="btn btn-primary btn-md" type="button" id="deletecita">
                             <i class="fa fa-save"></i>
-                            Eliminar
+                            Eliminar Cita
                         </button>
                     </div>
                 </div>
