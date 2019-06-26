@@ -21,7 +21,9 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						$texto    = $_GET["texto"];
 						$idtienda = $_GET["id_tiendaselected"];
 						$productos = new Producto();
-						$productostienda = $productos->getAllArr(false,$idtienda,$texto);
+						$arrayfilters['similar']   = $texto;
+						$arrayfilters['id_tienda'] = $idtienda;
+						$productostienda  = $productos->getAllArr($arrayfilters);
 						foreach($productostienda as $res) {
 							$existenciatienda  = $res['existenciastienda'];
 							$existenciaglobal  = $res['existencias'];

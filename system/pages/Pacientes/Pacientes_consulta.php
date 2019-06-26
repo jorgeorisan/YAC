@@ -10,7 +10,7 @@ require_once(SYSTEM_DIR . "/inc/config.ui.php");
 YOU CAN SET CONFIGURATION VARIABLES HERE BEFORE IT GOES TO NAV, RIBBON, ETC.
 E.G. $page_title = "Custom Title" */
 
-$page_title = "Historial Del Persona";
+$page_title = "Historial Del Paciente";
 
 /* ---------------- END PHP Custom Scripts ------------- */
 
@@ -23,31 +23,32 @@ include(SYSTEM_DIR . "/inc/header.php");
 //follow the tree in inc/config.ui.php
 //$page_nav["misc"]["sub"]["blank"]["active"] = true;
 include(SYSTEM_DIR . "/inc/nav.php");
-$id_persona = '';
+$id_paciente = '';
 if(isset($request['params']['id'])   && $request['params']['id']>0)
-    $id_persona=$request['params']['id'];
+    $id_paciente=$request['params']['id'];
 
 $cita     = '';
-$persona = '';
+$paciente = '';
 $id_cita  = '';
 $totalpagado = 0;
 $fecha_inicial = date('Y-m-d H:i');
 
 $date     = $motivo = $seguimiento = $receta = $recomendaciones ='';
-if($id_persona){ 
-    $personas = new Persona();
-    $persona = $personas->getTable($id_persona);
-    if($persona['id_historial']>0){
-        //si el persona ya tiene un historial lo mostramos
+if($id_paciente){ 
+    $pacientes = new Paciente();
+    $paciente = $pacientes->getTable($id_paciente);
+    if($paciente['id_historial']>0){
+        //si el paciente ya tiene un historial lo mostramos
         $objhist       = new Historial();
-        $datahistorial = $objhist->getTable($persona['id_historial']);
+        $datahistorial = $objhist->getTable($paciente['id_historial']);
         $receta          = $datahistorial['receta'];
         $recomendaciones = $datahistorial['recomendaciones'];
+        $id_personal     = $datahistorial['id_personal'];
     }
 }
 
 if(isset($request['params']['id_cita'])){
-    // si el persona 
+    // si el paciente 
     $id_cita=$request['params']['id_cita'];
     $citas = new Cita();
     $cita  = $citas->getTable($id_cita);
@@ -60,23 +61,25 @@ if(isset($request['params']['id_cita'])){
     $cita['id_historial'] = $datatrat['id_historial'];
 
 
-    $personas = new Persona();
+    $pacientes = new Persona();
     
-    $id_persona=$cita['id_persona'];
+    $id_paciente=$cita['id_paciente'];
     $id_personal=$cita['id_personal'];
-	$persona  = $personas->getTable($id_persona);
+	$paciente  = $pacientes->getTable($id_paciente);
 }
 
 if(isPost()){
-    //si esta entrando es por que ya existe el persona
-    $personas = new Persona();
-    $id_persona = $personas->updateAll($_POST['id_persona'],getPost());
-    if($id_persona>0){}else{ die('no se guardo personas');}
+    //si esta entrando es por que ya existe el paciente
+    $pacientes = new Paciente();
+    $id_paciente = $pacientes->updateAll($_POST['id_paciente'],getPost());
+    if($id_paciente>0){}else{ die('no se guardo pacientes');}
 
-    $persona = $personas->getTable($id_persona);
+    $paciente = $pacientes->getTable($_POST['id_paciente']);
     $historial = new Historial();
-    if(isset($persona['id_historial']))
-        $id = $historial->updateAll($persona['id_historial'],getPost());
+
+
+    if($paciente['id_historial'])
+        $id = $historial->updateAll($paciente['id_historial'],getPost());
     else
         $id  = $historial->addAll(getPost());
 
@@ -86,11 +89,19 @@ if(isPost()){
     if ($id > 0){
         informSuccess(true, $urlredirect);
     }else{
-        informError(true,make_url("Personas","index"));
+        informError(true,make_url("Pacientes","index"));
     }
 }
-$nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.$persona['ap_materno'] : '';
-
+$nombrepaciente = ($paciente) ? $paciente['nombre'].' '.$paciente['apellido_pat'].' '.$paciente['apellido_mat'] : '';
+$ano_diferencia = '';
+if($paciente['fecha_nac']!="" && $paciente['fecha_nac']!="00-00-0000"){
+    list($ano,$mes,$dia) = explode("-",$paciente['fecha_nac']);
+    $ano_diferencia  = date("Y") - $ano;
+    $mes_diferencia = date("m") - $mes;
+    $dia_diferencia   = date("d") - $dia;
+    if ($dia_diferencia < 0 || $mes_diferencia < 0)
+        $ano_diferencia--;
+}
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <style>
@@ -102,19 +113,19 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
 <div id="main" role="main">
     <?php $breadcrumbs["Citas"] = APP_URL."/Citas/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
-    <form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Personas","consulta");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">    
-        <input type="hidden" id="id_persona" name="id_persona" value="<?php echo $id_persona;?>">    
-        <input type="hidden" id="id_personal" name="id_personal" value="<?php echo $id_personal;?>">    
+    <form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Pacientes","consulta");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">    
+        <input type="hidden" id="id_paciente" name="id_paciente" value="<?php echo $id_paciente;?>">    
         <input type="hidden" id="id_cita" name="id_cita" value="<?php echo $id_cita;?>">
         <input type="hidden" id="total" name="total" value="0">
         <input type="hidden" id="total_deuda" name="total_deuda" value="0">
-        <?php if($persona['id_historial']) { ?>
-            <input type="hidden"  name="seguimiento" id="seguimiento"  value="<?php echo $persona['id_historial'];?>">
+        <?php if($paciente['id_historial']) { ?>
+            <input type="hidden"  name="seguimiento" id="seguimiento"  value="<?php echo $paciente['id_historial'];?>">
         <?php } ?>
         <div id="content">
             <div class="row">     
                 <section id="widget-grid" class="">
                     <article class="col-sm-12 col-md-12 col-lg-12"  id="">
+                        <h2><strong>Historia Clinica</strong></h2>
                         <div class="jarviswidget  jarviswidget-sortables" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-collapsed="false">
                             <!-- Widget ID (each widget will need unique ID)-->
                             <header><span class="widget-icon"> <i class="fa fa-plus"></i></span><h2><?php echo "Datos Basicos" ?></h2>
@@ -126,67 +137,68 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="name">Nombre</label>
-                                                <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre" onkeypress="nextFocus('nombre', 'ap_paterno')" value="<?php echo $persona['nombre']; ?>" > 
+                                                <input type="text" class="form-control" placeholder="Nombre" name="nombre" id="nombre" onkeypress="nextFocus('nombre', 'apellido_pat')" value="<?php echo $paciente['nombre']; ?>" > 
                                             </div>
                                             <div class="form-group">
-                                                <label for="name">Correo</label>
-                                                <input type="email" class="form-control" placeholder="example@email.com" name="email" id="email" onkeypress="nextFocus('email', 'telefono')" value="<?php echo $persona['email']; ?>">                                                          
+                                                <label for="name">Apellido Paterno</label>
+                                                <input type="text" class="form-control" placeholder="Apellido Paterno" name="apellido_pat" id="apellido_pat" onkeypress="nextFocus('apellido_pat', 'apellido_mat')" value="<?php echo $paciente['apellido_pat']; ?>" >                                                                                               
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Apellido Materno</label>
+                                                <input type="text" class="form-control" placeholder="Apellido Materno" name="apellido_mat" id="apellido_mat" onkeypress="nextFocus('apellido_mat', 'email')"  value="<?php echo $paciente['apellido_mat']; ?>">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Calle</label>
-                                                <input type="text" class="form-control" placeholder="Calle" name="calle"  id="calle" onkeypress="nextFocus('calle', 'num_exterior')" value="<?php echo $persona['calle']; ?>">                                                                                               
+                                                <input type="text" class="form-control" placeholder="Calle" name="calle"  id="calle" onkeypress="nextFocus('calle', 'num_ext')" value="<?php echo $paciente['calle']; ?>">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Colonia</label>
-                                                <input type="text" class="form-control" placeholder="Colonia" name="colonia" id="colonia" onkeypress="nextFocus('colonia', 'ciudad')" value="<?php echo $persona['colonia']; ?>">                                                                                               
+                                                <input type="text" class="form-control" placeholder="Colonia" name="colonia" id="colonia" onkeypress="nextFocus('colonia', 'ciudad')" value="<?php echo $paciente['colonia']; ?>">                                                                                               
                                             </div>
-                                            <div class="form-group">
-                                                <label for="name">Alergias</label>
-                                                <input type="text" class="form-control" placeholder="Alergias" name="alergias" id="alergias" onkeypress="nextFocus('alergias', 'fecha_nacimiento')"  value="<?php echo $persona['alergias']; ?>">                                                                                               
-                                            </div>
+                                            
                                         </div>
                                         <div class="col-sm-3">
                                             <div class="form-group">
-                                                <label for="name">Apellido Paterno</label>
-                                                <input type="text" class="form-control" placeholder="Apellido Paterno" name="ap_paterno" id="ap_paterno" onkeypress="nextFocus('ap_paterno', 'ap_materno')" value="<?php echo $persona['ap_paterno']; ?>" >                                                                                               
+                                                <label for="name">Correo</label>
+                                                <input type="email" class="form-control" placeholder="example@email.com" name="email" id="email" onkeypress="nextFocus('email', 'telefono')" value="<?php echo $paciente['email']; ?>">                                                          
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Teléfono</label>
-                                                <input type="text" class="form-control" placeholder="Teléfono" name="telefono" id="telefono" onkeypress="nextFocus('telefono', 'estado')" value="<?php echo $persona['telefono']; ?>" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Teléfono" name="telefono" id="telefono" onkeypress="nextFocus('telefono', 'estado')" value="<?php echo $paciente['telefono']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Número Exterior</label>
-                                                <input type="text" class="form-control" placeholder="Número Exterior" name="num_exterior" id="num_exterior" onkeypress="nextFocus('num_exterior', 'num_interior')" value="<?php echo $persona['num_exterior']; ?>" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Número Exterior" name="num_ext" id="num_ext" onkeypress="nextFocus('num_ext', 'num_int')" value="<?php echo $paciente['num_ext']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Ciudad</label>
-                                                <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" id="ciudad" onkeypress="nextFocus('ciudad', 'codigo_postal')"  value="<?php echo $persona['ciudad']; ?>">                                                                                               
+                                                <input type="text" class="form-control" placeholder="Ciudad" name="ciudad" id="ciudad" onkeypress="nextFocus('ciudad', 'cp')"  value="<?php echo $paciente['ciudad']; ?>">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Fecha Nacimiento</label>
-                                                <input type="text" class="form-control datepicker" data-dateformat='yy-mm-dd' autocomplete="off" placeholder="Fecha nacimiento" name="fecha_nacimiento" id="fecha_nacimiento" onkeypress="nextFocus('fecha_nacimiento', 'antecedentes_pat')" value="<?php echo $persona['fecha_nacimiento']; ?>">                                                                                               
+                                                <input type="text" class="form-control datepicker" data-dateformat='dd-mm-yy' autocomplete="off" placeholder="Fecha nacimiento" name="fecha_nac" id="fecha_nac" onkeypress="nextFocus('fecha_nac', 'antecedentes_pat')" value="<?php echo date('d-m-Y',strtotime($paciente['fecha_nac'])); ?>">                                                                                               
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
                                             <div class="form-group">
-                                                <label for="name">Apellido Materno</label>
-                                                <input type="text" class="form-control" placeholder="Apellido Materno" name="ap_materno" id="ap_materno" onkeypress="nextFocus('ap_materno', 'email')"  value="<?php echo $persona['ap_materno']; ?>">                                                                                               
-                                            </div>
-                                            <div class="form-group">
                                                 <label for="name">Estado</label>
-                                                <input type="text" class="form-control" placeholder="Estado" name="estado" id="estado"  onkeypress="nextFocus('estado', 'calle')"  value="<?php echo $persona['estado']; ?>" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Estado" name="estado" id="estado"  onkeypress="nextFocus('estado', 'calle')"  value="<?php echo $paciente['estado']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Número Interior</label>
-                                                <input type="text" class="form-control" placeholder="Número Interior" name="num_interior" id="num_interior" onkeypress="nextFocus('num_interior', 'colonia')"   value="<?php echo $persona['num_interior']; ?>">                                                                                               
+                                                <input type="text" class="form-control" placeholder="Número Interior" name="num_int" id="num_int" onkeypress="nextFocus('num_int', 'colonia')"   value="<?php echo $paciente['num_int']; ?>">                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">CP</label>
-                                                <input type="text" class="form-control" placeholder="CP" name="codigo_postal" id="codigo_postal" onkeypress="nextFocus('codigo_postal', 'alergias')" value="<?php echo $persona['codigo_postal']; ?>" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="CP" name="cp" id="cp" onkeypress="nextFocus('cp', 'fecha_nac')" value="<?php echo $paciente['cp']; ?>" >                                                                                               
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Antecedentes patologicos</label>
-                                                <input type="text" class="form-control" placeholder="Antecedentes Patologicos" name="antecedentes_pat" id="antecedentes_pat" onkeypress="nextFocus('antecedentes_pat', 'savenewclient')"  value="<?php echo $persona['antecedentes_pat']; ?>" >                                                                                               
+                                                <input type="text" class="form-control" placeholder="Antecedentes Patologicos" name="antecedentes_pat" id="antecedentes_pat" onkeypress="nextFocus('antecedentes_pat', 'savenewclient')"  value="<?php echo $paciente['antecedentes_pat']; ?>" >                                                                                               
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">Edad</label>
+                                                <input type="text" class="form-control" disabled  placeholder="Edad" name="edad" id="edad"  value="<?php echo $ano_diferencia; ?>">                                                                                               
                                             </div>
                                         </div>
                                     </fieldset>  
@@ -195,11 +207,11 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                         </div>
                     </article>
                     <?php  if ( $datosavanzados ) {?>
-                        <article class="col-sm-12 col-md-12 col-lg-12 persona-avanzados">
+                        <article class="col-sm-12 col-md-12 col-lg-12 paciente-avanzados">
                             <h2><?php echo "Datos Avanzados" ?></h2>
                             <fieldset>    
                                 <div class="col-sm-4">
-                                    <div class="jarviswidget" id="wid-id-antheredo" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="true">
+                                    <div class="jarviswidget" id="wid-id-adicionales" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="true">
                                         <header><h2> Adicionales</h2></header>
                                         <div>
                                             <div class="jarviswidget-editbox"></div>
@@ -208,24 +220,25 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                     <div class="col-sm-7">
                                                         <div class="form-group">
                                                             <select class="select2" name="sexo">
-                                                                <option <?php echo ($persona['sexo']=="") ? "selected": '';?> value="">Selecciona sexo</option>
-                                                                <option <?php echo ($persona['sexo']=="Femenino") ? "selected": '';?> value="Femenino">Femenino</option>
-                                                                <option <?php echo ($persona['sexo']=="Masculino") ? "selected": '';?> value="Masculino">Masculino</option>
+                                                                <option <?php echo ($paciente['sexo']=="") ? "selected": '';?> value="">Selecciona sexo</option>
+                                                                <option <?php echo ($paciente['sexo']=="Femenino") ? "selected": '';?> value="Femenino">Femenino</option>
+                                                                <option <?php echo ($paciente['sexo']=="Masculino") ? "selected": '';?> value="Masculino">Masculino</option>
                                                             </select>
                                                         </div> 
                                                     </div>
                                                     <div class="col-sm-5">
                                                         <div class="form-group">
                                                             <select class="select2" name="grupo_sanguineo">
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="") ? "selected": '';?> value="">Tipo Sangre</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="A+") ? "selected": '';?> value="A+">A+</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="A-") ? "selected": '';?> value="A-">A-</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="B+") ? "selected": '';?> value="B+">B+</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="B-") ? "selected": '';?> value="B-">B-</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="AB+") ? "selected": '';?> value="AB+">AB+</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="AB-") ? "selected": '';?> value="AB-">AB-</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="O+") ? "selected": '';?> value="O+">O+</option>
-                                                                <option <?php echo ($persona['grupo_sanguineo']=="O-") ? "selected": '';?> value="O-">O-</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="") ? "selected": '';?> value="">Tipo Sangre</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="A+") ? "selected": '';?> value="A+">A+</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="A-") ? "selected": '';?> value="A-">A-</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="B+") ? "selected": '';?> value="B+">B+</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="B-") ? "selected": '';?> value="B-">B-</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="AB+") ? "selected": '';?> value="AB+">AB+</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="AB-") ? "selected": '';?> value="AB-">AB-</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="O+") ? "selected": '';?> value="O+">O+</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="O-") ? "selected": '';?> value="O-">O-</option>
+                                                                <option <?php echo ($paciente['grupo_sanguineo']=="No Sabe") ? "selected": '';?> value="No Sabe">No Sabe</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -233,22 +246,24 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                 <div class="form-group">
                                                     <label for="name">Estado civil</label>
                                                     <select class="select2" name="edo_civil">
-                                                        <option <?php echo ($persona['edo_civil']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                        <option <?php echo ($persona['edo_civil']=="Casado") ? "selected": '';?> value="Casado">Casado</option>
-                                                        <option <?php echo ($persona['edo_civil']=="Soltero") ? "selected": '';?> value="Soltero">Soltero</option>
-                                                        <option <?php echo ($persona['edo_civil']=="Union libre") ? "selected": '';?> value="Union libre">Union libre</option>
-                                                        <option <?php echo ($persona['edo_civil']=="Divorciado") ? "selected": '';?> value="Divorciado">Divorciado</option>
-                                                        <option <?php echo ($persona['edo_civil']=="Viudo") ? "selected": '';?> value="Viudo">Viudo</option>
+                                                        <option <?php echo ($paciente['edo_civil']=="") ? "selected": '';?> value="">Selecciona</option>
+                                                        <option <?php echo ($paciente['edo_civil']=="Casado") ? "selected": '';?> value="Casado">Casado</option>
+                                                        <option <?php echo ($paciente['edo_civil']=="Soltero") ? "selected": '';?> value="Soltero">Soltero</option>
+                                                        <option <?php echo ($paciente['edo_civil']=="Union libre") ? "selected": '';?> value="Union libre">Union libre</option>
+                                                        <option <?php echo ($paciente['edo_civil']=="Divorciado") ? "selected": '';?> value="Divorciado">Divorciado</option>
+                                                        <option <?php echo ($paciente['edo_civil']=="Viudo") ? "selected": '';?> value="Viudo">Viudo</option>
                                                     </select>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-sm-7">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Escolaridad" name="escolaridad"  id="escolaridad" value="<?php echo $persona['escolaridad']; ?>">                                                                                               
+                                                            <label>Escolaridad</label>
+                                                            <input type="text" class="form-control" placeholder="Escolaridad" name="escolaridad"  id="escolaridad" value="<?php echo $paciente['escolaridad']; ?>">                                                                                               
                                                         </div> 
                                                     </div>
                                                     <div class="col-sm-5">
-                                                        <input type="text" class="form-control" placeholder="Ocupacion" name="ocupacion" id="ocupacion" value="<?php echo $persona['ocupacion']; ?>">
+                                                        <label>Ocupacion</label>
+                                                        <input type="text" class="form-control" placeholder="Ocupacion" name="ocupacion" id="ocupacion" value="<?php echo $paciente['ocupacion']; ?>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -260,16 +275,20 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                             <div class="jarviswidget-editbox"></div>
                                             <div class="widget-body">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Madre" name="ant_madre" id="ant_madre" value="<?php echo $persona['ant_madre']; ?>">                                                                                               
+                                                    <label>Madre</label>
+                                                    <input type="text" class="form-control" placeholder="Madre" name="ant_madre" id="ant_madre" value="<?php echo $paciente['ant_madre']; ?>">                                                                                               
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Padre" name="ant_padre" id="ant_padre" value="<?php echo $persona['ant_padre']; ?>">                                                                                               
+                                                    <label>Padre</label>
+                                                    <input type="text" class="form-control" placeholder="Padre" name="ant_padre" id="ant_padre" value="<?php echo $paciente['ant_padre']; ?>">                                                                                               
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Abuelos Paternos" name="ant_abuelospaternos" id="ant_abuelospaternos" value="<?php echo $persona['ant_abuelospaternos']; ?>">                                                                                               
+                                                    <label>Abuelos Paternos</label>
+                                                    <input type="text" class="form-control" placeholder="Abuelos Paternos" name="ant_abuelospaternos" id="ant_abuelospaternos" value="<?php echo $paciente['ant_abuelospaternos']; ?>">                                                                                               
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Abuelos Maternos" name="ant_abuelosmaternos" id="ant_abuelosmaternos" value="<?php echo $persona['ant_abuelosmaternos']; ?>">                                                                                               
+                                                    <label>Abuelos Maternos</label>
+                                                    <input type="text" class="form-control" placeholder="Abuelos Maternos" name="ant_abuelosmaternos" id="ant_abuelosmaternos" value="<?php echo $paciente['ant_abuelosmaternos']; ?>">                                                                                               
                                                 </div>
                                             </div>
                                         </div>
@@ -279,34 +298,25 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                         <div>
                                             <div class="jarviswidget-editbox"></div>
                                             <div class="widget-body">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Fecuencia de Baño" name="frec_banio" id="frec_banio" value="<?php echo $persona['frec_banio']; ?>">                                                                                               
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Fecuencia de cambio de ropa" name="frec_ropa" id="frec_ropa" value="<?php echo $persona['frec_ropa']; ?>">                                                                                               
-                                                </div>
                                                 <div class="row">
                                                     <div class="col-sm-7">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Fecuencia de lavado de dientes" name="frec_dientes" id="frec_dientes" value="<?php echo $persona['frec_dientes']; ?>">                                                                                               
+                                                            <label>Fecuencia de lavado de dientes</label>
+                                                            <input type="text" class="form-control" placeholder="Fecuencia de lavado de dientes" name="frec_dientes" id="frec_dientes" value="<?php echo $paciente['frec_dientes']; ?>">                                                                                               
                                                         </div> 
-                                                    </div>
-                                                    <div class="col-sm-5">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Numero de Veces" name="vecese_dientes" id="vecese_dientes" value="<?php echo $persona['vecese_dientes']; ?>">                                                                                               
-                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Auxiliares de limpieza" name="aux_limpieza" id="aux_limpieza" value="<?php echo $persona['aux_limpieza']; ?>">                                                                                               
+                                                    <label>Auxiliares de limpieza</label>
+                                                    <input type="text" class="form-control" placeholder="Auxiliares de limpieza" name="aux_limpieza" id="aux_limpieza" value="<?php echo $paciente['aux_limpieza']; ?>">                                                                                               
                                                 </div> 
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Tipo de pasta dental" name="pasta_dental" id="pasta_dental" value="<?php echo $persona['pasta_dental']; ?>">                                                                                               
+                                                    <label>Tipo de pasta dental</label>
+                                                    <input type="text" class="form-control" placeholder="Tipo de pasta dental" name="pasta_dental" id="pasta_dental" value="<?php echo $paciente['pasta_dental']; ?>">                                                                                               
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="jarviswidget" id="wid-id-prenatales" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="true">
@@ -315,13 +325,36 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                             <div class="jarviswidget-editbox"></div>
                                             <div class="widget-body">                                            
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Numero de Gestacion" name="num_gesta" id="num_gesta" value="<?php echo $persona['num_gesta']; ?>">                                                                                               
+                                                    <label>Numero de Gestacion</label>
+                                                    <input type="text" class="form-control" placeholder="Numero de Gestacion" name="num_gesta" id="num_gesta" value="<?php echo $paciente['num_gesta']; ?>">                                                                                               
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Tipo de Gestacion" name="tipo_gesta" id="tipo_gesta" value="<?php echo $persona['tipo_gesta']; ?>">                                                                                               
+                                                    <label>Tiempo de Gestacion</label>
+                                                    <input type="text" class="form-control" placeholder="Tiempo de Gestacion" name="tiempo_gesta" id="tiempo_gesta" value="<?php echo $paciente['tiempo_gesta']; ?>">                                                                                               
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label class="col-md-12 control-label">Tipo de Parto</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <select class="select2" name="tipo_parto">
+                                                                <option <?php echo ($paciente['tipo_parto']=="") ? "selected": '';?> value="">Selecciona</option>
+                                                                <option <?php echo ($paciente['tipo_parto']=="Normal") ? "selected": '';?> value="Normal">Normal</option>
+                                                                <option <?php echo ($paciente['tipo_parto']=="Cesarea") ? "selected": '';?> value="Cesarea">Cesarea</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Tiempo de Gestacion" name="tiempo_gesta" id="tiempo_gesta" value="<?php echo $persona['tiempo_gesta']; ?>">                                                                                               
+                                                    <label>Motivo Cesarea</label>
+                                                    <input type="text" class="form-control" placeholder="Motivo Cesarea" name="motivo_cesarea" id="motivo_cesarea" value="<?php echo $paciente['motivo_cesarea']; ?>">                                                                                               
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Apgar</label>
+                                                    <input type="text" class="form-control" placeholder="Apgar" name="tipo_gesta" id="tipo_gesta">                                                                                               
                                                 </div>
                                             </div>
                                         </div>
@@ -334,68 +367,17 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">Tipo de Parto</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="tipo_parto">
-                                                                <option <?php echo ($persona['tipo_parto']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['tipo_parto']=="Eutocico") ? "selected": '';?> value="Eutocico">Eutocico</option>
-                                                                <option <?php echo ($persona['tipo_parto']=="Distocico") ? "selected": '';?> value="Distocico">Distocico</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">Utilizacion de Forceps</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="forceps">
-                                                                <option <?php echo ($persona['forceps']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['forceps']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['forceps']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">Cesarea</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="cesarea">
-                                                                <option <?php echo ($persona['cesarea']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['cesarea']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['cesarea']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Motivo Cesarea" name="motivo_cesarea" id="motivo_cesarea" value="<?php echo $persona['motivo_cesarea']; ?>">                                                                                               
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
                                                             <label class="col-md-12 control-label">Reanimacion Especial</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <select class="select2" name="reanimacion_especial">
-                                                                <option <?php echo ($persona['reanimacion_especial']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['reanimacion_especial']=="Bolsa de oxigeno") ? "selected": '';?> value="Bolsa de oxigeno">Bolsa de oxigeno</option>
-                                                                <option <?php echo ($persona['reanimacion_especial']=="Ventilacion asistida con ambu") ? "selected": '';?> value="Ventilacion asistida con ambu">Ventilacion asistida con ambu</option>
-                                                                <option <?php echo ($persona['reanimacion_especial']=="Intubacion") ? "selected": '';?> value="Intubacion">Intubacion</option>
-                                                                <option <?php echo ($persona['reanimacion_especial']=="Medicamentos") ? "selected": '';?> value="Medicamentos">Medicamentos</option>
+                                                                <option <?php echo ($paciente['reanimacion_especial']=="") ? "selected": '';?> value="">Selecciona</option>
+                                                                <option <?php echo ($paciente['reanimacion_especial']=="Bolsa de oxigeno") ? "selected": '';?> value="Bolsa de oxigeno">Bolsa de oxigeno</option>
+                                                                <option <?php echo ($paciente['reanimacion_especial']=="Ventilacion asistida con ambu") ? "selected": '';?> value="Ventilacion asistida con ambu">Ventilacion asistida con ambu</option>
+                                                                <option <?php echo ($paciente['reanimacion_especial']=="Intubacion") ? "selected": '';?> value="Intubacion">Intubacion</option>
+                                                                <option <?php echo ($paciente['reanimacion_especial']=="Medicamentos") ? "selected": '';?> value="Medicamentos">Medicamentos</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -417,23 +399,24 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <select class="select2" name="incubadora">
-                                                                <option <?php echo ($persona['incubadora']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['incubadora']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['incubadora']=="No") ? "selected": '';?> value="No">No</option>
+                                                                <option <?php echo ($paciente['incubadora']=="") ? "selected": '';?> value="">Selecciona</option>
+                                                                <option <?php echo ($paciente['incubadora']=="Si") ? "selected": '';?> value="Si">Si</option>
+                                                                <option <?php echo ($paciente['incubadora']=="No") ? "selected": '';?> value="No">No</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Tiempo y Motivo Incubadora" name="tiempo_incubadora" id="tiempo_incubadora" value="<?php echo $persona['tiempo_incubadora']; ?>">                                                                                               
+                                                    <label>Tiempo y Motivo Incubadora</label>
+                                                    <input type="text" class="form-control" placeholder="Tiempo y Motivo Incubadora" name="tiempo_incubadora" id="tiempo_incubadora" value="<?php echo $paciente['tiempo_incubadora']; ?>">                                                                                               
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Reflujo Esofagico" name="reflujo_esofagico" id="reflujo_esofagico" value="<?php echo $persona['reflujo_esofagico']; ?>">                                                                                               
+                                                    <label>Reflujo Esofagico</label>
+                                                    <input type="text" class="form-control" placeholder="Reflujo Esofagico" name="reflujo_esofagico" id="reflujo_esofagico" value="<?php echo $paciente['reflujo_esofagico']; ?>">                                                                                               
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="jarviswidget" id="wid-id-lactancia" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="true">
@@ -442,107 +425,27 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                             <div class="jarviswidget-editbox"></div>
                                             <div class="widget-body">
                                                 <div class="row">
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">A seno materno</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="seno_materno">
-                                                                <option <?php echo ($persona['seno_materno']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['seno_materno']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['seno_materno']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Tiempo" name="tiempo_seno" id="tiempo_seno"  value="<?php echo $persona['tiempo_seno']; ?>">                                                                                               
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">Biberon</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="biberon">
-                                                                <option <?php echo ($persona['biberon']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['biberon']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['biberon']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Tiempo" name="tiempo_biberon" id="tiempo_biberon"  value="<?php echo $persona['tiempo_biberon']; ?>">                                                                                               
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">Endulzo la leche</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="endulzo_leche">
-                                                                <option <?php echo ($persona['endulzo_leche']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['endulzo_leche']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['endulzo_leche']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Con que" name="tipo_endulzante" id="tipo_endulzante"  value="<?php echo $persona['tipo_endulzante']; ?>">                                                                                               
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label class="col-md-12 control-label">Ablactacion</label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <select class="select2" name="ablactacion">
-                                                                <option <?php echo ($persona['ablactacion']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['ablactacion']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['ablactacion']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Incio" name="ablactacion_inicio" id="ablactacion_inicio"  value="<?php echo $persona['ablactacion_inicio']; ?>">                                                                                               
+                                                            <input type="text" class="form-control" placeholder="Incio" name="ablactacion_inicio" id="ablactacion_inicio"  value="<?php echo $paciente['ablactacion_inicio']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">Incio Alimantacion Solida</label>
+                                                            <label class="col-md-12 control-label">Alimentacion Solida</label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <select class="select2" name="alimentacion_solida">
-                                                                <option <?php echo ($persona['alimentacion_solida']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['alimentacion_solida']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['alimentacion_solida']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Incio" name="alimentacion_solida_inicio" id="alimentacion_solida_inicio"  value="<?php echo $persona['alimentacion_solida_inicio']; ?>">                                                                                               
+                                                            <label>Inicio</label>
+                                                            <input type="text" class="form-control" placeholder="Incio" name="alimentacion_solida_inicio" id="alimentacion_solida_inicio"  value="<?php echo $paciente['alimentacion_solida_inicio']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                 </div>
@@ -555,7 +458,12 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                             <div class="jarviswidget-editbox"></div>
                                             <div class="widget-body">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" placeholder="Inicio Denticion" name="inicio_denticion" id="inicio_denticion"  value="<?php echo $persona['inicio_denticion']; ?>">                                                                                               
+                                                    <label class="col-md-12 control-label">Inicio Denticion</label>
+                                                    <input type="text" class="form-control" placeholder="Inicio Denticion" name="inicio_denticion" id="inicio_denticion"  value="<?php echo $paciente['inicio_denticion']; ?>">                                                                                               
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-12 control-label">Habitos</label>
+                                                    <input type="text" class="form-control" placeholder="Habitos" name="denticion_habitos" id="denticion_habitos"  value="<?php echo $paciente['denticion_habitos']; ?>">                                                                                               
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-sm-5">
@@ -563,96 +471,44 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                             <label class="col-md-12 control-label">Tratamiento dental previo</label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-7">
                                                         <div class="form-group">
                                                             <select class="select2" name="tratamiento_previo">
-                                                                <option <?php echo ($persona['tratamiento_previo']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['tratamiento_previo']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['tratamiento_previo']=="No") ? "selected": '';?> value="No">No</option>
+                                                                <option <?php echo ($paciente['tratamiento_previo']=="") ? "selected": '';?> value="">Selecciona</option>
+                                                                <option <?php echo ($paciente['tratamiento_previo']=="Si") ? "selected": '';?> value="Si">Si</option>
+                                                                <option <?php echo ($paciente['tratamiento_previo']=="No") ? "selected": '';?> value="No">No</option>
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-5">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Tipo" name="tipo_tratamiento_previo" id="tipo_tratamiento_previo"  value="<?php echo $persona['tipo_tratamiento_previo']; ?>">                                                                                               
+                                                            <label class="col-md-12 control-label">Tipo</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-7">
+                                                        <div class="form-group">
+                                                            <select class="select2" name="tipo_tratamiento_previo">
+                                                                <option <?php echo ($paciente['tipo_tratamiento_previo']=="") ? "selected": '';?> value="">Selecciona</option>
+                                                                <option <?php echo ($paciente['tipo_tratamiento_previo']=="Temporal") ? "selected": '';?> value="Temporal">Temporal</option>
+                                                                <option <?php echo ($paciente['tipo_tratamiento_previo']=="Permanente") ? "selected": '';?> value="Permanente">Permanente</option>
+                                                                <option <?php echo ($paciente['tipo_tratamiento_previo']=="Mixta") ? "selected": '';?> value="Mixta">Mixta</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-sm-5">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">Aplicacion de Floruro</label>
+                                                            <label class="col-md-12 control-label">Aplicacion de Floururo</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-7">
                                                         <div class="form-group">
                                                             <select class="select2" name="aplicacion_floruro">
-                                                                <option <?php echo ($persona['aplicacion_floruro']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['aplicacion_floruro']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['aplicacion_floruro']=="No") ? "selected": '';?> value="No">No</option>
+                                                                <option <?php echo ($paciente['aplicacion_floruro']=="") ? "selected": '';?> value="">Selecciona</option>
+                                                                <option <?php echo ($paciente['aplicacion_floruro']=="Si") ? "selected": '';?> value="Si">Si</option>
+                                                                <option <?php echo ($paciente['aplicacion_floruro']=="No") ? "selected": '';?> value="No">No</option>
                                                             </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="jarviswidget" id="wid-id-habitat" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="true">
-                                        <header> <h2>Habitat (Condiciones de Vivienda)</h2></header>
-                                        <div>
-                                            <div class="jarviswidget-editbox"></div>
-                                            <div class="widget-body">
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Tipo Construccion" name="tipo_construccion" id="tipo_construccion"  value="<?php echo $persona['tipo_construccion']; ?>">                                                                                               
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Num. Habitaciones" name="num_habitaciones" id="num_habitaciones"  value="<?php echo $persona['num_habitaciones']; ?>">                                                                                               
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Num. Personas" name="num_personas" id="num_personas"  value="<?php echo $persona['num_personas']; ?>">                                                                                               
-                                                        </div>
-                                                    </div>                                                   
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-5">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">Servicios</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-7">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="servicios">
-                                                                <option <?php echo ($persona['servicios']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['servicios']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['servicios']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">Cuenta con animales</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-5">
-                                                        <div class="form-group">
-                                                            <select class="select2" name="animales">
-                                                                <option <?php echo ($persona['animales']=="") ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php echo ($persona['animales']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php echo ($persona['animales']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Tipo" name="especie_animales" id="especie_animales"  value="<?php echo $persona['especie_animales']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                 </div>
@@ -666,27 +522,30 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                         <div>
                                             <div class="jarviswidget-editbox"></div>
                                             <div class="widget-body">
-                                                
                                                 <label >Signos Vitales</label>
                                                 <div class="row">
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Pulso xmin." name="pulso_signos" id="pulso_signos"  value="<?php echo $persona['pulso_signos']; ?>">                                                                                               
+                                                            <label>Pulso xmin.</label>
+                                                            <input type="text" class="form-control" placeholder="Pulso xmin." name="pulso_signos" id="pulso_signos"  value="<?php echo $paciente['pulso_signos']; ?>">                                                                                               
                                                         </div> 
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="T.A mm/Hg" name="ta_signos" id="ta_signos" value="<?php echo $persona['ta_signos']; ?>">                                                                                               
+                                                            <label>T.A mm/Hg</label>
+                                                            <input type="text" class="form-control" placeholder="T.A mm/Hg" name="ta_signos" id="ta_signos" value="<?php echo $paciente['ta_signos']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="F.C. xmin." name="fc_signos" id="fc_signos" value="<?php echo $persona['fc_signos']; ?>">                                                                                               
+                                                            <label>F.C. xmin.</label>
+                                                            <input type="text" class="form-control" placeholder="F.C. xmin." name="fc_signos" id="fc_signos" value="<?php echo $paciente['fc_signos']; ?>">                                                                                               
                                                         </div> 
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="T. C." name="t_signos" id="t_signos" value="<?php echo $persona['t_signos']; ?>">                                                                                               
+                                                            <label>F. C.</label>
+                                                            <input type="text" class="form-control" placeholder="F. C." name="t_signos" id="t_signos" value="<?php echo $paciente['t_signos']; ?>">                                                                                               
                                                         </div> 
                                                     </div>
                                                 </div>
@@ -695,12 +554,14 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                 <div class="row">
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Peso kg." name="peso_soma" id="peso_soma" value="<?php echo $persona['peso_soma']; ?>">                                                                                               
+                                                            <label>Peso kg.</label>
+                                                            <input type="text" class="form-control" placeholder="Peso kg." name="peso_soma" id="peso_soma" value="<?php echo $paciente['peso_soma']; ?>">                                                                                               
                                                         </div> 
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Talla m." name="talla_soma" id="talla_soma" value="<?php echo $persona['talla_soma']; ?>">                                                                                               
+                                                            <label>Talla m.</label>
+                                                            <input type="text" class="form-control" placeholder="Talla m." name="talla_soma" id="talla_soma" value="<?php echo $paciente['talla_soma']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                     
@@ -716,182 +577,191 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                             <div class="jarviswidget-editbox"></div>
                                             <div class="widget-body">
                                                 <div class="row">
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">Nacimiento</label>
+                                                            <label class="col-md-12 control-label">Inmunizaciones</label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <select class="select2"  name="inm_nacimiento">
-                                                                <option <?php  echo ($persona['inm_nacimiento']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_nacimiento']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_nacimiento']=="No") ? "selected": '';?> value="No">No</option>
+                                                                <option <?php echo ($paciente['inm_nacimiento']=="")   ? "selected": '';?> value="">Selecciona</option>
+                                                                <option <?php echo ($paciente['inm_nacimiento']=="Completa") ? "selected": '';?> value="Completa">Completa</option>
+                                                                <option <?php echo ($paciente['inm_nacimiento']=="Incompleta") ? "selected": '';?> value="Incompleta">Incompleta</option>
                                                             </select>
                                                         </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_nacimientodet" value="<?php  echo $persona['inm_nacimientodet'];?>">                                                                                               
+                                                            <input type="text" class="form-control" placeholder="Por que" name="inm_nacimientodet" value="<?php echo $paciente['inm_nacimientodet'];?>">                                                                                               
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="jarviswidget" id="wid-id-higiene" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="true">
+                                        <header> <h2>Antecedentes Patologicos</h2></header>
+                                        <div>
+                                            <div class="jarviswidget-editbox"></div>
+                                            <div class="widget-body">
+                                                <div class="">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label >Efermedades padecidas en los ultimos años y tratamiento</label> 
+                                                            <input type="text" class="form-control" placeholder="Efermedades padecidas" name="pat_enfermedades" id="pat_enfermedades"  value="<?php echo $paciente['pat_enfermedades']; ?>">                                                                                               
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label >Esta actualente bajo algun tratamiento medico</label> 
+                                                            <input type="text" class="form-control" placeholder="Tratamiento medico" name="pat_tratamiento" id="pat_tratamiento"  value="<?php echo $paciente['pat_tratamiento']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">2 meses</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <div class="form-group">
-                                                            <select class="select2"  name="inm_dosmeses">
-                                                                <option <?php  echo ($persona['inm_nacimiento']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_nacimiento']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_nacimiento']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
+                                                            <label>Peso.</label>
+                                                            <input type="text" class="form-control" placeholder="Peso" name="pat_peso" id="pat_peso"  value="<?php echo $paciente['pat_peso']; ?>">                                                                                               
                                                         </div> 
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_dosmesesdet" value="<?php  echo $persona['inm_dosmesesdet'];?>">                                                                                               
-                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">4 meses</label>
+                                                            <label>Talla</label>
+                                                            <input type="text" class="form-control" placeholder="Talla" name="pat_talla" id="pat_talla" value="<?php echo $paciente['pat_talla']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <select class="select2"  name="inm_cuatromeses">
-                                                                <option <?php  echo ($persona['inm_cuatromeses']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_cuatromeses']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_cuatromeses']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
+                                                            <label>Grupo Sanguineo</label>
+                                                            <input type="text" class="form-control" placeholder="Grupo Sanguineo" name="pat_gruposanguineo" id="pat_gruposanguineo" value="<?php echo $paciente['pat_gruposanguineo']; ?>">                                                                                               
+                                                        </div> 
+                                                    </div>
+                                                    <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_cuatromesesdet" value="<?php  echo $persona['inm_cuatromesesdet'];?>">                                                                                               
+                                                            <label>R.H.</label>
+                                                            <input type="text" class="form-control" placeholder="R.H." name="pat_rh" id="pat_rh" value="<?php echo $paciente['pat_rh']; ?>">                                                                                               
+                                                        </div> 
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label >Hospitalizaciones(Causas)</label> 
+                                                                <input type="text" class="form-control" placeholder="Hospitalizaciones" name="pat_hospital" id="pat_hospital"  value="<?php echo $paciente['pat_hospital']; ?>">                                                                                               
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label >Intervenciones quirurgicas</label> 
+                                                                <input type="text" class="form-control" placeholder="Intervenciones" name="pat_intervenciones" id="pat_intervenciones"  value="<?php echo $paciente['pat_intervenciones']; ?>">                                                                                               
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label >Transfuciones</label> 
+                                                                <input type="text" class="form-control" placeholder="Transfuciones" name="pat_transfuciones" id="pat_transfuciones"  value="<?php echo $paciente['pat_transfuciones']; ?>">                                                                                               
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">6 meses</label>
-                                                        </div>
+                                                            <label>Problemas de coagulacion</label>
+                                                            <input type="text" class="form-control" placeholder="Coagulacion" name="pat_coagulacion" id="pat_coagulacion" value="<?php echo $paciente['pat_coagulacion']; ?>">                                                                                               
+                                                        </div> 
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <select class="select2"  name="inm_seismeses">
-                                                                <option <?php  echo ($persona['inm_seismeses']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_seismeses']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_seismeses']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_seismesesdet" value="<?php  echo $persona['inm_seismesesdet'];?>">                                                                                               
+                                                            <label>Problemas respiratorios</label>
+                                                            <input type="text" class="form-control" placeholder="Problemas respiratorios" name="pat_respiratorios" id="pat_respiratorios" value="<?php echo $paciente['pat_respiratorios']; ?>">                                                                                               
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
+                                               
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">7 meses</label>
-                                                        </div>
+                                                            <label>Traumatismos o Fx del complejo Craneofacial</label>
+                                                            <input type="text" class="form-control" placeholder="Traumatismos" name="pat_traumatismos" id="pat_traumatismos" value="<?php echo $paciente['pat_traumatismos']; ?>">                                                                                               
+                                                        </div> 
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
-                                                            <select class="select2"  name="inm_sietemeses">
-                                                                <option <?php  echo ($persona['inm_sietemeses']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_sietemeses']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_sietemeses']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_sietemesesdet" value="<?php  echo $persona['inm_sietemesesdet'];?>">                                                                                               
+                                                            <label>Alergias</label>
+                                                            <input type="text" class="form-control" placeholder="Alergias" name="alergias" id="alergias" value="<?php echo $paciente['alergias']; ?>">                                                                                               
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">12 meses</label>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label>Enfermedades sistemicas (hereditarias,congenitas,infectocontagiosas,VIH etc.)</label>
+                                                                <input type="text" class="form-control" placeholder="Enfermedades sistemicas" name="pat_sistemicas" id="pat_sistemicas" value="<?php echo $paciente['pat_sistemicas']; ?>">                                                                                               
+                                                            </div> 
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label>Consume tabaco drogas o alcohol?</label>
+                                                                <input type="text" class="form-control" placeholder="Consume tabaco drogas o alcohol?" name="pat_consumos" id="pat_consumos" value="<?php echo $paciente['pat_consumos']; ?>">                                                                                               
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
-                                                        <div class="form-group">
-                                                            <select class="select2"  name="inm_docemeses">
-                                                                <option <?php  echo ($persona['inm_docemeses']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_docemeses']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_docemeses']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <label><strong>Mujeres</strong></label>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_docemesesdet" value="<?php  echo $persona['inm_docemesesdet'];?>">                                                                                               
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <label>Menarca</label>
+                                                                <input type="text" class="form-control" placeholder="Menarca" name="pat_menarca" id="pat_menarca" value="<?php echo $paciente['pat_menarca']; ?>">                                                                                               
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">18 meses</label>
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <label>Edad</label>
+                                                                <input type="text" class="form-control" placeholder="Edad" name="pat_edad" id="pat_edad" value="<?php echo $paciente['pat_edad']; ?>">                                                                                               
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <div class="form-group">
-                                                            <select class="select2"  name="inm_dieciochoemeses">
-                                                                <option <?php  echo ($persona['inm_dieciochoemeses']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_dieciochoemeses']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_dieciochoemeses']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
+                                                        
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <label>FUM</label>
+                                                                <input type="text" class="form-control" placeholder="FUM" name="pat_fum" id="pat_fum" value="<?php echo $paciente['pat_fum']; ?>">                                                                                               
+                                                            </div>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_dieciochoemesesdet" value="<?php  echo $persona['inm_dieciochoemesesdet'];?>">                                                                                               
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <div class="form-group">
-                                                            <label class="col-md-12 control-label">4 Años</label>
+                                                        
+                                                        <div class="col-sm-3">
+                                                            <div class="form-group">
+                                                                <label>FUP</label>
+                                                                <input type="text" class="form-control" placeholder="FUP" name="pat_fup" id="pat_fup" value="<?php echo $paciente['pat_fup']; ?>">                                                                                               
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <select class="select2"  name="inm_cuatroanios">
-                                                                <option <?php  echo ($persona['inm_cuatroanios']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_cuatroanios']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_cuatroanios']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_cuatroaniosdet" value="<?php  echo $persona['inm_cuatroaniosdet'];?>">                                                                                               
+                                                            <label>Embarazos</label>
+                                                            <input type="text" class="form-control" placeholder="Embarazos" name="pat_embarazos" id="pat_embarazos" value="<?php echo $paciente['pat_embarazos']; ?>">                                                                                               
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">7 Años</label>
+                                                            <label>Hijos</label>
+                                                            <input type="text" class="form-control" placeholder="Hijos" name="pat_hijos" id="pat_hijos" value="<?php echo $paciente['pat_hijos']; ?>">                                                                                               
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <select class="select2"  name="inm_sieteanios">
-                                                                <option <?php  echo ($persona['inm_sieteanios']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_sieteanios']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_sieteanios']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_sieteaniosdet" value="<?php  echo $persona['inm_sieteaniosdet'];?>">                                                                                               
+                                                            <label>Abortos</label>
+                                                            <input type="text" class="form-control" placeholder="Abortos" name="pat_abortos" id="pat_abortos" value="<?php echo $paciente['pat_abortos']; ?>">                                                                                               
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label class="col-md-12 control-label">11 Años</label>
+                                                            <label>Esta tomando algun anticonceptivo</label>
+                                                            <input type="text" class="form-control" placeholder="Anticonceptivo" name="pat_anticonceptivo" id="pat_anticonceptivo" value="<?php echo $paciente['pat_anticonceptivo']; ?>">                                                                                               
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-3">
+                                                    <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <select class="select2"  name="inm_onceanios">
-                                                                <option <?php  echo ($persona['inm_onceanios']=="")   ? "selected": '';?> value="">Selecciona</option>
-                                                                <option <?php  echo ($persona['inm_onceanios']=="Si") ? "selected": '';?> value="Si">Si</option>
-                                                                <option <?php  echo ($persona['inm_onceanios']=="No") ? "selected": '';?> value="No">No</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" placeholder="Detalles" name="inm_onceaniosdet" value="<?php  echo $persona['inm_onceaniosdet'];?>">                                                                                               
+                                                            <label>Embarazada actuamente? meses?</label>
+                                                            <input type="text" class="form-control" placeholder="Meses de gestacion" name="pat_gestacion" id="pat_gestacion" value="<?php echo $paciente['pat_gestacion']; ?>">                                                                                               
                                                         </div>
                                                     </div>
                                                 </div>
@@ -902,10 +772,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                             </fieldset> 
                         </article>
                     <?php } ?>
-                    <header>
-                            <h2><i class="fa fa-tooth"></i>&nbsp;<?php echo $page_title. ' '.$seguimiento.$motivo ?></h2>
-                    </header>
-                    <fieldset>
+                    
                         <article class="col-sm-12 col-md-12 col-lg-12 article-diagnostico">
                             <div class="jarviswidget  jarviswidget-sortable jarviswidget-collapsed" id="wid-diagnostico" 
                             data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-editbutton="false"  data-widget-fullscreenbutton="false" data-widget-collapsed="false" >
@@ -921,9 +788,9 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                             <div class="col-sm-12 col-md-12 col-lg-12" id='cont_referencias' style='display:'>
                                                 <h2><strong>Diagnostico</strong></h2>
                                                 <?php
-                                                    if($persona['id_historial']){
+                                                    if($paciente['id_historial']){
                                                         $objhistdiag     = new HistorialDiagnostico();
-                                                        $datadiagnostico = $objhistdiag->getAllArr($persona['id_historial']);
+                                                        $datadiagnostico = $objhistdiag->getAllArr($paciente['id_historial']);
                                                         foreach($datadiagnostico as $row) {
                                                             if ($row['status'] == 'deleted')  continue;
                                                             $referencias = $row['referencias_json'];
@@ -933,6 +800,22 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                         } 
                                                     }
                                                 ?>   
+                                                <div class="form-group">
+                                                    <label id='medico'>Medico *</label>
+                                                    <select style="width:100%" class="select2"  required name="id_personal" id="id_personal">
+                                                        <option value="" selected disabled>Selecciona Medico</option>
+                                                        <?php 
+                                                        $obj = new Personal();
+                                                        $list=$obj->getAllArr(2); // medicos
+                                                        if (is_array($list) || is_object($list)){
+                                                            foreach($list as $val){
+                                                                $selected = ($id_personal == $val['id']) ? "selected" : "";
+                                                                echo "<option $selected value='".$val['id']."'>".htmlentities($val['nombre'].' '.$val['apellido_pat']." ".$val['apellido_mat'])."</option>";
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
                                                 <table style='width:100%' class='table-striped table-bordered table-hover'>
                                                     <thead>    
                                                         <tr>
@@ -950,6 +833,14 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                             <td style="width:13%"><input type="radio" color="azul" class="referencia" name="referencia_opt[]" value="Pr"></td>
                                                             <td style="width:20%">F:en rojo fluorosis</td>
                                                             <td style="width:13%"><input type="radio" color="rojo" class="referencia" name="referencia_opt[]" value="F"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="width:20%">A: en azul Ausente</td>
+                                                            <td style="width:13%"><input type="radio" color="blanco" class="referencia" name="referencia_opt[]" value="A"></td>
+                                                            <td style="width:20%">Inc: en azul incrustacion</td>
+                                                            <td style="width:13%"><input type="radio" color="azul" class="referencia" name="referencia_opt[]" value="Inc"></td>
+                                                            <td style="width:20%">Imp: en azul implante dental</td>
+                                                            <td style="width:13%"><input type="radio" color="blanco" class="referencia" name="referencia_opt[]" value="Imp"></td>
                                                         </tr>
                                                         <tr>
                                                             <td style="width:20%">X: en rojo Exodoncia</td>
@@ -1006,7 +897,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                         <td id="contdiente<?php echo $numdiente;?>">        
                                                                             <strong><?php echo $numdiente;?></strong><br>
-                                                                            <img style="width:50px;height:50px" class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                            <img style="width:50px;height:50px" class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                         
                                                                             <map name="image-map<?php echo $numdiente;?>">
                                                                                 <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1028,7 +919,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                         <td id="contdiente<?php echo $numdiente;?>">     
                                                                             <strong><?php echo $numdiente;?></strong><br>
-                                                                            <img class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                            <img class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                         
                                                                             <map name="image-map<?php echo $numdiente;?>">
                                                                                 <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1050,7 +941,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                         <td id="contdiente<?php echo $numdiente;?>">     
                                                                             <strong><?php echo $numdiente;?></strong><br>
-                                                                            <img class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                            <img class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                         
                                                                             <map name="image-map<?php echo $numdiente;?>">
                                                                                 <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1071,7 +962,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                         <td id="contdiente<?php echo $numdiente;?>">        
                                                                             <strong><?php echo $numdiente;?></strong><br>
-                                                                            <img class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                            <img class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                         
                                                                             <map name="image-map<?php echo $numdiente;?>">
                                                                                 <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1098,7 +989,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                         <td id="contdiente<?php echo $numdiente;?>">        
                                                                             <strong><?php echo $numdiente;?></strong><br>
-                                                                            <img class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                            <img class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                         
                                                                             <map name="image-map<?php echo $numdiente;?>">
                                                                                 <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1119,7 +1010,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                         <td id="contdiente<?php echo $numdiente;?>">     
                                                                             <strong><?php echo $numdiente;?></strong><br>
-                                                                            <img class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                            <img class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                         
                                                                             <map name="image-map<?php echo $numdiente;?>">
                                                                                 <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1141,7 +1032,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                         <td id="contdiente<?php echo $numdiente;?>">     
                                                                             <strong><?php echo $numdiente;?></strong><br>
-                                                                            <img class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                            <img class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                         
                                                                             <map name="image-map<?php echo $numdiente;?>">
                                                                                 <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1163,7 +1054,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         ?>
                                                                     <td id="contdiente<?php echo $numdiente;?>">        
                                                                         <strong><?php echo $numdiente;?></strong><br>
-                                                                        <img class='imagendiente' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
+                                                                        <img class='imagendiente imagen_parte<?php echo $numdiente;?>' id='imagen_parte<?php echo $numdiente;?>' src="<?php echo ASSETS_URL; ?>/img/parte.png"  alt="Diente" usemap="#image-map<?php echo $numdiente;?>">
                                                                     
                                                                         <map name="image-map<?php echo $numdiente;?>">
                                                                             <area class='diente' alt="Distal"  title="Distal"  diente<?php echo $numdiente;?> diente="<?php echo $numdiente;?>" href="" coords="9,40,19,30,17,23,18,17,9,9,4,15,2,26,4,33" shape="poly">
@@ -1240,7 +1131,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                         <div class="col-sm-12 col-md-12 col-lg-12" style="text-align:right">
                                             <div class="col-sm-11 col-md-11 col-lg-11" style="text-align:right">
                                                 <h3 class="total">Total: $<span id="total-global"></span><br> 
-                                                <?php if($persona['id_historial']){ ?>
+                                                <?php if($paciente['id_historial']){ ?>
                                                     Pagos: $<span id="total-pagos"></span><br> 
                                                     Adeudo: $<span id="total-deudatxt"></span>
                                                 <?php } ?>
@@ -1256,7 +1147,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                 <thead>    
                                                     <tr>
                                                         <th style="width: 7%;">Cant.</th>
-                                                        <th style="width: 20%">Dientes</th>
+                                                        <th style="width: 15%">Dientes</th>
                                                         <th style="width: 20%;">Tratamientos</th>
                                                         <th style="width: 8%">Precio</th>
                                                         <th style="width: 8%">Total</th>
@@ -1267,9 +1158,9 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        if($persona['id_historial']){
+                                                        if($paciente['id_historial']){
                                                             $objhistdiag     = new HistorialTratamiento();
-                                                            $dataTratamiento = $objhistdiag->getAllArr($persona['id_historial']);
+                                                            $dataTratamiento = $objhistdiag->getAllArr($paciente['id_historial']);
                                                             foreach($dataTratamiento as $row) {
                                                                 $status = htmlentities($row['status']);
                                                                 $fecharealizado = ($status!='active') ? $row['fecha_realizado'] : '';
@@ -1281,7 +1172,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                         <input type='number' <?php echo ($row['producto']==1) ? 'readonly':'' ?> style='width: 50px;' class="form-control cantidad" name='cantidad[]'  lineid='<?php echo $lineId ?>' id='cantidad<?php echo $lineId ?>' value="<?php echo  $row['cantidad']?>">
                                                                     </td>
                                                                     <td style="text-align: center;">
-                                                                        <textarea type='text' style='width: 150px; height: 50px;' placeholder="Detalles"  name='detalles_tratamiento[]' ><?php echo  $row['detalles']?> </textarea>
+                                                                        <textarea type='text' style='width: 100px; height: 50px;' placeholder="Detalles"  name='detalles_tratamiento[]' ><?php echo  $row['detalles']?> </textarea>
                                                                     </td>
                                                                     <td> 
                                                                         <select style="width:100%" class="select2 id_tratamiento" name="id_tratamiento[]" lineid='<?php echo $lineId ?>'>
@@ -1298,8 +1189,8 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                                             ?>
                                                                         </select>
                                                                     </td>
-                                                                    <td><input type='number' style='width: 70px;' class='form-control costotratamiento' name='precio_tratamiento[]' id="precio_tratamiento<?php echo $lineId ?>" value='<?php echo $row['precio'] ?>' placeholder='00.00'></td>
-                                                                    <td><input type='number' style='width: 70px;' class='form-control totaltratamiento' name='total_tratamiento[]'  id="total_tratamiento<?php echo $lineId ?>" value='<?php echo $row['total'] ?>' placeholder='00.00'></td>
+                                                                    <td><input type='number' style='width: 80px;' class='form-control costotratamiento' name='precio_tratamiento[]' id="precio_tratamiento<?php echo $lineId ?>" value='<?php echo $row['precio'] ?>' placeholder='00.00'></td>
+                                                                    <td><input type='number' style='width: 80px;' class='form-control totaltratamiento' name='total_tratamiento[]'  id="total_tratamiento<?php echo $lineId ?>" value='<?php echo $row['total'] ?>' placeholder='00.00'></td>
                                                                     <td>
                                                                         <div class="cont_status_tratamiento<?php echo $lineId?>" style="<?php echo ($row['producto']==1) ? 'display:none':'' ?>">
                                                                             <input type="text" class="form-control form_datetime" data-dateformat='yy-mm-dd' autocomplete="off" placeholder="Fecha Recomendada" name="fecha_recomendada[]" id="fecha_recomendada<?php echo $lineId ?>" value='<?php echo $row['fecha_recomendada'] ?>'>
@@ -1375,7 +1266,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                             </table>
                                         </div>
                                         <?php
-                                            if($persona['id_historial']){
+                                            if($paciente['id_historial']){
                                                 ?>
                                                 <div class="col-sm-12 col-md-6 col-lg-6" >
                                                     <div class="text-center"><h4><strong>Historial Pagos</strong></h4></div>
@@ -1388,7 +1279,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                                                         </tr>
                                                     <?php
                                                         $objhistpagos     = new HistorialPagos();
-                                                        $datapagos = $objhistpagos->getAllArr($persona['id_historial']);
+                                                        $datapagos = $objhistpagos->getAllArr($paciente['id_historial']);
                                                         foreach($datapagos as $rowpagos) {
                                                             $totalpagado+=$rowpagos['monto'];
                                                             ?>
@@ -1534,7 +1425,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                     $("#total_tratamiento"+lineid).attr('value',precio);
                     calcTotal();
                 }else{
-                    notify('error', 'Error al obtener los datos del persona');
+                    notify('error', 'Error al obtener los datos del paciente');
                     return false;
                 }     
         });
@@ -1579,15 +1470,17 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
         //end descuentos
         validateForm =function(){
             var nombre = $("input[name=nombre]").val();
-            if ( ! nombre )  return notify("info","El nombre es requerido");
+            if ( ! nombre )  return notify("info","El nombre es requerido",false,function(){ $("#nombre").focus() });
             var telefono = $("input[name=telefono]").val();
-            if ( ! telefono )  return notify("info","El telefono es requerido");
-
+            if ( ! telefono )  return notify("info","El telefono es requerido",false,function(){ $("#telefono").focus() });
+            var id_personal = $("#id_personal").val();
+            if ( ! id_personal )  return  notify("info","El medico es requerido",false,function(){ $("#medico").focus() });
+            
             var totaldeuda    = $("#total_deuda").val();
             var pago          = $("#monto").val();
             
             if ( parseFloat(pago) > parseFloat(totaldeuda) ) {
-                        return notify("info","El monto no puede ser mayor a la deuda actual");    
+                        return notify("info","El monto no puede ser mayor a la deuda actual",false,function(){ $("#monto").focus() });    
             }
             $("#main-form").submit(); 
         }
@@ -1610,7 +1503,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                     $("#contdiagnostico").append(response);
                     callback();
                 }else{
-                    return notify('error', 'Error al obtener los datos del persona');
+                    return notify('error', 'Error al obtener los datos del paciente');
                 }     
             }); 
         }
@@ -1623,20 +1516,29 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
             
             if( $("#dienteselect"+diente).length==0){
                 // si no existe el objecto se manda llamar
-               
-                
-                if(referencia=='Co' || referencia == 'PP'){
+                if(referencia=='Co' || referencia == 'PP' || referencia == 'A' || referencia == 'Imp'){
+                    var status=true;
+                    if(referencia == 'A' || referencia == 'Imp'){
+                        $("#imagen_parte"+diente).attr('src','<?php echo ASSETS_URL; ?>/img/parteverde.png');
+                        $(".imagen_parte"+diente).attr('src','<?php echo ASSETS_URL; ?>/img/parteverde.png');
+                        status=false;
+                    }else{
+                        $("#imagen_parte"+diente).attr('src','<?php echo ASSETS_URL; ?>/img/parte.png');
+                        $(".imagen_parte"+diente).attr('src','<?php echo ASSETS_URL; ?>/img/parte.png');
+                    }
                     //se pinta todo el diente
                     get_diagnostico(diente,function(){   
                         $("[diente"+diente+"]").each(function(){
                             var parte = $(this).attr("title");
-                            $(this).mapster('set',true);   
+                            $(this).mapster('set',status);   
                             item = []
                             item = {diente:diente,parte:parte,referencia:referencia};
                             jsonObj.push(item);              
                         });
                         mostrar_referencias(diente);
                     });
+                   
+                   
                 }else{
                     get_diagnostico(diente,function(){
                         item = []
@@ -1679,6 +1581,9 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
             
             $("#nom_referencia").attr("color",$(this).attr("color"));
             switch ($("#nom_referencia").attr("color")) {
+                case 'blanco':
+                    color = 'FFFFFF';
+                    break;
                 case 'azul':
                     color = '1000ff';
                     break;
@@ -1867,7 +1772,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                     $("#cont-tratamiento").append(response);
                     $(".select2-trat").select2();
                 }else{
-                    notify('error', 'Error al obtener los datos del persona');
+                    notify('error', 'Error al obtener los datos del paciente');
                     return false;
                 }     
             });
@@ -1913,11 +1818,10 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
                 var DiaHoy = (DiaHoy < 10) ? '0' + DiaHoy : DiaHoy;
                 var id = $(this).val();
                 var lineid = $(this).attr('lineid'); 
-                
                 $("#fecha_realizado"+lineid).val('');
                 if( $(this).val() != 'active' ){
                     $("#fecha_realizado"+lineid).attr("type","text");
-                    $("#fecha_realizado"+lineid).val(AnyoHoy+'-'+MesHoy+'-'+DiaHoy+' '+(Hoy.getUTCHours()-5)+':'+Hoy.getMinutes());
+                    $("#fecha_realizado"+lineid).val(AnyoHoy+'-'+MesHoy+'-'+DiaHoy+' '+(Hoy.getHours())+':'+Hoy.getMinutes());
                 }
                 if( $(this).val() == 'Realizado' ){
                     $("#fecha_recomendada"+lineid).val("");
@@ -1927,7 +1831,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
         });
        
         <?php 
-        if($persona['id_historial']>0){
+        if($paciente['id_historial']>0){
             ?>
             get_seguimiento();
             calcTotal();
@@ -1939,7 +1843,7 @@ $nombrepersona = ($persona) ? $persona['nombre'].' '.$persona['ap_paterno'].' '.
         }
         ?>
         
-    //datetime
+        //datetime
         $('.form_datetime').datetimepicker({
             format: "yyyy-mm-dd hh:ii",
             language:  'es',

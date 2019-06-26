@@ -10,12 +10,12 @@ class Cita extends AutoCita {
 	public function getAllArr($arrayfilters=false)
 	{
 		$fecha        = (isset($arrayfilters['fecha_inicial'])) ? " AND DATE(fecha_inicial)>='".$arrayfilters['fecha_inicial']."' and DATE(fecha_final)<='".$arrayfilters['fecha_inicial']." 23:59:00'" : '';
-		$id_cliente  = (isset($arrayfilters['id_cliente']) && $arrayfilters['id_cliente']>0) ? " AND id_persona='".$arrayfilters['id_cliente']."'" : '';
+		$id_persona   = (isset($arrayfilters['id_persona']) && $arrayfilters['id_persona']>0) ? " AND id_persona='".$arrayfilters['id_persona']."'" : '';
 		$status		  = (isset($arrayfilters['status']) ) ? " AND status='".$arrayfilters['status']."'" : '';
 		$sql = "SELECT * FROM cita
 				 where status!='deleted'
 				 $fecha
-				 $id_cliente
+				 $id_persona
 				 $status ;";
 		
 		$res = $this->db->query($sql);
@@ -65,7 +65,7 @@ class Cita extends AutoCita {
 	{
 		
 		$_request["id_tienda"] = $_SESSION['user_info']['id_tienda'];
-		$_request["id_user"] = $_SESSION['user_id'];
+		$_request["id_usuarioalta"] = $_SESSION['user_id'];
 		$data=fromArray($_request,'cita',$this->db,"add");
 		$sql= "INSERT INTO cita (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);

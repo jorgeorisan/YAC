@@ -92,7 +92,7 @@ if($res=$citas->getAllArr()){
 	<!-- MAIN CONTENT -->
 	<div id="content">
 
-		<div class="widget-body" style='padding: 15px;'>
+		<div class="widget-body" style='padding: 15px; overflow:auto;'>
 			<a class="btn btn-success" href="<?php echo make_url("Citas","add")?>" >Nueva Cita</a>
 			<a class="btn btn-info" href="<?php echo make_url("Citas","index")?>" >Calendario Lista</a>
 		</div>
@@ -402,6 +402,36 @@ if($res=$citas->getAllArr()){
                                 location.reload();
                             }else{
                                 swal("Oopss error al agregar cliente"+response);
+                            }
+                        }
+                    });
+                }
+            );
+        
+            return false; // Evitar ejecutar el submit del formulario.
+        });
+		$('body').on('click', '#changestatuscita', function(){
+            swal({
+                title: "Estas seguro?",
+                text: "Deseas marcar como completada esta cita?",
+                type: "info",
+                showCancelButton: true,
+                confirmButtonColor: 'green',
+                confirmButtonText: 'Si, Cambiar!',
+                closeOnConfirm: true
+                },
+                function(){
+                    var id_cita  = $("input[name=id_cita]").val();
+                    var url = config.base+"/Citas/ajax/?action=post&object=changestatuscita"; // El script a dónde se realizará la petición.
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: "id_cita="+id_cita, 
+                        success: function(response){
+                            if(response>0){
+                                location.reload();
+                            }else{
+                                swal("Oopss error al cambiar estatus"+response);
                             }
                         }
                     });

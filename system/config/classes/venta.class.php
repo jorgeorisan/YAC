@@ -145,15 +145,17 @@ class Venta extends AutoVenta {
 	}
 	public function getReporteVentas($arrayfilters)
 	{
-		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
-		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
-		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
-		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$fechaini    = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin    = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario  = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda   = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$id_producto = (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
 		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
 			return false;
 		}
-		$qryusuario = ($id_usuario)  ? " AND v.id_user='$id_usuario' " : "";
-		$qrytienda  = ($id_tienda>0) ? " AND v.id_tienda='$id_tienda' "   : "";
+		$qryusuario  = ($id_usuario)    ? " AND v.id_user    = '$id_usuario' " : "";
+		$qrytienda   = ($id_tienda>0)   ? " AND v.id_tienda  = '$id_tienda' "   : "";
+		$id_producto = ($id_producto>0) ? " AND v.id_producto= '$id_usuario' " : "";
 		$sql = "SELECT v.*,u.id_usuario id_usuario
 						FROM venta v
 						LEFT JOIN usuario u ON u.id=v.id_user
@@ -430,9 +432,12 @@ class Venta extends AutoVenta {
 		return $set;
 	}
 	// ventas por producto
-	public function getReporteVentasProductos($id)
+	public function getReporteVentasProductos($id,$id_producto=false)
 	{
 		if(! intval( $id )) return false;
+
+		$queryprod = ($id_producto>0) ? " AND pt.id_producto=".$id_producto : '';
+
 		
 		$id=$this->db->real_escape_string($id);
 		$sql = "SELECT pv.*,v.id_tienda,u.id_usuario id_usuario,p.codinter,v.tipo,v.icredito,v.folio,v.comentarios,v.fecha
@@ -442,6 +447,7 @@ class Venta extends AutoVenta {
 						LEFT JOIN producto p ON p.id_producto=pt.id_producto
 						LEFT JOIN usuario u ON u.id=v.id_user
 				where  pv.id_venta=$id
+				$queryprod
 			 ";
 		$res = $this->db->query($sql);
 		
@@ -455,151 +461,7 @@ class Venta extends AutoVenta {
 		return $set;
 	}
 
-	//CORRECCION DE BASE DE DATOS
-	// arrreglar descuentos de ventas
-	public function arreglar_Descuentos(){
-		$sql = "SELECT SUM(d.montodesc) as totalventadescuento,d.id_venta id_venta
-			FROM descuentos d 
-			INNER JOIN venta v ON v.id_venta=d.id_venta  
-			GROUP BY d.id_venta ";
-		$res = $this->db->query($sql);
-		$set = array();
-		if(!$res){ die("Error getting result"); }
-		else{
-			while ($row = $res->fetch_assoc()){ 
-				 $request['descuento']=$row['totalventadescuento'];
-				 $id=$row['id_venta'];
-				 $this->updateAll($id,$request);
-			 }
-		}
-		echo "exito arreglar_Descuentos";
-	}
-	// arrreglar VENTAS CANCELADAS
-	public function arreglar_cancelaciones(){
-		$sql = "SELECT id_venta,observaciones,id_usuario,fecha_registro FROM venta_cancelada ";
-		$res = $this->db->query($sql);
-		$set = array();
-		if(!$res){ die("Error getting result"); }
-		else{
-			while ($row = $res->fetch_assoc()){ 
-				$request['cancelado']=1;
-				$request['fecha_cancelacion']=$row['fecha_registro'];
-				$request['razon_cancelacion']=$row['observaciones'];
-				$request['usuario_cancelacion']=$row['id_usuario'];
-				$id=$row['id_venta'];
-				$this->updateAll($id,$request);
-			 }
-		}
-		echo "exito arreglar_cancelaciones";
-	}
-	// arrreglar VENTAS PRODUCTOS CANCELADAS
-	public function arreglar_cancelacionesproductos(){
-		$sql = "SELECT id_productos_venta,observaciones,id_usuario,fecha_registro FROM venta_productocancelado";
-		$res = $this->db->query($sql);
-		$set = array();
-		if(!$res){ die("Error getting result"); }
-		else{
-			while ($row = $res->fetch_assoc()){ 
-				$request['cancelado']=1;
-				$request['fecha_cancelacion']   = $row['fecha_registro'];
-				$request['razon_cancelacion']   = $row['observaciones'];
-				$request['usuario_cancelacion'] = $row['id_usuario'];
-				$id=$row['id_productos_venta'];
-				$PV= new ProductosVenta();
-				$PV->updateAll($id,$request);
-			 }
-		}
-		echo "exito arreglar_cancelacionesproductos";
-	}
-	// arrreglar Precios de Productos
-	public function arreglar_precios(){
-		$sql = "SELECT TODO.id_producto,TODO.codinter,TODO.nombre,TODO.marca,TODO.categoria,
-				TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
-				,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
-				FROM(
-					SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
-						PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
-						,SUM(EXISTENCIAS.existencias) existencias
-						FROM(
-							SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
-							FROM producto p
-							LEFT JOIN marca m on p.id_marca=m.id_marca
-							LEFT JOIN categoria c on p.id_categoria=c.id_categoria
-							LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
-							WHERE p.status='ACTIVO'
-						) AS PRODUCTO LEFT JOIN (
-						SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
-						FROM(
-							SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
-							FROM xqwmrfeeug.entrada_producto
-							WHERE status='ACTIVO'
-							group by id_producto
-						)ULTIMAENTRADA  
-						JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
-						)PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
-						LEFT JOIN(
-							SELECT id_producto, existencias, tienda_id_tienda id_tienda
-							FROM producto_tienda 
-							WHERE tienda_id_tienda!='14'
-							group by id_producto,tienda_id_tienda
-						)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
-						
-						group by 
-						PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
-						PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
-						,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
-				) AS TODO
-				LEFT JOIN (
-					SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
-						PRODUCTO.proveedor,PRODUCTO.paquete	,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
-						,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion
-						FROM(
-							SELECT p.id_producto,codinter,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
-							FROM producto p
-							LEFT JOIN marca m on p.id_marca=m.id_marca
-							LEFT JOIN categoria c on p.id_categoria=c.id_categoria
-							LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
-							WHERE p.status='ACTIVO'
-						) AS PRODUCTO LEFT JOIN (
-						SELECT ep.id_producto,ep.id_entrada_producto,ep.costo,ep.precio,ep.precio_descuento preciomayoreo
-						FROM(
-							SELECT id_producto,max(id_entrada_producto) id_entrada_producto 
-							FROM xqwmrfeeug.entrada_producto
-							WHERE status='ACTIVO'
-							group by id_producto
-						)ULTIMAENTRADA  
-						JOIN entrada_producto ep ON ep.id_entrada_producto=ULTIMAENTRADA.id_entrada_producto
-						)PRECIO ON PRODUCTO.id_producto=PRECIO.id_producto
-						LEFT JOIN(
-							SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,usuario_actualizacion
-							FROM producto_tienda 
-							group by id_producto,tienda_id_tienda
-						)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
-						
-						group by 
-						PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
-						PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
-						,PRECIO.costo,PRECIO.precio,PRECIO.preciomayoreo
-				) TIENDA ON TODO.id_producto=TIENDA.id_producto 
-				
-        ";
-		$res = $this->db->query($sql);
-		$set = array();
-		if(!$res){ die("Error getting result"); }
-		else{
-			while ( $objasas = $res->fetch_object() ) {
-				$PV= new Producto();
-				$request['precio']           = ($objasas->precio) ? $objasas->precio : 0;
-				$request['costo']   	     = ($objasas->costo) ? $objasas->costo :0;
-				$request['precio_descuento'] = ($objasas->preciomayoreo) ?  $objasas->preciomayoreo :0;
-				$PV->updateAll($objasas->id_producto,$request);
-			//	echo $objasas->id_producto."->precio:".$objasas->precio." costo:".$objasas->costo." mayoreo:".$objasas->preciomayoreo."<br>";
-				
-			}
-		   
-		}
-		echo "exito arreglar_precios";
-	}
+	
 
 	
 	

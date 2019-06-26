@@ -31,10 +31,8 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 							$persona  = $personas->getTable($row['id_persona']);
 							$users     = new User();
 							$user      = $users->getTable($row['id_user']);
-							$personal  = new Personal();
-							$persona   = $personal->getTable($row['id_persona']);
+							
 							$nombrepersona  = htmlentities($persona['nombre']." ".$persona['ap_paterno']." ".$persona['ap_materno']." "); 
-							$nombrepersonal  = htmlentities($persona['nombre']." ".$persona['ap_paterno']." ".$persona['ap_materno']." ");
 							$nombreuser      = htmlentities($user['nombre']." ".$user['ap_paterno']." ".$user['ap_materno']." ");
 							switch ($row['status']) {
 								case 'active':	   $status = 'Pendiente';  $class = "bg-color-blue"; 	   $icon = "fa-clock-o"; break;
@@ -87,13 +85,13 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					}
 					break;
 				case 'getcitasproximas':
-					if( isset($_GET["fecha_inicial"]) || isset($_GET["id_cliente"])){
+					if( isset($_GET["fecha_inicial"]) || isset($_GET["id_persona"])){
 						$objcita = new Cita();
 						$fecha_inicial  = ( isset($_GET['fecha_inicial']) ) ?  date('Y-m-d',strtotime($_GET['fecha_inicial'])) : date('Y-m-d'); 
-						$id_cliente    = ( isset($_GET['id_cliente']) )   ? $_GET['id_cliente'] : ''; 
+						$id_persona    = ( isset($_GET['id_persona']) )   ? $_GET['id_persona'] : ''; 
 						
 						$arrayfilters['fecha_inicial'] = $fecha_inicial;
-						$arrayfilters['id_persona']   = $id_persona;
+						$arrayfilters['id_persona']    = $id_persona;
 						$arrayfilters['status']   	   = 'active';
 						$data = $objcita->getAllArr($arrayfilters);
 						include(SYSTEM_DIR.'/pages/Citas/Citas_getcitasproximas.php' );
@@ -228,7 +226,19 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 					}
 					break;
-				
+				case 'changestatuscita':
+					$obj = new Cita();
+					if(isPost()){
+						$id_cita = (intval($_POST['id_cita'])) ? $_POST['id_cita'] : die();
+						$requestCita['status']='Completada';
+						$id=$obj->updateAll($id_cita,$requestCita);
+						if($id){
+							echo $id_cita;
+						}else{
+							echo 0;
+						}
+					}
+					break;
 				default:
 					# code...
 					break;

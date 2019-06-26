@@ -22,10 +22,11 @@ $idusuario = '';
 $arrayfilters=[];
 
 $obj = new Venta();
-$begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
-$end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
-$idusuario = (isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
-$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $_SESSION['user_info']['id_tienda'];
+$begin        = ( isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
+$end          = ( isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
+$idusuario    = ( isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
+$idtienda     = ( isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $_SESSION['user_info']['id_tienda'];
+$codeproducto = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ? $arrayfilters['id_producto'] = $_POST['id_producto'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -108,17 +109,21 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 														?>
 													</select>
 												</div>
+												
+											</div>
+											<div class="col-xs-12">
 												<div class="form-group">
 													<label for="name">Producto<?php echo $idusuario;?></label>
 													<select style="width:100%" class="select2" name="id_producto" id="id_producto">
 														<option value="">Selecciona</option>
 														<?php 
 														$obj = new Producto();
-														$list=$obj->getAllArr();
+														$arrayfilters['todo'] = true;
+														$list=$obj->getAllArr($arrayfilters);
 														if (is_array($list) || is_object($list)){
 															foreach($list as $val){
-																$selected =  ($codeproducto == $val['codinter'] ) ? "selected" : '';
-																echo "<option ".$selected ." value='".$val['codinter']."'>".htmlentities($val['codinter']).'|'.htmlentities($val['nombre'])."</option>";
+																$selected =  ($codeproducto == $val['id_producto'] ) ? "selected" : '';
+																echo "<option ".$selected ." value='".$val['id_producto']."'>".htmlentities($val['codinter']).'|'.htmlentities($val['nombre'])."</option>";
 															}
 														}
 														?>
@@ -199,106 +204,107 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 															$totalporpagar += $porpagar = $rowventa['total']-$totalpagado;
 												}
 												$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"]);
-												foreach($dataventasproductos as $row) {
-													$tienda = new Tienda();
-													$datatienda = $tienda->getTable($row["id_tienda"]);
-													if($datatienda) $nomtienda = $datatienda["nombre"]; 
-													$id_venta=$row["id_venta"];
-													$idventaanterior=$row["id_venta"];
-												
-													$venta = new Venta();
-													$dataventa = $venta->getTable($row["id_venta"]);
+												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
+												if($dataventasproductos){
+													foreach($dataventasproductos as $row) {
+														$tienda = new Tienda();
+														$datatienda = $tienda->getTable($row["id_tienda"]);
+														if($datatienda) $nomtienda = $datatienda["nombre"]; 
+														$id_venta=$row["id_venta"];
+														$idventaanterior=$row["id_venta"];
 													
-													$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
-													$totalxproducto = 0;
-													if (!$row['cancelado']) {
-														//calculamos el descuento por producto
-														$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
-														$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
-														$totalgeneral   += $row['total'];
-														$totalrecargas  += ($row['nombre']=='RECARGA')   ? $row['total'] : 0;
-														$totalexcedente += ($row['nombre']=='EXCEDENTE') ? $row['total'] : 0;
-													}
-													?>
-													<tr <?php echo $class;?>>
-														<td>
-															<a class="" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>">
-																<?php echo htmlentities($row['folio'])?>
-															</a>
-														</td>
-														<td><?php echo htmlentities($row['cantidad'])?></td>
-														<td><?php echo htmlentities($row['codinter']).'<br>'.htmlentities($row['nombre'])?></td>
-														<td>$<?php echo number_format($totalxproducto,2)?></td>
-														<td>$<?php echo number_format($row['total'], 2); ?></td>
-														<td>
-															<?php echo htmlentities($row['tipo'])."<br>";
-															if($row['icredito']){
-																echo "<span style='color:red'>En pago</span>";
-															}
-															?>
-														</td>
-														<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
-														<td><?php echo htmlentities($nomtienda) ?></td>
-														<td><?php echo htmlentities($row['tipoprecio'])?></td>
-														<td><?php echo htmlentities($row['fecha']) ?></td>
-														<td>
-															<div class="btn-group">
-																<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-																	Accion <span class="caret"></span>
-																</button>
-																<ul class="dropdown-menu">
-																	<li>
-																		<a title="Ver Venta" class=""  href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
-																	</li>
-																	<li>
-																		<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta')); ?>">Imprimir</a>
-																	</li>
-																	<?php 
-																	if (!$row['cancelado']){ ?> 
-																		<?php if($row['icredito']){ ?>
-																			<li>
-																				<a data-toggle="modal" style="color:cornflowerblue" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
-																			</li>
-																		<?php } ?>
-																		<li class="divider"></li>
+														$venta = new Venta();
+														$dataventa = $venta->getTable($row["id_venta"]);
+														
+														$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
+														$totalxproducto = 0;
+														if (!$row['cancelado']) {
+															//calculamos el descuento por producto
+															$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
+															$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
+															$totalgeneral   += $row['total'];
+															$totalrecargas  += ($row['nombre']=='RECARGA')   ? $row['total'] : 0;
+															$totalexcedente += ($row['nombre']=='EXCEDENTE') ? $row['total'] : 0;
+														}
+														?>
+														<tr <?php echo $class;?>>
+															<td>
+																<a class="" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>">
+																	<?php echo htmlentities($row['folio'])?>
+																</a>
+															</td>
+															<td><?php echo htmlentities($row['cantidad'])?></td>
+															<td><?php echo htmlentities($row['codinter']).'<br>'.htmlentities($row['nombre'])?></td>
+															<td>$<?php echo number_format($totalxproducto,2)?></td>
+															<td>$<?php echo number_format($row['total'], 2); ?></td>
+															<td>
+																<?php echo htmlentities($row['tipo'])."<br>";
+																if($row['icredito']){
+																	echo "<span style='color:red'>En pago</span>";
+																}
+																?>
+															</td>
+															<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
+															<td><?php echo htmlentities($nomtienda) ?></td>
+															<td><?php echo htmlentities($row['tipoprecio'])?></td>
+															<td><?php echo htmlentities($row['fecha']) ?></td>
+															<td>
+																<div class="btn-group">
+																	<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+																		Accion <span class="caret"></span>
+																	</button>
+																	<ul class="dropdown-menu">
 																		<li>
-																			<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
+																			<a title="Ver Venta" class=""  href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
 																		</li>
-																	<?php 
-																	} ?>
-																</ul>
-															</div>
-														</td>
-													</tr>
-													<?php
+																		<li>
+																			<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta')); ?>">Imprimir</a>
+																		</li>
+																		<?php 
+																		if (!$row['cancelado']){ ?> 
+																			<?php if($row['icredito']){ ?>
+																				<li>
+																					<a data-toggle="modal" style="color:cornflowerblue" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
+																				</li>
+																			<?php } ?>
+																			<li class="divider"></li>
+																			<li>
+																				<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
+																			</li>
+																		<?php 
+																		} ?>
+																	</ul>
+																</div>
+															</td>
+														</tr>
+														<?php
+													}
+													if($rowventa["descuento"] || $porpagar){
+														?>
+														<tr <?php echo $classventa;?>>
+															<td></td>
+															<td></td>
+															<td colspan="2">
+																Descuento folio:<?php echo $rowventa["folio"] ?><br>
+																<?php if($porpagar){
+																	echo "Por Pagar:";
+																} ?>
+															</td>
+															<td>$<?php echo number_format($rowventa["descuento"],2) ?>
+																<?php if($porpagar){
+																	echo "$".number_format($porpagar,2);
+																} ?>
+															</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+														<?php
+													}
 												}
-												if($rowventa["descuento"] || $porpagar){
-													?>
-													<tr <?php echo $classventa;?>>
-														<td></td>
-														<td></td>
-														<td colspan="2">
-															Descuento folio:<?php echo $rowventa["folio"] ?><br>
-															<?php if($porpagar){
-																echo "Por Pagar:";
-															} ?>
-														</td>
-														<td>$<?php echo number_format($rowventa["descuento"],2) ?>
-															<?php if($porpagar){
-																echo "$".number_format($porpagar,2);
-															} ?>
-														</td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
-													</tr>
-													<?php
-												}
-
 											}
 											
 											echo $descuentos;

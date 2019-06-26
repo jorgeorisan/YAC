@@ -163,7 +163,19 @@ $menuSalidas = array(
 		)
 	)
 );
-
+$menuReportes = array(
+	"reportes" => array(
+		"title" => "Reportes",
+		"icon" => "fa-chart-line",
+		//"url" => APP_URL."/solicitudes/index",
+		"sub" => array(
+			"ventas"     => array( "title" => "Venta Por Producto",      "url" => APP_URL."/Reportes/productos" ),
+			"pacientes"     => array( "title" => "Pacientes",      "url" => APP_URL."/Reportes/pacientes" ),
+			"tratamientos"     => array( "title" => "Tratamientos",      "url" => APP_URL."/Reportes/tratamientos" ),
+			"pagos"     => array( "title" => "Pagos",      "url" => APP_URL."/Reportes/pagos" )
+		)
+	)
+);
 $extras = array(
 	"examples" => array(
 		"title" => "SmartAdmin",
@@ -226,9 +238,13 @@ if(isset($_SESSION['user_id'])){
 	if ( $datapermuser ) { 
 	  $page_nav = array_merge($page_nav, $menuHistorial);
 	}
-
+	$datapermuser  = $objperm->getsectionsuser($_SESSION['user_id'],'Reportes');
+	if ( $datapermuser ) { 
+	  $page_nav = array_merge($page_nav, $menuReportes);
+	}
 	//default
-	$page_nav = array_merge($page_nav, $extras);
+	if($_SESSION['user_id']==14)  //jorge
+		$page_nav = array_merge($page_nav, $extras);
 
 }
 

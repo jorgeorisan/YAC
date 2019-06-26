@@ -7,20 +7,30 @@ class Producto extends AutoProducto {
 
 	
 		//metodo que sirve para obtener todos los datos de la tabla
-	public function getAllArr($id_producto=false,$tienda=false,$similar=false,$TODO=true)
+	public function getAllArr( $arrayfilters=false)
 	{
-		if(!$tienda)
-			if(isset($_SESSION['user_info']['id_tienda']))
-				$tienda = $_SESSION['user_info']['id_tienda'] ;
-
-		$TODO =(!$TODO) ? " HAVING TIENDA.existencias>0 " : '' ;
-
-		$queryprod =($id_producto) ? " AND p.id_producto = $id_producto" : '';
-		if($similar){
-			$queryprod =" AND (p.codinter like '%". $similar ."%' OR  p.nombre like '%". $similar ."%'  OR  m.nombre like '%". $similar ."%')";
+		
+		$tienda = $_SESSION['user_info']['id_tienda'];
+		$queryprod = '';
+		$TODO  = " HAVING TIENDA.existencias>0 ";
+		if(count($arrayfilters)>0){
+			if(isset($arrayfilters['id_tienda']) && $arrayfilters['id_tienda']>0)
+				$tienda = $arrayfilters['id_tienda'] ;
+			if(isset($arrayfilters['todo']) && $arrayfilters['todo']==1)
+				$TODO = '' ;
+			if(isset($arrayfilters['id_producto'])){
+				$producto  = $arrayfilters['id_producto'];
+				$queryprod = " AND p.id_producto = $producto" ;
+			}
+			if(isset($arrayfilters['similar'])){
+				$similar   = $arrayfilters['similar'];
+				$queryprod = "AND (p.codinter like '%". $similar ."%' OR  p.nombre like '%". $similar ."%'  OR  m.nombre like '%". $similar ."%')" ;
+			}
+				
 		}
+
 		$querytienda= ($_SESSION['user_info']['id_tienda']==16) ? " AND (p.id_proveedor=14)" : " AND (p.id_proveedor!=14)";
-			
+		
         $sql = "
 			SELECT TODO.id_producto,TODO.codinter,TODO.manual,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
 			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
@@ -74,7 +84,43 @@ class Producto extends AutoProducto {
 					PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
 					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
 			) TIENDA ON TODO.id_producto=TIENDA.id_producto
+			
 			$TODO";
+		$res = $this->db->query($sql);
+		$set = array();
+		if(!$res){ die("Error getting result getAllArr Producto"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		return $set;
+	}
+	public function getAllArrServicios($arrayfilters=false)
+	{
+		$tienda = '';
+		if(count($arrayfilters)>0){
+			if(isset($arrayfilters['id_tienda']))
+				$tienda = " AND pr.id_tienda=".$arrayfilters['id_tienda'] ;
+		}
+			
+        $sql = "SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.manual,PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+						PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
+						FROM(
+							SELECT p.id_producto,p.codinter,p.manual, p.imagen,p.nombre,p.costo,p.precio_descuento,p.precio,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+							FROM producto p
+							LEFT JOIN marca m on p.id_marca=m.id_marca
+							LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+							LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+							WHERE p.status='ACTIVO'
+							AND pr.info_adicional='Servicios'
+							$tienda
+						) AS PRODUCTO 
+						group by 
+						PRODUCTO.id_producto,PRODUCTO.codinter, PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,
+						PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+						,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento	
+						ORDER BY PRODUCTO.nombre
+		";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result getAllArr Producto"); }

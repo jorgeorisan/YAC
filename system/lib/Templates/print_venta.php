@@ -51,7 +51,7 @@ if ($porcentpagado < 50 )
         }
     </style>
 </head>
-<body style="text-align: center; width: 175px;">
+<body style="text-align: center; width: 250px;">
     <table style="text-align:center; width:100%">
         <tr>
             <td colspan="2" style="">
@@ -112,7 +112,7 @@ if ($porcentpagado < 50 )
         ?>
     </table>
     <h3>Artículos</h3>
-    <table style="width:200px">
+    <table style="width:250px">
         <tbody>
             <tr>
                 <th>Cant.</th>
@@ -173,7 +173,7 @@ if ($porcentpagado < 50 )
 
 
     </table>
-    <p class="title" style="width: 200px;">
+    <p class="title" style="width: 250px;">
         <?php 
         if($data['tipo']=="Credito" || $data['tipo']=="Apartado") { ?>
             GRACIAS POR SU COMPRA<br>

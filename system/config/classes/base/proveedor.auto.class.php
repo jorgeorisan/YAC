@@ -5,6 +5,12 @@
 	// Variables
 		protected $db;
 		
+		protected $id_proveedor = 0;
+		protected $nombre_corto = "";
+		protected $telefono = "";
+		protected $info_adicional = "";
+		protected $status = "";
+		protected $id_tienda = 0;
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -28,6 +34,34 @@
 
 
 	// Setter Methods
+		public function setIdProveedor( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDPROVEEDOR","i") ) 
+ 				$this->id_proveedor = $value;
+		}
+		
+		public function setNombreCorto( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "NOMBRECORTO","s") ) 
+ 				$this->nombre_corto = $value;
+		}
+		
+		public function setTelefono( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "TELEFONO","s") ) 
+ 				$this->telefono = $value;
+		}
+		
+		public function setInfoAdicional( $value ){ 				$this->info_adicional = $value;
+		}
+		
+		public function setStatus( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "STATUS","s") ) 
+ 				$this->status = $value;
+		}
+		
+		public function setIdTienda( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDTIENDA","i") ) 
+ 				$this->id_tienda = $value;
+		}
+		
 		public function setValidclass( $value ){
 			if ( $this->validclassateInput('/^(true|false)$/', ( $value ) ? 'true' : 'false', "Validclass",'s') )
 				$this->validclass = $value;
@@ -45,11 +79,78 @@
 
 
 	// Getter Methods
+		public function getIdProveedor($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id_proveedor) ;
+ 			}else{
+ 				return $this->id_proveedor ;
+ 			}
+		}
+		
+		public function getNombreCorto($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->nombre_corto) ;
+ 			}else{
+ 				return $this->nombre_corto ;
+ 			}
+		}
+		
+		public function getTelefono($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->telefono) ;
+ 			}else{
+ 				return $this->telefono ;
+ 			}
+		}
+		
+		public function getInfoAdicional($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->info_adicional) ;
+ 			}else{
+ 				return $this->info_adicional ;
+ 			}
+		}
+		
+		public function getStatus($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->status) ;
+ 			}else{
+ 				return $this->status ;
+ 			}
+		}
+		
+		public function getIdTienda($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id_tienda) ;
+ 			}else{
+ 				return $this->id_tienda ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
 		public function getStatusclass(){
 			return  $this->statusclass ;
+		}
+		// Private Support Functions
+		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
+			//if ( ! $this->validclass )
+			//	return $this->validclass;
+
+			if ( ! preg_match($pcre, $input) ){ 
+				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
+			}else{
+				unset($this->statusclass[$field]);
+				if (empty($this->statusclass)){$this->validclass=true;}
+			}
+
+			return true;
+		}
+		protected function killInvalidclass( $msg, $field="General Error" ){
+			$this->statusclass[$field] = $msg;
+			$this->validclass = false;
+			return false;
 		}
 
 	// Public Support Functions
@@ -71,102 +172,14 @@
 				return $this->killInvalidclass( "Unable to retrieve information for ID. Please try again later, or contact support." );
 			}
 
+			$this->setIdProveedor( $res['id_proveedor'] );
+			$this->setNombreCorto( $res['nombre_corto'] );
+			$this->setTelefono( $res['telefono'] );
+			$this->setInfoAdicional( $res['info_adicional'] );
+			$this->setStatus( $res['status'] );
+			$this->setIdTienda( $res['id_tienda'] );
 			return true;
 		}
 		// end function load
-
-		public function save() {
-			if ($this->getId()==0){ // insert new
-				$sql = "INSERT INTO proveedor SET modified=UTC_TIMESTAMP(),created=UTC_TIMESTAMP(),"; 
-
-			$sql = trim($sql,",");
-
-			} else { // updated existing
-				$sql = "UPDATE proveedor SET modified=UTC_TIMESTAMP(),";	
-
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( 'i', $id );
-
-			if ($this->getId()>0){
-				$stmt->mbind_param( 'i', $this->id  );
-			} // end save
-
-			$stmt->execute();
-			if ($this->getId()==0){
-				$this->setId( $this->db->insert_id );
-			}
-			return $this->getId();
-		}
-		
-
-		public function updateFields($fieldstoupdate) {
-			if ($this->getId()==0){ // insert new
-				// only updates no save new here
-			} else { // updated existing
-				$sql = "UPDATE proveedor SET modified=UTC_TIMESTAMP(),";	
-
-			$sql = trim($sql,",");
-			$sql .= " WHERE id = ?";
-			}
-
-			
-			// Save data 
-			$stmt = $this->db->prepare( $sql );
-			//$stmt->mbind_param( 'i', $id );
-
-			if ($this->getId()>0){
-				$stmt->mbind_param( 'i', $this->getId()  );
-			}
-
-			$stmt->execute();
-			//if ($this->getId()==0){
-			//	$this->setId( $this->db->insert_id );
-			//}
-			return $this->getId();
-		}  // updateFields
-		
-
-		public function getAll() {
-			$sql="SELECT id FROM proveedor WHERE 1 and status='active'";
-			// Get data 
-			$stmt = $this->db->prepare( $sql );
-			$stmt->execute();
-
-			$res = $stmt->get_result();
-			$retval=array();
-			while($id = mysqli_fetch_row($res)){
-				$retval[$id[0]] = new Proveedor();
-				$retval[$id[0]]->load($id[0]);
-			}
-			return $retval;
-		}
-
-
-
-	// Private Support Functions
-		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
-			//if ( ! $this->validclass )
-			//	return $this->validclass;
-
-			if ( ! preg_match($pcre, $input) ){ 
-				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
-			}else{
-				unset($this->statusclass[$field]);
-				if (empty($this->statusclass)){$this->validclass=true;}
-			}
-
-			return true;
-		}
-		protected function killInvalidclass( $msg, $field="General Error" ){
-			$this->statusclass[$field] = $msg;
-			$this->validclass = false;
-			return false;
-		}
 
 }

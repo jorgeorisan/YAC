@@ -25,7 +25,9 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					$costo   = $res['costo'];
 					$manual  = $res['manual'];
 					$nombre  = $res['nombre'];
-					$productostienda   = $producto->getAllArr($id_producto,$id_tienda);
+					$arrayfilters['id_producto'] = $id_producto;
+					$arrayfilters['id_tienda']   = $id_tienda;
+					$productostienda   = $producto->getAllArr($arrayfilters);
 					
 					foreach($productostienda as $res) {
 						$existenciatienda  = $res['existenciastienda'];

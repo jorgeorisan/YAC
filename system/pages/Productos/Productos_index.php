@@ -20,7 +20,8 @@ include(SYSTEM_DIR . "/inc/nav.php");
 $all= (isset($request['params']['opt'])) ?  true : false;
 
 $obj = new Producto();
-$data = $obj->getAllArr(false,false,false, $all );
+$arrayfilters['todo'] = $all;
+$data = $obj->getAllArr( $arrayfilters );
 
 //print_r($data);
 ?>

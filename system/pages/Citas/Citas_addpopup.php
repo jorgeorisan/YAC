@@ -1,7 +1,18 @@
+<?php 
+    $obj = new Persona();
+    $arrayfilters['tipo'] = '11';
+    $list = $obj->getAllArr($arrayfilters);
+    $persona=$obj->getTable($id_persona);
+?>
 <section id="widget-grid" class="">
     <?php if($statuscita!='active'){ ?>
         <h6 class="alert alert-warning semi-bold">
             <i class="fa fa-times"></i> Esta cita no se puede editar por que ya esta  <strong><?php echo $statuscita; ?></strong>.
+        </h6>
+    <?php } ?>
+    <?php if($persona['status']=='BAJA'){ ?>
+        <h6 class="alert alert-warning semi-bold">
+            <i class="fa fa-times"></i> Cliente <strong>eliminado</strong>.
         </h6>
     <?php } ?>
     <form id="main-form" class="form-citas" role="form" method='post' action="#" onsubmit="return checkSubmit();">    
@@ -30,12 +41,8 @@
                                     <div class="form-group row">
                                         <div class="col-sm-10 col-xs-10 row">
                                             <select style="width:100%" class="select2"  required name="id_persona" id="id_persona">
-                                                <option value="" selected disabled>Selecciona </option>
+                                                <option value="" selected >Selecciona </option>
                                                 <?php 
-                                                $obj = new Persona();
-                                                $arrayfilters['tipo'] = '11';
-                                                $list = $obj->getAllArr($arrayfilters);
-                                                $persona=$obj->getTable($id_persona);
                                                 if (is_array($list) || is_object($list)){
                                                     foreach($list as $val){
                                                         $selected = ($id_persona == $val['id_persona']) ? "selected" : "";
@@ -51,7 +58,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <select style="width:100%" class="select2"  required name="id_usuario" id="id_usuario">
-                                            <option value="" selected disabled>Selecciona Usuario</option>
+                                            <option value="" selected >Selecciona Usuario</option>
                                             <?php 
                                             $obj = new Usuario();
                                             $arrayfiltersUser['id_tienda'] = false;
@@ -86,7 +93,19 @@
                                         </div>
                                     </div> 
                                     <div class="form-group ">
-                                        <input type="text" class="form-control" required  placeholder="Motivo" name="motivo" id="motivo" value="<?php echo $motivo;?>" >
+                                        <select style="width:100%" class="select2" name="motivo" id="motivo">
+                                            <option value="">--Servicio--</option>
+                                            <?php 
+                                            $obj = new Producto();
+                                            $list=$obj->getAllArrServicios();
+                                            if (is_array($list) || is_object($list)){
+                                                foreach($list as $val){
+                                                    $selected =  ($motivo == $val['nombre'] ) ? "selected" : '';
+                                                    echo "<option ".$selected ." value='".$val['nombre']."'>".htmlentities($val['nombre'])."</option>";
+                                                }
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
                                     
                                 </div>
@@ -100,20 +119,26 @@
         </section>        
         </fieldset> 
         <div class="form-actions" style="text-align: center;width: 100%;margin-left: 0px;">
-        <?php echo ($persona['status']=='BAJA') ? 'Cliente eliminado' : ''; ?>
         <?php if($statuscita=='active'){ ?>
             <div class="row">
                <div class="col-md-12">
                     <?php if($id_cita && $persona['status']!='BAJA'){ ?>
+                        <button class="btn btn-success btn-md" type="button" id="changestatuscita">
+                            <i class="fa fa-check"></i>
+                            Marcar como Completada
+                        </button>
                         <button class="btn btn-danger btn-md" type="button" id="deletecita">
                             <i class="fa fa-trash"></i>
                             Eliminar Cita
                         </button>
-                        <button class="btn btn-success btn-md" type="button" id="generarconsulta">
-                            <i class="fa fa-file"></i>
-                            Generar Consulta
-                        </button>
-                    <?php } ?>
+                        <?php if($_SESSION['user_info']['id_tienda']=='18'){// be yac spa ?>
+                            <button class="btn btn-success btn-md" type="button" id="generarconsulta">
+                                <i class="fa fa-file"></i>
+                                Generar Consulta
+                            </button>
+                        
+                        <?php }
+                    } ?>
                     <button class="btn btn-default btn-md" type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         Cancelar
                     </button>
@@ -126,7 +151,7 @@
             <?php }else{ ?>
                 <div class="row">
                     <div class="col-md-12">
-                        <button class="btn btn-primary btn-md" type="button" id="deletecita">
+                        <button class="btn btn-danger btn-md" type="button" id="deletecita">
                             <i class="fa fa-save"></i>
                             Eliminar Cita
                         </button>

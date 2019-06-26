@@ -161,7 +161,18 @@ Routing section
         if ($request['page']==='view')     { $page = "Pacientes_view.php";  }
         
       }
-     
+      if ($request['section']==='Historial'){
+        $page = "Historial_index.php";
+        $dir  = "Historial";//si esta en carpeta
+        if ($request['page']==='consulta') { $page = "Historial_consulta.php"; }
+        if ($request['page']==='view')     { $page = "Historial_view.php";     }
+      }
+      if ($request['section']==='Reportes'){
+        $page = "Reportes_index.php";
+        $dir  = "Reportes";//si esta en carpeta
+        if ($request['page']==='productos') { $page = "Reportes_productos.php"; }
+        if ($request['page']==='pacientes') { $page = "Reportes_pacientes.php"; }
+      }
       //delete pages
       if(isset($request['params']['id'])){
         if( $id = $request['params']['id'] ) {
