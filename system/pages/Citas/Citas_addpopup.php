@@ -93,19 +93,28 @@
                                         </div>
                                     </div> 
                                     <div class="form-group ">
+                                        <label for="name">Motivo </label>
                                         <select style="width:100%" class="select2" name="motivo" id="motivo">
                                             <option value="">--Servicio--</option>
                                             <?php 
                                             $obj = new Producto();
                                             $list=$obj->getAllArrServicios();
                                             if (is_array($list) || is_object($list)){
+                                                $servicio= ($motivo) ? explode('|',$motivo) : '';
+                                               
+                                                $nameservicio= (count($servicio)>1) ? $servicio[0] : '';
+                                                
                                                 foreach($list as $val){
-                                                    $selected =  ($motivo == $val['nombre'] ) ? "selected" : '';
+                                                    $selected =  ($nameservicio == $val['nombre'] ) ? "selected" : '';
                                                     echo "<option ".$selected ." value='".$val['nombre']."'>".htmlentities($val['nombre'])."</option>";
                                                 }
                                             }
+                                            $motivo  = (count($servicio)>1) ? $servicio[1] : $motivo;
                                             ?>
                                         </select>
+                                    </div>
+                                    <div class="form-group ">
+                                        <input class="form-control" placeholder="Detalles"  id="motivo2" name="motivo2" type="text"  value="<?php echo htmlentities($motivo) ;?>">
                                     </div>
                                     
                                 </div>

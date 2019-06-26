@@ -175,18 +175,22 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					if(isPost()){
 						if (intval($_POST['id_cita'])) {
 							//update
+							$motivo2 = (isset($_POST['motivo2'])) ? $_POST['motivo2'] : '';
 							$requestCita['fecha_inicial']           = (isset($_POST['fecha_inicial']))          ? $_POST['fecha_inicial']          : '';
 							$requestCita['fecha_final']             = (isset($_POST['fecha_final']))            ? $_POST['fecha_final']            : '';
 							$requestCita['motivo'] 		            = (isset($_POST['motivo']))                 ? $_POST['motivo']                 : '';
-							$requestCita['id_user']             = (isset($_POST['id_user']))            ? $_POST['id_user']            : '';
-							$requestCita['id_persona']             = (isset($_POST['id_persona']))            ? $_POST['id_persona']            : '';
+							$requestCita['id_user']                 = (isset($_POST['id_usuario']))             ? $_POST['id_usuario']           	   : '';
+							$requestCita['id_persona']              = (isset($_POST['id_persona']))             ? $_POST['id_persona']             : '';
 							$requestCita['id_historialtratamiento'] = (isset($_POST['id_historialtratamiento']))? $_POST['id_historialtratamiento']: '';
+							$requestCita['motivo']=$requestCita['motivo'].'|'.$motivo2;
 							$id=$obj->updateAll($_POST['id_cita'],$requestCita);
 						}else{
 							//add new
+							$motivo2 = (isset($_POST['motivo2'])) ? $_POST['motivo2'] : '';
+							$_POST['motivo']  = $_POST['motivo'].'|'.$motivo2;
 							$id=$obj->addAll(getPost());
 						}						
-						if($id>0){
+						if($id){
 							$datacita=$obj->getTable($id);
 							switch ($datacita['status']) {
 								case 'active':	   $status = 'Pendiente';  $class = "bg-color-blue"; 	  $editable = true;  $icon = "fa-clock-o"; break;

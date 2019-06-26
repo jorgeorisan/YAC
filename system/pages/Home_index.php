@@ -58,14 +58,16 @@ if($res=$citas->getAllArr()){
 			$idHistorial= $dataH['id'];
 			$link = make_url("Historial","view",array('id'=>$idHistorial));
 		}
-		
+		$motivo = $row['motivo'];
+		$servicio= ($motivo) ? explode('|',$motivo) : '';
+		$servicio= (count($servicio)>1 ) ? $servicio[0] :  $motivo;
 		$event = array([
 			"title"       => $nombrecliente,
 			"start"       => $row['fecha_inicial'],
 			"hora_ini"    => date('h:i A',strtotime($row['fecha_inicial'])),
 			"hora_fin"    => date('h:i A',strtotime($row['fecha_final'])),
 			"end"         => $row['fecha_final'],
-			"motivo" 	  => $row['motivo'],
+			"motivo" 	  => $servicio,
 			"status" 	  => $status,
 			"allDay"      => false,
 			"className"   => array('event', $class),
@@ -410,6 +412,8 @@ if($res=$citas->getAllArr()){
         
             return false; // Evitar ejecutar el submit del formulario.
         });
+		
+		
 		$('body').on('click', '#changestatuscita', function(){
             swal({
                 title: "Estas seguro?",
