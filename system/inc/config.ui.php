@@ -51,7 +51,7 @@ $menuCitas = array(
 			"title" => "Citas",
 			"icon" => "fa-calendar",
 			"sub" => array(
-				'citasindex' => array('title'  => 'Citas','url' => APP_URL."/Citas/index" ),
+				'citasindex' => array('title'  => 'Citas','url' => APP_URL ),
 				'citas' => array('title'  => 'Nueva cita','url' => APP_URL."/Citas/add" )
 			)
 	)
