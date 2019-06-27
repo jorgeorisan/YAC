@@ -39,11 +39,11 @@ class Venta extends AutoVenta {
 	public function addAll($_request)
 	{
 		$_request['id_tienda']  = (isset($_request['id_tienda']))  ? $_request['id_tienda']  : $_SESSION['user_info']['id_tienda'];
-		$_request['id_user'] 		= (isset($_request['id_usuario'])) ? $_request['id_usuario'] : $_SESSION['user_id'];
+		$_request['id_user'] 	= (isset($_request['id_usuario'])) ? $_request['id_usuario'] : $_SESSION['user_id'];
 		$_request['folio']      = $this->getNewFolio($_request['id_tienda']);
-		$_request['total'] 		  = $_request['total-global'];
+		$_request['total'] 		= $_request['total-global'];
 		$_request['descuento'] 	= (isset($_request['monto'])) ? ($_request['monto']) : 0;
-		$_request['fecha'] 		  = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
+		$_request['fecha'] 		= (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
 		$_request['icredito'] 	= ($_request['tipo']=="Credito" || $_request['tipo']=="Apartado") ? 1 : 0;
 		$_request['id_user_registro']	= $_SESSION['user_id'];
 		
@@ -77,12 +77,12 @@ class Venta extends AutoVenta {
 				$tipoprecio      = $_request["tipoprecio"];
 				foreach ($productotienda as $key => $value) {
 					$producto = $objproductos->gettable($productos[$key]);
-					$_requestProductosVenta['id_venta']  	       = $id;
+					$_requestProductosVenta['id_venta']  	     = $id;
 					$_requestProductosVenta['id_productotienda'] = $value;
-					$_requestProductosVenta['cantidad'] 	   		 = $cantidades[$key];
-					$_requestProductosVenta['nombre']        	   = $producto['nombre'];
+					$_requestProductosVenta['cantidad'] 	   	 = $cantidades[$key];
+					$_requestProductosVenta['nombre']        	 = $producto['nombre'];
 					$_requestProductosVenta['costototal']        = $costos[$key];
-					$_requestProductosVenta['total'] 	   		     = $totales[$key];
+					$_requestProductosVenta['total'] 	   		 = $totales[$key];
 					$_requestProductosVenta['tipoprecio']  	     = $tipoprecio[$key];
 					$idHD = $objPV->addAll($_requestProductosVenta);
 					if($idHD>0){}else{ die("Error al insertar productos venta"); }

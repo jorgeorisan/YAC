@@ -283,7 +283,9 @@ if (!$db->connect_errno) {
 if(!isset($_SESSION['CADENA'])){
 
   $obj = new Producto();
-  $queryproductos = $obj->getAllArr();
+  
+  $arrayfilters['todo'] = 1;
+  $queryproductos = $obj->getAllArr( $arrayfilters );
   
   $prod="";
  

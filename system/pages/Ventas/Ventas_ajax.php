@@ -22,14 +22,18 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 				if($res = $producto->getTablebyCode($codigo)){
 					$id_producto = $res['id_producto'];
 					$precio  = $res['precio'];
+					$servicio= $res['manual'];
 					$mayoreo = $res['precio_descuento'];
 					$costo   = $res['costo'];
 					$manual  = $res['manual'];
 					$nombre  = $res['nombre'];
+					if($servicio)
+						$arrayfilters['todo'] = 1;
+					
 					$arrayfilters['id_producto'] = $id_producto;
 					$arrayfilters['id_tienda']   = $id_tienda;
 					$productostienda   = $producto->getAllArr($arrayfilters);
-					
+					if(!$productostienda) die('No se enconto el producto en la tienda');
 					foreach($productostienda as $res) {
 						$existenciatienda  = $res['existenciastienda'];
 						$existenciaglobal  = $res['existencias'];
