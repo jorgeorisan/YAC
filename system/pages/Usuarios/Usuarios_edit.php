@@ -128,7 +128,7 @@ if(isPost()){
 													if (is_array($list)){
 														foreach($list as $key => $val){
 															$selected= ($data['comision'] == $key) ? "selected" :'';
-															echo "<option value='".$key."'>".htmlentities($val)."</option>";
+															echo "<option value='".$key."' $selected >".htmlentities($val)."</option>";
 														}
 													}
 													?>

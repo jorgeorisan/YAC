@@ -25,7 +25,7 @@ $obj = new Venta();
 $begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
 $end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $idusuario = (isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
-$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $_SESSION['user_info']['id_tienda'];
+$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : ($_SESSION['user_id']!=14) ? $_SESSION['user_info']['id_tienda'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -305,7 +305,7 @@ foreach($dataabonos as $row) {
 												$totalcaja           = ( $row->id_usuario_tipo !=  9 )  ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalcaja           = ( $row->id_usuario !=  'Lizzy' ) ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalgeneral 		 = $totalventa   ; 
-												$totalcomision		 = ( $row->id_usuario_tipo !=  9 ) ? $totalventausuario * $row->comision :  $totalventaexcedente * $row->comision ;
+												$totalcomision		 = $totalventausuario * $row->comision ;
 												$totalventausuariogral   += $totalventausuario;
 												$totalAbonosUsers        += $totalventaabonos;
 												$totalventarecargasgral  += $totalventarecargas;
