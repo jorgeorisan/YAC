@@ -19,9 +19,12 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_ProductosVenta', 
  * @property integer $folio
  * @property integer $paquete
  * @property string $tipoprecio
+ * @property timestamp $fecha_registro
+ * @property timestamp $fecha_cancelacion
+ * @property string $usuario_cancelacion
+ * @property string $razon_cancelacion
  * @property Database_Model_ProductoTienda $ProductoTienda
  * @property Database_Model_Venta $Venta
- * @property Doctrine_Collection $VentaProductocancelado
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -142,6 +145,39 @@ abstract class Database_Model_Base_ProductosVenta extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
+        $this->hasColumn('fecha_registro', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('fecha_cancelacion', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('usuario_cancelacion', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('razon_cancelacion', 'string', null, array(
+             'type' => 'string',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
@@ -154,9 +190,5 @@ abstract class Database_Model_Base_ProductosVenta extends Doctrine_Record
         $this->hasOne('Database_Model_Venta as Venta', array(
              'local' => 'id_venta',
              'foreign' => 'id_venta'));
-
-        $this->hasMany('Database_Model_VentaProductocancelado as VentaProductocancelado', array(
-             'local' => 'id_productos_venta',
-             'foreign' => 'id_productos_venta'));
     }
 }

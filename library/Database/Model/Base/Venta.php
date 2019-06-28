@@ -9,28 +9,28 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Venta', 'doctrine
  * 
  * @property integer $id_venta
  * @property timestamp $fecha
- * @property string $usuariosventa
  * @property float $total
  * @property string $tipo
  * @property integer $factura
- * @property integer $no_calculable
- * @property string $ticket_items
  * @property integer $cancelado
- * @property string $id_usuario
  * @property integer $id_persona
  * @property integer $id_tienda
- * @property integer $consignacion
+ * @property integer $id_user
  * @property integer $icredito
  * @property integer $folio
  * @property string $comentarios
  * @property string $credencial
+ * @property timestamp $fecha_cancelacion
+ * @property string $razon_cancelacion
+ * @property string $usuario_cancelacion
+ * @property float $descuento
+ * @property timestamp $fecha_registro
+ * @property integer $id_user_registro
  * @property Database_Model_Persona $Persona
  * @property Database_Model_Tienda $Tienda
  * @property Database_Model_Usuario $Usuario
- * @property Doctrine_Collection $Descuentos
  * @property Doctrine_Collection $Deudores
  * @property Doctrine_Collection $ProductosVenta
- * @property Doctrine_Collection $VentaCancelada
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -52,15 +52,6 @@ abstract class Database_Model_Base_Venta extends Doctrine_Record
              ));
         $this->hasColumn('fecha', 'timestamp', null, array(
              'type' => 'timestamp',
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('usuariosventa', 'string', 150, array(
-             'type' => 'string',
-             'length' => 150,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
@@ -93,24 +84,6 @@ abstract class Database_Model_Base_Venta extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('no_calculable', 'integer', 1, array(
-             'type' => 'integer',
-             'length' => 1,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'default' => '0',
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('ticket_items', 'string', null, array(
-             'type' => 'string',
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
         $this->hasColumn('cancelado', 'integer', 1, array(
              'type' => 'integer',
              'length' => 1,
@@ -119,15 +92,6 @@ abstract class Database_Model_Base_Venta extends Doctrine_Record
              'primary' => false,
              'default' => '0',
              'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('id_usuario', 'string', 45, array(
-             'type' => 'string',
-             'length' => 45,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => true,
              'autoincrement' => false,
              ));
         $this->hasColumn('id_persona', 'integer', 8, array(
@@ -148,13 +112,12 @@ abstract class Database_Model_Base_Venta extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('consignacion', 'integer', 1, array(
+        $this->hasColumn('id_user', 'integer', 4, array(
              'type' => 'integer',
-             'length' => 1,
+             'length' => 4,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'default' => '0',
              'notnull' => false,
              'autoincrement' => false,
              ));
@@ -193,6 +156,57 @@ abstract class Database_Model_Base_Venta extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
+        $this->hasColumn('fecha_cancelacion', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('razon_cancelacion', 'string', null, array(
+             'type' => 'string',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('usuario_cancelacion', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('descuento', 'float', null, array(
+             'type' => 'float',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'default' => '0',
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('fecha_registro', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('id_user_registro', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
@@ -207,22 +221,14 @@ abstract class Database_Model_Base_Venta extends Doctrine_Record
              'foreign' => 'id_tienda'));
 
         $this->hasOne('Database_Model_Usuario as Usuario', array(
-             'local' => 'id_usuario',
-             'foreign' => 'id_usuario'));
-
-        $this->hasMany('Database_Model_Descuentos as Descuentos', array(
-             'local' => 'id_venta',
-             'foreign' => 'id_venta'));
+             'local' => 'id_user',
+             'foreign' => 'id'));
 
         $this->hasMany('Database_Model_Deudores as Deudores', array(
              'local' => 'id_venta',
              'foreign' => 'id_venta'));
 
         $this->hasMany('Database_Model_ProductosVenta as ProductosVenta', array(
-             'local' => 'id_venta',
-             'foreign' => 'id_venta'));
-
-        $this->hasMany('Database_Model_VentaCancelada as VentaCancelada', array(
              'local' => 'id_venta',
              'foreign' => 'id_venta'));
     }

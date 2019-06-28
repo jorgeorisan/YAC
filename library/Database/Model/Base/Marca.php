@@ -11,6 +11,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Marca', 'doctrine
  * @property string $nombre
  * @property float $descuento
  * @property integer $descuento_activado
+ * @property string $status
  * @property Doctrine_Collection $Producto
  * 
  * @package    ##PACKAGE##
@@ -49,13 +50,23 @@ abstract class Database_Model_Base_Marca extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('descuento_activado', 'integer', 1, array(
+        $this->hasColumn('descuento_activado', 'integer', 4, array(
              'type' => 'integer',
-             'length' => 1,
+             'length' => 4,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
              'default' => '0',
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('status', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'default' => 'active',
              'notnull' => false,
              'autoincrement' => false,
              ));

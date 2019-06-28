@@ -14,13 +14,19 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Tienda', 'doctrin
  * @property string $status
  * @property string $ubicacion
  * @property integer $permiso_adicional
- * @property Doctrine_Collection $ComisionesVendedor
+ * @property string $rfc
+ * @property string $abreviacion
+ * @property Doctrine_Collection $Cita
  * @property Doctrine_Collection $Entrada
  * @property Doctrine_Collection $EntradaProducto
+ * @property Doctrine_Collection $Historial
+ * @property Doctrine_Collection $Pedido
+ * @property Doctrine_Collection $PedidoProducto
  * @property Doctrine_Collection $ProductoTienda
  * @property Doctrine_Collection $Salida
  * @property Doctrine_Collection $SalidaProducto
  * @property Doctrine_Collection $Traspaso
+ * @property Doctrine_Collection $Traspaso_2
  * @property Doctrine_Collection $TraspasoProducto
  * @property Doctrine_Collection $Usuario
  * @property Doctrine_Collection $Venta
@@ -99,12 +105,30 @@ abstract class Database_Model_Base_Tienda extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
+        $this->hasColumn('rfc', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('abreviacion', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Database_Model_ComisionesVendedor as ComisionesVendedor', array(
+        $this->hasMany('Database_Model_Cita as Cita', array(
              'local' => 'id_tienda',
              'foreign' => 'id_tienda'));
 
@@ -113,6 +137,18 @@ abstract class Database_Model_Base_Tienda extends Doctrine_Record
              'foreign' => 'id_tienda'));
 
         $this->hasMany('Database_Model_EntradaProducto as EntradaProducto', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_Historial as Historial', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_Pedido as Pedido', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_PedidoProducto as PedidoProducto', array(
              'local' => 'id_tienda',
              'foreign' => 'id_tienda'));
 
@@ -131,6 +167,10 @@ abstract class Database_Model_Base_Tienda extends Doctrine_Record
         $this->hasMany('Database_Model_Traspaso as Traspaso', array(
              'local' => 'id_tienda',
              'foreign' => 'id_tienda'));
+
+        $this->hasMany('Database_Model_Traspaso as Traspaso_2', array(
+             'local' => 'id_tienda',
+             'foreign' => 'id_tiendaanterior'));
 
         $this->hasMany('Database_Model_TraspasoProducto as TraspasoProducto', array(
              'local' => 'id_tienda',

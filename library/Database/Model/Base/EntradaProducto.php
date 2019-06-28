@@ -9,27 +9,25 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_EntradaProducto',
  * 
  * @property integer $id_entrada_producto
  * @property integer $id_producto
- * @property timestamp $fechare_gistro
+ * @property string $nombre
  * @property float $cantidad
  * @property string $status
  * @property float $costo
- * @property float $multiplicador
+ * @property float $mayoreo
  * @property float $precio
- * @property string $iva
- * @property float $cantvendida
- * @property float $ieps
  * @property integer $id_entrada
  * @property float $totalcosto
- * @property string $nombre
  * @property integer $id_tienda
- * @property float $precio_descuento
  * @property integer $cancelado
  * @property float $cantidad_anterior
  * @property float $precio_costo
+ * @property timestamp $fecha_registro
+ * @property integer $act_inventario
+ * @property timestamp $deleted_date
+ * @property string $usuario_deleted
  * @property Database_Model_Producto $Producto
  * @property Database_Model_Entrada $Entrada
  * @property Database_Model_Tienda $Tienda
- * @property Doctrine_Collection $EntradaProductocancelado
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -58,8 +56,9 @@ abstract class Database_Model_Base_EntradaProducto extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
-        $this->hasColumn('fechare_gistro', 'timestamp', null, array(
-             'type' => 'timestamp',
+        $this->hasColumn('nombre', 'string', 100, array(
+             'type' => 'string',
+             'length' => 100,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
@@ -93,7 +92,7 @@ abstract class Database_Model_Base_EntradaProducto extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
-        $this->hasColumn('multiplicador', 'float', null, array(
+        $this->hasColumn('mayoreo', 'float', null, array(
              'type' => 'float',
              'fixed' => false,
              'unsigned' => false,
@@ -106,33 +105,6 @@ abstract class Database_Model_Base_EntradaProducto extends Doctrine_Record
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('iva', 'string', 45, array(
-             'type' => 'string',
-             'length' => 45,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('cantvendida', 'float', null, array(
-             'type' => 'float',
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'default' => '0',
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('ieps', 'float', null, array(
-             'type' => 'float',
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'default' => '0',
              'notnull' => false,
              'autoincrement' => false,
              ));
@@ -154,26 +126,9 @@ abstract class Database_Model_Base_EntradaProducto extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('nombre', 'string', 100, array(
-             'type' => 'string',
-             'length' => 100,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
         $this->hasColumn('id_tienda', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('precio_descuento', 'float', null, array(
-             'type' => 'float',
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
@@ -207,6 +162,41 @@ abstract class Database_Model_Base_EntradaProducto extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
+        $this->hasColumn('fecha_registro', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('act_inventario', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'default' => '0',
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('deleted_date', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('usuario_deleted', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
@@ -223,9 +213,5 @@ abstract class Database_Model_Base_EntradaProducto extends Doctrine_Record
         $this->hasOne('Database_Model_Tienda as Tienda', array(
              'local' => 'id_tienda',
              'foreign' => 'id_tienda'));
-
-        $this->hasMany('Database_Model_EntradaProductocancelado as EntradaProductocancelado', array(
-             'local' => 'id_entrada_producto',
-             'foreign' => 'id_entrada_producto'));
     }
 }

@@ -13,7 +13,6 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Accion', 'doctrin
  * @property string $accion
  * @property string $nombre
  * @property string $nombremodulo
- * @property Doctrine_Collection $UsuarioAccion
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -82,8 +81,6 @@ abstract class Database_Model_Base_Accion extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
-        $this->hasMany('Database_Model_UsuarioAccion as UsuarioAccion', array(
-             'local' => 'id_accion',
-             'foreign' => 'id_accion'));
+        
     }
 }

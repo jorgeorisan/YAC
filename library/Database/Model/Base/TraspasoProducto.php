@@ -9,22 +9,20 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_TraspasoProducto'
  * 
  * @property integer $id_traspaso_producto
  * @property integer $id_producto
- * @property timestamp $fechare_gistro
- * @property float $cantidad
- * @property string $status
- * @property float $costo
- * @property float $multiplicador
- * @property float $precio
- * @property string $iva
- * @property float $cantvendida
- * @property float $ieps
  * @property integer $id_traspaso
- * @property float $totalcosto
- * @property string $nombre
  * @property integer $id_tienda
- * @property float $precio_descuento
- * @property integer $cancelado
- * @property integer $cant_anterior
+ * @property string $nombre
+ * @property float $cantidad
+ * @property float $costo
+ * @property float $mayoreo
+ * @property float $precio
+ * @property float $totalcosto
+ * @property float $total
+ * @property integer $cantidad_anterior
+ * @property string $status
+ * @property timestamp $fecha_registro
+ * @property timestamp $deleted_date
+ * @property string $usuario_deleted
  * @property Database_Model_Producto $Producto
  * @property Database_Model_Tienda $Tienda
  * @property Database_Model_Traspaso $Traspaso
@@ -56,8 +54,27 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
-        $this->hasColumn('fechare_gistro', 'timestamp', null, array(
-             'type' => 'timestamp',
+        $this->hasColumn('id_traspaso', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => true,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('id_tienda', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('nombre', 'string', 100, array(
+             'type' => 'string',
+             'length' => 100,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
@@ -72,16 +89,6 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('status', 'string', 45, array(
-             'type' => 'string',
-             'length' => 45,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'default' => 'ACTIVO',
-             'notnull' => true,
-             'autoincrement' => false,
-             ));
         $this->hasColumn('costo', 'float', null, array(
              'type' => 'float',
              'fixed' => false,
@@ -91,7 +98,7 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
-        $this->hasColumn('multiplicador', 'float', null, array(
+        $this->hasColumn('mayoreo', 'float', null, array(
              'type' => 'float',
              'fixed' => false,
              'unsigned' => false,
@@ -107,42 +114,6 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('iva', 'string', 45, array(
-             'type' => 'string',
-             'length' => 45,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('cantvendida', 'float', null, array(
-             'type' => 'float',
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'default' => '0',
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('ieps', 'float', null, array(
-             'type' => 'float',
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'default' => '0',
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('id_traspaso', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => true,
-             'autoincrement' => false,
-             ));
         $this->hasColumn('totalcosto', 'float', null, array(
              'type' => 'float',
              'fixed' => false,
@@ -152,25 +123,7 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('nombre', 'string', 100, array(
-             'type' => 'string',
-             'length' => 100,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('id_tienda', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             ));
-        $this->hasColumn('precio_descuento', 'float', null, array(
+        $this->hasColumn('total', 'float', null, array(
              'type' => 'float',
              'fixed' => false,
              'unsigned' => false,
@@ -178,9 +131,9 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('cancelado', 'integer', 1, array(
+        $this->hasColumn('cantidad_anterior', 'integer', 4, array(
              'type' => 'integer',
-             'length' => 1,
+             'length' => 4,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
@@ -188,13 +141,38 @@ abstract class Database_Model_Base_TraspasoProducto extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('cant_anterior', 'integer', 4, array(
-             'type' => 'integer',
-             'length' => 4,
+        $this->hasColumn('status', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'default' => '0',
+             'default' => 'ACTIVO',
+             'notnull' => true,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('fecha_registro', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('deleted_date', 'timestamp', null, array(
+             'type' => 'timestamp',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('usuario_deleted', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
              'notnull' => false,
              'autoincrement' => false,
              ));

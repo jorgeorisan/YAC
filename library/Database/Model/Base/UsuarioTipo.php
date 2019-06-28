@@ -9,6 +9,9 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_UsuarioTipo', 'do
  * 
  * @property integer $id_usuario_tipo
  * @property string $usuario_tipo
+ * @property string $status
+ * @property string $comentarios
+ * @property Doctrine_Collection $PermisoUsuariotipo
  * @property Doctrine_Collection $Persona
  * @property Doctrine_Collection $Usuario
  * 
@@ -39,11 +42,33 @@ abstract class Database_Model_Base_UsuarioTipo extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
+        $this->hasColumn('status', 'string', 45, array(
+             'type' => 'string',
+             'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'default' => 'active',
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('comentarios', 'string', null, array(
+             'type' => 'string',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
     {
         parent::setUp();
+        $this->hasMany('Database_Model_PermisoUsuariotipo as PermisoUsuariotipo', array(
+             'local' => 'id_usuario_tipo',
+             'foreign' => 'id_usuario_tipo'));
+
         $this->hasMany('Database_Model_Persona as Persona', array(
              'local' => 'id_usuario_tipo',
              'foreign' => 'id_usuario_tipo'));

@@ -15,6 +15,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_ProductoTienda', 
  * @property float $alerta_minima
  * @property string $fecha_actualizacion
  * @property string $usuario_actualizacion
+ * @property timestamp $fecha_registro
  * @property Database_Model_Producto $Producto
  * @property Database_Model_Tienda $Tienda
  * @property Doctrine_Collection $HistorialInventario
@@ -96,6 +97,14 @@ abstract class Database_Model_Base_ProductoTienda extends Doctrine_Record
         $this->hasColumn('usuario_actualizacion', 'string', 45, array(
              'type' => 'string',
              'length' => 45,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('fecha_registro', 'timestamp', null, array(
+             'type' => 'timestamp',
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,

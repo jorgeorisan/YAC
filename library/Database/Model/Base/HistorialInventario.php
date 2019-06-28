@@ -13,7 +13,9 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_HistorialInventar
  * @property float $existencia
  * @property timestamp $fecha_registro
  * @property string $id_usuario
+ * @property integer $id_user
  * @property Database_Model_ProductoTienda $ProductoTienda
+ * @property Database_Model_Usuario $Usuario
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -75,6 +77,15 @@ abstract class Database_Model_Base_HistorialInventario extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
+        $this->hasColumn('id_user', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
@@ -83,5 +94,9 @@ abstract class Database_Model_Base_HistorialInventario extends Doctrine_Record
         $this->hasOne('Database_Model_ProductoTienda as ProductoTienda', array(
              'local' => 'id_productotienda',
              'foreign' => 'id_productotienda'));
+
+        $this->hasOne('Database_Model_Usuario as Usuario', array(
+             'local' => 'id_user',
+             'foreign' => 'id'));
     }
 }

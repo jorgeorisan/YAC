@@ -36,10 +36,11 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Persona', 'doctri
  * @property string $dir_cuenta
  * @property string $tiempo_credito
  * @property string $celular
+ * @property string $alergias
  * @property Database_Model_UsuarioTipo $UsuarioTipo
- * @property Doctrine_Collection $DatosFacturacion
- * @property Doctrine_Collection $Deudores
+ * @property Doctrine_Collection $Cita
  * @property Doctrine_Collection $Factura
+ * @property Doctrine_Collection $Historial
  * @property Doctrine_Collection $Venta
  * 
  * @package    ##PACKAGE##
@@ -312,6 +313,14 @@ abstract class Database_Model_Base_Persona extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
+        $this->hasColumn('alergias', 'string', null, array(
+             'type' => 'string',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
     }
 
     public function setUp()
@@ -321,15 +330,15 @@ abstract class Database_Model_Base_Persona extends Doctrine_Record
              'local' => 'id_usuario_tipo',
              'foreign' => 'id_usuario_tipo'));
 
-        $this->hasMany('Database_Model_DatosFacturacion as DatosFacturacion', array(
-             'local' => 'id_persona',
-             'foreign' => 'id_persona'));
-
-        $this->hasMany('Database_Model_Deudores as Deudores', array(
+        $this->hasMany('Database_Model_Cita as Cita', array(
              'local' => 'id_persona',
              'foreign' => 'id_persona'));
 
         $this->hasMany('Database_Model_Factura as Factura', array(
+             'local' => 'id_persona',
+             'foreign' => 'id_persona'));
+
+        $this->hasMany('Database_Model_Historial as Historial', array(
              'local' => 'id_persona',
              'foreign' => 'id_persona'));
 

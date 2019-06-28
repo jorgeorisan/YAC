@@ -12,6 +12,7 @@ Doctrine_Manager::getInstance()->bindComponent('Database_Model_Proveedor', 'doct
  * @property string $telefono
  * @property string $info_adicional
  * @property string $status
+ * @property integer $id_tienda
  * @property Doctrine_Collection $Producto
  * 
  * @package    ##PACKAGE##
@@ -65,6 +66,15 @@ abstract class Database_Model_Base_Proveedor extends Doctrine_Record
              'unsigned' => false,
              'primary' => false,
              'default' => 'ACTIVO',
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('id_tienda', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
              'notnull' => false,
              'autoincrement' => false,
              ));
