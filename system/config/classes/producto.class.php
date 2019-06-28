@@ -265,6 +265,4 @@ class Producto extends AutoProducto {
 			return true;
 
 	}
-
-
 }

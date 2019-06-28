@@ -1,6 +1,8 @@
 <?php
-if (session_id() == ''){ session_start(); }
-
+if (!isset ($_SESSION) ){ 
+	ini_set('session.save_path',realpath(dirname($_SERVER['DOCUMENT_ROOT']) . '/../session'));
+	session_start(); 
+}
 date_default_timezone_set('America/Mexico_City');
 //date_default_timezone_get() . ' => ' . date('e') . ' => ' . date('T');
 

@@ -33,7 +33,9 @@ $arrayfilters['id_usuario']    = $idusuario;
 $arrayfilters['id_tienda']     = $idtienda;
 $arrayfilters['page']   	   = 'ventaproductos';
 $jsonarrayfilters=json_encode($arrayfilters);
-$dataventas = $obj->getReporteVentas($arrayfilters);
+
+$reports = new Reports();
+$dataventas = $reports->getReporteVentas($arrayfilters);
 
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
