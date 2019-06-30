@@ -1,4 +1,6 @@
 <?php
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
+
 //initilize the page
 require_once(SYSTEM_DIR . "/inc/init.php");
 //require UI configuration (nav, ribbon, etc.)
@@ -21,7 +23,6 @@ $idtienda  = '';//$_SESSION['user_info']['id_tienda'];
 $idusuario = '';
 $arrayfilters=[];
 
-$obj = new Venta();
 $begin        = ( isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
 $end          = ( isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $idusuario    = ( isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
@@ -33,7 +34,9 @@ $arrayfilters['id_usuario']    = $idusuario;
 $arrayfilters['id_tienda']     = $idtienda;
 $arrayfilters['page']   	   = 'ventaproductos';
 $jsonarrayfilters=json_encode($arrayfilters);
-$dataventas = $obj->getReporteVentas($arrayfilters);
+
+$objreports = new Reports();
+$dataventas = $objreports->getReporteVentas($arrayfilters);
 
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -204,7 +207,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 															$totalporpagar += $porpagar = $rowventa['total']-$totalpagado;
 												}
 												$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
+												$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
 												if($dataventasproductos){
 													foreach($dataventasproductos as $row) {
 														$tienda = new Tienda();
