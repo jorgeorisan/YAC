@@ -466,7 +466,7 @@ $dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
 			phone : 480
 		};
 		$('#dt_basic').dataTable({
-			"aaSorting": [[ 1,"asc" ]],
+			"aaSorting": [[ 0,"asc" ]],
         	"iDisplayLength": 50,
 
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+

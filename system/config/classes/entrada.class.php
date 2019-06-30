@@ -60,7 +60,17 @@ class Entrada extends AutoEntrada {
 		$tiendas = $_request["id_tiendas"];
 		$idefirst="";
 		foreach ($tiendas  as $key => $valtienda) {
+			
 			$id_tienda=$valtienda;
+			$cantidades = $_request["cantidad".$id_tienda];
+			$totalprod=0;
+			foreach ($cantidades as $key2 => $valproducto) {
+				if($cantidades[$key2]>0){
+					$totalprod++;
+				}
+			}
+			if(!$totalprod) continue;
+			
 			$_requestEntrada['folio']    		   = $this->getNewFolio($id_tienda);
 			$_requestEntrada['id_tienda']    	   = $id_tienda;
 			$_requestEntrada['id_user']    	   	   = $_request['id_usuario'];
