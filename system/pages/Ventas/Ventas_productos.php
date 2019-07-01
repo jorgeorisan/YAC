@@ -220,12 +220,11 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 														$venta = new Venta();
 														$dataventa = $venta->getTable($row["id_venta"]);
 														
-														$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
-														$totalxproducto = 0;
-														if (!$row['cancelado']) {
-															//calculamos el descuento por producto
-															$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
-															$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
+														$class     		 = ($row["cancelado"]) ? "class='cancelada'" : '';
+														//calculamos el descuento por producto
+														$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ;
+														$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
+														if (!$row['cancelado']) { 
 															$totalgeneral   += $row['total'];
 															$totalrecargas  += ($row['nombre']=='RECARGA')   ? $row['total'] : 0;
 															$totalexcedente += ($row['nombre']=='EXCEDENTE') ? $row['total'] : 0;
@@ -273,7 +272,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 																			<?php } ?>
 																			<li class="divider"></li>
 																			<li>
-																				<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
+																				<a href="#" title="Cancelar Producto" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idpventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
 																			</li>
 																		<?php 
 																		} ?>
@@ -443,7 +442,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 		var table = $('#dt_basic2').dataTable();
 		$(".deleteventa").click(function(e) {
             e.preventDefault();
-			var idventa = $(this).attr('idventa');
+			var idventa = $(this).attr('idpventa');
 			var folio   = $(this).attr('folio');
 			$.SmartMessageBox({
 				title : "Cancelar Venta: "+folio,
@@ -454,7 +453,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 			}, function(ButtonPressed, Value) {
 				if (ButtonPressed === "Yes") {
 					if(!Value) return notify('warning','Se necesita un motivo');
-					$.get(config.base+"/Ventas/ajax/deleteventa?action=get&object=deleteventa&idventa="+idventa+"&motivo="+Value,
+					$.get(config.base+"/Ventas/ajax/?action=get&object=deleteproductoventa&idproductoventa="+idventa+"&motivo="+Value,
 					function (response) {
 						if(response){
 							notify('success','Cancelada con exito');
