@@ -258,7 +258,49 @@ class Reports extends Usuario {
 		$res->close();
 		return $set;
 	}
-
+	// ventas por producto
+	public function getReportesActInv($arrayfilters=false)
+	{
+		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$id_producto= (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
+		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
+			return false;
+		}
+		$qryusuario = ($id_usuario)  ? " AND hi.id_user      = '$id_usuario' " : "";
+		$qrytienda  = ($id_tienda>0) ? " AND pt.id_tienda    = '$id_tienda'  " : "";
+		$queryprod  = ($id_producto>0) ? " AND pt.id_producto= ".$id_producto  : '';
+		
+		
+		$sql = "SELECT hi.id_historialinventario,hi.id_productotienda,hi.existencia_anterior,hi.existencia,hi.id_usuario,hi.fecha_registro,
+					pt.id_producto,pr.id_tienda,p.nombre,p.codinter,pr.nombre_corto,m.nombre marca,t.nombre tienda
+				FROM  historial_inventario hi
+				LEFT JOIN producto_tienda pt ON hi.id_productotienda=pt.id_productotienda
+				LEFT JOIN producto p ON pt.id_producto=p.id_producto
+				LEFT JOIN marca m ON p.id_marca=m.id_marca
+				LEFT JOIN proveedor pr ON pr.id_proveedor=p.id_proveedor
+				LEFT JOIN tienda t ON t.id_tienda=pt.tienda_id_tienda
+				where  
+					DATE(hi.fecha_registro)>='".$fechaini."' and DATE(hi.fecha_registro)<='".$fechafin."'
+					$qryusuario
+					$qrytienda
+					$queryprod
+				GROUP BY hi.fecha_registro
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReportesActInv"); }
+		else{
+			while ($row = $res->fetch_object())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
+	
 
 }
 
