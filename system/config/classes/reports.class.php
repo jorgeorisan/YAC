@@ -270,7 +270,7 @@ class Reports extends Usuario {
 			return false;
 		}
 		$qryusuario = ($id_usuario)  ? " AND hi.id_user      = '$id_usuario' " : "";
-		$qrytienda  = ($id_tienda>0) ? " AND pt.id_tienda    = '$id_tienda'  " : "";
+		$qrytienda  = ($id_tienda>0) ? " AND pt.tienda_id_tienda    = '$id_tienda'  " : "";
 		$queryprod  = ($id_producto>0) ? " AND pt.id_producto= ".$id_producto  : '';
 		
 		
