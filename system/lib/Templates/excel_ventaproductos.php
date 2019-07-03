@@ -6,7 +6,9 @@ $arrayfilters['fecha_final']   = $dataJson->fecha_final;
 $arrayfilters['id_usuario']    = $dataJson->id_usuario;
 $arrayfilters['id_tienda']     = $dataJson->id_tienda;
 $page_title               	   = ucwords($dataJson->page);
-$dataventas = $obj->getReporteVentas($arrayfilters);
+
+$objreports = new Reports();
+$dataventas = $objreports->getReporteVentas($arrayfilters);
 
 header('Content-type: application/vnd.ms-excel');
 header("Content-Disposition: attachment; filename=$page_title.xls");
