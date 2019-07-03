@@ -281,7 +281,7 @@ foreach($dataabonos as $row) {
 										<tbody>
 											<?php 
 											$totalventausuariogral   = 0;
-											 $totalAbonosUsers    = 0;
+											$totalAbonosUsers        = 0;
 											$totalventarecargasgral  = 0;
 											$totalventaexcedentegral = 0;
 											$totalcajagral           = 0;
@@ -302,7 +302,7 @@ foreach($dataabonos as $row) {
 												$totalventadescuento = $row->totalventadescuento; 
 												$totalventa 		 = $totalventa - $totalventadescuento; // quitamos los decuentos
 												$totalventausuario   = $totalventa - $totalventacredito - ($totalventamayoreo/2) - $totalventarecargas  ;
-												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventaexcedente  + $totalventarecargas +  ($totalventamayoreo/2)  ;
+												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventarecargas +  ($totalventamayoreo/2)  ;
 												$totalcaja           = ( $row->id_usuario_tipo !=  9 )  ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalcaja           = ( $row->id_usuario !=  'Lizzy' ) ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalgeneral 		 = $totalventa   ; 
@@ -325,7 +325,7 @@ foreach($dataabonos as $row) {
 													<td><?php echo $totalventaabonos; ?></td>
 													<td><?php echo $totalventarecargas; ?></td>
 													<td><?php echo $totalventaexcedente; ?></td>
-													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)+('.$totalventaexcedente.'excedente)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
+													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
 															<?php echo $totalcaja; ?>
 														</span>
 													</td>
