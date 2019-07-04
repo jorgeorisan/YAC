@@ -23,6 +23,17 @@ $obj = new Producto();
 $arrayfilters['todo'] = $all;
 $data = $obj->getAllArr( $arrayfilters );
 
+$carpetaimg = ASSETS_URL.'/productosimages/images';
+foreach($data as  $key => $row) {
+	if (  trim($row['imagen']) !='' && trim($row['imagen']) !=NULL ){
+		if(getimagesize ($carpetaimg.'/'.$row['imagen']) ){
+			//1002
+		}else {
+			echo $row['id_producto'].'= NO<br>';
+			$obj->updateAll($row['id_producto'],array("imagen"=>''));	
+		}
+	}
+}
 //print_r($data);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -70,7 +81,7 @@ $data = $obj->getAllArr( $arrayfilters );
 										foreach($data as  $key => $row) {
 										?>
 											<tr>
-												<td><?php echo htmlentities($row['id_producto'])?></td>
+												<td><?php echo htmlentities($row['id_producto']);?></td>
 												<td><?php echo htmlentities($row['codinter'])?></td>
 												<td>
 													<?php 

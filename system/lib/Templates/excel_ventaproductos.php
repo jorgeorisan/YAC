@@ -70,7 +70,7 @@ header("Expires: 0");
 															$totalporpagar += $porpagar = $rowventa['total']-$totalpagado;
 												}
 												$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"]);
+												$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"]);
 												foreach($dataventasproductos as $row) {
 													$tienda = new Tienda();
 													$datatienda = $tienda->getTable($row["id_tienda"]);
