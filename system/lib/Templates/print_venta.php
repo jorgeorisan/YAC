@@ -187,6 +187,16 @@ if ($porcentpagado < 50 )
         <?php
         } ?>
     </p>
+    
+    <?php if($data['sorteo']=="1" && $data['id_persona']!="2") { ?>
+    <br>
+    - - - - - - - - - - - - - - - - - - - - - - - - - 
+    <br>
+        <p class="title" style="width: 250px;">
+            Folio participante: <strong><?php echo $data['folio']; ?></strong><br>
+            Fecha Compra: <strong><?php  echo date('Y-m-d H:m A',strtotime($data['fecha'])); ?></strong><br>
+        </p>
+    <?php } ?>
 </body>
 
     <script type="text/javascript">
