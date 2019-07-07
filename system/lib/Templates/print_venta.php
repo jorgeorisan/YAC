@@ -193,6 +193,7 @@ if ($porcentpagado < 50 )
     - - - - - - - - - - - - - - - - - - - - - - - - - 
     <br>
         <p class="title" style="width: 250px;">
+            Tienda: <strong><?php echo $datatienda['nombre']; ?></strong><br>
             Folio participante: <strong><?php echo $data['folio']; ?></strong><br>
             Fecha Compra: <strong><?php  echo date('Y-m-d H:m A',strtotime($data['fecha'])); ?></strong><br>
         </p>
