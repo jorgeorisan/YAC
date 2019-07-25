@@ -79,7 +79,7 @@ class Entrada extends AutoEntrada {
 			$_requestEntrada['comentarios'] 	   = (isset($_request['comentarios'])) ? $_request['comentarios'] : '';
 			$_requestEntrada['referencia'] 		   = (isset($_request['referencia'])) ? $_request['referencia'] : '';
 			$_requestEntrada['status'] 		   	   = 'POR AUTORIZAR';
-			$_requestEntrada['fecha'] 		  	   = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
+			$_requestEntrada['fecha'] 		  	   = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:i:s") : date('Y-m-d H:i:s');
 			$_requestEntrada['icredito'] 		   = ($_request['tipo_pago']=="Credito") ? 1 : 0;
 			$_requestEntrada['tipo_pago'] 		   = $_request['tipo_pago'];
 			$data=fromArray($_requestEntrada,'entrada',$this->db,"add");
@@ -177,7 +177,7 @@ class Entrada extends AutoEntrada {
 			$objEntradaProducto->deleteAll($row['id_entrada_producto']);
 		}
 		$_request['usuario_deleted'] =  $_SESSION['user_id'];
-		$_request['deleted_date'] 	=  date('Y-m-d H:m:s');
+		$_request['deleted_date'] 	=  date('Y-m-d H:i:s');
 		$_request['status']			= 'BAJA';
 		return $this->updateAll($identrada,$_request);
 		/**FALTA ACTUALIZAR LOS COSTOS A LA ULTIMA ENTRADA VALIDA */
@@ -280,7 +280,7 @@ class Entrada extends AutoEntrada {
 			$objEntradaProducto->updateAll($row['id_entrada_producto'],$requestEntradaProducto);
 		}
 		$_request['usuario_validacion'] =  $_SESSION['user_id'];
-		$_request['fecha_validacion'] 	=  date('Y-m-d H:m:s');
+		$_request['fecha_validacion'] 	=  date('Y-m-d H:i:s');
 		$_request['status']				='ACTIVO';
 		return $this->updateAll($identrada,$_request);
 	}

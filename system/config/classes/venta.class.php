@@ -43,7 +43,10 @@ class Venta extends AutoVenta {
 		$_request['folio']      = $this->getNewFolio($_request['id_tienda']);
 		$_request['total'] 		= $_request['total-global'];
 		$_request['descuento'] 	= (isset($_request['monto'])) ? ($_request['monto']) : 0;
-		$_request['fecha'] 		= (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
+		echo $_request['fecha'] 		= (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:i:s") : date('Y-m-d H:i:s');
+
+
+		exit;
 		$_request['icredito'] 	= ($_request['tipo']=="Credito" || $_request['tipo']=="Apartado") ? 1 : 0;
 		$_request['id_user_registro']	= $_SESSION['user_id'];
 		

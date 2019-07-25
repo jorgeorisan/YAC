@@ -318,7 +318,7 @@ class Historial extends AutoHistorial {
 			$_requestHP['tipo_pago'] 	 	  = $_request["tipo_pago"];
 			$_requestHP['descuento_aplicado'] = (isset($_request["descuento_aplicado"])) ? $_request["descuento_aplicado"] : 0;
 			$_requestHP['observaciones']  	  = $_request["observaciones"];
-			$_requestHP['fecha_pago']  	      = $_request["fecha_pago"]." ".date("H:m:s");
+			$_requestHP['fecha_pago']  	      = $_request["fecha_pago"]." ".date("H:i:s");
 			$HP = new HistorialPagos();
 			$idHP = $HP->addAll($_requestHP);
 			if($idHP>0){}else{ die("Error al insertar HistorialPagos"); }
