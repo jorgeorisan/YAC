@@ -155,6 +155,7 @@ foreach($dataabonos as $row) {
 										<thead>
 											<tr>
 												<th class = "col-md-1" data-class="expand">Folio</th>
+												<th class = "col-md-1" data-class="">Cliente </th>
 												<th class = "col-md-1" data-class="">Vendedor </th>
 												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
@@ -170,6 +171,9 @@ foreach($dataabonos as $row) {
 											$total = 0;
 											$totaldevoluciones= 0;
 											foreach($dataventas as $row) {
+												
+												$cliente = new Persona();
+												$datacliente = $cliente->getTable($row['id_persona']);
 												$tienda = new Tienda();
 												$datatienda = $tienda->getTable($row["id_tienda"]);
 												if($datatienda) $nomtienda = $datatienda["nombre"]; 
@@ -189,6 +193,7 @@ foreach($dataabonos as $row) {
 															<?php echo htmlentities($row['folio'])?>
 														</a>
 													</td>
+													<td><?php echo htmlentities($datacliente['nombre']." ".$datacliente['ap_paterno'])?></td>
 													<td><?php echo htmlentities($row['id_usuario'])?></td>
 													<td><?php echo htmlentities($row['fecha'])?></td>
 													<td>

@@ -28,9 +28,14 @@ class Producto extends AutoProducto {
 			}
 				
 		}
+		$prov = $tienda;
+		$querytienda='';
+		if($tienda == 15) 
+			$prov=13;
+		if(!$tienda)
+			$querytienda= ($_SESSION['user_info']['id_tienda']==16) ? " AND (p.id_proveedor=14)" : " AND (p.id_proveedor!=14)";
 
-		$querytienda= ($_SESSION['user_info']['id_tienda']==16) ? " AND (p.id_proveedor=14)" : " AND (p.id_proveedor!=14)";
-		
+	
         $sql = "
 			SELECT TODO.id_producto,TODO.codinter,TODO.manual,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
 			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
@@ -48,6 +53,7 @@ class Producto extends AutoProducto {
 						WHERE p.status='ACTIVO'
 						$queryprod
 						$querytienda
+						AND pr.id_tienda='$prov'
 					) AS PRODUCTO LEFT JOIN (
 						SELECT id_producto, existencias, tienda_id_tienda id_tienda
 						FROM producto_tienda 
@@ -265,4 +271,32 @@ class Producto extends AutoProducto {
 			return true;
 
 	}
+
+	//metodo para actualizar la session de productos que se muestran por tienda
+	public function updateProductosTienda($tienda=false){
+		
+
+			$obj = new Producto();
+			
+			$arrayfilters['todo'] = 1;
+			$arrayfilters['id_tienda'] = (isset($tienda)) ?  $tienda : '';
+			$queryproductos = $obj->getAllArr( $arrayfilters );
+			
+			$prod=$texto="";
+			$prodarray=[];
+		
+			foreach($queryproductos as $key => $producto){   
+				$prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
+				//$prodarray[$key]=array("nombre"=>$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']);
+				$texto .= '"' . $producto['codinter'] . '",';
+				$prodarray[$key]=$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda'];
+				
+			}
+			$cadena = substr($prod,1);
+			//return $_SESSION['CADENA']=$cadena;
+			return json_encode($prodarray);
+
+			
+		}
+	
 }

@@ -26,9 +26,9 @@ $arrayfilters=[];
 $begin        = ( isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
 $end          = ( isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $idusuario    = ( isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
-$idtienda  = ($_SESSION['user_id']!=14)      ? $_SESSION['user_info']['id_tienda'] : '';
-$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $idtienda;
-$codeproducto = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ? $arrayfilters['id_producto'] = $_POST['id_producto'] : '';
+$idtienda  	  = ($_SESSION['user_id']!=14)       ? $_SESSION['user_info']['id_tienda'] : '';
+$idtienda  	  = (isset($_POST['id_tienda']))     ? $_POST['id_tienda']     : $idtienda;
+$codeproducto = $arrayfilters['id_producto'] = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ?  $_POST['id_producto'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -179,6 +179,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Total</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+												<th class = "col-md-1" data-class="phone,tablet">Cliente</th>
 												<th class = "col-md-1" data-class="phone,tablet">Usuario</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
@@ -219,8 +220,9 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 													
 														$venta = new Venta();
 														$dataventa = $venta->getTable($row["id_venta"]);
-														
-														$class     		 = ($row["cancelado"]) ? "class='cancelada'" : '';
+														$cliente = new Persona();
+														$datacliente = $cliente->getTable($dataventa['id_persona']);
+														$class     	 = ($row["cancelado"]) ? "class='cancelada'" : '';
 														//calculamos el descuento por producto
 														$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ;
 														$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
@@ -247,6 +249,8 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 																}
 																?>
 															</td>
+															
+															<td><?php echo htmlentities($datacliente['nombre']." ".$datacliente['ap_paterno'])?></td>
 															<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
 															<td><?php echo htmlentities($nomtienda) ?></td>
 															<td><?php echo htmlentities($row['tipoprecio'])?></td>

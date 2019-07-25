@@ -59,6 +59,15 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 					}
 					break;
+				case 'updateProductosTienda':
+					if( isset($_GET["id_tienda"]) && intval($_GET["id_tienda"])){
+						$id = $_GET["id_tienda"];
+		
+						$obj = new Producto();
+						echo $data = $obj->updateProductosTienda($id);
+						
+					}
+					break;
 				case 'existeproducto':
 					if( isset($_GET["codigo"]) ){
 						$u = new Producto();

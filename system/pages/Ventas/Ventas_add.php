@@ -442,7 +442,16 @@ if(isPost()){
         });
         $("#id_tienda").change(function () {
             var id=$("#id_tienda").val();
-            tiendaprod
+            $.get(config.base+"/Productos/ajax/?action=get&object=updateProductosTienda&id_tienda="+id, null, function (response) {
+                if ( response ){
+                 
+                    $("#barcode").autocomplete({source:JSON.parse(response)});
+                   
+                }else{
+                    return notify('error', 'Error al obtener los productos');
+                    
+                }     
+            });
             
             $("#tiendaprod").val(id);
             $("#catalogo").attr('href',''+id);
