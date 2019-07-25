@@ -39,6 +39,9 @@ $jsonarrayfilters=json_encode($arrayfilters);
 $objreports = new Reports();
 $dataventas = $objreports->getReporteVentas($arrayfilters);
 
+
+
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -124,6 +127,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 														$obj = new Producto();
 														$arrayfilters['todo'] = true;
 														$list=$obj->getAllArr($arrayfilters);
+														
 														if (is_array($list) || is_object($list)){
 															foreach($list as $val){
 																$selected =  ($codeproducto == $val['id_producto'] ) ? "selected" : '';
