@@ -37,7 +37,7 @@ class Producto extends AutoProducto {
 			$querytienda= ($_SESSION['user_info']['id_tienda']==16) ? " AND (p.id_proveedor=14)" : " AND (p.id_proveedor!=14)";
 
 	
-        echo $sql = "
+        $sql = "
 			SELECT TODO.id_producto,TODO.codinter,TODO.manual,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
 			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
 			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
