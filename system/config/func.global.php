@@ -154,7 +154,7 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
   function getTipoPersona(){
     $arrayStatus = array();
     $arrayStatus["1"] = "Cliente";
-    $arrayStatus["11"]  = "Paciente";
+    $arrayStatus["11"]  = "Paciente/Servicios";
     return $arrayStatus;
   }
 
