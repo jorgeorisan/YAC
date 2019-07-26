@@ -90,7 +90,7 @@ class Cita extends AutoCita {
 		if(!$row){
 			return false;
 		}else{
-			return true;
+			return $id;
 		}
 	}
 		//metodo que sirve para hacer delete

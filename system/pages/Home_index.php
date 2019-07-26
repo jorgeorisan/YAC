@@ -40,16 +40,19 @@ if($res=$citas->getAllArr()){
 		if(!$cliente) continue;
 		$users     = new Usuario();
 		$datauser      = $users->getTable($row['id_user']);
+		$tiendas = new Tienda();
+		$tienda  = $tiendas->getTable($datauser['id_tienda']);
 		$idHistorial = '';
 		$link = make_url("Historial","consulta",array('id'=>$row['id_persona'],'id_cita'=>$row['id']));
 		
 		$nombrecliente  = htmlentities($cliente['nombre']." ".$cliente['ap_paterno']." "); 
 		$user		    = htmlentities($datauser['nombre']);
+		$class = ($tienda['color'])? "bg-color-".$tienda['color'] : '';
 		switch ($row['status']) {
-			case 'active':	   $status = 'Pendiente';  $class = "bg-color-blue"; 	  $editable = true;  $icon = "fa-clock-o"; break;
+			case 'active':	   $status = 'Pendiente';  $editable = true;  $icon = "fa-clock-o"; break;
 			case 'deleted':    $status = 'Cancelada';  $class = "bg-color-red";	      $editable = false; $icon = "fa-warning"; break;
 			case 'Completada': $status = 'Completada'; $class = "bg-color-greenLight";$editable = false; $icon = "fa-check";   break;
-			default: 	       $status = 'N/A';		   $class = "";           	      $editable = true;  $icon = "";           break;
+			default: 	       $status = 'N/A';        $editable = true;  $icon = "";           break;
 		}
 		
 		if($status == 'Completada'){
@@ -77,7 +80,6 @@ if($res=$citas->getAllArr()){
 		]);	
 		$events=array_merge($event, $events);
 	}
-
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -302,7 +304,7 @@ if($res=$citas->getAllArr()){
             var fecha_inicial = $("input[name=fecha_inicial]").val();
             var fecha_final   = $("input[name=fecha_final]").val();
             var id_persona    = $("#id_persona").val();
-            var id_personal   = $("#id_usuario").val();
+            var id_personal   = $("#id_user").val();
             var motivo        = $("#motivo").val();
             if ( ! fecha_inicial )              return swal("La fecha de inicio es requerida");
             if ( ! fecha_final )                return swal("La Hora final es requerida");
@@ -511,10 +513,14 @@ if($res=$citas->getAllArr()){
                     if(response){
 						//$('#calendar').fullCalendar( 'refresh' );
 						//location.reload();
+						
 						var event=response;
 						$('#calendar').fullCalendar( 'renderEvent', event, true);
 						
 						$('#myModal').modal('hide');
+						if($("#main-form input[name=id_cita]").val()){
+							location.reload();
+						}
                     }else{
 						swal("Oopss error al agregar cita"+response);
 						console.log(response);
@@ -553,11 +559,11 @@ if($res=$citas->getAllArr()){
 			},
 			select: function(start, end, jsEvent) {  // click on empty time slot
 				console.log('select');
-                endtime = $.fullCalendar.moment(end).format('h:mm');
-                starttime = $.fullCalendar.moment(start).format('dddd, MMMM Do YYYY, h:mm');
+                endtime    = $.fullCalendar.moment(end).format('h:mm');
+                starttime  = $.fullCalendar.moment(start).format('dddd, MMMM Do YYYY, h:mm');
                 var mywhen = starttime + ' - ' + endtime;
                 start = moment(start).format();
-                end = moment(end).format();
+                end   = moment(end).format();
                 $('#createEventModal #startTime').val(start);
                 $('#createEventModal #endTime').val(end);
                 $('#createEventModal #when').text(mywhen);
