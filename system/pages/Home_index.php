@@ -35,6 +35,9 @@ $citas  = new Cita();
 $events = [];
 if($res=$citas->getAllArr()){
 	foreach($res as $key => $row) {
+		if(strtotime ($row['fecha_inicial']) < strtotime ( '-2 day' , strtotime ( date('Y-m-d') ) )) continue;
+		
+		//exit;
 		$clientes = new Persona();
 		$cliente  = $clientes->getTable($row['id_persona']);
 		if(!$cliente) continue;
@@ -81,6 +84,7 @@ if($res=$citas->getAllArr()){
 		$events=array_merge($event, $events);
 	}
 }
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
