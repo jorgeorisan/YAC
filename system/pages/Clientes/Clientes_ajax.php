@@ -9,6 +9,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 
 	switch ($_GET["object"]) {
 		case 'showpopup':
+			$option = (isset($_GET['opt']) && $_GET['opt']=='pacientes') ? 11: 1;
 			include(SYSTEM_DIR.'/pages/Clientes/Clientes_addpopup.php' );
 			break;
 		case 'savenewclient':

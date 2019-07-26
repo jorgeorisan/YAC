@@ -11,7 +11,8 @@
                         $listref= getTipoPersona();
                         if (is_array($listref)){
                             foreach($listref as $key => $valref){
-                                echo "<option value='".$key."'>".htmlentities($valref)."</option>";
+                                $selected = ($option==$key) ? 'selected':'';
+                                echo "<option value='".$key."' $selected>".htmlentities($valref)."</option>";
                             }
                         }
                         ?>

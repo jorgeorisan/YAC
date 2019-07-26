@@ -328,7 +328,7 @@ if($res=$citas->getAllArr()){
         //**********clientes*************/
         showpopupclientes = function(){
             $('#titlemodalsecond').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo Cliente</span>');
-            $.get(config.base+"/Clientes/ajax/?action=get&object=showpopup", null, function (response) {
+            $.get(config.base+"/Clientes/ajax/?action=get&object=showpopup&opt=pacientes", null, function (response) {
                     if ( response ){
                         $("#contentpopupsecond").html(response);
                     }else{

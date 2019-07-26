@@ -38,7 +38,7 @@ if(isPost()){
     $obj = new Persona();
     $id = $obj->updateAll($id,getPost());
     if( $id  ) {
-         informSuccess(true, informSuccess(true, make_url("Clientes","view",array('id'=>$id))));
+        informSuccess(true, make_url("Clientes","view",array('id'=>$id)));
     }else{
         informError(true, make_url("Clientes","edit",array('id'=>$id)),"edit");
     }
@@ -67,7 +67,7 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Clientes","edit",array('id'=>$id))?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method=post action="<?php echo make_url("Clientes","edit",array('id'=>$id))?>" onsubmit="return checkSubmit();" >     
                                     <fieldset>    
                                         <div class="col-sm-6">
                                             <div class="form-group">
@@ -126,9 +126,20 @@ if(isPost()){
                                         </div>
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                <label for="name">Alergias</label>
-                                                <input type="text" class="form-control" placeholder="Alergias" name="alergias" id="alergias" onkeypress="nextFocus('alergias', 'savenewclient')" value="<?php echo $data['alergias']; ?>">                                                                                               
+                                                <label for="name">Tipo</label>
+                                                <select style="width:100%" class="select2 " name="id_usuario_tipo"  id="id_usuario_tipo">
+                                                    <?php 
+                                                    $listref= getTipoPersona();
+                                                    if (is_array($listref)){
+                                                        foreach($listref as $key => $valref){
+                                                            $selected = ($data['id_usuario_tipo']==$key) ? 'selected':'';
+                                                            echo "<option value='".$key."' $selected>".htmlentities($valref)."</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
                                             </div>
+                                           
                                         </div>
                                     </fieldset>  
                                     <div class="form-actions" style="text-align: center">
