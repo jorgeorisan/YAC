@@ -94,6 +94,7 @@ class Pedido extends AutoPedido {
 			$costos     = (isset($_request["costo"]))   ? $_request["costo"]  : [];
 			$mayoreos   = (isset($_request["mayoreo"])) ? $_request["mayoreo"]: [];
 			$precios    = (isset($_request["precio"]))  ? $_request["precio"] : [];
+			$detalles   = (isset($_request["detalles"]))? $_request["detalles"] : [];
 			$totalcosto = $totalgral= 0;
 			foreach ($productos as $key2 => $valproducto) {
 				if($cantidades[$key2]>0){
@@ -111,6 +112,7 @@ class Pedido extends AutoPedido {
 					$_requestPedidoProducto['id_producto']	      = $valproducto;
 					$_requestPedidoProducto['nombre']             = $producto['nombre'];
 					$_requestPedidoProducto['cantidad'] 	      = $cantidades[$key2];
+					$_requestPedidoProducto['detalles'] 	      = $detalles[$key2];
 					$_requestPedidoProducto['costo'] 		      = $costos[$key2];
 					$_requestPedidoProducto['mayoreo'] 	          = $mayoreos[$key2];
 					$_requestPedidoProducto['precio']             = $precios[$key2];

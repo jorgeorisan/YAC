@@ -23,6 +23,7 @@
 		protected $act_inventario = 0;
 		protected $deleted_date = "";
 		protected $usuario_deleted = "";
+		protected $detalles = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -134,6 +135,9 @@
 		public function setUsuarioDeleted( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "USUARIODELETED","s") ) 
  				$this->usuario_deleted = $value;
+		}
+		
+		public function setDetalles( $value ){ 				$this->detalles = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -297,6 +301,14 @@
  			}
 		}
 		
+		public function getDetalles($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->detalles) ;
+ 			}else{
+ 				return $this->detalles ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -360,6 +372,7 @@
 			$this->setActInventario( $res['act_inventario'] );
 			$this->setDeletedDate( $res['deleted_date'] );
 			$this->setUsuarioDeleted( $res['usuario_deleted'] );
+			$this->setDetalles( $res['detalles'] );
 			return true;
 		}
 		// end function load

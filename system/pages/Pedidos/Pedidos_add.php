@@ -250,11 +250,30 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
    
     $(document).ready(function() {
         
-       
+        $("#id_tienda").change(function () {
+            var id=$("#id_tienda").val();
+            $.get(config.base+"/Productos/ajax/?action=get&object=updateProductosTienda&id_tienda="+id, null, function (response) {
+                if ( response ){
+                 
+                    $("#barcode").autocomplete({source:JSON.parse(response)});
+                   
+                }else{
+                    return notify('error', 'Error al obtener los productos');
+                    
+                }     
+            });
+            
+            $("#tiendaprod").val(id);
+            $("#catalogo").attr('href',''+id);
+            return false;
+        });
         var getproducto = function(form){
             $.get(config.base+"/Pedidos/ajax/get_producto", form,
                 function (response) {
-                    $("table#productos").append(response);
+                    if(response != 'Producto no encontrado')
+                        $("table#productos").append(response);
+                    else
+                        notify('info',response);
                 });
             $("#cantidad").val(1);
             $("#barcode").val("").focus();

@@ -523,6 +523,7 @@ if(isPost()){
             if(!nombre)  return notify('error',"Se necesita el nombre del Cliente."); 
             if(!telefono)  return notify('error',"Se necesita el telefono del Cliente."); 
             var url = config.base+"/Clientes/ajax/?action=get&object=savenewclient"; // El script a dónde se realizará la petición.
+            $("#savenewcliente").attr('disabled','true');
             $.ajax({
                 type: "POST",
                 url: url,
