@@ -36,4 +36,4 @@ productosimages
 composer.lock
 
 #CONECCION BD
-config.php
+js/bootstrap-notify
