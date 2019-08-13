@@ -1,0 +1,49 @@
+
+
+TRUNCATE `cita`;
+TRUNCATE `deudores`;
+TRUNCATE `entrada_producto`;
+TRUNCATE `historial_inventario`
+TRUNCATE `pedido_producto`;
+TRUNCATE `productos_venta`;
+TRUNCATE `salida_producto`;
+TRUNCATE `traspaso_producto`;
+TRUNCATE `asistencia`;
+
+
+UPDATE `usuario` SET `password` = '$2y$10$BDAARgQxR1C5Ccb9uETCsOCS3hVs4It55.i/PM/0sHtqUcvzrEWUO' WHERE `usuario`.`id` = 1;
+UPDATE `usuario` SET `status` = 'ACTIVO' WHERE `usuario`.`id` = 1;
+UPDATE `usuario` SET `id_usuario_tipo` = '5' WHERE `usuario`.`id` = 1;
+UPDATE `usuario` SET `nombre` = 'Admin' WHERE `usuario`.`id` = 1;
+UPDATE `usuario` SET `id_usuario` = 'admin' WHERE `usuario`.`id` = 1;
+UPDATE `tienda` SET `id_tienda` = '1' WHERE `tienda`.`id_tienda` = 4;
+UPDATE `tienda` SET `nombre` = 'Default' WHERE `tienda`.`id_tienda` = '1';
+UPDATE `usuario` SET `id_tienda` = '1' WHERE `usuario`.`id` = 1;
+update permiso_usuario set id_usuario=1 where id_usuario=14
+
+delete from entrada where id_entrada>0;
+delete from traspaso where id_traspaso>0;
+delete from salida where id_salida>0;
+delete from venta where id_venta>0;
+delete from producto_tienda where id_productotienda>0;
+delete from producto where id_producto>0;
+delete from permiso_usuario where id_usuario!=1;
+delete from pedido where id_pedido>0;
+delete from usuario where id>1;
+delete from tienda where id_tienda>1;
+
+UPDATE `usuario` SET `password` = '$2y$10$an1Iczf9o5qGuyrGZpMrFORPW9Vsddb9KLsqYv/x82HSfa9fmnqZm' WHERE `usuario`.`id` = 1;
+-- admin123
+
+UPDATE `proveedor` SET `nombre_corto` = 'No asignado' WHERE `proveedor`.`id_proveedor` = 1;
+UPDATE `proveedor` SET `id_tienda` = '1' WHERE `proveedor`.`id_proveedor` = 1;
+
+delete from proveedor where id_proveedor>1;
+delete from proveedor_compra where id_proveedorcompra>1;
+delete from persona where id_persona>2;
+
+
+delete from permiso_usuariotipo where id>1;
+
+delete from categoria where id_categoria>1;
+delete from marca where id_marca>1;

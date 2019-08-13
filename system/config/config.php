@@ -18,7 +18,8 @@ if(strpos($directory, $document_root)===0) {
 }
 if(isset($_SERVER["SERVER_NAME"])){
 	if($_SERVER["SERVER_NAME"]=='138.128.161.42'){
-		$base_url =$base_url."/YAC/" ;
+		//$base_url =$base_url."/YAC/" ;
+		$base_url =$base_url."/~sistemamyg" ;
  	}
 }
 
@@ -74,13 +75,20 @@ if (getenv('MYSQL_SOCKET') != null){
 	if(isset($_SERVER["SERVER_NAME"])){
        // echo "<strong>$url_actual</strong>";
 	    if($_SERVER["SERVER_NAME"]!='localhost'){
-				defined("DB_USER") ? null : define("DB_USER", "xqwmrfeeug");
-				defined("DB_PASSWORD") ? null : define("DB_PASSWORD", "KjnmXJfbz3");
-				defined("DB_NAME") ? null : define("DB_NAME", "xqwmrfeeug");
+			
+			if($_SERVER["SERVER_NAME"]=='138.128.161.42'){
+				defined("DB_USER") 		? null : define("DB_USER", "sistemam_taller");
+				defined("DB_PASSWORD") 	? null : define("DB_PASSWORD", "sistemam_taller");
+				defined("DB_NAME") 		? null : define("DB_NAME", "sistemam_tallerhp");
+			}else{
+				defined("DB_USER") 		? null : define("DB_USER", "xqwmrfeeug");
+				defined("DB_PASSWORD") 	? null : define("DB_PASSWORD", "KjnmXJfbz3");
+				defined("DB_NAME") 		? null : define("DB_NAME", "xqwmrfeeug");
+			}
 	    }else{
 	    	defined("DB_USER") ? null : define("DB_USER", "root");
-				defined("DB_PASSWORD") ? null : define("DB_PASSWORD", "");
-				defined("DB_NAME") ? null : define("DB_NAME", "xqwmrfeeug");
+			defined("DB_PASSWORD") ? null : define("DB_PASSWORD", "");
+			defined("DB_NAME") ? null : define("DB_NAME", "xqwmrfeeug");
 	    }
 	}
 	defined("DB_PORT") ? null : define("DB_PORT", null);
