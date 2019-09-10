@@ -173,6 +173,7 @@ $menuReportes = array(
 			"pacientes"     => array( "title" => "Pacientes",      "url" => APP_URL."/Reportes/pacientes" ),
 			"actinvent"     => array( "title" => "Act. Inventarios",      "url" => APP_URL."/Reportes/actinvent" ),
 			"tratamientos"     => array( "title" => "Tratamientos",      "url" => APP_URL."/Reportes/tratamientos" ),
+			"horas"     => array( "title" => "Horas",      "url" => APP_URL."/Reportes/horas" ),
 			"pagos"     => array( "title" => "Pagos",      "url" => APP_URL."/Reportes/pagos" )
 		)
 	)

@@ -35,7 +35,7 @@ $arrayfilters['page']   	   = 'ventaproductos';
 $jsonarrayfilters=json_encode($arrayfilters);
 
 $reports = new Reports();
-$dataventas = $reports->getReporteVentas($arrayfilters);
+$dataventas = $reports->getReporteVentasProductos($arrayfilters);
 
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->

@@ -351,8 +351,8 @@ if(isPost()){
         var getproducto = function(form){
             $.get(config.base+"/Ventas/ajax/get_producto", form,
                 function (response) {
+                    console.log(response);
                     if(response == 'Cantidad insuficiente' || response == 'Producto no encontrado' || response=='No se enconto el producto en la tienda'){
-                        console.log(response);
                         if(response == 'Cantidad insuficiente'){
                             return notify('warning',response);
                         }else{
