@@ -172,6 +172,7 @@ Routing section
         $dir  = "Reportes";//si esta en carpeta
         if ($request['page']==='productos') { $page = "Reportes_productos.php"; }
         if ($request['page']==='pacientes') { $page = "Reportes_pacientes.php"; }
+        if ($request['page']==='horas')     { $page = "Reportes_horas.php"; }
       }
       //delete pages
       if(isset($request['params']['id'])){

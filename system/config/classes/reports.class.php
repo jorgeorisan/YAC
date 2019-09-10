@@ -300,6 +300,105 @@ class Reports extends Usuario {
 		$res->close();
 		return $set;
 	}
+
+	// reporte de ventas por hora
+	public function getReporteVentaHora($arrayfilters=false)
+	{
+		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$id_producto= (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
+		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
+			return false;
+		}
+		$qryusuario = ($id_usuario)  ? " AND v.id_user      = '$id_usuario' " : "";
+		$qrytienda  = ($id_tienda>0) ? " AND v.id_tienda    = '$id_tienda'  " : "";
+		$queryprod  = ($id_producto>0) ? " AND pt.id_producto= ".$id_producto  : '';
+		
+		
+		$sql = "SELECT view_fecha.hora
+					,ifnull(view_venta.total_global,0) total_global
+					,ifnull(view_recargas.total_recargas,0) total_recargas
+					,ifnull(view_mayoreo.total_mayoreo,0) total_mayoreo
+				FROM(
+					SELECT SUM(pv.total) total_global,
+					HOUR(v.fecha) hora
+					FROM productos_venta pv 
+					LEFT JOIN venta v ON pv.id_venta=v.id_venta 
+					LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda 
+					LEFT JOIN producto p ON p.id_producto=pt.id_producto 
+					LEFT JOIN usuario u ON u.id=v.id_user 
+					WHERE DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
+						$qryusuario
+						$qrytienda
+						$queryprod
+						and pv.cancelado=0
+					GROUP BY HOUR(v.fecha)
+				) view_fecha 
+				LEFT JOIN (
+				SELECT SUM(pv.total) total_global,
+					HOUR(v.fecha) hora
+					FROM productos_venta pv 
+					LEFT JOIN venta v ON pv.id_venta=v.id_venta 
+					LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda 
+					LEFT JOIN producto p ON p.id_producto=pt.id_producto 
+					LEFT JOIN usuario u ON u.id=v.id_user 
+					WHERE DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
+						$qryusuario
+						$qrytienda
+						$queryprod
+						and pv.cancelado=0
+						and pt.id_producto!=1328
+						and pv.tipoprecio='Normal'
+					GROUP BY HOUR(v.fecha)
+					)view_venta ON view_fecha.hora=view_venta.hora
+					LEFT JOIN (
+					SELECT SUM(pv.total) total_mayoreo,
+						HOUR(v.fecha) hora
+						FROM productos_venta pv 
+						LEFT JOIN venta v ON pv.id_venta=v.id_venta 
+						LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda 
+						LEFT JOIN producto p ON p.id_producto=pt.id_producto 
+						LEFT JOIN usuario u ON u.id=v.id_user 
+						WHERE DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
+							$qryusuario
+							$qrytienda
+							$queryprod
+							and pv.cancelado=0
+							and pt.id_producto!=1328
+							and pv.tipoprecio='Mayoreo'
+						GROUP BY HOUR(v.fecha)
+					)view_mayoreo ON view_fecha.hora=view_mayoreo.hora
+				LEFT JOIN(
+					SELECT SUM(pv.total) total_recargas,
+					HOUR(v.fecha) hora 
+					FROM productos_venta pv 
+					LEFT JOIN venta v ON pv.id_venta=v.id_venta 
+					LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda 
+					LEFT JOIN producto p ON p.id_producto=pt.id_producto 
+					LEFT JOIN usuario u ON u.id=v.id_user 
+					WHERE DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
+						$qryusuario
+						$qrytienda
+						$queryprod
+						and pv.cancelado=0
+						and pt.id_producto=1328
+					GROUP BY HOUR(v.fecha)
+				) view_recargas ON view_fecha.hora = view_recargas.hora
+
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReportesActInv"); }
+		else{
+			while ($row = $res->fetch_object())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
 	
 
 }
