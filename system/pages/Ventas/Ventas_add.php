@@ -564,6 +564,11 @@ if(isPost()){
                     }     
             });
         }
+        seleccionarpersona = function(id){
+            $("#id_persona option[value="+ id +"]").attr("selected",true);
+            $("#id_persona").select2();
+            $('#myModal').modal('hide');
+        }
         
 
         $("#barcode").focus();

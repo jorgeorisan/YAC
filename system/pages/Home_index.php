@@ -420,6 +420,11 @@ if($res=$citas->getAllArr()){
         });
 		
 		
+		seleccionarpersona = function(id){
+            $("#id_persona option[value="+ id +"]").attr("selected",true);
+            $("#id_persona").select2();
+            $('#myModalSecond').modal('hide');
+        }		
 		$('body').on('click', '#changestatuscita', function(){
             swal({
                 title: "Estas seguro?",

@@ -106,6 +106,32 @@ class Persona extends AutoPersona {
 		}
 		
 	}
+	//metodo comprueba que una persona ya existe o no
+	public function personExistings($_request=false)
+	{
 
+		$texto = $_request['nombre'].' '.$_request['ap_paterno'].' '.$_request['ap_materno'];
+		$nombrecompleto = str_replace(' ',"%",$texto); 
+		$queryaddtel  ='';
+		if($_request['telefono']){
+			$queryaddtel=" and  telefono like '%".$_request['telefono']."%'";
+		}
+		$sql= "SELECT * FROM persona
+				WHERE CONCAT(nombre,ap_paterno,ap_materno) like ('%".$nombrecompleto."%')
+				 and status='ACTIVO'
+				 and id_usuario_tipo = ".$_request['id_usuario_tipo']."
+				 $queryaddtel
+				 limit 10;";
+		
+		$res = $this->db->query($sql);
+		$set = array();
+		if(!$res){ die("Error getting result"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		return $set;
+
+	}
 
 }

@@ -86,9 +86,9 @@ if (getenv('MYSQL_SOCKET') != null){
 				defined("DB_NAME") 		? null : define("DB_NAME", "xqwmrfeeug");
 			}
 	    }else{
-	    	defined("DB_USER") ? null : define("DB_USER", "root");
-			defined("DB_PASSWORD") ? null : define("DB_PASSWORD", "");
-			defined("DB_NAME") ? null : define("DB_NAME", "xqwmrfeeug");
+	    	defined("DB_USER") 		? null : define("DB_USER", "xqwmrfeeug");
+			defined("DB_PASSWORD") 	? null : define("DB_PASSWORD", "KjnmXJfbz3");
+			defined("DB_NAME") 		? null : define("DB_NAME", "xqwmrfeeug");
 	    }
 	}
 	defined("DB_PORT") ? null : define("DB_PORT", null);
@@ -130,7 +130,7 @@ spl_autoload_register(function ($class_name) {
 if(isset($_SERVER["SERVER_NAME"])){
  	$db = new db(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME,DB_PORT,DB_SOCKET);
  }else{
-	$db = new db('127.0.0.1', 'root', '', "xqwmrfeeug",null,null);
+	$db = new db('127.0.0.1', 'root', '', "test",null,null);
    
 }
 $db->set_charset('utf8');

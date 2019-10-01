@@ -24,6 +24,25 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 				}
 			}
 			break;
+		case 'personExistings':
+			if(isPost()){
+				$obj = new Persona();
+				$data = $obj->personExistings(getPost());
+				ob_start();
+					include(SYSTEM_DIR.'/pages/Clientes/Clientes_personExistings.php' );
+					
+					
+					$html = ob_get_contents();
+					ob_end_clean();
+
+					if( $html ){
+							echo $data=$html;
+					}else{
+						echo 0;
+					}
+				
+			}
+			break;
 		default:
 			# code...
 			break;
