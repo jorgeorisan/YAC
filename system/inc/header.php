@@ -319,10 +319,10 @@
 					<ul>
 					
 						<li>
-							<a href="<?php echo APP_URL; ?>/invoice.php" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-person-dolly fa-4x"></i> <span>Entradas por Validar <span class="label pull-right bg-color-darken"><?php echo $totalentradas ?></span></span> </span> </a>
+							<a href="<?php echo APP_URL; ?>/Entradas/index" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-person-dolly fa-4x"></i> <span>Entradas por Validar <span class="label pull-right bg-color-darken"><?php echo $totalentradas ?></span></span> </span> </a>
 						</li>
 						<li>
-							<a href="<?php echo APP_URL; ?>/gallery.php" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-exchange-alt fa-4x"></i> <span>Traspasos por Validar<span class="label pull-right bg-color-darken"><?php echo $totaltraspasos ?></span> </span> </span> </a>
+							<a href="<?php echo APP_URL; ?>/Traspasos/index" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-exchange-alt fa-4x"></i> <span>Traspasos por Validar<span class="label pull-right bg-color-darken"><?php echo $totaltraspasos ?></span> </span> </span> </a>
 						</li>
 						<li>
 							<a href="<?php echo APP_URL; ?>/profile.php" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>
