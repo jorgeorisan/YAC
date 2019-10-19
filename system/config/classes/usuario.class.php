@@ -67,7 +67,7 @@ class Usuario extends AutoUsuario {
 		//metodo que sirve para hacer update
 	public function updateAll($id,$_request)
 	{
-		if($_request["password"]){
+		if(isset($_request["password"])){
 			$_request["password"]=password_hash($_request["password"],PASSWORD_DEFAULT);
 		}
 		$_request["updated_date"]=date("Y-m-d H:i:s");
@@ -77,24 +77,28 @@ class Usuario extends AutoUsuario {
 		if(!$row){
 			return false;
 		}else{
+			$Usuario = new Usuario();
+			$dataUsuario=$Usuario->getTable($id);
 			$UsuarioTipo = new UsuarioTipo();
-			$dataUsuarioTipo=$UsuarioTipo->getTable($_request["id_usuario_tipo"]);
-			if(isset($_request["id_tienda"])){
+			$dataUsuarioTipo=$UsuarioTipo->getTable($dataUsuario["id_usuario_tipo"]);
+			if(isset($dataUsuario["id_tienda"])){
 				$objtienda = new Tienda();
-				$datatienda = $objtienda->getTable($_request["id_tienda"]);
+				$datatienda = $objtienda->getTable($dataUsuario["id_tienda"]);
 				if($datatienda){
-					$_SESSION['user_info']['id_tienda']=$_request["id_tienda"];
-					$_SESSION['user_info']['tienda']=$datatienda["nombre"];
-					$_SESSION['user_info']['info_adicional']=$datatienda["info_adicional"];
+					$_SESSION['user_info']['id_tienda']		 = $dataUsuario["id_tienda"];
+					$_SESSION['user_info']['tienda']		 = $datatienda["nombre"];
+					$_SESSION['user_info']['info_adicional'] = $datatienda["info_adicional"];
 					
 				}
 				
 			}
-			$_SESSION['user_info']['id_usuario']     = $_request["id_usuario"];
-			$_SESSION['user_info']['costos']         = $_request["costos"];
-			$_SESSION['user_info']['nombre']         = $dataUsuarioTipo["nombre"];
-			$_SESSION['user_info']['id_usuario_tipo']= $_request["id_usuario_tipo"];
+			$_SESSION['user_info']['id_usuario']     = $id;
+			$_SESSION['user_info']['costos']         = $dataUsuario["costos"];
+			$_SESSION['user_info']['nombre']         = $dataUsuario["nombre"];
+			$_SESSION['user_info']['id_usuario_tipo']= $dataUsuario["id_usuario_tipo"];
 			$_SESSION['user_info']['usuario_tipo']   = $dataUsuarioTipo["usuario_tipo"];
+
+			
 			return true;
 		}
 	}

@@ -39,7 +39,8 @@ if ( !$data ) {
 }
 if(isPost()){
     $obj = new Usuario();
-    $id = $obj->updateAll($id,getPost());
+	$id = $obj->updateAll($id,getPost());
+	
     if ( $id ) {
         informSuccess(true, make_url("Usuarios","index"));
     }else{
