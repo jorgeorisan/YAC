@@ -48,7 +48,7 @@ if($res=$citas->getAllArr()){
 		$idHistorial = '';
 		$link = make_url("Historial","consulta",array('id'=>$row['id_persona'],'id_cita'=>$row['id']));
 		
-		$nombrecliente  = htmlentities($cliente['nombre']." ".$cliente['ap_paterno']." Tel:".$cliente['telefono']); 
+		$nombrecliente  = htmlentities($cliente['nombre']." ".$cliente['ap_paterno']); 
 		$user		    = htmlentities($datauser['nombre']);
 		$class = ($tienda['color'])? "bg-color-".$tienda['color'] : '';
 		switch ($row['status']) {
@@ -620,7 +620,7 @@ if($res=$citas->getAllArr()){
 					}
 				});
 				if (!event.status == "") {
-	                element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.hora_ini + ' a ' + event.hora_fin + "</span>");
+	                element.find('.fc-title').append("<br/><span class='ultra-light'>" + event.motivo +': ' +  event.hora_ini + ' a ' + event.hora_fin + "</span>");
 	            }
 	            if (!event.icon == "") {
 	                element.find('.fc-title').append("<i class='air air-top-right fa " + event.icon +" '></i>");

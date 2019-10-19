@@ -180,7 +180,7 @@
             dateFormat: "yy-mm-dd",
         });
         $('.select2').select2();
-       
+        $('#id_persona').change();
         /*GENERALES*/
        
 
