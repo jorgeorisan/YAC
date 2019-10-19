@@ -256,7 +256,8 @@ $arrayfilters['todo'] = $all;
 		};
 		
 		$("#example-table").tabulator({
-			layout: "fitColumns",
+			
+			layout: "fitDataFill",
             pagination:"remote",
             paginationSize:$('#size').val(),
             ajaxURL: config.base+"/Productos/ajax/?action=get&object=getproductos",
