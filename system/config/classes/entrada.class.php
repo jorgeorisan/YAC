@@ -58,6 +58,7 @@ class Entrada extends AutoEntrada {
 		
 		$_request['id_usuario'] = (isset($_request['id_usuario'])) ? $_request['id_usuario'] : $_SESSION['user_id'];
 		$tiendas = $_request["id_tiendas"];
+	
 		$idefirst="";
 		foreach ($tiendas  as $key => $valtienda) {
 			
@@ -69,7 +70,10 @@ class Entrada extends AutoEntrada {
 					$totalprod++;
 				}
 			}
+			
 			if(!$totalprod) continue;
+
+		
 			
 			$_requestEntrada['folio']    		   = $this->getNewFolio($id_tienda);
 			$_requestEntrada['id_tienda']    	   = $id_tienda;
@@ -97,9 +101,13 @@ class Entrada extends AutoEntrada {
 				$ide = $id["LAST_INSERT_ID()"];
 
 				if(!$ide)  die("Error al insertar Entrada");
+
 				if($id_tienda == $_SESSION['user_info']['id_tienda']){
 					$idefirst = $ide;
 				}
+				if(!$idefirst)
+				 	$idefirst = $ide;
+			
 				
 
 				$objEntradaProducto = new EntradaProducto();

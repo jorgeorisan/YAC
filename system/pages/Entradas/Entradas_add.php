@@ -30,7 +30,7 @@ if(isPost()){
     if($id>0){
         informSuccess(true, make_url("Entradas","view",array('id'=>$id,'page'=>'venta')));
     }else{
-        informError(true,make_url("Entradas","index"));
+       // informError(true,make_url("Entradas","index"));
     }
 }
 $begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
@@ -376,13 +376,22 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         }
 
 
-
+       
         $("#barcode").focus();
         $("#barcode").autocomplete({
-            source: [ <?php echo $_SESSION['CADENA'] ?>],
-            select: function(res) {
-    
-            }
+            source: function (request, response) {
+                var id=$("#id_tienda").val();
+                $.getJSON(config.base+"/Productos/ajax/?action=get&size=20&object=getproductos&id_tienda="+id+"&texto=" + request.term, function (data) {
+                    response($.map(data, function (value, key) {
+                        return {
+                            label: value.codinter+'::'+ value.nombre.toLowerCase()+' $'+ value.precio+'|'+value.existenciastienda,
+                            value: value.codinter
+                        };
+                    }));
+                });
+            },
+            minLength: 2,
+            delay: 100 
         });
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.

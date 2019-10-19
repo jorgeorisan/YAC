@@ -86,18 +86,7 @@ class Usuario extends AutoUsuario {
 					$_SESSION['user_info']['id_tienda']=$_request["id_tienda"];
 					$_SESSION['user_info']['tienda']=$datatienda["nombre"];
 					$_SESSION['user_info']['info_adicional']=$datatienda["info_adicional"];
-					// mostrar productos en sesion
-					$_SESSION['CADENA']='';
-					$obj = new Producto();
-					$queryproductos = $obj->getAllArr();
 					
-					$prod="";
-				
-					foreach($queryproductos as $producto){   
-						$prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
-					}
-					$cadena = substr($prod,1);
-					$_SESSION['CADENA']=$cadena;
 				}
 				
 			}

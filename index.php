@@ -175,15 +175,21 @@ Routing section
         if ($request['page']==='horas')     { $page = "Reportes_horas.php"; }
       }
       //delete pages
-      if(isset($request['params']['id'])){
-        if( $id = $request['params']['id'] ) {
-          $table = explode("delete", $request['page']);
-         
-          if(count($table)>1){
-            delete($id,$request['section'],$table[0]);
-          }
+      $id ='';
+      if(isset($_GET['id']) ) {
+        $id = $_GET['id'];
+      }else{
+        if(isset($request['params']['id'])){
+          $id = $request['params']['id'] ;
         }
       }
+      if( $id>0 ) {
+        $table = explode("delete", $request['page']);
+        if(count($table)>1){
+          delete($id,$request['section'],$table[0]);
+        }
+      }
+      
 
       //*****permisos de usuario  */***///
       if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print" && $request['page']!="excel"  ){
@@ -269,6 +275,7 @@ if( isset($request['path']) && preg_match("/\.php$/",$request['path']) && file_e
   //echo ROOT_DIR . "/1_example_pages/" . $request['path'];
 
   include_once(ROOT_DIR . "/1_example_pages/" . $request['path']);
+  include_once(ROOT_DIR . "/node_modules/jquery.tabulator/examples/" . $request['path']);
 }elseif (file_exists("system/pages/".$page)){
  
   include_once("system/pages/".$page);
@@ -277,24 +284,5 @@ if( isset($request['path']) && preg_match("/\.php$/",$request['path']) && file_e
 // close database
 if (!$db->connect_errno) {
    // $db->close();
-}
-
-// mostrar productos en sesion
-
-if(!isset($_SESSION['CADENA'])){
-
-  $obj = new Producto();
-  
-  $arrayfilters['todo'] = 1;
-  $queryproductos = $obj->getAllArr( $arrayfilters );
-  
-  $prod="";
- 
-  foreach($queryproductos as $producto){   
-      $prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
-  }
-
-  $cadena = substr($prod,1);
-  $_SESSION['CADENA']=$cadena;
 }
 ob_end_flush();

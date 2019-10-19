@@ -250,23 +250,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
    
     $(document).ready(function() {
         
-        $("#id_tienda").change(function () {
-            var id=$("#id_tienda").val();
-            $.get(config.base+"/Productos/ajax/?action=get&object=updateProductosTienda&id_tienda="+id, null, function (response) {
-                if ( response ){
-                 
-                    $("#barcode").autocomplete({source:JSON.parse(response)});
-                   
-                }else{
-                    return notify('error', 'Error al obtener los productos');
-                    
-                }     
-            });
-            
-            $("#tiendaprod").val(id);
-            $("#catalogo").attr('href',''+id);
-            return false;
-        });
+       
         var getproducto = function(form){
             $.get(config.base+"/Pedidos/ajax/get_producto", form,
                 function (response) {
@@ -336,11 +320,21 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 
         $("#barcode").focus();
         $("#barcode").autocomplete({
-            source: [ <?php echo $_SESSION['CADENA'] ?>],
-            select: function(res) {
-    
-            }
+            source: function (request, response) {
+                var id=$("#id_tienda").val();
+                $.getJSON(config.base+"/Productos/ajax/?action=get&size=20&object=getproductos&id_tienda="+id+"&texto=" + request.term, function (data) {
+                    response($.map(data, function (value, key) {
+                        return {
+                            label: value.codinter+'::'+ value.nombre.toLowerCase()+' $'+ value.precio+'|'+value.existenciastienda,
+                            value: value.codinter
+                        };
+                    }));
+                });
+            },
+            minLength: 2,
+            delay: 100 
         });
+        /* DO NOT REMOV
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.
          * It initializes and checks for all basic elements of the page

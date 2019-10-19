@@ -86,6 +86,22 @@ if($res=$citas->getAllArr()){
 }
 
 ?>
+<script>
+	
+	function addnewcita(){
+		var date = new Date();
+			$("#myModal").modal("show");
+			$('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nueva Cita</span>');
+			$.get(config.base+"/Citas/ajax/?action=get&object=showpopup&date="+date, null, function (response) {
+				if ( response ){
+					$("#contentpopup").html(response);
+				}else{
+					return notify('error', 'Error al obtener los datos del Formulario de citas');
+					
+				}     
+			});
+		}
+	</script>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
@@ -101,7 +117,7 @@ if($res=$citas->getAllArr()){
 	<div id="content">
 
 		<div class="widget-body" style='padding: 15px; overflow:auto;'>
-			<a class="btn btn-success" href="<?php echo make_url("Citas","add")?>" >Nueva Cita</a>
+			<a class="btn btn-success" href="javascript:addnewcita()" >Nueva Cita</a>
 			<a class="btn btn-info" href="<?php echo make_url("Citas","index")?>" >Calendario Lista</a>
 		</div>
 		<!--  BEGIN pages -->
@@ -254,9 +270,6 @@ if($res=$citas->getAllArr()){
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/fullcalendar/jquery.fullcalendar.min.js"></script>
 
 <script>
-	
-	
-
 	$(document).ready(function() {
 		
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
@@ -660,7 +673,6 @@ if($res=$citas->getAllArr()){
 	
 	
 	});
-
 </script>
 
 <?php

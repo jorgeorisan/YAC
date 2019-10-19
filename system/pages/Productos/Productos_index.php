@@ -21,11 +21,9 @@ $all= (isset($request['params']['opt'])) ?  true : false;
 
 $obj = new Producto();
 $arrayfilters['todo'] = $all;
-$data = $obj->getAllArr( $arrayfilters );
-
-
 //print_r($data);
 ?>
+
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
 <div id="main" role="main">
@@ -36,6 +34,7 @@ $data = $obj->getAllArr( $arrayfilters );
 		<section id="widget-grid" class="">
 			 <p><a class="btn btn-success" href="<?php echo make_url("Productos","add")?>" ><i class="fas fa-plus"></i> Nuevo Producto</a></p>
 			<div class="row">
+				<input type="hidden" value="<?php echo $_SESSION['user_info']['costos'];?>" id='show_costos'>
 				<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 						<header>
@@ -46,105 +45,18 @@ $data = $obj->getAllArr( $arrayfilters );
 							<div class="jarviswidget-editbox">
 							</div>
 							<div class="widget-body" style="overflow:auto">
-								<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-									<thead>
-										<tr>
-											<th class = "col-md-1" data-class="expand"> ID</th>
-											<th class = "col-md-1" data-hide=""> Codigo</th>
-											<th class = "col-md-1" data-hide=""> Nombre</th>
-											<th class = "col-md-1" data-hide=""> Marca</th>
-											<th class = "col-md-1" data-hide="phone,tablet"> Categ.</th>
-											<th class = "col-md-1" data-hide="phone,tablet"> Prov.</th>
-											<?php if($_SESSION['user_info']['costos']) { ?>
-												<th class = "col-md-1" data-hide=""> Costo</th>
-											<?php } ?>
-											<th class = "col-md-1" data-hide=""> Mayoreo</th>
-											<th class = "col-md-1" data-hide=""> Precio</th>
-											<th class = "col-md-1" data-hide=""> Exist.</th>
-											<th class = "col-md-1" data-hide="phone,tablet"> Act.</th>
-											<th class = "col-md-1" data-hide="phone,tablet">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										<?php 
-										$carpetaimg = ASSETS_URL.'/productosimages/images';
-										foreach($data as  $key => $row) {
-										?>
-											<tr>
-												<td><?php echo htmlentities($row['id_producto']);?></td>
-												<td><?php echo htmlentities($row['codinter'])?></td>
-												<td>
-													<?php 
-														if($row['imagen']!=''){	?>
-															<a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen(<?php echo $row['id_producto'] ?>)"><?php echo htmlentities($row['nombre'])?><br><?php echo ($row['manual']) ? 'Servicio' : '' ?></a>
-															<?php
-														}else{ ?>
-														<?php echo htmlentities($row['nombre'])?>
-															<div id='contfileproductos<?php echo $row['id_producto'] ?>'></div>
-															<br><a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen(<?php echo $row['id_producto'] ?>)">Subir Imagen</a>
-														
-														<?php
-														} ?>
-												</td>
-												<td><?php echo htmlentities($row['marca']) ?></td>
-												<td><?php echo htmlentities($row['categoria']) ?></td>
-												<td><?php echo htmlentities($row['proveedor']) ?></td>
-												<?php if($_SESSION['user_info']['costos']) { ?>
-													<td><?php echo htmlentities($row['costo']) ?></td>
-												<?php } ?>
-												<td><?php echo htmlentities($row['preciomayoreo']) ?></td>
-												<td><?php echo htmlentities($row['precio']) ?></td>
-												<td>
-													<div  id='contexistencias<?php echo $row['id_producto'] ?>'>
-														<?php echo htmlentities($row['existenciastienda'].'/'.$row['existencias']) ?>
-													</div>
-												</td>
-												
-												<td style="font-size:10px">
-													<div  id='contactualizaciones<?php echo $row['id_producto'] ?>'>
-													<?php 
-														if($row['fecha_actualizacion']){ 
-															echo date('Y-m-d H:i',strtotime($row['fecha_actualizacion']))."<br>".htmlentities($row['usuario_actualizacion']);
-														}
-													?>
-													</div>
-													<?php 
-													if($row['fecha_actualizacion']){ 
-														?>
-														<br><a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial(<?php echo $row['id_producto'] ?>)">Historial</a>
-														<?php 
-													} 
-													?>
-													
-												</td>
-												<td>
-													<div class="btn-group">
-														<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-															Accion <span class="caret"></span>
-														</button>
-														<ul class="dropdown-menu">
-															<li>
-																<a href="#" title="Actualizar Producto" onclick="showupdate(<?php echo $row['id_producto']; ?>,'<?php echo $row['nombre']; ?>',<?php echo $row['existenciastienda'];?>,<?php echo $row['existencias'];?>)">
-																Actualizar</a>
-															</li>
-															<li>
-																<a class="" href="<?php echo make_url("Productos","view",array('id'=>$row['id_producto'])); ?>">Ver</a>
-															</li>
-															<li>
-																<a class="" href="<?php echo make_url("Productos","edit",array('id'=>$row['id_producto'])); ?>">Editar</a>
-															</li>
-															
-															<li class="divider"></li>
-															<li>
-																<a href="#" class="red" onclick="borrar('<?php echo make_url("Productos","productodelete",array('id'=>$row['id_producto'])); ?>',<?php echo $row['id_producto']; ?>);">Eliminar</a>
-															</li>
-														</ul>
-													</div>
-												</td>
-											</tr>
-										<?php }?>
-									</tbody>
-								</table>
+								
+								<div class="card-body">
+									<div class="card-heading">
+										<div class="card-controls">
+											<div class="card-input tabulator-filter">
+												<input type="text" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Buscar Producto">
+											</div>
+										</div>
+										<h3 class="card-title">Campaigns</h3>
+									</div>
+									<div id="example-table"></div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -195,16 +107,14 @@ $data = $obj->getAllArr( $arrayfilters );
 ?>
 
 <!-- PAGE RELATED PLUGIN(S) -->
-<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/jquery.dataTables.min.js"></script>
-<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.tableTools.min.js"></script>
-<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
 
+<link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/node_modules/jquery.tabulator/dist/css/tabulator_site.css">
+<script src="<?php echo ASSETS_URL; ?>/node_modules/jquery.tabulator/dist/js/tabulator.js"></script>
 <script>
 
 	$(document).ready(function() {
 		
 	
-		$('#dt_basic').dataTable();
 		showpopupHistorial = function(id){
             $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i>Historial Actualizaciones</span>');
             $.get(config.base+"/Productos/ajax/?action=get&object=showpopupHistorial&id="+id, null, function (response) {
@@ -263,6 +173,118 @@ $data = $obj->getAllArr( $arrayfilters );
 			$('#txt1').val(existenciatienda);
 			return false;
 		}
+
+		//define table
+		// Filters
+		 $('.tabulator-filter input').on('keyup', function(){
+			$("#example-table").tabulator(
+				"setFilter", 'nombre', 'like', $(this).val(),
+				"setFilter", 'codinter', 'like', $(this).val(),
+				"setFilter", 'marca', 'like', $(this).val()
+			);
+		});
+		
+		// Formatter
+        var productos_action = function(cell, formatterParams) {
+            data   = cell.getRow().getData();
+            id     = data['id_producto'];
+            nombre = data['nombre'];
+			existenciastienda  = data['existenciastienda'];
+			existencias        = data['existencias'];
+
+			view_link  = edit_link = delete_link  = '';
+			
+			view_link   = config.base+"/Productos/view/?id="+id;
+			edit_link   = config.base+"/Productos/edit/?id="+id;
+			delete_link = "'"+config.base+"/Productos/productodelete/?id="+id+"'";
+			act = id+",'"+nombre+"',"+existenciastienda+","+existencias;
+            
+			act = id+",'"+nombre+"',"+existenciastienda+","+existencias;
+			
+            html = '<div class="btn-group">'+
+						'<button class="btn btn-default col-xs-6"  onclick="showupdate('+act+')" title="Actualizar Producto"><i class="fa fa-sync fa-spin"></i></button>'+
+						'<a href='+view_link+'> <button class="btn btn-default col-xs-6" title="Ver"><i class="fa fa-eye"></i></button></a>'+
+						'<a href='+edit_link+'> <button class="btn btn-default col-xs-6" title="Editar"><i class="fa fa-pencil"></i></button></a>'+
+						'<button class="btn btn-default col-xs-6"  onclick="borrar('+delete_link+','+id+')" title="Eliminar"><i class="fa fa-times"></i></button>'+
+					'</div>';
+          
+
+            return html;
+		};
+		var act_formatter = function(cell, formatterParams) {
+			data  = cell.getRow().getData();
+			fecha = data['fecha_actualizacion'];
+			user  = data['usuario_actualizacion'];
+			id    = data['id_producto'];
+			datos = (fecha) ? fecha + ' <br> ' + user : '';
+			
+				html = nombreimage+'<div id="contactualizaciones'+id+'">'+datos+'</div>'+
+				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Historial</a>';
+			
+												
+			return html;
+		};
+		var exist_formatter = function(cell, formatterParams) {
+			data               = cell.getRow().getData();
+			existenciastienda  = data['existenciastienda'];
+			id 				   = data['id_producto'];
+			existencias        = data['existencias'];
+			title              = '<div  id="contexistencias'+id+'">'+ existenciastienda + '/' + existencias+'</div>';
+			return title;
+		};
+		var name_formatter = function(cell, formatterParams) {
+			data         = cell.getRow().getData();
+			imagen 		 = data['imagen'];
+			id  		 = data['id_producto'];
+			manual 		 = data['manual'];
+			nombre       = data['nombre'];
+			
+			if(manual==1){ nombreimage  = data['nombre']+'<br>Servicio'; }else{ nombreimage  = data['nombre']; } 
+			html = '';
+			if(imagen){
+				html = '<br><a data-toggle="modal" href="#myModal" onclick="showpopupImagen('+id+')">'+nombreimage+'</a>';
+			}else {
+				html = nombreimage+'<div id="contfileproductos'+id+'"></div>'+
+				'<br><a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen('+id+')">Subir Imagen</a>';
+			}
+			
+			return html;
+		};
+		
+		$("#example-table").tabulator({
+			layout: "fitColumns",
+            pagination:"remote",
+            paginationSize:10,
+            ajaxURL: config.base+"/Productos/ajax/?action=get&object=getproductos",
+            placeholder: "No Data Available",
+			initialSort: [{column:"codinter", dir:"desc"}],
+			ajaxFiltering: true,
+			movableColumns:true,
+            columns: [
+                { title: "ID",  field: "id_producto",  align: "left", sorter: "string" },
+				{ title: "Codigo", field: "codinter",  align: "left", sorter: "string" },
+				{ title: "Nombre", formatter:  name_formatter, align: "left", sorter: "string" },
+				{ title: "Marca", field: "marca", align: "left", sorter: "string" },
+				{ title: "Cate", field: "categoria", align: "left", sorter: "string" },
+				<?php if($_SESSION['user_info']['costos']) { ?>
+					{ title: "Costo", field: "costo", align: "left", sorter: "string" },
+				<?php } ?>
+				{ title: "Mayoreo", field: "preciomayoreo", align: "left", sorter: "string" },
+				{ title: "Precio", field: "precio", align: "left", sorter: "string" },
+				{ title: "Exist",  formatter: exist_formatter, align: "left", sorter: "string" },
+				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter  },
+				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false }
+			],
+            pageLoaded: function(data){  }
+		});
+
+			  // $(".tabulator").tabulator("setSort", "reg", "desc");
+
+			  $("#action").click(function(){
+			  	console.log("html", $(".tabulator").tabulator("getHtml"))
+			  	$("#html-table").html($(".tabulator").tabulator("getHtml"))
+			  });
+
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 		 *
 		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS

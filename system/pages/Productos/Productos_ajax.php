@@ -10,6 +10,16 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 	switch ($_GET["action"]) {
 		case 'get':
 			switch ($_GET["object"]) {
+				case 'geturl':
+					$id = ( isset($_GET["id"]) ) ? $_GET["id"] : '';
+					$var= ( isset($_GET["var"]) ) ? $_GET["var"] : '';
+					$page= ( isset($_GET["page"]) ) ? $_GET["page"] : '';
+					$module= ( isset($_GET["module"]) ) ? $_GET["module"] : '';
+					if( $id ){
+						//echo $module.'  '.$page.'  '.json_encode(array($var=>$id));
+						echo make_url($module,$page,array($var=>$id));
+					}
+					break;
 				case 'showpopupcatalogo':
 					if( isset($_GET["id_tienda"]) ){
 						$idtienda = $_GET["id_tienda"];
@@ -32,6 +42,38 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						
 						include(SYSTEM_DIR.'/pages/Productos/Productos_buscarproducto.php' );
 					}
+					break;
+				case 'getproductos':
+
+
+						
+						$texto    = (isset($_GET["texto"]))     ? $_GET["texto"] : '' ; 
+						if(isset($_GET["filters"]))  {
+							$filtro = $_GET["filters"];
+							$texto  =  (count($filtro[0])>0) ? $filtro[0]['value'] : ''  ; 
+						}
+
+						$idtienda = (isset($_GET["id_tienda"])) ? $_GET["id_tienda"] : $_SESSION['user_info']['id_tienda'] ;
+						$size     = (isset($_GET["size"]))      ? $_GET["size"] : '10' ;
+						$page  	  = (isset($_GET["page"]))      ? $_GET["page"] : '' ;
+						$maxRows  = $page * $size;
+						$productos = new Producto();
+						$arrayfilters['similar']   = $texto;
+						$arrayfilters['id_tienda'] = $idtienda;
+						$arrayfilters['maxRows']   = $maxRows;
+						$arrayfilters['size']      = $size;
+
+						$productostienda  = $productos->getAllArr($arrayfilters);
+						
+						$totalproductos   = $productos->getAllArr( array('todo'=>'all') );
+						$totalpagestabu   = count($totalproductos) /  $size; 
+						
+						if(!$page){
+							echo json_encode($productostienda);
+						}else{
+							echo json_encode(array("last_page"=>ceil($totalpagestabu),"data"=>$productostienda));
+						}
+				
 					break;
 				
 				case 'showpopupHistorial':
@@ -59,15 +101,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 					}
 					break;
-				case 'updateProductosTienda':
-					if( isset($_GET["id_tienda"]) && intval($_GET["id_tienda"])){
-						$id = $_GET["id_tienda"];
-		
-						$obj = new Producto();
-						echo $data = $obj->updateProductosTienda($id);
-						
-					}
-					break;
+			
 				case 'existeproducto':
 					if( isset($_GET["codigo"]) ){
 						$u = new Producto();

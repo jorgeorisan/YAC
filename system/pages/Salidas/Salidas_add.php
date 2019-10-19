@@ -60,7 +60,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body" style="overflow:auto">
                                 <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
                                         <form id="barcode-form">
                                             <input type="hidden" name='action' value='get'>
                                             <input type="hidden" name='object' value='get_producto'>
@@ -343,10 +343,19 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 
         $("#barcode").focus();
         $("#barcode").autocomplete({
-            source: [ <?php echo $_SESSION['CADENA'] ?>],
-            select: function(res) {
-    
-            }
+            source: function (request, response) {
+                var id=$("#id_tiendaanteriorsearch").val();
+                $.getJSON(config.base+"/Productos/ajax/?action=get&size=20&object=getproductos&id_tienda="+id+"&texto=" + request.term, function (data) {
+                    response($.map(data, function (value, key) {
+                        return {
+                            label: value.codinter+'::'+ value.nombre.toLowerCase()+' $'+ value.precio+'|'+value.existenciastienda,
+                            value: value.codinter
+                        };
+                    }));
+                });
+            },
+            minLength: 2,
+            delay: 100 
         });
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.

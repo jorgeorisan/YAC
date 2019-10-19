@@ -24,8 +24,8 @@ include(SYSTEM_DIR . "/inc/header.php");
 //include left panel (navigation)
 //follow the tree in inc/config.ui.php
 include(SYSTEM_DIR . "/inc/nav.php");
-if(isset($request['params']['id'])   && $request['params']['id']>0)
-    $id=$request['params']['id'];
+if(isset($_GET['id'])   && $_GET['id']>0)
+    $id=$_GET['id'];
 else
     informError(true,make_url("Productos","index"));
 

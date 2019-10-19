@@ -3,6 +3,9 @@
 			return $prop.'="'.$value.'"';
 		}, array_keys($page_html_prop), $page_html_prop)) ;?>>
 	<head>
+		<?php 
+			$url_node = ASSETS_URL. '/node_modules/';
+		?>
 		<meta http-equiv="Content-Type" content="text/html"; charset="utf-8"/> 
 		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 
@@ -29,6 +32,7 @@
 		<!-- Toastr JQuery based toasts-->
 		<link rel="stylesheet" type="text/css" href="<?php echo ASSETS_URL; ?>/css/toastr.css" />
 
+		
 
 		<!-- We recommend you use "your_style.css" to override SmartAdmin
 		     specific styles this will also ensure you retrain your customization with each SmartAdmin update.
@@ -42,6 +46,7 @@
 				}
 			}
 
+		
 
 		?>
 
@@ -97,6 +102,9 @@
 		<!-- estilos globales del proyecto -->
 
 		
+		<script src="<?php echo $url_node; ?>jquery.tabulator/dist/js/tabulator.min.js"></script>
+		
+		
 	</head>
 	<body <?php echo implode(' ', array_map(function($prop, $value) {
 			return $prop.'="'.$value.'"';
@@ -106,6 +114,19 @@
 		<?php
 			if (!$no_main_header) {
 
+		?>
+		<?php
+			$objEntrada = new Entrada();
+			$dataentradaspendientes = $objEntrada->getReporteEntradasPendientes();
+			$totalentradas = ($dataentradaspendientes) ? count($dataentradaspendientes) : 0 ;
+			
+			$objTraspaso  = new Traspaso();   
+			$datatraspasospendientes = $objTraspaso->getReporteTraspasosPendientes();
+			$totaltraspasos = ($datatraspasospendientes) ? count($datatraspasospendientes) : 0 ;
+			$alertashow=false;
+			if( $totalentradas || $totaltraspasos ){
+				$alertashow=true;
+			}
 		?>
 		
 				<!-- HEADER -->
@@ -127,7 +148,7 @@
 						</div>
 						<span id="project-selector" class="popover-trigger-element dropdown-toggle" data-toggle="dropdown">
 							<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
-								<span class="label" style="color: #3276b1;">Alertas</span>
+								<span class="label" style="color: #3276b1;">Alertas <?php if($alertashow){?> <span style="color:red"><i class="glyphicon glyphicon-info-sign fa-2x"></i></span> <?php } ?></span>
 							</a>
 						</span>
 
@@ -293,22 +314,15 @@
 				Note: These tiles are completely responsive,
 				you can add as many as you like
 				-->
+				
 				<div id="shortcut">
 					<ul>
+					
 						<li>
-							<a href="<?php echo APP_URL; ?>/inbox.php" class="jarvismetro-tile big-cubes bg-color-blue"> <span class="iconbox"> <i class="fa fa-envelope fa-4x"></i> <span>Cotizaciones <span class="label pull-right bg-color-darken">14</span></span> </span> </a>
+							<a href="<?php echo APP_URL; ?>/invoice.php" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-person-dolly fa-4x"></i> <span>Entradas por Validar <span class="label pull-right bg-color-darken"><?php echo $totalentradas ?></span></span> </span> </a>
 						</li>
 						<li>
-							<a href="<?php echo APP_URL; ?>/calendar.php" class="jarvismetro-tile big-cubes bg-color-orangeDark"> <span class="iconbox"> <i class="fa fa-calendar fa-4x"></i> <span>Seguimiento</span> </span> </a>
-						</li>
-						<li>
-							<a href="<?php echo APP_URL; ?>/gmap-xml.php" class="jarvismetro-tile big-cubes bg-color-purple"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Nuevos</span> </span> </a>
-						</li>
-						<li>
-							<a href="<?php echo APP_URL; ?>/invoice.php" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-book fa-4x"></i> <span>Invoice <span class="label pull-right bg-color-darken">99</span></span> </span> </a>
-						</li>
-						<li>
-							<a href="<?php echo APP_URL; ?>/gallery.php" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-picture-o fa-4x"></i> <span>Gallery </span> </span> </a>
+							<a href="<?php echo APP_URL; ?>/gallery.php" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-exchange-alt fa-4x"></i> <span>Traspasos por Validar<span class="label pull-right bg-color-darken"><?php echo $totaltraspasos ?></span> </span> </span> </a>
 						</li>
 						<li>
 							<a href="<?php echo APP_URL; ?>/profile.php" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>
