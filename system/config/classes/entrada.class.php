@@ -235,10 +235,14 @@ class Entrada extends AutoEntrada {
 		return $set;
 	}
 	//reporte de entradas por autorizar
-	public function getReporteEntradasPendientes()
+	public function getReporteEntradasPendientes($arrayfilters=false)
 	{
+		
+		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda'] : $_SESSION['user_info']['id_tienda'];
+		$queryid_tienda  =  " and v.id_tienda = ".$id_tienda ;
 		$sql = "SELECT v.* FROM entrada v
 				where  v.status = 'POR AUTORIZAR'
+				$queryid_tienda
 			 ";
 		$res = $this->db->query($sql);
 		
