@@ -10,16 +10,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 	switch ($_GET["action"]) {
 		case 'get':
 			switch ($_GET["object"]) {
-				case 'geturl':
-					$id = ( isset($_GET["id"]) ) ? $_GET["id"] : '';
-					$var= ( isset($_GET["var"]) ) ? $_GET["var"] : '';
-					$page= ( isset($_GET["page"]) ) ? $_GET["page"] : '';
-					$module= ( isset($_GET["module"]) ) ? $_GET["module"] : '';
-					if( $id ){
-						//echo $module.'  '.$page.'  '.json_encode(array($var=>$id));
-						echo make_url($module,$page,array($var=>$id));
-					}
-					break;
+				
 				case 'showpopupcatalogo':
 					if( isset($_GET["id_tienda"]) ){
 						$idtienda = $_GET["id_tienda"];
@@ -61,6 +52,8 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						$arrayfilters['similar']   = $texto;
 						$arrayfilters['id_tienda'] = $idtienda;
 						$arrayfilters['maxRows']   = $maxRows;
+						$arrayfilters['todo']      = '1';
+						
 						$arrayfilters['size']      = $size;
 
 						$productostienda  = $productos->getAllArr($arrayfilters);
@@ -71,7 +64,13 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						if(!$page){
 							echo json_encode($productostienda);
 						}else{
-							echo json_encode(array("last_page"=>ceil($totalpagestabu),"data"=>$productostienda));
+							//productos index
+							if($texto){
+								$totalpagestabu = count($productostienda) /  $size; 
+								echo json_encode(array("last_page"=>ceil($totalpagestabu),"data"=>$productostienda));
+							}else{
+								echo json_encode(array("last_page"=>ceil($totalpagestabu),"data"=>$productostienda));
+							}
 						}
 				
 					break;

@@ -48,12 +48,18 @@ $arrayfilters['todo'] = $all;
 								
 								<div class="card-body">
 									<div class="card-heading">
+										<h3 class="card-title">Productos</h3>
 										<div class="card-controls">
-											<div class="card-input tabulator-filter">
-												<input type="text" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Buscar Producto">
+											<div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+												<div class="card-input tabulator-filter">
+													<input type="text" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Buscar Producto">
+												</div>
+											</div>
+											<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+												<input type="number" id="size" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Filtrar" value="10">
 											</div>
 										</div>
-										<h3 class="card-title">Campaigns</h3>
+									
 									</div>
 									<div id="example-table"></div>
 								</div>
@@ -108,7 +114,7 @@ $arrayfilters['todo'] = $all;
 
 <!-- PAGE RELATED PLUGIN(S) -->
 
-<link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/node_modules/jquery.tabulator/dist/css/tabulator_site.css">
+<link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/node_modules/jquery.tabulator/dist/css/bootstrap/tabulator_bootstrap.min.css">
 <script src="<?php echo ASSETS_URL; ?>/node_modules/jquery.tabulator/dist/js/tabulator.js"></script>
 <script>
 
@@ -186,9 +192,9 @@ $arrayfilters['todo'] = $all;
 		
 		// Formatter
         var productos_action = function(cell, formatterParams) {
-            data   = cell.getRow().getData();
-            id     = data['id_producto'];
-            nombre = data['nombre'];
+            data   			   = cell.getRow().getData();
+            id     			   = data['id_producto'];
+            nombre 			   = data['nombre'];
 			existenciastienda  = data['existenciastienda'];
 			existencias        = data['existencias'];
 
@@ -198,8 +204,6 @@ $arrayfilters['todo'] = $all;
 			edit_link   = config.base+"/Productos/edit/?id="+id;
 			delete_link = "'"+config.base+"/Productos/productodelete/?id="+id+"'";
 			act = id+",'"+nombre+"',"+existenciastienda+","+existencias;
-            
-			act = id+",'"+nombre+"',"+existenciastienda+","+existencias;
 			
             html = '<div class="btn-group">'+
 						'<button class="btn btn-default col-xs-6"  onclick="showupdate('+act+')" title="Actualizar Producto"><i class="fa fa-sync fa-spin"></i></button>'+
@@ -207,7 +211,6 @@ $arrayfilters['todo'] = $all;
 						'<a href='+edit_link+'> <button class="btn btn-default col-xs-6" title="Editar"><i class="fa fa-pencil"></i></button></a>'+
 						'<button class="btn btn-default col-xs-6"  onclick="borrar('+delete_link+','+id+')" title="Eliminar"><i class="fa fa-times"></i></button>'+
 					'</div>';
-          
 
             return html;
 		};
@@ -254,7 +257,7 @@ $arrayfilters['todo'] = $all;
 		$("#example-table").tabulator({
 			layout: "fitColumns",
             pagination:"remote",
-            paginationSize:10,
+            paginationSize:$('#size').val(),
             ajaxURL: config.base+"/Productos/ajax/?action=get&object=getproductos",
             placeholder: "No Data Available",
 			initialSort: [{column:"codinter", dir:"desc"}],
