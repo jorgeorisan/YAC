@@ -22,6 +22,7 @@ $all= (isset($request['params']['opt'])) ?  true : false;
 $obj = new Producto();
 $arrayfilters['todo'] = $all;
 //print_r($data);
+
 ?>
 
 <!-- ==========================CONTENT STARTS HERE ========================== -->

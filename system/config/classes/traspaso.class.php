@@ -197,7 +197,10 @@ class Traspaso extends AutoTraspaso {
 	public function getReporteTraspasosPendientes($arrayfilters=false)
 	{
 		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda'] : $_SESSION['user_info']['id_tienda'];
-		$queryid_tienda  =  " and v.id_tienda = ".$id_tienda ;
+		$queryid_tienda ='';
+		if($_SESSION['user_info']['usuario_tipo']=='GERENTE GENERAL'){
+			$queryid_tienda  =  " and v.id_tienda = ".$id_tienda ;
+		}
 		$sql = "SELECT v.* FROM traspaso v
 				where  v.status='POR AUTORIZAR'
 				$queryid_tienda 

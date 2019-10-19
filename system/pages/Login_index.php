@@ -109,11 +109,12 @@
 			// load user / start session
 			$u = new Usuario();
 			$u->load($id);
-         echo $_SESSION['user_id']=$id;
+         $_SESSION['user_id']=$id;
          $tienda = new Tienda();
          $dataTienda=$tienda->getTable($u->getIdTienda());
          $UsuarioTipo = new UsuarioTipo();
          $dataUsuarioTipo=$UsuarioTipo->getTable($u->getIdUsuarioTipo());
+
 			$_SESSION['user_info']=array(
             'id'=>$u->getId(),
             'id_usuario'=>$u->getIdUsuario(),
