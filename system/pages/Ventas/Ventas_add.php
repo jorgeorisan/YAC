@@ -341,11 +341,7 @@ $dataventas     		= $reports->getReporteVentas($arrayfilters);
                                                                                             </li>
                                                                                             <?php 
                                                                                             if (!$row['cancelado']){ ?> 
-                                                                                                <?php if($row['icredito']){ ?>
-                                                                                                    <li>
-                                                                                                        <a data-toggle="modal" class="" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
-                                                                                                    </li>
-                                                                                                <?php } ?>
+                                                                                              
                                                                                                 <li class="divider"></li>
                                                                                                 <li>
                                                                                                     <a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
@@ -449,6 +445,32 @@ $dataventas     		= $reports->getReporteVentas($arrayfilters);
     $('#dt_basic').dataTable({
         "aaSorting": [[0,"desc" ]],
         "iDisplayLength": 3,
+    });
+    $(".deleteventa").click(function(e) {
+        e.preventDefault();
+        var idventa = $(this).attr('idventa');
+        var folio   = $(this).attr('folio');
+        $.SmartMessageBox({
+            title : "Cancelar Venta: "+folio,
+            content : "Menciona el motivo de cancelacion",
+            buttons : '[No][Yes]',
+            input : "text",
+            placeholder : "Motivo de cancelacion"
+        }, function(ButtonPressed, Value) {
+            if (ButtonPressed === "Yes") {
+                if(!Value) return notify('warning','Se necesita un motivo');
+                $.get(config.base+"/Ventas/ajax/deleteventa?action=get&object=deleteventa&idventa="+idventa+"&motivo="+Value,
+                function (response) {
+                    if(response){
+                        notify('success','Cancelada con exito');
+                        location.reload();
+                    }else{
+                        return notify('error','Error al cancelar venta');
+                    }
+                });
+            }
+        });
+        $("#txt1").val('');
     });
    
     function nextFocus(inputF, inputS) {
