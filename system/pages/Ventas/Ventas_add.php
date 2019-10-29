@@ -41,7 +41,6 @@ $begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y
 $end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
-$arrayfilters['id_usuario']    = $idusuario;
 $arrayfilters['id_tienda']     = $idtienda;
 $arrayfilters['page']   	   = 'ventas';
 $arrayfilters['size']   	   = '10';
