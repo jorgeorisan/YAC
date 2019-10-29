@@ -41,7 +41,7 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
-<div id="main" role="main">
+<div id="main" role="main" onKeyDown="javascript:Verificar()">
      <?php $breadcrumbs["Entradas"] = APP_URL."/Entradas/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
@@ -288,6 +288,13 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/YOURJS.js"></script>-->
 
 <script>
+    function Verificar()
+    {
+        var tecla=window.event.keyCode;
+        if (tecla==116) {
+            alert("¡¡¡Esta página no debe actualizarse, se podría duplicar la información!!!"); event.keyCode=0;
+            event.returnValue=false;}
+    }
     function nextFocus(inputF, inputS) {
         document.getElementById(inputF).addEventListener('keydown', function(event) {
             if (event.keyCode == 13) {

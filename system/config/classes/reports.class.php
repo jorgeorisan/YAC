@@ -23,12 +23,14 @@ class Reports extends Usuario {
 		$id_usuario  = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
 		$id_tienda   = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
 		$id_producto = (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
+		$size	     = (isset($arrayfilters['size']))          ? $arrayfilters['size']          : '';
 		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
 			return false;
 		}
 		$qryusuario  = ($id_usuario)    ? " AND v.id_user    = '$id_usuario' " : "";
 		$qrytienda   = ($id_tienda>0)   ? " AND v.id_tienda  = '$id_tienda' "   : "";
 		$id_producto = ($id_producto>0) ? " AND v.id_producto= '$id_usuario' " : "";
+		$qrysize 	 = ($size>0)		? " LIMIT $size " : "";
 		$sql = "SELECT v.*,u.id_usuario id_usuario
 						FROM venta v
 						LEFT JOIN usuario u ON u.id=v.id_user
@@ -36,6 +38,7 @@ class Reports extends Usuario {
 					DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
 					$qryusuario
 					$qrytienda
+					$qrysize
 				";
 		$res = $this->db->query($sql);
 		

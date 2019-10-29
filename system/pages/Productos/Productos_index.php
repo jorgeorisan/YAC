@@ -204,6 +204,7 @@ $arrayfilters['todo'] = $all;
 			view_link   = config.base+"/Productos/view/?id="+id;
 			edit_link   = config.base+"/Productos/edit/?id="+id;
 			delete_link = "'"+config.base+"/Productos/productodelete/?id="+id+"'";
+			
 			act = id+",'"+nombre+"',"+existenciastienda+","+existencias;
 			
             html = '<div class="btn-group">'+
@@ -255,9 +256,17 @@ $arrayfilters['todo'] = $all;
 			return html;
 		};
 		
+		try{ 
+			//si es telefono
+			document.createEvent("TouchEvent"); 
+			var modopantalla='fitDataFill'; // muestra todos los campos
+		}catch(e){ 
+			var modopantalla='fitColumns'; // muestra todos los campos compactados
+		}
+		
 		$("#example-table").tabulator({
-			
-			layout: "fitDataFill",
+			//layout: "fitDataFill",
+			layout: modopantalla,
             pagination:"remote",
             paginationSize:$('#size').val(),
             ajaxURL: config.base+"/Productos/ajax/?action=get&object=getproductos",

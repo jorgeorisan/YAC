@@ -46,7 +46,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 
 						$idtienda = (isset($_GET["id_tienda"])) ? $_GET["id_tienda"] : $_SESSION['user_info']['id_tienda'] ;
 						$size     = (isset($_GET["size"]))      ? $_GET["size"] : '10' ;
-						$page  	  = (isset($_GET["page"]))      ? $_GET["page"] : '' ;
+						$page  	  = (isset($_GET["page"]))      ? $_GET["page"] : '0' ;
 						$maxRows  = $page * $size;
 						$productos = new Producto();
 						$arrayfilters['similar']   = $texto;

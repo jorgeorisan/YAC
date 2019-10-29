@@ -281,6 +281,31 @@ if( isset($request['path']) && preg_match("/\.php$/",$request['path']) && file_e
   include_once("system/pages/".$page);
 }else{}
 
+// mostrar productos en sesion
+/*
+if(!isset($_SESSION['CADENA'])){
+
+  $obj = new Producto();
+  
+  $arrayfilters['todo'] = 1;
+  $queryproductos = $obj->getAllArr( $arrayfilters );
+
+  $_SESSION['CADENA']=json_encode( $queryproductos);
+}*/
+if(!isset($_SESSION['CADENA'])){
+  $obj = new Producto();
+  
+  $arrayfilters['todo'] = 1;
+  $queryproductos = $obj->getAllArr( $arrayfilters );
+  
+  $prod="";
+ 
+  foreach($queryproductos as $producto){   
+      $prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
+  }
+  $cadena = substr($prod,1);
+  $_SESSION['CADENA']=$cadena;
+}
 // close database
 if (!$db->connect_errno) {
    // $db->close();
