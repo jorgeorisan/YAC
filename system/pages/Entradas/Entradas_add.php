@@ -293,7 +293,8 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
         var tecla=window.event.keyCode;
         if (tecla==116) {
             alert("¡¡¡Esta página no debe actualizarse, se podría duplicar la información!!!"); event.keyCode=0;
-            event.returnValue=false;}
+            event.returnValue=false;
+            }
     }
     function nextFocus(inputF, inputS) {
         document.getElementById(inputF).addEventListener('keydown', function(event) {

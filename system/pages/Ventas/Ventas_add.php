@@ -440,7 +440,8 @@ $dataventas     		= $reports->getReporteVentas($arrayfilters);
         var tecla=window.event.keyCode;
         if (tecla==116) {
             alert("¡¡¡Esta página no debe actualizarse, se podría duplicar la información!!!"); event.keyCode=0;
-            event.returnValue=false;}
+            event.returnValue=false;
+        }
     }
     $('#dt_basic').dataTable({
         "aaSorting": [[0,"desc" ]],
