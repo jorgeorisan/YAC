@@ -38,6 +38,7 @@ class Reports extends Usuario {
 					DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
 					$qryusuario
 					$qrytienda
+					order by v.id_venta DESC
 					$qrysize
 				";
 		$res = $this->db->query($sql);
