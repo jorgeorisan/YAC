@@ -96,7 +96,7 @@ $data = $obj->getAllArr();
 											}
 											?>
 											<tr>
-												<td><?php echo date('d-m-Y',strtotime($row['fecha_inicial']))?></td>
+												<td><?php echo date('Y-m-d',strtotime($row['fecha_inicial']))?></td>
 												<td><?php echo date('H:m',strtotime($row['fecha_inicial']))." / ". date('H:m',strtotime($row['fecha_final']))?></td>
 												
 												<td><a class="" href="<?php echo make_url("Pacientes","consulta",array('id'=>$row['id_persona'])); ?>"><?php echo $nombrepersona ?></a></td>
