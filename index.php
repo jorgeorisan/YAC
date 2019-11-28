@@ -120,8 +120,9 @@ Routing section
       if ($request['section']==='Ventas'){
         $page = "Ventas_index.php";
         $dir  = "Ventas";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Ventas_add.php";      }
-        if ($request['page']==='view')     { $page = "Ventas_view.php"; }
+        if ($request['page']==='add')      { $page = "Ventas_add.php";     }
+        if ($request['page']==='corte')    { $page = "Ventas_corte.php";   }
+        if ($request['page']==='view')     { $page = "Ventas_view.php";    }
         if ($request['page']==='credito')  { $page = "Ventas_credito.php"; }
         
       }

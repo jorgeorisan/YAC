@@ -64,7 +64,7 @@ class Reports extends Usuario {
 		$qryusuario     = ($id_usuario)  ? " AND v.id_user = '$id_usuario' " : "";
 		$qrytienda      = ($id_tienda>0) ? " AND v.id_tienda  = '$id_tienda'  " : "";
 		$sql = "SELECT 
-							usuarios_venta.id_usuario id_usuario,usuarios_venta.comision,usuarios_venta.id_usuario_tipo,
+							usuarios_venta.id_user ,usuarios_venta.id_usuario id_usuario,usuarios_venta.comision,usuarios_venta.id_usuario_tipo,
 							ifnull(usuarios_venta.totalventa,0) totalventa,
 							ifnull(ventas_credito.totalventacredito,0) totalventacredito,
 							ifnull(ventas_canceladas.totalventacancelada,0) totalventacancelada,
@@ -232,6 +232,50 @@ class Reports extends Usuario {
 		}
 		$res->close();
 		return $set;
+	}
+	public function getCajaAnterior($arrayfilters)
+	{
+		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda  =  $_SESSION['user_info']['id_tienda'];
+		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
+			return false;
+		}
+		$qryusuario     = ($id_usuario)  ? " AND d.id_user = '$id_usuario' " : "";
+		$qrytienda      = ($id_tienda>0) ? " AND d.id_tienda  = '$id_tienda'  " : "";
+	 	$sql = "SELECT ifnull(d.total_cajanew,0) as total, d.id_user id_usuario , d.id_tienda
+			FROM  corte d
+			where  
+				DATE(d.fecha)>='".$fechaini."' and DATE(d.fecha)<='".$fechafin."'
+				AND d.status='active'
+				$qrytienda
+				order by id desc
+			limit 1
+			";
+		$res=$this->db->query($sql);
+		
+		if(!$res)
+			{die("Error getting result getCajaAnterior");}
+		$row = $res->fetch_assoc();
+		if(isset($row) && !count($row)){
+			$sql = "SELECT ifnull(d.total_cajanew,0) as total, d.id_user id_usuario , d.id_tienda
+				FROM  corte d
+				where  
+					DATE(d.fecha)<='".$fechafin."'
+					AND d.status='active'
+					$qrytienda
+					order by id desc	
+				limit 1
+				";
+			$res=$this->db->query($sql);
+			
+			if(!$res)
+				{die("Error getting result getCajaAnterior");}
+			$row = $res->fetch_assoc();
+		}
+		$res->close();
+		return $row['total'];
 	}
 	// ventas por producto
 	public function getReporteVentasProductos($id,$id_producto=false)
