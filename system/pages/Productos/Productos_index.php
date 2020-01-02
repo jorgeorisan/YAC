@@ -21,6 +21,8 @@ $all= (isset($request['params']['opt'])) ?  true : false;
 
 $obj = new Producto();
 $arrayfilters['todo'] = $all;
+$arrayfilters['page'] = 'productos';
+$jsonarrayfilters=json_encode($arrayfilters);
 //print_r($data);
 
 ?>
@@ -33,7 +35,10 @@ $arrayfilters['todo'] = $all;
 	<!-- MAIN CONTENT -->
 	<div id="content">
 		<section id="widget-grid" class="">
-			 <p><a class="btn btn-success" href="<?php echo make_url("Productos","add")?>" ><i class="fas fa-plus"></i> Nuevo Producto</a></p>
+			<div class="widget-body" style='padding-bottom: 10px;'>
+			 	<a class="btn btn-success" href="<?php echo make_url("Productos","add")?>" ><i class="fas fa-plus"></i> Nuevo Producto</a>
+				<a class="btn btn-info" id=""  target="_blank" href="<?php echo make_url("Productos","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
+			</div>
 			<div class="row">
 				<input type="hidden" value="<?php echo $_SESSION['user_info']['costos'];?>" id='show_costos'>
 				<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -275,8 +280,8 @@ $arrayfilters['todo'] = $all;
 			ajaxFiltering: true,
 			movableColumns:true,
             columns: [
-                { title: "ID",  field: "id_producto",  align: "left", sorter: "string" },
-				{ title: "Codigo", field: "codinter",  align: "left", sorter: "string" },
+                { title: "ID",  field: "id_producto",  align: "left", sorter: "string" ,download:true},
+				{ title: "Codigo", field: "codinter",  align: "left", sorter: "string",download:true },
 				{ title: "Nombre", formatter:  name_formatter, align: "left", sorter: "string" },
 				{ title: "Marca", field: "marca", align: "left", sorter: "string" },
 				{ title: "Cate", field: "categoria", align: "left", sorter: "string" },
@@ -287,8 +292,14 @@ $arrayfilters['todo'] = $all;
 				{ title: "Precio", field: "precio", align: "left", sorter: "string" },
 				{ title: "Exist",  formatter: exist_formatter, align: "left", sorter: "string" },
 				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter  },
-				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false }
+				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false },
+				{title:"id", field:"id_producto", visible:false, download:false} //force hidden field to show in download
 			],
+			downloadConfig:{
+				columnGroups:false, //include column groups in column headers for download
+				rowGroups:false, //do not include row groups in download
+				columnCalcs:false, //do not include column calculation rows in download
+			},
             pageLoaded: function(data){  }
 		});
 

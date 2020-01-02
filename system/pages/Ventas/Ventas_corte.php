@@ -231,7 +231,7 @@ if(isPost()){
 											$totalventagral          += $totalgeneral;
 											$totalcomisiongral       += $totalcomision;
 											if(($row->id_user  == $_SESSION['user_id'] && $totalventacaja == 0 )){
-												$totalventacaja =  $totalventausuario ;
+												$totalventacaja =  $totalcaja ;
 											}
 											
 											?>
@@ -308,112 +308,139 @@ if(isPost()){
 					<input type="hidden" name='total_caja' id='total_caja2' value="0">
 					<input type="hidden" name='total_dinero' id='total_dinero2' value="0">
 					<input type="hidden" name='total_diferencia' id='total_diferencia2' value="0">
-					<article class="col-sm-12 col-md-8 col-lg-8"  id="">
-						<table border='1'>
-							<thead>
-								<tr>
-									<th style="color:blue">C. Entrada</th>
-									<th style="color:blue">Entradas</th>
-									<th style="color:red">Salidas</th>
-									<th style="color:red">C. Salida</th>
-								</tr>
-							</thead>
-							<tbody class="renglones">
-								<tr class="renglon">
-									<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='Caja' ></td>
-									<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number" value="<?php echo $totalcajacorte?>" ></td>
-									<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Sueldo'></td>
-								</tr>
-								<tr class="renglon">
-									<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='Venta'></td>
-									<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number" value="<?php echo $totalventacaja; ?>" ></td>
-									<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Pago YAC STUDIO'></td>
-								</tr>
-								<tr class="renglon">
-									<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='YAC STUDIO'></td>
-									<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number"></td>
-									<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Pago BE YAC SPA'></td>
-								</tr>
-								<tr class="renglon">
-									<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='BE YAC SPA'></td>
-									<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number"></td>
-									<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Retiro'></td>
-								</tr>
-								<tr class="renglon">
-									<td><input class="question" name="text_entrada[]" placeholder="Nuevo Concepto" type="text" value=''></td>
-									<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number"></td>
-									<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_salida[]" placeholder="Nuevo Concepto" type="text" value=''></td>
-								</tr>
-							</tbody>
-							<footer>
-								<tr class="">
-									<td colspan="4">&nbsp;</td>
-								</tr>
-								<tr class="totales">
-									<td></td>
-									<td><strong><div  id="total_entrada" style="width:10px; color:blue">0</div></strong></td>
-									<td><strong><div  id="total_salida" style="width:10px; color:red">0</div></strong></td>
-									<td></td>
-								</tr>
-								<tr class="totales">
-									<td></td>
-									<td><strong>Total en Caja</strong></td>
-									<td><strong><div id="total_caja" style="width:10px; color:green">0</div></strong></td>
-									<td></td>
-								</tr>
-							</footer>
-						</table>
-					</article>
-					<article class="col-sm-12 col-md-4 col-lg-4"  id="">
-						<table border='1'>
-							<thead>
-								<tr>
-									<th style="color:">Monto</th>
-									<th style="color:blue">Tipo</th>
-								</tr>
-							</thead>
-							<tbody class="renglones_dinero">
-								<tr class="renglon_dinero">
-									<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Billetes'></td>
-								</tr>
-								<tr class="renglon_dinero">
-									<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Monedas 10'></td>
-								</tr>
-								<tr class="renglon_dinero">
-									<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Monedas 5'></td>
-								</tr>
-								<tr class="renglon_dinero">
-									<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Cambio'></td>
-								</tr>
-								<tr class="renglon_dinero">
-									<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
-									<td><input class="question" name="text_dinero[]" placeholder="Nuevo Concepto" type="text" value=''></td>
-								</tr>
-							</tbody>
-							<footer>
-								<tr class="">
-									<td colspan="2">&nbsp;</td>
-								</tr>
-								<tr class="totales">
-									<td><strong><div  id="total_dinero" style="width:10px; color:blue">0</div></strong></td>
-									<td><strong>TOTAL</strong></td>
-								</tr>
-								<tr class="totales">
-									<td><strong><div id="total_diferencia" style="width:10px; color:">0</div></strong></td>
-									<td><strong>Diferencia</strong></td>
-								</tr>
-							</footer>
-						</table>
-					</article>
+					
+					<div class="row" style="padding: 20px;">
+						<article class="col-sm-12 col-md-8 col-lg-8"  id="">
+							<div class="jarviswidget jarviswidget-color-white" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
+								<header>
+									<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+									<h2>Cuentas <?php echo date('l jS \of F Y ');?></h2>
+								</header>
+								<div>
+									<div class="jarviswidget-editbox">
+									</div>
+									<div class="widget-body">
+									<h3 class="tit"></h3>
+									<table border='1' style="width:100%">
+										<thead>
+											<tr>
+												<th style="color:blue">C. Entrada</th>
+												<th style="color:blue; width:10px">Entradas</th>
+												<th style="color:red; width:10px">Salidas</th>
+												<th style="color:red">C. Salida</th>
+											</tr>
+										</thead>
+										<tbody class="renglones">
+											<tr class="renglon">
+												<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='Caja' ></td>
+												<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number" value="<?php echo $totalcajacorte?>" ></td>
+												<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Sueldo'></td>
+											</tr>
+											<tr class="renglon">
+												<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='Venta'></td>
+												<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number" value="<?php echo $totalventacaja; ?>" ></td>
+												<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Pago YAC STUDIO'></td>
+											</tr>
+											<tr class="renglon">
+												<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='YAC STUDIO'></td>
+												<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number"></td>
+												<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Pago BE YAC SPA'></td>
+											</tr>
+											<tr class="renglon">
+												<td><input class="question" name="text_entrada[]" placeholder="Concepto" type="text" value='BE YAC SPA'></td>
+												<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number"></td>
+												<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_salida[]" placeholder="Concepto" type="text" value='Retiro'></td>
+											</tr>
+											<tr class="renglon">
+												<td><input class="question" name="text_entrada[]" placeholder="Nuevo Concepto" type="text" value=''></td>
+												<td><input class="question r_entrada" name="row_entrada[]" placeholder="" type="number"></td>
+												<td><input class="question r_salida" name="row_salida[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_salida[]" placeholder="Nuevo Concepto" type="text" value=''></td>
+											</tr>
+										</tbody>
+										<footer>
+											<tr class="">
+												<td colspan="4">&nbsp;</td>
+											</tr>
+											<tr class="totales">
+												<td></td>
+												<td><strong><div  id="total_entrada" style="width:10px; color:blue">0</div></strong></td>
+												<td><strong><div  id="total_salida" style="width:10px; color:red">0</div></strong></td>
+												<td></td>
+											</tr>
+											<tr class="totales">
+												<td></td>
+												<td><strong>Total en Caja</strong></td>
+												<td><strong><div id="total_caja" style="width:10px; color:green">0</div></strong></td>
+												<td></td>
+											</tr>
+										</footer>
+									</table>
+								</div>
+							</div>
+						</article>
+						<article class="col-sm-12 col-md-6 col-lg-6"  id="">
+							<div class="jarviswidget jarviswidget-color-white" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
+								<header>
+									<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+									<h2>EFECTIVO</h2>
+								</header>
+								<div>
+									<div class="jarviswidget-editbox">
+									</div>
+									<div class="widget-body">
+									<h3 class="tit"></h3>
+									<table border='1' style="width:100%; paddign-top:10px">
+										<thead>
+											<tr>
+												<th style="color:">Monto</th>
+												<th style="color:blue">Tipo</th>
+											</tr>
+										</thead>
+										<tbody class="renglones_dinero" style="text-align:center">
+											<tr class="renglon_dinero">
+												<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Billetes'></td>
+											</tr>
+											<tr class="renglon_dinero">
+												<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Monedas 10'></td>
+											</tr>
+											<tr class="renglon_dinero">
+												<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Monedas 5'></td>
+											</tr>
+											<tr class="renglon_dinero">
+												<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_dinero[]" placeholder="Concepto" type="text" value='Cambio'></td>
+											</tr>
+											<tr class="renglon_dinero">
+												<td><input class="question r_dinero" name="row_dinero[]" placeholder="" type="number"></td>
+												<td><input class="question" name="text_dinero[]" placeholder="Nuevo Concepto" type="text" value=''></td>
+											</tr>
+										</tbody>
+										<footer>
+											<tr class="">
+												<td colspan="2">&nbsp;</td>
+											</tr>
+											<tr class="totales">
+												<td><strong><div  id="total_dinero" style="width:10px; color:blue">0</div></strong></td>
+												<td><strong>TOTAL</strong></td>
+											</tr>
+											<tr class="totales">
+												<td><strong><div id="total_diferencia" style="width:10px; color:">0</div></strong></td>
+												<td><strong>Diferencia</strong></td>
+											</tr>
+										</footer>
+									</table>
+								</div>
+							</div>
+						</article>
+					</div>
 					<div class="" style="text-align: center">
 						<div class="col-md-12">
 							<br>

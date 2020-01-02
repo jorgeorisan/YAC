@@ -532,7 +532,7 @@ if($res=$citas->getAllArr()){
 				dataType: "json",
                 data: $('#main-form').serialize(), // Adjuntar los campos del formulario enviado.
                 success: function(response){
-                    if(response){
+                    if(response==1){
 						//$('#calendar').fullCalendar( 'refresh' );
 						//location.reload();
 						

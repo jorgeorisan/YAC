@@ -258,7 +258,8 @@ class Reports extends Usuario {
 		if(!$res)
 			{die("Error getting result getCajaAnterior");}
 		$row = $res->fetch_assoc();
-		if(isset($row) && !count($row)){
+		if(!($row)){
+
 			$sql = "SELECT ifnull(d.total_cajanew,0) as total, d.id_user id_usuario , d.id_tienda
 				FROM  corte d
 				where  
