@@ -12,8 +12,11 @@
 		protected $status = "";
 		protected $montoabono = 0;
 		protected $id_usuario = "";
+		protected $id_user = 0;
 		protected $comentarios = "";
 		protected $tipo_pago = "";
+		protected $fecha_cancelacion = "";
+		protected $usuario_cancelacion = 0;
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -72,6 +75,11 @@
  				$this->id_usuario = $value;
 		}
 		
+		public function setIdUser( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDUSER","i") ) 
+ 				$this->id_user = $value;
+		}
+		
 		public function setComentarios( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "COMENTARIOS","s") ) 
  				$this->comentarios = $value;
@@ -80,6 +88,16 @@
 		public function setTipoPago( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "TIPOPAGO","s") ) 
  				$this->tipo_pago = $value;
+		}
+		
+		public function setFechaCancelacion( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "FECHACANCELACION","s") ) 
+ 				$this->fecha_cancelacion = $value;
+		}
+		
+		public function setUsuarioCancelacion( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "USUARIOCANCELACION","i") ) 
+ 				$this->usuario_cancelacion = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -155,6 +173,14 @@
  			}
 		}
 		
+		public function getIdUser($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id_user) ;
+ 			}else{
+ 				return $this->id_user ;
+ 			}
+		}
+		
 		public function getComentarios($sanitize=true){ 
  			if($sanitize){
  				return htmlspecialchars($this->comentarios) ;
@@ -171,11 +197,46 @@
  			}
 		}
 		
+		public function getFechaCancelacion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->fecha_cancelacion) ;
+ 			}else{
+ 				return $this->fecha_cancelacion ;
+ 			}
+		}
+		
+		public function getUsuarioCancelacion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->usuario_cancelacion) ;
+ 			}else{
+ 				return $this->usuario_cancelacion ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
 		public function getStatusclass(){
 			return  $this->statusclass ;
+		}
+		// Private Support Functions
+		protected function validclassateInput( $pcre, $input, $field , $bind_type) {
+			//if ( ! $this->validclass )
+			//	return $this->validclass;
+
+			if ( ! preg_match($pcre, $input) ){ 
+				return $this->killInvalidclass( "The input provided for the field '$field' is not validclass. Value provided: ".htmlentities($input),$field);
+			}else{
+				unset($this->statusclass[$field]);
+				if (empty($this->statusclass)){$this->validclass=true;}
+			}
+
+			return true;
+		}
+		protected function killInvalidclass( $msg, $field="General Error" ){
+			$this->statusclass[$field] = $msg;
+			$this->validclass = false;
+			return false;
 		}
 
 	// Public Support Functions
@@ -204,8 +265,11 @@
 			$this->setStatus( $res['status'] );
 			$this->setMontoabono( $res['montoabono'] );
 			$this->setIdUsuario( $res['id_usuario'] );
+			$this->setIdUser( $res['id_user'] );
 			$this->setComentarios( $res['comentarios'] );
 			$this->setTipoPago( $res['tipo_pago'] );
+			$this->setFechaCancelacion( $res['fecha_cancelacion'] );
+			$this->setUsuarioCancelacion( $res['usuario_cancelacion'] );
 			return true;
 		}
 		// end function load

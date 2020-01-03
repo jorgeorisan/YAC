@@ -60,7 +60,9 @@ header("Expires: 0");
 												<th class = "col-md-1" data-hide="phone,tablet">NOMBRE</th>
 												<th class = "col-md-1" data-class="phone,tablet">MARCA</th>
 												<th class = "col-md-1" data-class="phone,tablet">CATEGORIA</th>
+												<?php if($_SESSION['user_info']['costos']) { ?>
 												<th class = "col-md-1" data-class="phone,tablet">COSTO</th>
+												<?php } ?>
 												<th class = "col-md-1" data-hide="phone,tablet">MAYOREO</th>
 												<th class = "col-md-1" data-hide="phone,tablet">PRECIO</th>
 												<th class = "col-md-1" data-hide="phone,tablet">EXIS. TIENDA</th>
@@ -74,7 +76,6 @@ header("Expires: 0");
 											$total = 0;
 											$totaldevoluciones = 0;
 											foreach($productostienda as $row) {
-												
 												?>
 												<tr>
 													<td><?php echo htmlentities($row['id_producto'])?></td>
@@ -82,7 +83,9 @@ header("Expires: 0");
 													<td><?php echo htmlentities($row['nombre'])?></td>
 													<td><?php echo htmlentities($row['marca'])?></td>
 													<td><?php echo htmlentities($row['categoria'])?></td>
+													<?php if($_SESSION['user_info']['costos']) { ?>
 													<td><?php echo htmlentities($row['costo'])?></td>
+													<?php } ?>
 													<td><?php echo htmlentities($row['preciomayoreo'])?></td>
 													<td><?php echo htmlentities($row['precio'])?></td>
 													<td><?php echo htmlentities($row['existenciastienda'])?></td>

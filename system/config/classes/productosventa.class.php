@@ -100,6 +100,16 @@ class ProductosVenta extends AutoProductosVenta {
 				$row=$this->db->query($sql);
 				if(!$row){
 					return false;
+				}else{
+					// si hay abonos se cancelan los abonos siempre y cuando la venta general este cancelada
+					$_requestdeudores["status"] = "CANCELADO";
+					$_requestdeudores["fecha_cancelacion"]  = date("Y-m-d H:i:s");
+					$_requestdeudores["usuario_cancelacion"]= $_SESSION['user_id'];
+					$data=fromArray($_requestdeudores,'deudores',$this->db,"update");
+					$sql= "UPDATE deudores SET $data[0]  WHERE id_venta=".$objPV['id_venta'].";";
+					$row=$this->db->query($sql);
+					if(!$row)
+						return false;
 				}
 			}
 			$objproductostienda = new ProductoTienda();

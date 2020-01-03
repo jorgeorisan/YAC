@@ -1,5 +1,4 @@
 <?php
-use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 //initilize the page
 require_once(SYSTEM_DIR . "/inc/init.php");
@@ -23,12 +22,12 @@ $idtienda  = '';//$_SESSION['user_info']['id_tienda'];
 $idusuario = '';
 $arrayfilters=[];
 
-$begin        = ( isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
-$end          = ( isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
-$idusuario    = ( isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
+$begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-m-d'); 
+$end          = ( isset($_GET['fecha_final']))  ? $_GET['fecha_final']   : date('Y-m-d');	
+$idusuario    = ( isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
 $idtienda  	  = ($_SESSION['user_id']!=14)       ? $_SESSION['user_info']['id_tienda'] : '';
-$idtienda  	  = (isset($_POST['id_tienda']))     ? $_POST['id_tienda']     : $idtienda;
-$codeproducto = $arrayfilters['id_producto'] = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ?  $_POST['id_producto'] : '';
+$idtienda  	  = (isset($_GET['id_tienda']))     ? $_GET['id_tienda']     : $idtienda;
+$codeproducto = $arrayfilters['id_producto'] = ( isset($_GET['id_producto']) && $_GET['id_producto'] > 0 )  ?  $_GET['id_producto'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -38,8 +37,6 @@ $jsonarrayfilters=json_encode($arrayfilters);
 
 $objreports = new Reports();
 $dataventas = $objreports->getReporteVentas($arrayfilters);
-
-
 
 
 ?>
@@ -70,7 +67,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","productos");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method='get' action="<?php echo APP_URL.'/Ventas/productos/?';?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>  
 										<div class="row">  
 											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">

@@ -20,8 +20,11 @@ class Producto extends AutoProducto {
 			if(isset($arrayfilters['todo']) && $arrayfilters['todo']==1)
 				$TODO = '' ;
 			if(isset($arrayfilters['id_producto']) && $arrayfilters['id_producto']>0){
-				$producto  = $arrayfilters['id_producto'];
-				$queryprod = " AND p.id_producto = $producto" ;
+				if(isset($arrayfilters['todo']) && $arrayfilters['todo']==true){
+				}else{
+					$producto  = $arrayfilters['id_producto'];
+					$queryprod = " AND p.id_producto = $producto" ;
+				}
 			}
 			if(isset($arrayfilters['similar']) && $arrayfilters['similar']!=''){
 				$similar   = $arrayfilters['similar'];

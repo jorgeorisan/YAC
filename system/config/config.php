@@ -77,9 +77,7 @@ if (getenv('MYSQL_SOCKET') != null){
 	    if($_SERVER["SERVER_NAME"]!='localhost'){
 			
 			if($_SERVER["SERVER_NAME"]=='138.128.161.42'){
-				defined("DB_USER") 		? null : define("DB_USER", "sistemam_taller");
-				defined("DB_PASSWORD") 	? null : define("DB_PASSWORD", "sistemam_taller");
-				defined("DB_NAME") 		? null : define("DB_NAME", "sistemam_tallerhp");
+				
 			}else{
 				defined("DB_USER") 		? null : define("DB_USER", "xqwmrfeeug");
 				defined("DB_PASSWORD") 	? null : define("DB_PASSWORD", "KjnmXJfbz3");
@@ -130,7 +128,7 @@ spl_autoload_register(function ($class_name) {
 if(isset($_SERVER["SERVER_NAME"])){
  	$db = new db(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME,DB_PORT,DB_SOCKET);
  }else{
-	$db = new db('127.0.0.1', 'root', '', "test",null,null);
+	$db = new db('127.0.0.1', 'root', '', "xqwmrfeeug",null,null); // para  YAC\system\bin> php .\createTableModel.php  venta Venta
    
 }
 $db->set_charset('utf8');

@@ -227,8 +227,7 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			user  = data['usuario_actualizacion'];
 			id    = data['id_producto'];
 			datos = (fecha) ? fecha + ' <br> ' + user : '';
-			
-				html = nombreimage+'<div id="contactualizaciones'+id+'">'+datos+'</div>'+
+			html ='<div id="contactualizaciones'+id+'">'+datos+'</div>'+
 				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Historial</a>';
 			
 												
@@ -267,6 +266,7 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			var modopantalla='fitDataFill'; // muestra todos los campos
 		}catch(e){ 
 			var modopantalla='fitColumns'; // muestra todos los campos compactados
+			var modopantalla='fitDataFill'; // muestra todos los campos compactados
 		}
 		
 		$("#example-table").tabulator({
@@ -280,9 +280,9 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			ajaxFiltering: true,
 			movableColumns:true,
             columns: [
-                { title: "ID",  field: "id_producto",  align: "left", sorter: "string" ,download:true},
-				{ title: "Codigo", field: "codinter",  align: "left", sorter: "string",download:true },
-				{ title: "Nombre", formatter:  name_formatter, align: "left", sorter: "string" },
+                { title: "ID",  field: "id_producto",  align: "left", sorter: "string" },
+				{ title: "Codigo", field: "codinter",  align: "left", sorter: "string" },
+				{ title: "Nombre", formatter:  name_formatter, align: "left",width:100, sorter: "string" },
 				{ title: "Marca", field: "marca", align: "left", sorter: "string" },
 				{ title: "Cate", field: "categoria", align: "left", sorter: "string" },
 				<?php if($_SESSION['user_info']['costos']) { ?>
@@ -291,15 +291,9 @@ $jsonarrayfilters=json_encode($arrayfilters);
 				{ title: "Mayoreo", field: "preciomayoreo", align: "left", sorter: "string" },
 				{ title: "Precio", field: "precio", align: "left", sorter: "string" },
 				{ title: "Exist",  formatter: exist_formatter, align: "left", sorter: "string" },
-				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter  },
-				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false },
-				{title:"id", field:"id_producto", visible:false, download:false} //force hidden field to show in download
+				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter,width:100  },
+				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false }
 			],
-			downloadConfig:{
-				columnGroups:false, //include column groups in column headers for download
-				rowGroups:false, //do not include row groups in download
-				columnCalcs:false, //do not include column calculation rows in download
-			},
             pageLoaded: function(data){  }
 		});
 

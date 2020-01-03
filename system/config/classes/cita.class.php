@@ -63,7 +63,6 @@ class Cita extends AutoCita {
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
-		
 		$_request["id_tienda"] = $_SESSION['user_info']['id_tienda'];
 		$_request["id_usuarioalta"] = $_SESSION['user_id'];
 		$data=fromArray($_request,'cita',$this->db,"add");
