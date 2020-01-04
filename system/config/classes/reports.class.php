@@ -28,8 +28,8 @@ class Reports extends Usuario {
 		$qryusuario  = ($id_usuario)    ? " AND v.id_user    = '$id_usuario' " : "";
 		$qrytienda   = ($id_tienda>0)   ? " AND v.id_tienda  = '$id_tienda' "   : "";
 		$id_producto = ($id_producto>0) ? " AND v.id_producto= '$id_usuario' " : "";
-		$qryfechaini = ($fechaini>0)  ? " AND DATE(d.fecha_abono)>='".$fechaini."' " : "";
-		$qryfechafin = ($fechafin>0)  ? " AND DATE(d.fecha_abono)<='".$fechafin."' " : "";
+		$qryfechaini = ($fechaini>0)    ? " AND DATE(v.fecha)>='".$fechaini."' " : "";
+		$qryfechafin = ($fechafin>0)    ? " AND DATE(v.fecha)<='".$fechafin."' " : "";
 		$qrysize 	 = ($size>0)		? " LIMIT $size " : "";
 		$sql = "SELECT v.*,u.id_usuario id_usuario
 						FROM venta v
@@ -250,7 +250,8 @@ class Reports extends Usuario {
 		$qryfechafin    = ($fechafin>0)  ? " AND DATE(d.fecha_abono)<='".$fechafin."' " : "";
 		$qryventa       = ($id_venta>0)  ? " AND d.id_venta='".$id_venta."' " : "";
 		$qrypersona    = ($id_persona>0) ? " AND v.id_persona='".$id_persona."' " : "";
-		$sql = "SELECT d.*, v.id_persona,v.id_tienda,v.descuento,v.total,v.cancelado,v.folio,v.icredito,v.tipo FROM  deudores d
+		$sql = "SELECT d.*, v.id_persona,v.id_tienda,v.descuento,v.total,v.cancelado,v.folio,v.icredito,v.tipo 
+				FROM  deudores d
 				LEFT JOIN venta v ON d.id_venta=v.id_venta
 				where  d.id_deudores>0
 					$qryfechaini
