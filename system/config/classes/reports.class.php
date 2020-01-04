@@ -250,7 +250,7 @@ class Reports extends Usuario {
 		$qryfechafin    = ($fechafin>0)  ? " AND DATE(d.fecha_abono)<='".$fechafin."' " : "";
 		$qryventa       = ($id_venta>0)  ? " AND d.id_venta='".$id_venta."' " : "";
 		$qrypersona    = ($id_persona>0) ? " AND v.id_persona='".$id_persona."' " : "";
-		$sql = "SELECT d.*, v.id_persona,v.id_tienda,v.descuento,v.total,v.cancelado,v.folio,v.icredito FROM  deudores d
+		$sql = "SELECT d.*, v.id_persona,v.id_tienda,v.descuento,v.total,v.cancelado,v.folio,v.icredito,v.tipo FROM  deudores d
 				LEFT JOIN venta v ON d.id_venta=v.id_venta
 				where  d.id_deudores>0
 					$qryfechaini

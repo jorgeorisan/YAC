@@ -196,7 +196,8 @@ $datapagos     		= $reports->getReportePagos($arrayfilters);
 												<th class = "col-md-1" data-class="">Cliente </th>
 												<th class = "col-md-1" data-class="">Usuario </th>
 												<th class = "col-md-1" data-class="phone,tablet">Fecha Abono</th>
-												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+												<th class = "col-md-1" data-class="phone,tablet">Tipo Abono</th>
+												<th class = "col-md-1" data-class="phone,tablet">Tipo Venta</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Abono</th>
 												<th class = "col-md-1" data-class="phone,tablet">Adeudo</th>
@@ -246,8 +247,9 @@ $datapagos     		= $reports->getReportePagos($arrayfilters);
 													<td><?php echo htmlentities($datacliente['nombre']." ".$datacliente['ap_paterno'])?></td>
 													<td><?php echo htmlentities($datavendedor['id_usuario'])?></td>
 													<td><?php echo htmlentities($row->fecha_abono)?></td>
+													<td><?php echo htmlentities($row->tipo_pago)?></td>
 													<td>
-														<?php echo htmlentities($row->tipo_pago)."<br>";
+														<?php echo htmlentities($row->tipo)."<br>";
 														if($row->icredito){
 															echo "<span style='color:red'>En pago</span>";
 														}
