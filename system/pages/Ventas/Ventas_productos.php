@@ -66,7 +66,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 						</header>
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
-                            <div class="widget-body">
+                            <div class="widget-body" style="overflow: auto">
 								<form id="main-form" class="" role="form" method='get' action="<?php echo APP_URL.'/Ventas/productos/?';?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>  
 										<div class="row">  
@@ -117,7 +117,7 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 											</div>
 											<div class="col-xs-12">
 												<div class="form-group">
-													<label for="name">Producto<?php echo $idusuario;?></label>
+													<label for="name">Producto</label>
 													<select style="width:100%" class="select2" name="id_producto" id="id_producto">
 														<option value="">Selecciona</option>
 														<?php 
@@ -403,11 +403,6 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 <script>
  	function validateForm()
     {
-        var fecha_inicial = $("input[name=fecha_inicial]").val();
-        if ( ! fecha_inicial )  return notify("info","La fecha inicial es requerido");
-		var fecha_final = $("input[name=fecha_final]").val();
-        if ( ! fecha_final )  return notify("info","La fecha final es requerido");
-
         $("#main-form").submit();       
 	}
 	

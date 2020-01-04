@@ -24,18 +24,20 @@ class Reports extends Usuario {
 		$id_tienda   = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
 		$id_producto = (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
 		$size	     = (isset($arrayfilters['size']))          ? $arrayfilters['size']          : '';
-		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
-			return false;
-		}
+		
 		$qryusuario  = ($id_usuario)    ? " AND v.id_user    = '$id_usuario' " : "";
 		$qrytienda   = ($id_tienda>0)   ? " AND v.id_tienda  = '$id_tienda' "   : "";
 		$id_producto = ($id_producto>0) ? " AND v.id_producto= '$id_usuario' " : "";
+		$qryfechaini = ($fechaini>0)  ? " AND DATE(d.fecha_abono)>='".$fechaini."' " : "";
+		$qryfechafin = ($fechafin>0)  ? " AND DATE(d.fecha_abono)<='".$fechafin."' " : "";
 		$qrysize 	 = ($size>0)		? " LIMIT $size " : "";
 		$sql = "SELECT v.*,u.id_usuario id_usuario
 						FROM venta v
 						LEFT JOIN usuario u ON u.id=v.id_user
 				where  
-					DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
+					v.id_venta>0
+					$qryfechaini
+					$qryfechafin 
 					$qryusuario
 					$qrytienda
 					order by v.id_venta DESC
@@ -239,24 +241,29 @@ class Reports extends Usuario {
 		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
 		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
 		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
-		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
-			return false;
-		}
-		$qryusuario     = ($id_usuario)  ? " AND v.id_user = '$id_usuario' " : "";
+		$id_venta   = (isset($arrayfilters['id_venta']))      ? $arrayfilters['id_venta']     : '';
+		$id_persona = (isset($arrayfilters['id_persona']))    ? $arrayfilters['id_persona']     : '';
+		
+		$qryusuario     = ($id_usuario)  ? " AND d.id_user = '$id_usuario' " : "";
 		$qrytienda      = ($id_tienda>0) ? " AND v.id_tienda  = '$id_tienda'  " : "";
-		$sql = "SELECT * FROM  deudores d
+		$qryfechaini    = ($fechaini>0)  ? " AND DATE(d.fecha_abono)>='".$fechaini."' " : "";
+		$qryfechafin    = ($fechafin>0)  ? " AND DATE(d.fecha_abono)<='".$fechafin."' " : "";
+		$qryventa       = ($id_venta>0)  ? " AND d.id_venta='".$id_venta."' " : "";
+		$qrypersona    = ($id_persona>0) ? " AND v.id_persona='".$id_persona."' " : "";
+		$sql = "SELECT d.*, v.id_persona,v.id_tienda,v.descuento,v.total,v.cancelado,v.folio,v.icredito FROM  deudores d
 				LEFT JOIN venta v ON d.id_venta=v.id_venta
-				where  
-					DATE(d.fecha_abono)>='".$fechaini."' and DATE(d.fecha_abono)<='".$fechafin."'
-					AND d.status='ACTIVA'
+				where  d.id_deudores>0
+					$qryfechaini
+					$qryfechafin 
 					$qryusuario
 					$qrytienda
-				GROUP BY v.id_user
+					$qryventa
+					$qrypersona
 				";
 		$res = $this->db->query($sql);
 		
 		$set = array();
-		if(!$res){ die("Error getting result  getReporteAbonos"); }
+		if(!$res){ die("Error getting result  getReportePagos"); }
 		else{
 			while ($row = $res->fetch_object())
 				{ $set[] = $row; }
@@ -397,6 +404,8 @@ class Reports extends Usuario {
 		$queryprod  = ($id_producto>0) ? " AND pt.id_producto= ".$id_producto  : '';
 		
 		
+		$qryfechaini    = ($fechaini>0)  ? " AND DATE(v.fecha)>='".$fechaini."' " : "";
+		$qryfechafin    = ($fechafin>0)  ? " AND DATE(v.fecha)<='".$fechafin."' " : "";
 		$sql = "SELECT view_fecha.hora
 					,ifnull(view_venta.total_global,0) total_global
 					,ifnull(view_recargas.total_recargas,0) total_recargas
@@ -409,7 +418,9 @@ class Reports extends Usuario {
 					LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda 
 					LEFT JOIN producto p ON p.id_producto=pt.id_producto 
 					LEFT JOIN usuario u ON u.id=v.id_user 
-					WHERE DATE(v.fecha)>='".$fechaini."' and DATE(v.fecha)<='".$fechafin."'
+					WHERE v.id_venta>0
+						$qryfechaini
+						$qryfechafin
 						$qryusuario
 						$qrytienda
 						$queryprod

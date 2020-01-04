@@ -35,7 +35,7 @@ class Producto extends AutoProducto {
 				$maxRows   = $arrayfilters['maxRows'];
 				$minRows =  $maxRows-$arrayfilters['size'];
 				$long    = $arrayfilters['size'];
-				$TODO .=" LIMIT  $minRows,$long " ;
+				$TODO .=" LIMIT  $minRows,$long  " ;
 			}
 		}
 		$prov = $tienda;

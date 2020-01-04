@@ -22,11 +22,11 @@ $idusuario = '';
 $arrayfilters=[];
 
 $obj = new Venta();
-$begin        = ( isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
-$end          = ( isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
-$idusuario    = ( isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
-$idtienda     = ( isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $_SESSION['user_info']['id_tienda'];
-$codeproducto = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ? $arrayfilters['id_producto'] = $_POST['id_producto'] : '';
+$begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-m-d'); 
+$end          = ( isset($_GET['fecha_final']))  ? $_GET['fecha_final']   : date('Y-m-d');	
+$idusuario    = ( isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
+$idtienda     = ( isset($_GET['id_tienda']))    ? $_GET['id_tienda']     : $_SESSION['user_info']['id_tienda'];
+$codeproducto = ( isset($_GET['id_producto']) && $_GET['id_producto'] > 0 )  ? $arrayfilters['id_producto'] = $_GET['id_producto'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -65,7 +65,7 @@ $dataventas = $reports->getReporteVentaHora($arrayfilters);
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Reportes","horas");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method='get' action="<?php echo APP_URL.'/Reportes/horas/?';?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>  
 										<div class="row">  
 											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">
@@ -276,11 +276,6 @@ $dataventas = $reports->getReporteVentaHora($arrayfilters);
 <script>
  	function validateForm()
     {
-        var fecha_inicial = $("input[name=fecha_inicial]").val();
-        if ( ! fecha_inicial )  return notify("info","La fecha inicial es requerido");
-		var fecha_final = $("input[name=fecha_final]").val();
-        if ( ! fecha_final )  return notify("info","La fecha final es requerido");
-
         $("#main-form").submit();       
 	}
 	

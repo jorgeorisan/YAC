@@ -23,13 +23,13 @@ class Persona extends AutoPersona {
 		11	Paciente
 		*/
 		$tipo = (isset($arrayfilters['tipo'])) ? $arrayfilters['tipo']    : '';
-		$qrytipo = ($tipo)  ? " AND id_usuario_tipo in($tipo) " : "";
+		$qrytipo = ($tipo)  ? " AND p.id_usuario_tipo in($tipo) " : "";
 		
-		$sql = "SELECT * FROM persona 
-				where 
-				status='ACTIVO' 
-				$qrytipo
-				order by nombre;";
+		$sql = "SELECT p.*, ut.usuario_tipo FROM persona p
+				left join usuario_tipo ut ON p.id_usuario_tipo=ut.id_usuario_tipo
+				where p.status='ACTIVO' 
+					$qrytipo
+				order by p.nombre, ut.usuario_tipo;";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }
