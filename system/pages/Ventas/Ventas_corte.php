@@ -90,7 +90,9 @@ if($id){
 			
 		
 	//sendMail("jorge.orihuela@geohti.com", $subject, $message, $headers); 
-	mail($to, $subject, $message, $headers); 
+	if(mail($to, $subject, $message, $headers)){
+		echo 'Exito al enviar mail';
+	} 
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
