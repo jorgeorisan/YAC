@@ -49,11 +49,12 @@ if(isPost()){
 		if($id){
 			$arrayfilters['page']   = 'cortes';
 			$jsonarrayfilters 		= json_encode($arrayfilters);
-			
+			$reports   = new Reports();
+			$datapagos = $reports->getReporteCortes($arrayfilters);
+
 			$to = 'jororisan@gmail.com';
 			$subject = $_SESSION['user_info']['tienda'].'- Corte del '.$begin.' al '.$end;
-
-			$message = file_get_contents(SYSTEM_DIR.'/lib/Templates/Cortediario.php?json='.$arrayfilters);
+			echo $message = include(SYSTEM_DIR.'/lib/Templates/Cortediario.php');
 
 			$headers = "MIME-Version: 1.0\r\n";
 			$headers .= "Content-type: text/html; charset=UTF-8\r\n";
@@ -61,7 +62,7 @@ if(isPost()){
 			$headers .= "X-YAC: 1\r\n";	
 			$headers .= 'X-Mailer: PHP/' . phpversion();
 			//$headers .= "Bcc: jororisan@gmail.com\r\n";	
-                    
+					
 				
 			//sendMail("jorge.orihuela@geohti.com", $subject, $message, $headers); 
 			mail($to, $subject, $message, $headers); 
