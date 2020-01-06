@@ -317,6 +317,66 @@ class Reports extends Usuario {
 		$res->close();
 		return $row['total'];
 	}
+	// para sacar todos los cortes de venta
+	public function getReporteCortes($arrayfilters)
+	{
+		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda  =  $_SESSION['user_info']['id_tienda'];
+		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
+			return false;
+		}
+		$qryusuario     = ($id_usuario)  ? " AND d.id_user = '$id_usuario' " : "";
+		$qrytienda      = ($id_tienda>0) ? " AND d.id_tienda  = '$id_tienda'  " : "";
+	 	$sql = "SELECT d.*, u.id_usuario,t.nombre tienda
+			FROM  corte d 
+				LEFT JOIN usuario u on d.id_user=u.id  
+				LEFT JOIN tienda t on t.id_tienda=u.id_tienda
+			where  
+				DATE(d.fecha)>='".$fechaini."' and DATE(d.fecha)<='".$fechafin."'
+				AND d.status='active'
+				$qrytienda
+				$qryusuario
+				order by id desc
+			
+			";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteCortes "); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
+	// para sacar todos los cortes de venta
+	public function getReporteCortesConceptos($id,$tipo)
+	{
+		
+		$tipo   = (isset($tipo)) ? $tipo : '';
+		$qrytipo     = ($tipo)  ? " AND cc.tipo = '$tipo' " : "";
+	 	$sql = "SELECT *
+			FROM  corte_conceptos cc
+				LEFT JOIN corte c on cc.corte_id=c.id
+			where  
+				cc.corte_id = $id
+				$qrytipo
+				order by cc.id asc
+			";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteCortesConceptos "); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
 	// ventas por producto
 	public function getReporteVentasProductos($id,$id_producto=false)
 	{

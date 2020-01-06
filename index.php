@@ -176,6 +176,7 @@ Routing section
         if ($request['page']==='pacientes') { $page = "Reportes_pacientes.php"; }
         if ($request['page']==='horas')     { $page = "Reportes_horas.php"; }
         if ($request['page']==='pagos')     { $page = "Reportes_pagos.php"; }
+        if ($request['page']==='cortes')    { $page = "Reportes_cortes.php"; }
       }
       //delete pages
       $id ='';
