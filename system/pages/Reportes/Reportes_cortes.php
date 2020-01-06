@@ -26,8 +26,6 @@ $end        = (isset($_GET['fecha_final']))  ? $_GET['fecha_final']   : date('Y-
 $idusuario  = (isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
 $idtienda   = ($_SESSION['user_id']!=14)     ? $_SESSION['user_info']['id_tienda'] : '';
 $idtienda   = (isset($_GET['id_tienda']))    ? $_GET['id_tienda']     : $idtienda;
-$id_venta   = $arrayfilters['id_venta']   = ( isset($_GET['id_venta']) && $_GET['id_venta'] > 0 )      ?  $_GET['id_venta'] : '';
-$id_persona = $arrayfilters['id_persona'] = ( isset($_GET['id_persona']) && $_GET['id_persona'] > 0 )  ?  $_GET['id_persona'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -168,7 +166,7 @@ $datapagos = $reports->getReporteCortes($arrayfilters);
 							<div class="jarviswidget jarviswidget-color-white" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
 								<header>
 									<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-									<h2>Cuentas <?php echo date('l jS \of F Y ',strtotime($fecha)).' '.$tienda;?></h2>
+									<h2><?php echo $tienda.' '.date('jS \of F Y ',strtotime($fecha));?></h2>
 								</header>
 								<div>
 									<div class="jarviswidget-editbox"></div>

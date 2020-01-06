@@ -21,11 +21,11 @@ $idtienda  = '';//$_SESSION['user_info']['id_tienda'];
 $idusuario = '';
 $arrayfilters=[];
 
-$begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
-$end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
-$idusuario = (isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
+$begin     = (isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-m-d'); 
+$end       = (isset($_GET['fecha_final']))  ? $_GET['fecha_final']   : date('Y-m-d');	
+$idusuario = (isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
 $idtienda  = ($_SESSION['user_id']!=14)      ? $_SESSION['user_info']['id_tienda'] : '';
-$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $idtienda;
+$idtienda  = (isset($_GET['id_tienda']))    ? $_GET['id_tienda']     : $idtienda;
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -43,10 +43,53 @@ foreach($dataabonos as $row) {
 $totalcajacorte = $reports->getCajaAnterior($arrayfilters);
 
 if(isPost()){
-	if(isset($_POST['text_entrada'])){
+	if(isset($_GET['text_entrada'])){
 		$obj = new Corte();
-		$id=$obj->addAll(getPost());
+		$id  = $obj->addAll(getPost());
+		if($id){
+			$arrayfilters['page']   = 'cortes';
+			$jsonarrayfilters 		= json_encode($arrayfilters);
+			
+			$to = 'jororisan@gmail.com';
+			$subject = $_SESSION['user_info']['tienda'].'- Corte del '.$begin.' al '.$end;
+
+			$message = file_get_contents(SYSTEM_DIR.'/lib/Templates/Cortediario.php?json='.$arrayfilters);
+
+			$headers = "MIME-Version: 1.0\r\n";
+			$headers .= "Content-type: text/html; charset=UTF-8\r\n";
+			$headers .= "From: <no-reply@yac.com>\r\n";
+			$headers .= "X-YAC: 1\r\n";	
+			$headers .= 'X-Mailer: PHP/' . phpversion();
+			//$headers .= "Bcc: jororisan@gmail.com\r\n";	
+                    
+				
+			//sendMail("jorge.orihuela@geohti.com", $subject, $message, $headers); 
+			mail($to, $subject, $message, $headers); 
+		}
 	}
+}
+
+$id=16;
+if($id){
+	$arrayfilters['page']   = 'cortes';
+	$jsonarrayfilters 		= json_encode($arrayfilters);
+	$reports   = new Reports();
+	$datapagos = $reports->getReporteCortes($arrayfilters);
+
+	$to = 'jororisan@gmail.com';
+	$subject = $_SESSION['user_info']['tienda'].'- Corte del '.$begin.' al '.$end;
+	echo $message = include(SYSTEM_DIR.'/lib/Templates/Cortediario.php');
+
+	$headers = "MIME-Version: 1.0\r\n";
+	$headers .= "Content-type: text/html; charset=UTF-8\r\n";
+	$headers .= "From: <no-reply@yac.com>\r\n";
+	$headers .= "X-YAC: 1\r\n";	
+	$headers .= 'X-Mailer: PHP/' . phpversion();
+	//$headers .= "Bcc: jororisan@gmail.com\r\n";	
+			
+		
+	//sendMail("jorge.orihuela@geohti.com", $subject, $message, $headers); 
+	mail($to, $subject, $message, $headers); 
 }
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -76,7 +119,7 @@ if(isPost()){
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","corte");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" mmethod='get' action="<?php echo APP_URL.'/Ventas/corte/?';?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
 										<div class="row">
 											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">

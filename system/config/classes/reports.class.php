@@ -323,7 +323,7 @@ class Reports extends Usuario {
 		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
 		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
 		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
-		$id_tienda  =  $_SESSION['user_info']['id_tienda'];
+		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']    : ''; 
 		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
 			return false;
 		}
