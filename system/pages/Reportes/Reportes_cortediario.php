@@ -1,6 +1,17 @@
 
 <?php
 
+$json      = (isset($_GET['json']))? $_GET['json'] : die('no data');
+
+$jsonobj = json_decode($json);
+$arrayfilters['fecha_inicial'] = $jsonobj->fecha_inicial;
+$arrayfilters['fecha_final']   = $jsonobj->fecha_final;
+$arrayfilters['id_usuario']    = $jsonobj->id_usuario;
+$arrayfilters['id_tienda']     = $jsonobj->id_tienda;
+$arrayfilters['page']   	   = $jsonobj->page;
+$jsonarrayfilters 		= json_encode($arrayfilters);
+$reports   = new Reports();
+$datapagos = $reports->getReporteCortes($arrayfilters);
 
 //echo json_encode($datapagos );
 ?>

@@ -74,12 +74,11 @@ $id=16;
 if($id){
 	$arrayfilters['page']   = 'cortes';
 	$jsonarrayfilters 		= json_encode($arrayfilters);
-	$reports   = new Reports();
-	$datapagos = $reports->getReporteCortes($arrayfilters);
 
 	$to = 'jororisan@gmail.com';
 	$subject = $_SESSION['user_info']['tienda'].'- Corte del '.$begin.' al '.$end;
-	echo $message = include(SYSTEM_DIR.'/lib/Templates/Cortediario.php');
+	$url =APP_URL.'/Reportes/cortediario/?json='.$jsonarrayfilters;
+	$message = file_get_contents($url);
 
 	$headers = "MIME-Version: 1.0\r\n";
 	$headers .= "Content-type: text/html; charset=UTF-8\r\n";
@@ -88,8 +87,7 @@ if($id){
 	$headers .= 'X-Mailer: PHP/' . phpversion();
 	//$headers .= "Bcc: jororisan@gmail.com\r\n";	
 			
-		
-	//sendMail("jorge.orihuela@geohti.com", $subject, $message, $headers); 
+		 
 	if(mail($to, $subject, $message, $headers)){
 		echo 'Exito al enviar mail';
 	} 

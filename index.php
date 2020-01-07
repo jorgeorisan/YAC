@@ -177,6 +177,7 @@ Routing section
         if ($request['page']==='horas')     { $page = "Reportes_horas.php"; }
         if ($request['page']==='pagos')     { $page = "Reportes_pagos.php"; }
         if ($request['page']==='cortes')    { $page = "Reportes_cortes.php"; }
+        if ($request['page']==='cortediario')    { $page = "Reportes_cortediario.php"; }
       }
       //delete pages
       $id ='';
@@ -196,7 +197,13 @@ Routing section
       
 
       //*****permisos de usuario  */***///
-      if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print" && $request['page']!="excel"  ){
+      if($request['section']!='Home' && 
+        $request['section']!='Examples' && 
+        $request['page']!="" && 
+        $request['page']!="ajax" && 
+        $request['page']!="print" && 
+        $request['page']!="cortediario" && 
+        $request['page']!="excel"  ){
         
         $objpermuser = new PermisoUsuario();
         
@@ -256,10 +263,10 @@ Routing section
               $page = "Clientes_adpopup.php";      
             }
             break;
-          case 'Vehiculos':            
-            if ($request['page']==='print'){ 
-              $dir  = "Vehiculos";//si esta en carpeta 
-              $page = "Vehiculos_print.php";      
+          case 'Reportes':            
+            if ($request['page']==='cortediario'){ 
+              $dir  = "Reportes";//si esta en carpeta 
+              $page = "Reportes_cortediario.php";      
             }
             break;
           default:

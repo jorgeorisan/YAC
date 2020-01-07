@@ -9,8 +9,7 @@ date_default_timezone_set('America/Mexico_City');
 //configure constants
 $directory = realpath(dirname(__FILE__));
 $document_root = realpath($_SERVER['DOCUMENT_ROOT']);
-$base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .
-    $_SERVER['HTTP_HOST'];
+$base_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST'];
 $app_path=str_replace(DIRECTORY_SEPARATOR, '/', substr($directory, strlen($document_root)));
 
 if(strpos($directory, $document_root)===0) {
@@ -25,8 +24,8 @@ if(isset($_SERVER["SERVER_NAME"])){
 
 
 
-defined("APP_URL") 			           ? null : define("APP_URL", str_replace("/system/config", "", $base_url));
-defined("APP_PATH") 			         ? null : define("APP_PATH", str_replace("/system/config", "", $app_path));
+defined("APP_URL") 			   ? null : define("APP_URL", str_replace("/system/config", "", $base_url));
+defined("APP_PATH") 		   ? null : define("APP_PATH", str_replace("/system/config", "", $app_path));
 defined("SITE_HOST") 		           ? null : define("SITE_HOST", ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .
     $_SERVER['HTTP_HOST']);
 defined("ROOT_DIR") 							 ? null : define("ROOT_DIR", str_replace(DIRECTORY_SEPARATOR.'system'.DIRECTORY_SEPARATOR.'config', "", $directory));
