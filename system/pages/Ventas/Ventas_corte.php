@@ -57,7 +57,7 @@ if(isPost()){
 
 			$headers = "MIME-Version: 1.0\r\n";
 			$headers .= "Content-type: text/html; charset=UTF-8\r\n";
-			$headers .= "From: <no-reply@yac.com>\r\n";
+			$headers .= "From: <no-reply@yoamocomprar.com>\r\n";
 			$headers .= "X-YAC: 1\r\n";	
 			$headers .= 'X-Mailer: PHP/' . phpversion();
 			//$headers .= "Bcc: jororisan@gmail.com\r\n";	
