@@ -43,7 +43,7 @@ foreach($dataabonos as $row) {
 $totalcajacorte = $reports->getCajaAnterior($arrayfilters);
 
 if(isPost()){
-	if(isset($_GET['text_entrada'])){
+	if(isset($_POST['text_entrada'])){
 		$obj = new Corte();
 		$id  = $obj->addAll(getPost());
 		if($id){
