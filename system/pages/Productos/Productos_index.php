@@ -282,7 +282,7 @@ $jsonarrayfilters=json_encode($arrayfilters);
             columns: [
                 { title: "ID",  field: "id_producto",  align: "left", sorter: "string" },
 				{ title: "Codigo", field: "codinter",  align: "left", sorter: "string" },
-				{ title: "Nombre", formatter:  name_formatter, align: "left",width:100, sorter: "string" },
+				{ title: "Nombre", formatter:  name_formatter, align: "left",width:250, sorter: "string" },
 				{ title: "Marca", field: "marca", align: "left", sorter: "string" },
 				{ title: "Cate", field: "categoria", align: "left", sorter: "string" },
 				<?php if($_SESSION['user_info']['costos']) { ?>

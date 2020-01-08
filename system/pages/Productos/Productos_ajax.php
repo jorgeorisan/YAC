@@ -35,9 +35,6 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					}
 					break;
 				case 'getproductos':
-
-
-						
 						$texto    = (isset($_GET["texto"]))     ? $_GET["texto"] : '' ; 
 						if(isset($_GET["filters"]))  {
 							$filtro = $_GET["filters"];
