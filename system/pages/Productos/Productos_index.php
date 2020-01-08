@@ -123,10 +123,47 @@ $jsonarrayfilters=json_encode($arrayfilters);
 <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/node_modules/jquery.tabulator/dist/css/bootstrap/tabulator_bootstrap.min.css">
 <script src="<?php echo ASSETS_URL; ?>/node_modules/jquery.tabulator/dist/js/tabulator.js"></script>
 <script>
-
+	
 	$(document).ready(function() {
 		
-	
+		$('body').on('click', '#saveproduct', function(){
+			saveproduct(this);
+		});
+		saveproduct = function(event){
+			var url = config.base+"/Productos/ajax/?action=post&object=updateproducto"; 
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: $(event).parents('form:first').serialize(), 
+				success: function(response){
+					var data = $.parseJSON(response); 
+					if(data.status){
+						var producto = $.parseJSON(data.response);
+						//console.log(producto);
+						
+						//$('#myModal').modal('hide');
+						$('.modal').hide();
+						$('.modal-backdrop').hide();
+						cate = producto.categoria;
+						
+						$('#contcategoria'+producto.id_producto).html(producto.categoria);
+						$('#contmarca'+producto.id_producto).html(producto.marca);
+						$('#contnombre'+producto.id_producto).html(producto.nombre);
+						$('#contcodinter'+producto.id_producto).html(producto.codinter);
+						$('#contprecio'+producto.id_producto).html(producto.precio);
+						$('#contpreciomayoreo'+producto.id_producto).html(producto.precio_descuento);
+						$('#contcosto'+producto.id_producto).html(producto.costo);
+						
+						notify('success',"Exito al actualizar:"+producto.id_producto);
+						
+						//location.reload();
+					}else{
+						return notify('error',"Oopss error al Actualizar:"+data.response);
+					}
+				}
+				});
+			return false; // Evitar ejecutar el submit del formulario.
+		}
 		showpopupHistorial = function(id){
             $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i>Historial Actualizaciones</span>');
             $.get(config.base+"/Productos/ajax/?action=get&object=showpopupHistorial&id="+id, null, function (response) {
@@ -139,6 +176,19 @@ $jsonarrayfilters=json_encode($arrayfilters);
             });
             return false;
         }
+		showpopupEditar = function(id){
+            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i>Editar Producto</span>');
+            $.get(config.base+"/Productos/ajax/?action=get&object=showpopupEditar&id="+id, null, function (response) {
+                    if ( response ){
+                        $("#contentpopup").html(response);
+                    }else{
+                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
+                        
+                    }     
+            });
+            return false;
+        }
+		
 		showpopupImagen = function(id){
             $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i>Imagen</span>');
             $.get(config.base+"/Productos/ajax/?action=get&object=showpopupImagen&id="+id, null, function (response) {
@@ -233,6 +283,50 @@ $jsonarrayfilters=json_encode($arrayfilters);
 												
 			return html;
 		};
+		var categoria_formatter = function(cell, formatterParams) {
+			data  = cell.getRow().getData();
+			categoria = data['categoria'];
+			id    = data['id_producto'];
+			
+			return html ='<div id="contcategoria'+id+'">'+categoria+'</div>'+
+				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupEditar('+id+')">Editar</a>';
+		};
+
+		var codinter_formatter = function(cell, formatterParams) {
+			data  = cell.getRow().getData();
+			codinter = data['codinter'];
+			id    = data['id_producto'];
+			
+			return html ='<div id="contcodinter'+id+'">'+codinter+'</div>';
+		};
+		var preciomayoreo_formatter = function(cell, formatterParams) {
+			data  = cell.getRow().getData();
+			preciomayoreo = data['preciomayoreo'];
+			id    = data['id_producto'];
+			
+			return html ='<div id="contpreciomayoreo'+id+'">'+preciomayoreo+'</div>';
+		};
+		var precio_formatter = function(cell, formatterParams) {
+			data  = cell.getRow().getData();
+			precio = data['precio'];
+			id    = data['id_producto'];
+			
+			return html ='<div id="contprecio'+id+'">'+precio+'</div>';
+		};
+		var costo_formatter = function(cell, formatterParams) {
+			data  = cell.getRow().getData();
+			costo = data['costo'];
+			id    = data['id_producto'];
+			
+			return html ='<div id="contcosto'+id+'">'+costo+'</div>';
+		};
+		var marca_formatter = function(cell, formatterParams) {
+			data  = cell.getRow().getData();
+			marca = data['marca'];
+			id    = data['id_producto'];
+			return html ='<div id="contmarca'+id+'">'+marca+'</div>';
+		};
+	
 		var exist_formatter = function(cell, formatterParams) {
 			data               = cell.getRow().getData();
 			existenciastienda  = data['existenciastienda'];
@@ -251,9 +345,9 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			if(manual==1){ nombreimage  = data['nombre']+'<br>Servicio'; }else{ nombreimage  = data['nombre']; } 
 			html = '';
 			if(imagen){
-				html = '<br><a data-toggle="modal" href="#myModal" onclick="showpopupImagen('+id+')">'+nombreimage+'</a>';
+				html = '<br><a data-toggle="modal" href="#myModal" onclick="showpopupImagen('+id+')">'+'<div id="contnombre'+id+'">'+nombreimage+'</div>'+'</a>';
 			}else {
-				html = nombreimage+'<div id="contfileproductos'+id+'"></div>'+
+				html = '<div id="contnombre'+id+'">'+nombreimage+'</div>'+'<div id="contfileproductos'+id+'"></div>'+
 				'<br><a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen('+id+')">Subir Imagen</a>';
 			}
 			
@@ -281,15 +375,15 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			movableColumns:true,
             columns: [
                 { title: "ID",  field: "id_producto",  align: "left", sorter: "string" },
-				{ title: "Codigo", field: "codinter",  align: "left", sorter: "string" },
+				{ title: "Codigo", formatter:  codinter_formatter,  align: "left", sorter: "string" },
 				{ title: "Nombre", formatter:  name_formatter, align: "left",width:250, sorter: "string" },
-				{ title: "Marca", field: "marca", align: "left", sorter: "string" },
-				{ title: "Cate", field: "categoria", align: "left", sorter: "string" },
+				{ title: "Marca", align: "left", formatter: marca_formatter, sorter: "string" },
+				{ title: "Cate", align: "left", sorter: "string", formatter: categoria_formatter },
 				<?php if($_SESSION['user_info']['costos']) { ?>
-					{ title: "Costo", field: "costo", align: "left", sorter: "string" },
+					{ title: "Costo", formatter:  costo_formatter, align: "left", sorter: "string" },
 				<?php } ?>
-				{ title: "Mayoreo", field: "preciomayoreo", align: "left", sorter: "string" },
-				{ title: "Precio", field: "precio", align: "left", sorter: "string" },
+				{ title: "Mayoreo", formatter:  preciomayoreo_formatter, align: "left", sorter: "string" },
+				{ title: "Precio", formatter:  precio_formatter, align: "left", sorter: "string" },
 				{ title: "Exist",  formatter: exist_formatter, align: "left", sorter: "string" },
 				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter,width:100  },
 				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false }
@@ -312,7 +406,7 @@ $jsonarrayfilters=json_encode($arrayfilters);
 		 */
 
 		 pageSetUp();
-	})
+	});
 
 </script>
 

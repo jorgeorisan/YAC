@@ -157,7 +157,11 @@ class Producto extends AutoProducto {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM producto WHERE id_producto=$id;";
+		$sql= "SELECT p.*, c.categoria,m.nombre marca
+				 FROM producto p
+				Left join categoria c ON c.id_categoria=p.id_categoria
+				Left join marca m ON m.id_marca=p.id_marca
+				WHERE p.id_producto=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
 			{die("Error getting result producto");}

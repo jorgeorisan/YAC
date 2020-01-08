@@ -86,6 +86,16 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 					}
 					break;
+				case 'showpopupEditar':
+					if( isset($_GET["id"]) && intval($_GET["id"])){
+						$id = $_GET["id"];
+								
+						$obj = new Producto();
+						$data = $obj->getTable($id);
+						include(SYSTEM_DIR.'/pages/Productos/Productos_showpopupEditar.php' );
+						
+					}
+					break;
 				case 'showpopupImagen':
 					if( isset($_GET["id"]) && intval($_GET["id"])){
 						$id = $_GET["id"];
@@ -256,7 +266,22 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					}
 					
 					break;
-				default:
+				
+				case 'updateproducto':
+					$objproducto = new Producto();				
+					$id = $objproducto->updateAll($_POST['id_producto'],getPost());
+					if( $id >0  ) {
+						
+						$data = $objproducto->getTable($id);
+
+						echo json_encode(array("status"=>true,'response'=>json_encode($data),'code'=>$_POST['codinter']));
+					}else{
+						echo json_encode(array("status"=>false,'response'=>'El producto no se actualizo correctamente','code'=>$_POST['codinter'])); "";
+					}
+					
+					
+					break;
+					default:
 					# code...
 					break;
 			}
