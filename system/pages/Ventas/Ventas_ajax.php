@@ -81,6 +81,16 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 				}
 			}
 			break;
+		case 'deletecorte':
+			if( isset($_GET["idcorte"])){
+				$id = $_GET["idcorte"];
+				$corte  = new Corte();
+				$request ['razon_cancelacion'] = $_GET["motivo"];
+				if($corte->deleteAll($id,$request)){
+					echo "true";
+				}
+			}
+			break;
 		case 'deleteproductoventa':
 			if( isset($_GET["idproductoventa"])){
 				$id = $_GET["idproductoventa"];

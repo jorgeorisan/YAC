@@ -115,7 +115,7 @@ class Corte extends AutoCorte {
 	public function deleteAll($id,$_request=false)
 	{
 		$_request["status"]="deleted";
-		$_request["deleted_date"]=date("Y-m-d H:i:s");
+		
 		$data=fromArray($_request,'corte',$this->db,"update");	
 		$sql= "UPDATE corte SET $data[0]  WHERE id=".$id.";";
 		$row=$this->db->query($sql);

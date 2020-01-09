@@ -169,6 +169,13 @@ $datapagos = $reports->getReporteCortes($arrayfilters);
 									<h2><?php echo $tienda.' '.date('jS \of F Y ',strtotime($fecha));?></h2>
 								</header>
 								<div>
+									<div class="row">
+										<div class='col-sm-12 col-md-6 col-lg-6'><h4 ><?php echo $tienda.' '.date('jS \of F Y ',strtotime($fecha));?></h4></div>
+										<div class='col-sm-12 col-md-6 col-lg-6' style="text-align: right">   
+												<a class="btn btn-danger deletecorte"  id="<?php echo $id_corte ?>" >
+												<i class="fa fa-close"></i> &nbsp;Eliminar</a>
+										</div>
+									</div>
 									<div class="jarviswidget-editbox"></div>
 									<div class="widget-body" style="overflow: auto">
 										<h3 class="tit"></h3>
@@ -379,6 +386,30 @@ $datapagos = $reports->getReporteCortes($arrayfilters);
 			tablet : 1024,
 			phone : 480
 		};
+		$(".deletecorte").click(function(e) {
+            e.preventDefault();
+			var idcorte = $(this).attr('id');
+			$.SmartMessageBox({
+				title : "Cancelar Corte de Venta: "+idcorte,
+				content : "Menciona el motivo de cancelacion",
+				buttons : '[No][Yes]',
+				input : "text",
+				placeholder : "Motivo de cancelacion"
+			}, function(ButtonPressed, Value) {
+				if (ButtonPressed === "Yes") {
+					$.get(config.base+"/Ventas/ajax/deletecorte?action=get&object=deletecorte&idcorte="+idcorte+"&motivo="+Value,
+					function (response) {
+						if(response){
+							notify('success','Cancelada con exito');
+							location.reload();
+						}else{
+							return notify('error','Error al cancelar venta');
+						}
+					});
+				}
+			});
+			$("#txt1").val('');
+		});
 		$('#dt_basic').dataTable({
 			"aaSorting": [[ 1,"asc" ]],
         	"iDisplayLength": 50,
