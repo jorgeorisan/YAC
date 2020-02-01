@@ -9,7 +9,7 @@ class Categoria extends AutoCategoria {
 		//metodo que sirve para obtener todos los datos de la tabla
 	public function getAllArr()
 	{
-		$sql = "SELECT * FROM categoria where status='ACTIVO';";
+		$sql = "SELECT * FROM categoria where status='ACTIVO' order by categoria;";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }

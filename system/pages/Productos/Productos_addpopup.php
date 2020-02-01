@@ -206,6 +206,7 @@
             $("#precio_costo").val(precioc.toFixed(2));
         });
         $(".select2").select2({
+            dropdownParent: $('#myModal'),
             multiple: false,
             header: "Selecciona una opcion",
             noneSelectedText: "Seleccionar",

@@ -35,28 +35,34 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					}
 					break;
 				case 'getproductos':
+						$texto    		= (isset($_GET["texto"]))        ? $_GET["texto"] : '' ; 
+						$id_categoria   = (isset($_GET["id_categoria"])) ? $_GET["id_categoria"] : '' ; 
+						$id_marca   	= (isset($_GET["id_marca"]))     ? $_GET["id_marca"] : '' ; 
 						$texto    = (isset($_GET["texto"]))     ? $_GET["texto"] : '' ; 
 						if(isset($_GET["filters"]))  {
 							$filtro = $_GET["filters"];
 							$texto  =  (count($filtro[0])>0) ? $filtro[0]['value'] : ''  ; 
 						}
-
-						$idtienda = (isset($_GET["id_tienda"])) ? $_GET["id_tienda"] : $_SESSION['user_info']['id_tienda'] ;
-						$size     = (isset($_GET["size"]))      ? $_GET["size"] : '10' ;
-						$page  	  = (isset($_GET["page"]))      ? $_GET["page"] : '0' ;
+							 
+						$idtienda 		 = (isset($_GET["id_tienda"])) ? $_GET["id_tienda"] : $_SESSION['user_info']['id_tienda'] ;
+						$size     		 = (isset($_GET["size"]))      ? $_GET["size"] : '10' ;
+						$page  	  		 = (isset($_GET["page"]))      ? $_GET["page"] : '0' ;
+						$totalproductos  = (isset($_GET["totalproductos"])) ? $_GET["totalproductos"] : '0' ;
 						$maxRows  = $page * $size;
 						$productos = new Producto();
-						$arrayfilters['similar']   = $texto;
-						$arrayfilters['id_tienda'] = $idtienda;
-						$arrayfilters['maxRows']   = $maxRows;
-						$arrayfilters['todo']      = '1';
+						$arrayfilters['similar']   		= $texto;
+						$arrayfilters['id_tienda'] 		= $idtienda;
+						$arrayfilters['id_categoria'] 	= $id_categoria;
+						$arrayfilters['id_marca'] 		= $id_marca;
+						$arrayfilters['maxRows']  		= $maxRows;
+						$arrayfilters['todo']      		= '1';
 						
 						$arrayfilters['size']      = $size;
 
 						$productostienda  = $productos->getAllArr($arrayfilters);
 						
-						$totalproductos   = $productos->getAllArr( array('todo'=>'all') );
-						$totalpagestabu   = count($totalproductos) /  $size; 
+						
+						$totalpagestabu   = $totalproductos /  $size; 
 						
 						if(!$page){
 							echo json_encode($productostienda);

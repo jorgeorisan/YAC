@@ -17,14 +17,18 @@ include(SYSTEM_DIR . "/inc/header.php");
 //include left panel (navigation)
 include(SYSTEM_DIR . "/inc/nav.php");
 
-$all= (isset($request['params']['opt'])) ?  true : false;
+$all = (isset($_GET['id_categoria'])) ?  true : false;
 
 $obj = new Producto();
 $arrayfilters['todo'] = $all;
 $arrayfilters['page'] = 'productos';
+
+$arrayfilters['id_categoria'] = (isset($_GET['id_categoria'])) ? $_GET['id_categoria'] : '';
+$arrayfilters['id_marca']     = (isset($_GET['id_marca'])) ? $_GET['id_marca'] : '';
 $jsonarrayfilters=json_encode($arrayfilters);
 //print_r($data);
-
+$totalproductos   = count(getAllProductos());
+$filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria'].'&id_marca='.$_GET['id_marca']:'';
 ?>
 
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -55,15 +59,61 @@ $jsonarrayfilters=json_encode($arrayfilters);
 								<div class="card-body">
 									<div class="card-heading">
 										<h3 class="card-title">Productos</h3>
-										<div class="card-controls">
-											<div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
-												<div class="card-input tabulator-filter">
-													<input type="text" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Buscar Producto">
+										<div class="row">
+											<form  action="#" method="GET" id="main-form">
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label for="name">Categoria</label>
+														<select style="width:100%" class="select2" name="id_categoria" id="id_categoria">
+															<option>Selecciona</option>
+															<?php 
+															$obj = new Categoria();
+															$list=$obj->getAllArr();
+															if (is_array($list) || is_object($list)){
+																foreach($list as $val){
+																	$selected = ($arrayfilters['id_categoria']==$val['id_categoria']) ? 'selected': '';
+																	echo "<option $selected  value='".$val['id_categoria']."'>".$val['categoria']."</option>";
+																}
+															}
+																?>
+														</select>
+													</div>  
 												</div>
-											</div>
-											<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-												<input type="number" id="size" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Filtrar" value="10">
-											</div>
+												<div class="col-sm-6">
+													<div class="form-group">
+														<label for="name">Marca</label>
+														<select style="width:100%" class="select2" name="id_marca" id="id_marca">
+															<option>Selecciona</option>
+															<?php 
+															$obj = new Marca();
+															$list=$obj->getAllArr();
+															if (is_array($list) || is_object($list)){
+																foreach($list as $val){
+																	$selected = ($arrayfilters['id_marca']==$val['id_marca']) ? 'selected': '';
+																	echo "<option $selected value='".$val['id_marca']."'>".$val['nombre']."</option>";
+																}
+															}
+															?>
+														</select>
+													</div>    
+												</div>
+												<div class="col-sm-6" style="padding: 10px">
+													<a class="btn btn-info" id="buscar" ><i class="fas fa-search"></i>Buscar</a>
+													
+												</div>
+												<div class="card-controls">
+													<div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+														<div class="card-input tabulator-filter">
+															<input type="text" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Buscar Producto">
+														</div>
+													</div>
+													<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+														<input type="number" id="size" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Filtrar" value="10">
+													</div>
+												</div>
+												
+
+											</form>
 										</div>
 									
 									</div>
@@ -80,7 +130,7 @@ $jsonarrayfilters=json_encode($arrayfilters);
 </div>
 <!-- END MAIN PANEL -->
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="myModal" tabindex="" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -242,7 +292,8 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			$("#example-table").tabulator(
 				"setFilter", 'nombre', 'like', $(this).val(),
 				"setFilter", 'codinter', 'like', $(this).val(),
-				"setFilter", 'marca', 'like', $(this).val()
+				"setFilter", 'marca', 'like', $(this).val(),
+				"setFilter", 'categoria', 'like', $(this).val(),
 			);
 		});
 		
@@ -278,7 +329,8 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			id    = data['id_producto'];
 			datos = (fecha) ? fecha + ' <br> ' + user : '';
 			html ='<div id="contactualizaciones'+id+'">'+datos+'</div>'+
-				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Historial</a>';
+				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Historial</a><br>'+
+				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Kardex</a>';
 			
 												
 			return html;
@@ -363,17 +415,17 @@ $jsonarrayfilters=json_encode($arrayfilters);
 			var modopantalla='fitDataFill'; // muestra todos los campos compactados
 		}
 		
-		$("#example-table").tabulator({
+		var table = $("#example-table").tabulator({
 			//layout: "fitDataFill",
 			layout: modopantalla,
             pagination:"remote",
             paginationSize:$('#size').val(),
-            ajaxURL: config.base+"/Productos/ajax/?action=get&object=getproductos",
+            ajaxURL: config.base+"/Productos/ajax/?action=get&object=getproductos<?php echo $filters  ;?>&totalproductos=<?php echo $totalproductos  ;?>",
             placeholder: "No Data Available",
 			initialSort: [{column:"codinter", dir:"desc"}],
 			ajaxFiltering: true,
 			movableColumns:true,
-            columns: [
+			columns: [
                 { title: "ID",  field: "id_producto",  align: "left", sorter: "string" },
 				{ title: "Codigo", formatter:  codinter_formatter,  align: "left", sorter: "string" },
 				{ title: "Nombre", formatter:  name_formatter, align: "left",width:250, sorter: "string" },
@@ -391,12 +443,16 @@ $jsonarrayfilters=json_encode($arrayfilters);
             pageLoaded: function(data){  }
 		});
 
-			  // $(".tabulator").tabulator("setSort", "reg", "desc");
+		// $(".tabulator").tabulator("setSort", "reg", "desc");
 
-			  $("#action").click(function(){
-			  	console.log("html", $(".tabulator").tabulator("getHtml"))
-			  	$("#html-table").html($(".tabulator").tabulator("getHtml"))
-			  });
+		$("#action").click(function(){
+			console.log("html", $(".tabulator").tabulator("getHtml"))
+			$("#html-table").html($(".tabulator").tabulator("getHtml"))
+		});
+		$("#buscar").click(function(){
+			$("#main-form").submit();
+			
+		});
 
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 		 *

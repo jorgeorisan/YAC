@@ -13,7 +13,7 @@ class Producto extends AutoProducto {
 		$tienda = $_SESSION['user_info']['id_tienda'];
 		$queryprod = $querylimit= '';
 		$TODO  = " HAVING TIENDA.existencias>0 ";
-		
+		$querymarca = $querycategoria ='';
 		if(count($arrayfilters)>0){
 			if(isset($arrayfilters['id_tienda']) && $arrayfilters['id_tienda']>0)
 				$tienda = $arrayfilters['id_tienda'] ;
@@ -30,6 +30,11 @@ class Producto extends AutoProducto {
 				$similar   = $arrayfilters['similar'];
 				$queryprod = "AND (p.codinter like '%". $similar ."%' OR  p.nombre like '%". $similar ."%'  OR  m.nombre like '%". $similar ."%')" ;
 			}
+			if(isset($arrayfilters['id_categoria']) && $arrayfilters['id_categoria']>0)
+				$querycategoria = "AND p.id_categoria =".$arrayfilters['id_categoria'];
+
+			if(isset($arrayfilters['id_marca']) && $arrayfilters['id_marca']>0)
+				$querymarca = "AND p.id_marca =".$arrayfilters['id_marca'];
 			
 			if(isset($arrayfilters['maxRows']) && $arrayfilters['maxRows'] >0 ){
 				$maxRows   = $arrayfilters['maxRows'];
@@ -63,6 +68,8 @@ class Producto extends AutoProducto {
 						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
 						WHERE p.status='ACTIVO'
 						$queryprod
+						$querycategoria
+						$querymarca
 						$querytienda
 						AND pr.id_tienda='$prov'
 					) AS PRODUCTO LEFT JOIN (

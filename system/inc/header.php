@@ -102,7 +102,6 @@
 		
 		<script src="<?php echo $url_node; ?>jquery.tabulator/dist/js/tabulator.min.js"></script>
 		
-		
 	</head>
 	<body <?php echo implode(' ', array_map(function($prop, $value) {
 			return $prop.'="'.$value.'"';

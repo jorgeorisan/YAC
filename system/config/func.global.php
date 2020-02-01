@@ -193,6 +193,11 @@ function call_multiple_SP($con,$query)
 
   return $result;
 }
+function getAllProductos(){
+  
+  $productos = new Producto();
+  return  $productos->getAllArr( array('todo'=>'all') );
+}
 
 function getRow($con,$result)
 {

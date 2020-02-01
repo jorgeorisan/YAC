@@ -9,7 +9,7 @@ class Marca extends AutoMarca {
 		//metodo que sirve para obtener todos los datos de la tabla
 	public function getAllArr()
 	{
-		$sql = "SELECT * FROM marca where status='active';";
+		$sql = "SELECT * FROM marca where status='active' order by nombre;";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result"); }

@@ -291,7 +291,7 @@ $datapagos = $reports->getReporteCortes($arrayfilters);
 														</tbody>
 														<footer>
 															<tr class="totales">
-																<td><strong><div  id="total_dinero" style="width:10px; color:red"><?php echo $total_salida ?></div></strong></td>
+																<td><strong><div  id="total_dinero" style="width:10px; color:green"><?php echo $total_salida ?></div></strong></td>
 																<td><strong>TOTAL EFECTIVO</strong></td>
 															</tr>
 														</footer>
@@ -306,7 +306,7 @@ $datapagos = $reports->getReporteCortes($arrayfilters);
 												</tr>
 												<tr class="totales">
 													<td><strong>CAJA NUEVA</strong></td>
-													<td><strong><div  id="total_cajanew" style="width:10px; "><?php echo $total_cajanew ?></div></strong></td>
+													<td><strong><div  id="total_cajanew" style="width:10px;  color:purple"><?php echo $total_cajanew ?></div></strong></td>
 													<td></td>
 												</tr>
 										</table>
