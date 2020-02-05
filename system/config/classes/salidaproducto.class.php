@@ -109,6 +109,42 @@ class SalidaProducto extends AutoSalidaProducto {
 			return true;
 		}
 	}
+	//metodo que sirve para hacer delete y solo decrementar
+	public function deleteonlydecrement($id,$_request=false)
+	{
+		$salidaproducto = $this->getTable($id);
+		
+		$objsalida = new Salida();
+		$datasalida = $objsalida->getTable($salidaproducto['id_salida']);
+		if(!$datasalida) die('error salida');
+
+		$objproductotienda = new ProductoTienda();
+		$productotienda = $objproductotienda->getTablebyProducto($salidaproducto['id_producto'], $datasalida['id_tienda']);
+		if ( ! $productotienda ) die('no se encontro productotienda');
+
+		$productotiendaAnterior=$objproductotienda->getTablebyProducto($salidaproducto['id_producto'], $datasalida['id_tiendaanterior']);
+		if(!$productotiendaAnterior) die('no se encontro productotienda');
+
+
+		$objproductos = new Producto();
+		$dataproducto = $objproductos->getTable($salidaproducto['id_producto']);
+		//si no es manual y ya esta activa la salida actualizamos las existencias
+		if(!$dataproducto['manual'] && $salidaproducto['status']=='ACTIVO'){
+			$objproductotienda->actualizaexistencia($productotienda['id_productotienda'],$salidaproducto['cantidad'],'decrement');
+			//$objproductotienda->actualizaexistencia($productotiendaAnterior['id_productotienda'],$salidaproducto['cantidad'],'increment');
+		}
+		$_request["status"]="BAJA";
+		$_request["deleted_date"]=date("Y-m-d H:i:s");
+		$_request["usuario_deleted"]=$_SESSION['user_id'];
+		$data=fromArray($_request,'salida_producto',$this->db,"update");	
+		$sql= "UPDATE salida_producto SET $data[0]  WHERE id_salida_producto=".$id.";";
+		$row=$this->db->query($sql);
+		if(!$row){
+			return false;
+		}else{
+			return true;
+		}
+	}
 
 	
 

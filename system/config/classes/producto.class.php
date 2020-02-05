@@ -21,6 +21,7 @@ class Producto extends AutoProducto {
 				$TODO = '' ;
 			if(isset($arrayfilters['id_producto']) && $arrayfilters['id_producto']>0){
 				if(isset($arrayfilters['todo']) && $arrayfilters['todo']==true){
+					$TODO  = "";
 				}else{
 					$producto  = $arrayfilters['id_producto'];
 					$queryprod = " AND p.id_producto = $producto" ;
@@ -176,6 +177,43 @@ class Producto extends AutoProducto {
 		$res->close();
 		return $row;
 
+	}
+	//
+	public function CheckInvIni($id,$existenciaactual,$diferenciakardex){
+		
+		$id_tienda     = $_SESSION['user_info']['id_tienda'];
+		$id_usuario    = $_SESSION['user_id'];
+
+		$dataproducto = $this->getTable($id);
+
+		$existencia    = $existenciaactual ;
+
+		//entrada 
+		$objEntrada = new Entrada();
+		$requestEntrada['id_user']    = $id_usuario;
+		$requestEntrada['id_tienda']  = $id_tienda;
+		$requestEntrada['fecha']      = date('Y-m-d H:i:s');
+		$requestEntrada['status']     = "ACTIVO";
+		$requestEntrada['concepto']   = "INVENTARIO INICIAL 2020";
+		$requestEntrada['referencia'] = "ENTRADA DIRECTA";
+		$_requestEntrada['icredito']  = 0;
+		$ide = $objEntrada->addByOne($requestEntrada);
+		//entrada de productos
+		$iObjEntradaProducto = new EntradaProducto();
+		$requestEntradaProducto['id_entrada']       = $ide;
+		$requestEntradaProducto['id_producto']      = $id;
+		$requestEntradaProducto['id_tienda']        = $id_tienda;
+		$requestEntradaProducto['cantidad_anterior']= $existencia;
+		$requestEntradaProducto['cantidad']         = $diferenciakardex;
+		$requestEntradaProducto['precio']           = $dataproducto['precio'];
+		$requestEntradaProducto['mayoreo'] 			= $dataproducto['precio_descuento'];
+		$requestEntradaProducto['costo']            = $dataproducto['costo'];
+		$requestEntradaProducto['totalcosto']       = $existencia * $dataproducto['costo'];
+		$requestEntradaProducto['nombre']           = $dataproducto['nombre'];
+		$requestEntradaProducto['act_inventario']   = 1;
+		$idep = $iObjEntradaProducto->addAll($requestEntradaProducto);
+			
+		
 	}
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)

@@ -329,8 +329,7 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			id    = data['id_producto'];
 			datos = (fecha) ? fecha + ' <br> ' + user : '';
 			html ='<div id="contactualizaciones'+id+'">'+datos+'</div>'+
-				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Historial</a><br>'+
-				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Kardex</a>';
+				'<a data-toggle="modal" class="" href="#myModal" onclick="showpopupHistorial('+id+')">Historial</a><br>';
 			
 												
 			return html;
@@ -384,7 +383,8 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			existenciastienda  = data['existenciastienda'];
 			id 				   = data['id_producto'];
 			existencias        = data['existencias'];
-			title              = '<div  id="contexistencias'+id+'">'+ existenciastienda + '/' + existencias+'</div>';
+			title              = '<div  id="contexistencias'+id+'">'+ existenciastienda + '/' + existencias+'</div>'+
+				'<a tarjet="_blank" href="'+config.base+"/Productos/kardex/?id="+id+'"  >Kardex</a>';
 			return title;
 		};
 		var name_formatter = function(cell, formatterParams) {

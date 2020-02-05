@@ -304,7 +304,7 @@ $datauser = $usuario->getTable($data['id_user']);
             }
         });
         validar = function(id_salida){
-            var url = config.base+"/Salidas/ajax/?action=get&object=validar"; 
+            var url = config.base+"/Salidas/ajax/?action=post&object=validar"; 
             $.ajax({
                 type: "POST",
                 url: url,

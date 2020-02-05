@@ -114,7 +114,8 @@ Routing section
         $dir  = "Productos";//si esta en carpeta
         if ($request['page']==='add')      { $page = "Productos_add.php";      }
         if ($request['page']==='edit')     { $page = "Productos_edit.php";     }
-        if ($request['page']==='addpopup') { $page = "Productos_addpopup.php";  }
+        if ($request['page']==='addpopup') { $page = "Productos_addpopup.php"; }
+        if ($request['page']==='kardex')   { $page = "Productos_kardex.php";   }
         
       }
       if ($request['section']==='Ventas'){

@@ -464,7 +464,7 @@ $dataventas     		= $reports->getReporteVentas($arrayfilters);
                 function (response) {
                     if(response){
                         notify('success','Cancelada con exito');
-                        location.reload();
+                        window.location=config.base+"/Ventas/add";
                     }else{
                         return notify('error','Error al cancelar venta');
                     }

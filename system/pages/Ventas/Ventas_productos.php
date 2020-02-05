@@ -339,7 +339,6 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 											<th>$<?php echo number_format($totalexcedente,2) ?></th>
 											<th>$<?php echo number_format($totalgeneral,2) ?></th>
 										</tbody>
-									<table>
 									</table>
 								</div>
 							</div>

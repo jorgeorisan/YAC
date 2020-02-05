@@ -54,6 +54,168 @@ class Reports extends Usuario {
 		$res->close();
 		return $set;
 	}
+	public function getReporteTraspasosEntrada($arrayfilters)
+	{
+		$fechaini    = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin    = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario  = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda   = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$id_producto = (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
+		$size	     = (isset($arrayfilters['size']))          ? $arrayfilters['size']          : '';
+		
+		$qryusuario  = ($id_usuario)    ? " AND v.id_user     = '$id_usuario' "   : "";
+		$qrytienda   = ($id_tienda>0)   ? " AND v.id_tienda   = '$id_tienda' "    : "";
+		$qryproducto = ($id_producto>0) ? " AND ep.id_producto = '$id_producto' "   : "";
+		$qryfechaini = ($fechaini>0)    ? " AND DATE(v.fecha)>='".$fechaini."' " : "";
+		$qryfechafin = ($fechafin>0)    ? " AND DATE(v.fecha)<='".$fechafin."' " : "";
+		$qrysize 	 = ($size>0)		? " LIMIT $size " : "";
+		$sql = "SELECT ep.*,u.id_usuario id_usuario, v.fecha_validacion fecha_validacion, tio.nombre origen
+						FROM traspaso_producto ep 
+						LEFT JOIN traspaso v ON ep.id_traspaso=v.id_traspaso
+						LEFT JOIN tienda tio ON tio.id_tienda=v.id_tienda
+						LEFT JOIN usuario u ON u.id=v.id_user
+				where  
+					v.id_traspaso>0
+					$qryfechaini
+					$qryfechafin 
+					$qryusuario
+					$qryproducto
+					$qrytienda
+					order by v.id_traspaso DESC
+					$qrysize
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteTraspasosEntrada"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
+	public function getReporteTraspasosSalida($arrayfilters)
+	{
+		$fechaini    = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin    = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario  = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda   = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$id_producto = (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
+		$size	     = (isset($arrayfilters['size']))          ? $arrayfilters['size']          : '';
+		
+		$qryusuario  = ($id_usuario)    ? " AND v.id_user     = '$id_usuario' "   : "";
+		$qrytienda   = ($id_tienda>0)   ? " AND v.id_tiendaanterior   = '$id_tienda' "    : "";
+		$qryproducto = ($id_producto>0) ? " AND ep.id_producto = '$id_producto' "   : "";
+		$qryfechaini = ($fechaini>0)    ? " AND DATE(v.fecha)>='".$fechaini."' " : "";
+		$qryfechafin = ($fechafin>0)    ? " AND DATE(v.fecha)<='".$fechafin."' " : "";
+		$qrysize 	 = ($size>0)		? " LIMIT $size " : "";
+		$sql = "SELECT ep.*,u.id_usuario id_usuario, v.fecha_validacion fecha_validacion, tio.nombre destino
+						FROM traspaso_producto ep 
+						LEFT JOIN traspaso v ON ep.id_traspaso=v.id_traspaso
+						LEFT JOIN tienda tio ON tio.id_tienda=v.id_tienda
+						LEFT JOIN usuario u ON u.id=v.id_user
+				where  
+					v.id_traspaso>0
+					$qryfechaini
+					$qryfechafin 
+					$qryusuario
+					$qryproducto
+					$qrytienda
+					order by v.id_traspaso DESC
+					$qrysize
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteTraspasosSalida"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
+	public function getReporteEntradas($arrayfilters)
+	{
+		$fechaini    = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin    = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario  = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda   = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$id_producto = (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
+		$size	     = (isset($arrayfilters['size']))          ? $arrayfilters['size']          : '';
+		
+		$qryusuario  = ($id_usuario)    ? " AND v.id_user     = '$id_usuario' "   : "";
+		$qrytienda   = ($id_tienda>0)   ? " AND v.id_tienda   = '$id_tienda' "    : "";
+		$qryproducto = ($id_producto>0) ? " AND ep.id_producto = '$id_producto' "   : "";
+		$qryfechaini = ($fechaini>0)    ? " AND DATE(v.fecha)>='".$fechaini."' " : "";
+		$qryfechafin = ($fechafin>0)    ? " AND DATE(v.fecha)<='".$fechafin."' " : "";
+		$qrysize 	 = ($size>0)		? " LIMIT $size " : "";
+		$sql = "SELECT ep.*,u.id_usuario id_usuario, v.fecha_validacion fecha_validacion, v.concepto concepto
+						FROM entrada_producto ep 
+						LEFT JOIN entrada v ON ep.id_entrada=v.id_entrada
+						LEFT JOIN usuario u ON u.id=v.id_user
+				where  
+					v.id_entrada>0
+					$qryfechaini
+					$qryfechafin 
+					$qryusuario
+					$qrytienda
+					$qryproducto
+					order by v.id_entrada DESC
+					$qrysize
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteEntradas"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
+	public function getReporteSalidas($arrayfilters)
+	{
+		$fechaini    = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin    = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario  = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda   = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		$id_producto = (isset($arrayfilters['id_producto']))   ? $arrayfilters['id_producto']   : '';
+		$size	     = (isset($arrayfilters['size']))          ? $arrayfilters['size']          : '';
+		
+		$qryusuario  = ($id_usuario)    ? " AND v.id_user     = '$id_usuario' "   : "";
+		$qrytienda   = ($id_tienda>0)   ? " AND ep.id_tienda   = '$id_tienda' "    : "";
+		$qryproducto = ($id_producto>0) ? " AND ep.id_producto = '$id_producto' "   : "";
+		$qryfechaini = ($fechaini>0)    ? " AND DATE(v.fecha)>='".$fechaini."' " : "";
+		$qryfechafin = ($fechafin>0)    ? " AND DATE(v.fecha)<='".$fechafin."' " : "";
+		$qrysize 	 = ($size>0)		? " LIMIT $size " : "";
+		$sql = "SELECT ep.*,u.id_usuario id_usuario, v.fecha_validacion fecha_validacion
+						FROM salida_producto ep 
+						LEFT JOIN salida v ON ep.id_salida=v.id_salida
+						LEFT JOIN usuario u ON u.id=v.id_user
+				where  
+					v.id_salida>0
+					$qryfechaini
+					$qryfechafin 
+					$qryusuario
+					$qrytienda
+					$qryproducto
+					order by v.id_salida DESC
+					$qrysize
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result getReporteEntradas"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
 	public function getReporteComisionesUsuarios($arrayfilters)
 	{
 		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
