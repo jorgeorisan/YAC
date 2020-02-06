@@ -13,7 +13,7 @@ class Producto extends AutoProducto {
 		$tienda = $_SESSION['user_info']['id_tienda'];
 		$queryprod = $querylimit= '';
 		$TODO  = " HAVING TIENDA.existencias>0 ";
-		$querymarca = $querycategoria ='';
+		$querymarca = $querycategoria = $queryinvini= '';
 		if(count($arrayfilters)>0){
 			if(isset($arrayfilters['id_tienda']) && $arrayfilters['id_tienda']>0)
 				$tienda = $arrayfilters['id_tienda'] ;
@@ -43,6 +43,10 @@ class Producto extends AutoProducto {
 				$long    = $arrayfilters['size'];
 				$TODO .=" LIMIT  $minRows,$long  " ;
 			}
+			if(isset($arrayfilters['inventario_inicial']) && $arrayfilters['inventario_inicial'] >0 ){
+				$queryinvini = " AND inv_ini is null" ;
+			}
+
 		}
 		$prov = $tienda;
 		$querytienda='';
@@ -56,7 +60,7 @@ class Producto extends AutoProducto {
         $sql = "
 			SELECT TODO.id_producto,TODO.codinter,TODO.manual,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
 			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
-			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
+			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion,TIENDA.inv_ini
 			FROM(
 				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.manual,PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
 					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
@@ -90,7 +94,7 @@ class Producto extends AutoProducto {
 			LEFT JOIN (
 				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
 					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
-					,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion
+					,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion,EXISTENCIAS.inv_ini
 					FROM(
 						SELECT p.id_producto,codinter,p.costo,p.precio_descuento,p.precio,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
 						FROM producto p
@@ -99,10 +103,11 @@ class Producto extends AutoProducto {
 						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
 						WHERE p.status='ACTIVO'
 					) AS PRODUCTO LEFT JOIN(
-						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,u. id_usuario usuario_actualizacion
+						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,u. id_usuario usuario_actualizacion, inv_ini
 						FROM producto_tienda pt
 						LEFT JOIN usuario u ON  u.id=pt.usuario_actualizacion
 						WHERE tienda_id_tienda='$tienda'
+						$queryinvini
 						group by id_producto,tienda_id_tienda
 					)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
 					
@@ -212,6 +217,9 @@ class Producto extends AutoProducto {
 		$requestEntradaProducto['nombre']           = $dataproducto['nombre'];
 		$requestEntradaProducto['act_inventario']   = 1;
 		$idep = $iObjEntradaProducto->addAll($requestEntradaProducto);
+		
+		$objprodtienda = new ProductoTienda();
+		$objprodtienda->updateInventarioInicial($id,$id_tienda);
 			
 		
 	}

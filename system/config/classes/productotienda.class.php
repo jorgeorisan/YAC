@@ -65,6 +65,19 @@ class ProductoTienda extends AutoProductoTienda {
 			return true;
 		}
 	}
+	//metodo que sirve para hacer update  del inventario inicial
+	public function updateInventarioInicial($id,$id_tienda)
+	{
+		$_request["inv_ini"]=date("Y-m-d H:i:s");
+		$data=fromArray($_request,'producto_tienda',$this->db,"update");
+		$sql= "UPDATE producto_tienda SET $data[0]  WHERE id_producto=".$id." and tienda_id_tienda =".$id_tienda.";";
+		$row=$this->db->query($sql);
+		if(!$row){
+			return false;
+		}else{
+			return true;
+		}
+	}
 		//metodo que sirve para hacer delete
 	public function deleteAll($id,$_request=false)
 	{

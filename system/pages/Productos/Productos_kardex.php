@@ -84,14 +84,19 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
 /****ACTUALIZACION DE INVENTARIOS*/
 
 
+    ini_set('default_socket_timeout', 0);
     $existenciaactual = 0;
     $fecha_actualizacion = $usuario_actualizacion  ='';
 
     $obj = new Producto();
 
-    $arrayfilters['id_producto'] ='';
-    
-    foreach($obj->getAllArr($arrayfilters) as $valprod){
+   // $arrayfilters['id_producto'] ='';
+   // $arrayfilters['inventario_inicial'] ='1';
+    $queryproductos= $obj->getAllArr($arrayfilters);
+
+    foreach( $queryproductos as $key => $valprod){
+
+       
         $arrayfilters['id_producto'] =$valprod['id_producto'];
         
         $objreports = new Reports();
@@ -168,8 +173,11 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
       
         $totalkardex      = $totalkardentradas-$totalkardsalidas;
         $diferenciakardex = $existenciaactual-$totalkardex;
-        echo $valprod['id_producto'].':actual='. $existenciaactual.' kardex= '.$totalkardex.' diferencia = '.$diferenciakardex.'<br>';
-        $obj->CheckInvIni($valprod['id_producto'],$existenciaactual,$diferenciakardex);
+       // echo $valprod['id_producto'].':actual='. $existenciaactual.' kardex= '.$totalkardex.' diferencia = '.$diferenciakardex.'<br>';
+        //if($diferenciakardex!=0){
+            
+        //    $obj->CheckInvIni($valprod['id_producto'],$existenciaactual,$diferenciakardex);
+        //}
     }
     
    
