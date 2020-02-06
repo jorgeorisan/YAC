@@ -32,3 +32,5 @@ CREATE TABLE `corte_conceptos` (
   KEY `id_corte_conceptos_dx` (`corte_id`),
   CONSTRAINT `id_corte_conceptos_dx` FOREIGN KEY (`corte_id`) REFERENCES `corte` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+

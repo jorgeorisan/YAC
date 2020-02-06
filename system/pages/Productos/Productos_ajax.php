@@ -77,6 +77,122 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 				
 					break;
+				case 'getkardex':
+					$id = (isset($_GET["id"]))        ? $_GET["id"] : '' ; 
+					
+					$obj = new Producto();
+					$begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-01-01'); 
+					$idusuario    = ( isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
+					$idtienda  	  =  $_SESSION['user_info']['id_tienda'] ;
+					$idtienda  	  = (isset($_GET['id_tienda']))     ? $_GET['id_tienda']     : $idtienda;
+					$codeproducto = $arrayfilters['id_producto'] = ( isset($_GET['id']) && $_GET['id'] > 0 )  ?  $_GET['id'] : '';
+					$arrayfilters['fecha_inicial'] = $begin;
+					$arrayfilters['id_usuario']    = $idusuario;
+					$arrayfilters['id_tienda']     = $idtienda;
+					$jsonarrayfilters = json_encode($arrayfilters);
+					
+					$objreports = new Reports();
+					$dataventas = $objreports->getReporteVentas($arrayfilters);
+					
+					$dataentrada           = $objreports->getReporteEntradas($arrayfilters);
+					$datasalidas           = $objreports->getReporteSalidas($arrayfilters);
+					$datatraspasosentrada  = $objreports->getReporteTraspasosEntrada($arrayfilters);
+					$datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
+					
+					
+					$existenciaactual = $totalkardex = 0;
+					// $arrayfilters['id_producto'] ='';
+					// $arrayfilters['inventario_inicial'] ='1';
+					$queryproductos= $obj->getAllArr($arrayfilters);
+				
+					foreach( $queryproductos as $key => $valprod){
+						$arrayfilters['id_producto'] =$valprod['id_producto'];
+						
+						$objreports = new Reports();
+						$dataventas = $objreports->getReporteVentas($arrayfilters);
+				
+						$dataentrada           = $objreports->getReporteEntradas($arrayfilters);
+						$datasalidas           = $objreports->getReporteSalidas($arrayfilters);
+						$datatraspasosentrada  = $objreports->getReporteTraspasosEntrada($arrayfilters);
+						$datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
+				
+						$totalkardentradas  = 0;
+						$totalkardsalidas   = 0;
+						foreach($dataentrada as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':           
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardentradas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						foreach($datatraspasosentrada as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardentradas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						// salidas								
+						foreach ($dataventas as $rowventa){
+							$ventas = new Venta();
+							$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
+							$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
+							if($dataventasproductos){
+								foreach($dataventasproductos as $row) {
+									if (!$row['cancelado']) { 
+										$totalkardsalidas += $row['cantidad'];
+									}
+								}
+							}
+						}
+						foreach($datatraspasossalida as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardsalidas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						foreach($datasalidas as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardsalidas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						
+						$existenciaactual      = $valprod['existenciastienda'];
+						$fecha_actualizacion   = $valprod['fecha_actualizacion'];
+						$usuario_actualizacion = $valprod['usuario_actualizacion'];
+					
+						$totalkardex      = $totalkardentradas-$totalkardsalidas;
+						$diferenciakardex = $existenciaactual-$totalkardex;
+						// echo $valprod['id_producto'].':actual='. $existenciaactual.' kardex= '.$totalkardex.' diferencia = '.$diferenciakardex.'<br>';
+						//if($diferenciakardex!=0){
+							
+						//    $obj->CheckInvIni($valprod['id_producto'],$existenciaactual,$diferenciakardex);
+						//}
+					}
+					echo $totalkardex;
+					
+						
+			
+					break;
 				
 				case 'showpopupHistorial':
 					if( isset($_GET["id"]) && intval($_GET["id"])){

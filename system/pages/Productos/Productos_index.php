@@ -348,7 +348,7 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			codinter = data['codinter'];
 			id    = data['id_producto'];
 			
-			return html ='<div id="contcodinter'+id+'">'+codinter+'</div>';
+			return html ='<div class="registros" idprod="'+id+'" id="contcodinter'+id+'">'+codinter+'</div>';
 		};
 		var preciomayoreo_formatter = function(cell, formatterParams) {
 			data  = cell.getRow().getData();
@@ -383,8 +383,10 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			existenciastienda  = data['existenciastienda'];
 			id 				   = data['id_producto'];
 			existencias        = data['existencias'];
+			kardex        	   = data['kardex'];
 			title              = '<div  id="contexistencias'+id+'">'+ existenciastienda + '/' + existencias+'</div>'+
-				'<a tarjet="_blank" href="'+config.base+"/Productos/kardex/?id="+id+'"  >Kardex</a>';
+				'<a tarjet="_blank" href="'+config.base+"/Productos/kardex/?id="+id+'"  ><div id="kardex'+id+'">KARDEX='+kardex+'</div></a>';
+			
 			return title;
 		};
 		var name_formatter = function(cell, formatterParams) {
@@ -440,7 +442,9 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter,width:100  },
 				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false }
 			],
-            pageLoaded: function(data){  }
+            pageLoaded: function(data){ 
+				
+			 }
 		});
 
 		// $(".tabulator").tabulator("setSort", "reg", "desc");
