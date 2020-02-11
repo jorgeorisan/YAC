@@ -63,13 +63,14 @@ class Tienda extends AutoTienda {
 	public function updateAll($id,$_request)
 	{
 		$_request["updated_date"]=date("Y-m-d H:i:s");
+		
 		$data=fromArray($_request,'tienda',$this->db,"update");
 		$sql= "UPDATE tienda SET $data[0]  WHERE id_tienda=".$id.";";
 		$row=$this->db->query($sql);
 		if(!$row){
 			return false;
 		}else{
-			return true;
+			return $id;
 		}
 	}
 		//metodo que sirve para hacer delete

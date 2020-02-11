@@ -40,7 +40,7 @@ $usuario = new Usuario();
 $datauser = $usuario->getTable($data['id_user']);
 $totalpagado = $obj->getpagado($id);
 $totalporpagar = $data['total']-$totalpagado;
-$porcentpagado = ($totalpagado * 100  / $data['total']);
+$porcentpagado = ($data['total']) ? ($totalpagado * 100  / $data['total']) : 0 ;
 
 $descuento = ($data['descuento']>0) ? number_format($data['descuento'],2) : '';
 

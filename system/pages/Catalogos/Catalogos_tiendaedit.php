@@ -25,22 +25,38 @@ include(SYSTEM_DIR . "/inc/header.php");
 //$page_nav["misc"]["sub"]["blank"]["active"] = true;
 include(SYSTEM_DIR . "/inc/nav.php");
 
-
-if(isset($request['params']['id'])   && $request['params']['id']>0)
-    $id=$request['params']['id'];
+if(isset($_GET['id'])   && $_GET['id']>0)
+    $id=$_GET['id'];
 else
-    informError(true,make_url("Catalogos","tienda"));
+    informError(true,make_url("Productos","index"));
+
 
 $obj = new Tienda();
 $data = $obj->getTable($id);
 if ( !$data ) {
     informError(true,make_url("Catalogos","tienda"));
 }
+
 if(isPost()){
     $obj = new Tienda();
     $id = $obj->updateAll($id,getPost());
+    
     if( $id  ) {
-         informSuccess(true, make_url("Catalogos","tienda"));
+       
+         //nuevas imagenes
+         if (isset($_FILES['imagen'])){
+            $carpetaimg = LOGOS.'/logostienda';
+            move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id.'.png');
+            $request['logo']=$id.'.png';
+            $id = $obj->updateAll($id,$request);
+            if( $id >0  ) {
+              
+                informSuccess(true, make_url("Catalogos","tienda"));
+            }else{
+                informError(true,  make_url("Catalogos","tienda"));
+            }
+        }
+        informSuccess(true, make_url("Catalogos","tienda"));
     }else{
         informError(true, make_url("Catalogos","tiendaedit",array('id'=>$id)),"tiendaedit");
     }
@@ -68,8 +84,8 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-                                <form id="main-form" class="" role="form" method=post 
-                                action="<?php echo make_url("Catalogos","tiendaedit",array('id'=>$id));?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">
+                               
+                                <form id="main-form" class="" role="form" method='post' action="#" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <input type="text" class="" name="idTienda" hidden>
                                     <fieldset>
                                         <div class="col-sm-6">
@@ -81,12 +97,24 @@ if(isPost()){
                                                 <label for="name">Ubicacion</label>
                                                 <input type="text" class="form-control" placeholder="Direccion" name="ubicacion" value="<?php echo htmlentities($data['ubicacion']); ?>">                        
                                             </div>
-                                            <div class="form-group">
-                                                <label for="name">Logotipo</label>
-                                                <input type="file" class="form-control"  id="imagen1" name="logo" onchange="vistaPrevia(this, 'logoTiendaPrev');" multiple value="<?php echo htmlentities($data['logo']); ?>">
-                                                <fieldset id="logoTiendaPrev" class="0">
-                                                </fieldset>
+                                            <div class="form-group superbox">
+											<label for="name">Imagen</label>
+                                            <input type="file" id="imagen" name="imagen"  value="<?php echo ($data['logo']!='') ? $data['logo']  : ''; ?>" title="Imagen">
+                                            <div id='contfileproductos'>
+                                                <?php 
+                                                if($data['logo']){
+                                                    $carpetaimg = ASSETS_URL.'/img/logostienda';
+                                                    echo "<div class='superbox-list'>
+                                                            <img src='".$carpetaimg.DIRECTORY_SEPARATOR.$data['logo']."' 
+                                                            data-img='".$carpetaimg.DIRECTORY_SEPARATOR.$data['logo']."'
+                                                            alt='".$data['logo']."' title='".$data['logo']."'
+                                                            style='max-width:150px;max-height:150px;min-width:100px'
+                                                            class='superbox-img'>
+                                                        </div>";
+                                                }
+                                                ?> 
                                             </div>
+                                        </div>
                                         </div>  
                                         <div class="col-sm-6">
                                         <div class="form-group">
@@ -108,6 +136,13 @@ if(isPost()){
                                                     <option value="yellow" <?php echo ($data['color'] == 'yellow' ) ? "selected" : '' ?> >YELLOW</option>
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="name">RFC</label>
+                                                <input type="text" class="form-control" placeholder="RFC" name="rfc" value="<?php echo htmlentities($data['rfc']); ?>">                                                                                               
+                                            </div>
+                                            
                                         </div>
                                     </fieldset>
                                     <div class="form-actions" style="text-align: center">
@@ -135,7 +170,22 @@ if(isPost()){
 
 <!-- END MAIN PANEL -->
 <!-- ==========================CONTENT ENDS HERE ========================== -->
-
+<div class="modal fade" id="showPhoto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Visor de Imagenes</h4>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- PAGE FOOTER -->
 <?php
     // include page footer
@@ -147,6 +197,8 @@ if(isPost()){
     //include required scripts
     include(SYSTEM_DIR . "/inc/scripts.php");
 ?>
+<!-- PAGE RELATED PLUGIN(S) -->
+<script src="<?php echo ASSETS_URL; ?>/js/plugin/superbox/superbox.min.js"></script>
 
 <!-- PAGE RELATED PLUGIN(S)
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/YOURJS.js"></script>-->
@@ -160,8 +212,58 @@ if(isPost()){
 
         $("#main-form").submit();       
     }
+    num=0;
+    contfotosauto=0;
+    numdel=1;
+    var arraydeleteauto=[];
+    function uploadimages(evt) {
+        document.getElementById('contfileproductos').innerHTML='';
+        var files = evt.target.files; // FileList object
+        $numfotos=0;
+        for (var i = 0, f; f = files[i]; i++) {
+            $numfotos++;
+        }
+        if($numfotos<=15){
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+                var nameimage=files[i].name;
+                if(files[i].size >= 3856819) {
+                  alert("La imagen "+nameimage+" es muy grande, El tamaño maximo es de 3.67 MB");
+                  files[i].value = null;
+                  continue;
+                }
+                contfotosauto++;
+                // Only process image files.
+                if (!f.type.match('image.*')) {
+                    notify("error","Solo puedes seleccionar imagenes");
+                    continue;
+                }
+                var reader = new FileReader();
+                // Closure to capture the file information.
+                reader.onload = (function(theFile) {
+                    return function(e) {
+                        var num=Math.floor(Math.random() * 1000); 
+                        var span = document.createElement('span');
+                        span.innerHTML = ['<img style="width:100px" title="click para eliminar" onclick="deleteimage(',num,');  return false;"  class="thumb" id="image_',num,'" max-width="150px" max-height="150px" src="', e.target.result,
+                                        '" nameimage="', escape(theFile.name), '"/>'].join('');
+                      document.getElementById('contfileproductos').insertBefore(span, null);
+                    };
+                })(f);
+                // Read in the image file as a data URL.
+                reader.readAsDataURL(f);     
+            }
+        }else{
+            notify("error","Solo puedes seleccionar 15 imagenes");
+        } 
+    }
     $(document).ready(function() {
-    
+        document.getElementById('imagen').addEventListener('change', uploadimages, false);
+        $(function(){
+            $('.superbox-img').click(function(){
+                $('#showPhoto .modal-body').html($(this).clone().attr("height","100%"));
+                $('#showPhoto').modal('show');
+            })
+        });
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.
          * It initializes and checks for all basic elements of the page

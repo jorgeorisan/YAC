@@ -33,7 +33,8 @@ defined("SYSTEM_DIR")              ? null : define("SYSTEM_DIR", ROOT_DIR . DIRE
 defined("CONFIG_DIR")              ? null : define("CONFIG_DIR", ROOT_DIR . DIRECTORY_SEPARATOR . "system" . DIRECTORY_SEPARATOR . "config");
 //Assets URL, location of your css, img, js, etc. files
 defined("ASSETS_URL")              ? null : define("ASSETS_URL", APP_URL );
-defined("PRODUCTOS")         		   ? null : define("PRODUCTOS", ROOT_DIR . DIRECTORY_SEPARATOR . "productosimages");
+defined("PRODUCTOS")         	   ? null : define("PRODUCTOS", ROOT_DIR . DIRECTORY_SEPARATOR . "productosimages");
+defined("LOGOS")         	       ? null : define("LOGOS", ROOT_DIR . DIRECTORY_SEPARATOR . "img");
 #echo "<pre>";
 #print_r(array(APP_URL,APP_PATH,ROOT_DIR,ASSETS_URL));
 #echo "</pre>";#die;

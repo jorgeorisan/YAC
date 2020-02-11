@@ -13,7 +13,7 @@ class Producto extends AutoProducto {
 		$tienda = $_SESSION['user_info']['id_tienda'];
 		$queryprod = $querylimit= '';
 		$TODO  = " HAVING TIENDA.existencias>0 ";
-		$querymarca = $querycategoria = $queryinvini= '';
+		$querymarca = $querycategoria = $queryinvini= $querykardex= '';
 		if(count($arrayfilters)>0){
 			if(isset($arrayfilters['id_tienda']) && $arrayfilters['id_tienda']>0)
 				$tienda = $arrayfilters['id_tienda'] ;
@@ -45,6 +45,9 @@ class Producto extends AutoProducto {
 			}
 			if(isset($arrayfilters['inventario_inicial']) && $arrayfilters['inventario_inicial'] >0 ){
 				$queryinvini = " AND inv_ini is null" ;
+			}
+			if(isset($arrayfilters['kardex']) && $arrayfilters['kardex'] >0 ){
+				$querykardex = " AND kardex!=existencias" ;
 			}
 
 		}
@@ -108,6 +111,7 @@ class Producto extends AutoProducto {
 						LEFT JOIN usuario u ON  u.id=pt.usuario_actualizacion
 						WHERE tienda_id_tienda='$tienda'
 						$queryinvini
+						$querykardex
 						group by id_producto,tienda_id_tienda
 					)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
 					
@@ -223,14 +227,7 @@ class Producto extends AutoProducto {
 			
 		
 	}
-	public function ActKardex($id,$kardex){
-		$objprodtienda = new ProductoTienda();
-		
-		$id_tienda     = $_SESSION['user_info']['id_tienda'];
-		$objprodtienda->updateKardex($id,$id_tienda,$kardex);
-			
-		
-	}
+	
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{

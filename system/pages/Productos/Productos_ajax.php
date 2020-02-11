@@ -77,35 +77,30 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 				
 					break;
-				case 'getkardex':
-					$id = (isset($_GET["id"]))        ? $_GET["id"] : '' ; 
+				case 'updatekardex':
+					// una ves al anio a principios empieza en 2020 enero 
+					echo 'Comienza updatekardex'.date('Y-m-d H:i:s').'<br>';
 					
 					$obj = new Producto();
+
 					$begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-01-01'); 
-					$idusuario    = ( isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
+					$idusuario    = $_SESSION['user_id'];
 					$idtienda  	  =  $_SESSION['user_info']['id_tienda'] ;
-					$idtienda  	  = (isset($_GET['id_tienda']))     ? $_GET['id_tienda']     : $idtienda;
-					$codeproducto = $arrayfilters['id_producto'] = ( isset($_GET['id']) && $_GET['id'] > 0 )  ?  $_GET['id'] : '';
+					$arrayfilters['id_producto']   = ( isset($_GET['id']) && $_GET['id'] > 0 )  ?  $_GET['id'] : '';
 					$arrayfilters['fecha_inicial'] = $begin;
 					$arrayfilters['id_usuario']    = $idusuario;
 					$arrayfilters['id_tienda']     = $idtienda;
-					$jsonarrayfilters = json_encode($arrayfilters);
+					$jsonarrayfilters=json_encode($arrayfilters);
 					
-					$objreports = new Reports();
-					$dataventas = $objreports->getReporteVentas($arrayfilters);
-					
-					$dataentrada           = $objreports->getReporteEntradas($arrayfilters);
-					$datasalidas           = $objreports->getReporteSalidas($arrayfilters);
-					$datatraspasosentrada  = $objreports->getReporteTraspasosEntrada($arrayfilters);
-					$datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
-					
-					
-					$existenciaactual = $totalkardex = 0;
-					// $arrayfilters['id_producto'] ='';
-					// $arrayfilters['inventario_inicial'] ='1';
-					$queryproductos= $obj->getAllArr($arrayfilters);
+					//$arrayfilters['id_producto'] ='';
+					$arrayfilters['kardex'] ='1';
+					//$arrayfilters['todo'] ='1';
 				
+					$queryproductos= $obj->getAllArr($arrayfilters);
+					$totalkardex = '0';
 					foreach( $queryproductos as $key => $valprod){
+				
+					
 						$arrayfilters['id_producto'] =$valprod['id_producto'];
 						
 						$objreports = new Reports();
@@ -144,7 +139,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						foreach ($dataventas as $rowventa){
 							$ventas = new Venta();
 							$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-							$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
+							$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$arrayfilters['id_producto']);
 							if($dataventasproductos){
 								foreach($dataventasproductos as $row) {
 									if (!$row['cancelado']) { 
@@ -182,13 +177,19 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					
 						$totalkardex      = $totalkardentradas-$totalkardsalidas;
 						$diferenciakardex = $existenciaactual-$totalkardex;
-						// echo $valprod['id_producto'].':actual='. $existenciaactual.' kardex= '.$totalkardex.' diferencia = '.$diferenciakardex.'<br>';
+						//echo $valprod['id_producto'].':actual='. $existenciaactual.' kardex= '.$totalkardex.' diferencia = '.$diferenciakardex.'<br>';
 						//if($diferenciakardex!=0){
 							
-						//    $obj->CheckInvIni($valprod['id_producto'],$existenciaactual,$diferenciakardex);
+							//$obj->CheckInvIni($valprod['id_producto'],$existenciaactual,$diferenciakardex);
+							$objprodtienda = new ProductoTienda();
+							$objprodtienda->updateKardex($valprod['id_producto'],$idtienda,$totalkardex,$totalkardentradas,$totalkardsalidas);
+					
 						//}
+						
 					}
-					echo $totalkardex;
+					
+					echo 'Termina updatekardex'.date('Y-m-d H:i:s').'<br>';
+					echo 'tienda='.$idtienda.' total actualizados='.$key;
 					
 						
 			

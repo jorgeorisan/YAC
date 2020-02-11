@@ -34,35 +34,11 @@ $data = $obj->getTable($id);
 if ( !$data ) {
     informError(true,make_url("Productos","index"));
 }
-if(isPost()){
-    $obj = new Producto();
-    $id = $obj->updateAll($id,getPost());
-    if( $id >0  ) {
-        //nuevas imagenes
-        if (isset($_FILES['imagen']) && isset($data['imagen'])){
-            $carpetaimg = PRODUCTOS.'/images';
-            move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id."_".$_POST['codinter'].'.png');
-            $request['imagen']=$id."_".$_POST['codinter'].'.png';
-            $id = $obj->updateAll($id,$request);
-            if( $id >0  ) {
-                informSuccess(true, APP_URL."/Productos/view/?id=".$id,'view');
-            }else{
-                informError(true, APP_URL."/Productos/edit/?id=".$id,'edit');
-            }
-        }else{
-            informSuccess(true, APP_URL."/Productos/view/?id=".$id,'view');
-        }
-        
-    }else{
-        exit;
-        informError(true, make_url("Productos","edit",array('id'=>$id)),"edit");
-    }
-}
+
 
 $begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-01-01'); 
 $idusuario    = ( isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
 $idtienda  	  =  $_SESSION['user_info']['id_tienda'] ;
-$idtienda  	  = (isset($_GET['id_tienda']))     ? $_GET['id_tienda']     : $idtienda;
 $codeproducto = $arrayfilters['id_producto'] = ( isset($_GET['id']) && $_GET['id'] > 0 )  ?  $_GET['id'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -77,112 +53,17 @@ $datasalidas           = $objreports->getReporteSalidas($arrayfilters);
 $datatraspasosentrada  = $objreports->getReporteTraspasosEntrada($arrayfilters);
 $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
 
+  
+$queryproductos= $obj->getAllArr($arrayfilters);
+$totalkardex = '0';
+$fecha_actualizacion = $existenciaactual= $usuario_actualizacion='';
+foreach( $queryproductos as $key => $valprod){
+    $existenciaactual = $valprod['existenciastienda'];
+    $fecha_actualizacion  = $valprod['fecha_actualizacion'];
+    $usuario_actualizacion  = $valprod['usuario_actualizacion'];
 
-
-
-
-/****ACTUALIZACION DE INVENTARIOS*/
-
-
-    ini_set('default_socket_timeout', 0);
-    $existenciaactual = 0;
-    $fecha_actualizacion = $usuario_actualizacion  = $diferenciakardex='';
-
-    $obj = new Producto();
-
-    $arrayfilters['id_producto'] ='';
-    //$arrayfilters['inventario_inicial'] ='1';
-    $queryproductos= $obj->getAllArr($arrayfilters);
-
-    foreach( $queryproductos as $key => $valprod){
-
-       
-        $arrayfilters['id_producto'] =$valprod['id_producto'];
-        
-        $objreports = new Reports();
-        $dataventas = $objreports->getReporteVentas($arrayfilters);
-
-        $dataentrada           = $objreports->getReporteEntradas($arrayfilters);
-        $datasalidas           = $objreports->getReporteSalidas($arrayfilters);
-        $datatraspasosentrada  = $objreports->getReporteTraspasosEntrada($arrayfilters);
-        $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
-
-        $totalkardentradas  = 0;
-        $totalkardsalidas   = 0;
-        foreach($dataentrada as $row) {
-            $status = htmlentities($row['status']);
-            switch ($status) {
-                case 'BAJA':           
-                case 'POR AUTORIZAR':
-                    break;
-                default:
-                    $totalkardentradas  += $row['cantidad'];
-                    break;
-            } 
-        } 
-        foreach($datatraspasosentrada as $row) {
-            $status = htmlentities($row['status']);
-            switch ($status) {
-                case 'BAJA':
-                case 'POR AUTORIZAR':
-                    break;
-                default:
-                    $totalkardentradas  += $row['cantidad'];
-                    break;
-            } 
-        } 
-        // salidas								
-        foreach ($dataventas as $rowventa){
-            $ventas = new Venta();
-            $classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-            $dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
-            if($dataventasproductos){
-                foreach($dataventasproductos as $row) {
-                    if (!$row['cancelado']) { 
-                        $totalkardsalidas += $row['cantidad'];
-                    }
-                }
-            }
-        }
-        foreach($datatraspasossalida as $row) {
-            $status = htmlentities($row['status']);
-            switch ($status) {
-                case 'BAJA':
-                case 'POR AUTORIZAR':
-                    break;
-                default:
-                    $totalkardsalidas  += $row['cantidad'];
-                    break;
-            } 
-        } 
-        foreach($datasalidas as $row) {
-            $status = htmlentities($row['status']);
-            switch ($status) {
-                case 'BAJA':
-                case 'POR AUTORIZAR':
-                    break;
-                default:
-                    $totalkardsalidas  += $row['cantidad'];
-                    break;
-            } 
-        } 
-        
-        $existenciaactual      = $valprod['existenciastienda'];
-        $fecha_actualizacion   = $valprod['fecha_actualizacion'];
-        $usuario_actualizacion = $valprod['usuario_actualizacion'];
-      
-        $totalkardex      = $totalkardentradas-$totalkardsalidas;
-        $diferenciakardex = $existenciaactual-$totalkardex;
-       // echo $valprod['id_producto'].':actual='. $existenciaactual.' kardex= '.$totalkardex.' diferencia = '.$diferenciakardex.'<br>';
-        //if($diferenciakardex!=0){
-            
-            //$obj->CheckInvIni($valprod['id_producto'],$existenciaactual,$diferenciakardex);
-            $obj->ActKardex($valprod['id_producto'],$totalkardex);
-        //}
-    }
-    
+}
    
-
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -197,7 +78,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                         <div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
                             <header>
                                 <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                                <h2><?php echo 'KARDEX'. $diferenciakardex; ?></h2>
+                                <h2><?php echo 'KARDEX'; ?></h2>
                             </header>
                             <div>
                                 <div class="jarviswidget-editbox">
@@ -263,6 +144,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                            
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Status</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Concepto</td>
+                                            <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Fecha</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;"></td>
                                         </tr>
                                         <?php 
@@ -304,10 +186,15 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                                
                                                 <td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion']; ?></td>
                                                 <td><?php echo htmlentities($row['concepto']); ?></td>
+                                                <td><?php echo htmlentities($row['fecha_registro']); ?></td>
                                                 <td class='borrar-td'>
+                                                    
+			                                        <?php $act =  $row['id_entrada_producto'].",'".$row['nombre']."',".$row['cantidad'];  ?>
+                                                    <button class="btn btn-info col-xs-6"  onclick="showupdate(<?php echo $act; ?>,'Entradas')" title="Actualizar Registro"><i class="fa fa-sync"></i></button>
                                                     <?php 
                                                     if ($row['status']!='BAJA'){ ?> 
-                                                            <a href="#" class="btn btn-danger" onclick="borrar('<?php echo make_url("Entradas","entradaproductodelete",array('id'=>$row['id_entrada_producto'])); ?>',<?php echo $row['id_entrada_producto']; ?>);" > <i class="fas fa-ban"></i></a>
+                                                            <a href="#" class="btn btn-danger" onclick="borrarregistrokardex(<?php echo $row['id_entrada_producto']?>,'Entradas')" > <i class="fas fa-ban"></i></a>
+
                                                     <?php 
                                                     } ?>
                                                 </td>
@@ -328,6 +215,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Codigo</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Producto</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Status</td>
+                                            <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Fecha</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;"></td>
                                         </tr>
                                         <?php 
@@ -369,6 +257,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                                 <td><?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
                                                
                                                 <td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion']; ?></td>
+                                                <td><?php echo htmlentities($row['fecha_registro']); ?></td>
                                                 <td class='borrar-td'>
                                                     <?php 
                                                     if ($row['status']!='BAJA'){ ?> 
@@ -378,6 +267,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                                     <?php 
                                                     } ?>
                                                 </td>
+                                                
                                             </tr>
 
                                         <?php
@@ -574,6 +464,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Codigo</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Producto</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Status</td>
+                                            <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Fecha</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;"></td>
                                         </tr>
                                         <?php 
@@ -615,6 +506,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                                 <td><?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
                                                
                                                 <td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion']; ?></td>
+                                                <td><?php echo htmlentities($row['fecha_registro']); ?></td>
                                                 <td class='borrar-td'>
                                                     <?php 
                                                     if ($row['status']!='BAJA'){ ?> 
@@ -640,6 +532,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Producto</td>
                                            
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Status</td>
+                                            <td colspan="" style="background-color:#d0d0cf; font-weight:bold;">Fecha</td>
                                             <td colspan="" style="background-color:#d0d0cf; font-weight:bold;"></td>
                                         </tr>
                                         <?php 
@@ -679,13 +572,16 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
                                                 <td><?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
                                                
                                                 <td><?php echo htmlentities($row['status'])."<br>".$row['fecha_validacion']; ?></td>
+                                                
+                                                <td><?php echo htmlentities($row['fecha_registro']); ?></td>
                                                 <td class='borrar-td'>
                                                     <?php 
                                                     if ($row['status']!='BAJA'){ ?> 
-                                                            <a href="#" class="btn btn-danger" onclick="borrarsalida('<?php echo $row['id_salida_producto']; ?>');" > <i class="fas fa-ban"></i></a>
+                                                            <a href="#" class="btn btn-danger" onclick="borrarregistrokardex('<?php echo $row['id_salida_producto']; ?>','Salidas');" > <i class="fas fa-ban"></i></a>
                                                     <?php 
                                                     } ?>
                                                 </td>
+                                                
                                             </tr>
 
                                         <?php
@@ -745,41 +641,70 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/superbox/superbox.min.js"></script>
 
 <script>
-  function borrarsalida(id){ 
-            swal({
-                title: "Estas seguro?",
-                text: "Deseas eliminar este registro?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: '#DD6B55',
-                confirmButtonText: 'Si, Eliminar!',
-                closeOnConfirm: true
-                },
-                function(){
-                    var url = config.base+"/Salidas/ajax/?action=get&object=deleteonlydecrement"; 
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        data: 'id='+id, 
-                        success: function(response){
-                            var data = $.parseJSON(response); 
-                            console.log(data);
-                            if(!data.error){
-                                swal("Eliminado!", "Eliminado con exito!", "Exito");
-                                
-                                location.reload();
-                            }else{
-                                return notify('error',"Oopss error al Eliminar:"+data.response);
-                            }
+  function borrarregistrokardex(id,tipo){ 
+        swal({
+            title: "Estas seguro?",
+            text: "Deseas eliminar este registro?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#DD6B55',
+            confirmButtonText: 'Si, Eliminar!',
+            closeOnConfirm: true
+            },
+            function(){
+                var url = config.base+"/"+tipo+"/ajax/?action=get&object=deleteonlydecrement"; 
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: 'id='+id, 
+                    success: function(response){
+                        var data = $.parseJSON(response); 
+                        console.log(data);
+                        if(!data.error){
+                            swal("Eliminado!", "Eliminado con exito!", "Exito");
+                            
+                            location.reload();
+                        }else{
+                            return notify('error',"Oopss error al Eliminar:"+data.response);
                         }
-                        });
-                    return false; // Evitar ejecutar el submit del formulario.
-                    
-                }
-            );
-        }
+                    }
+                    });
+                return false; // Evitar ejecutar el submit del formulario.
+                
+            }
+        );
+    }
     $(document).ready(function() {
-      
+        showupdate = function(id,producto,existencia,tipo){
+			
+			$.SmartMessageBox({
+				title : "Actualizar: "+producto,
+				content : "Cantidad Actual: "+existencia,
+				buttons : '[No][Yes]',
+				input : "text",
+				placeholder : "Nueva Cantidad"
+			}, function(ButtonPressed, Value) {
+				if (ButtonPressed === "Yes") {
+					if(!Value) return notify('warning','Se necesita una cantidad');
+					
+					$.ajax({
+						type: "POST",
+						url: config.base+"/"+tipo+"/ajax/?action=post&object=updateexisencias",
+						data: "id="+id+"&existencia="+Value,
+						success: function(response){
+							if(response>0){
+								swal('Actualizado con exito');
+                                location.reload();
+							}else{
+								return notify('error','Error al actualizar');
+							}
+						}
+					});
+				}
+			});
+			$('#txt1').val(existencia);
+			return false;
+		}
         
       var kardex =Math.abs(parseInt($('#totalentradas').html()-$('#totalsalidas').html()));
       console.log(kardex);
@@ -804,7 +729,7 @@ $datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
 </script>
 
 <?php
-
+    
     //include footer
     include(SYSTEM_DIR . "/inc/close-html.php");
 

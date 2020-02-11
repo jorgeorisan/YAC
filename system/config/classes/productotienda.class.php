@@ -79,9 +79,11 @@ class ProductoTienda extends AutoProductoTienda {
 		}
 	}
 	//metodo que sirve para hacer update al kardex de cada tienda
-	public function updateKardex($id,$id_tienda,$kardex)
+	public function updateKardex($id,$id_tienda,$totalkardex,$totalkardentradas,$totalkardsalidas)
 	{
-		$_request["kardex"]=$kardex;
+		$_request["kardex"]			= $totalkardex;
+		$_request["entradaskardex"] = $totalkardex;
+		$_request["salidaskardex"]  = $totalkardex;
 		$data=fromArray($_request,'producto_tienda',$this->db,"update");
 		$sql= "UPDATE producto_tienda SET $data[0]  WHERE id_producto=".$id." and tienda_id_tienda =".$id_tienda.";";
 		$row=$this->db->query($sql);

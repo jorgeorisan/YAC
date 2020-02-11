@@ -15,6 +15,7 @@
 		protected $rfc = "";
 		protected $abreviacion = "";
 		protected $color = "";
+		protected $logo = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -86,6 +87,11 @@
 		public function setColor( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "COLOR","s") ) 
  				$this->color = $value;
+		}
+		
+		public function setLogo( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "LOGO","s") ) 
+ 				$this->logo = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -185,6 +191,14 @@
  			}
 		}
 		
+		public function getLogo($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->logo) ;
+ 			}else{
+ 				return $this->logo ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -240,6 +254,7 @@
 			$this->setRfc( $res['rfc'] );
 			$this->setAbreviacion( $res['abreviacion'] );
 			$this->setColor( $res['color'] );
+			$this->setLogo( $res['logo'] );
 			return true;
 		}
 		// end function load

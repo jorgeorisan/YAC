@@ -61,7 +61,19 @@ $data = $obj->getAllArr();
 										<?php foreach($data as $row){
 											?>
 											<tr>
-												<td><?php echo htmlentities($row['nombre'])?></td>
+												<td><?php 
+												  if($row['logo']){
+													  $carpetaimg = ASSETS_URL.'/img/logostienda';
+													  echo "<div class='superbox-list'>
+															  <img src='".$carpetaimg.DIRECTORY_SEPARATOR.$row['logo']."' 
+															  data-img='".$carpetaimg.DIRECTORY_SEPARATOR.$row['logo']."'
+															  alt='".$row['nombre']."' title='".$row['nombre']."'
+															  style='max-width:150px;max-height:150px;min-width:100px'
+															  class='superbox-img'>
+														  </div>";
+												  }else{
+													echo htmlentities($row['nombre']);
+												  }?></td>
 												<td><?php echo htmlentities($row['telefono']) ?></td>
 												<td><?php echo htmlentities($row['info_adicional'])?></td>
 												<td><?php echo htmlentities($row['ubicacion'])?></td>
@@ -75,7 +87,7 @@ $data = $obj->getAllArr();
 														<ul class="dropdown-menu">
 															
 															<li>
-																<a class="" href="<?php echo make_url("Catalogos","tiendaedit",array('id'=>$row['id_tienda'])); ?>">Editar</a>
+																<a class="" href="<?php echo make_url("Catalogos","tiendaedit")."/?id=".$row['id_tienda']; ?>">Editar</a>
 															</li>
 															<li class="divider"></li>
 															<li>

@@ -52,7 +52,7 @@
 
 
 		<!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
-<!--		<link rel="stylesheet" type="text/css" media="screen" href="<?php echo ASSETS_URL; ?>/NOTcss/demo.min.css"> -->
+		<!--		<link rel="stylesheet" type="text/css" media="screen" href="<?php echo ASSETS_URL; ?>/NOTcss/demo.min.css"> -->
 
 		<!-- FAVICONS -->
 		<link rel="shortcut icon" href="<?php echo ASSETS_URL; ?>/img/favicon/corazon.ico?a" type="image/x-icon">

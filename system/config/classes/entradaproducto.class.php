@@ -100,8 +100,39 @@ class EntradaProducto extends AutoEntradaProducto {
 			return true;
 		}
 	}
+	//metodo que sirve para hacer delete y solo decrementar
+	public function deleteonlydecrement($id,$_request=false)
+	{
+		$entradaproducto = $this->getTable($id);
+		
+		$objentrada = new Entrada();
+		$dataentrada = $objentrada->getTable($entradaproducto['id_entrada']);
+		if(!$dataentrada) die('error entrada');
 
-	
+		$objproductotienda = new ProductoTienda();
+		$productotienda = $objproductotienda->getTablebyProducto($entradaproducto['id_producto'], $dataentrada['id_tienda']);
+		if ( ! $productotienda ) die('no se encontro productotienda');
+
+		$objproductos = new Producto();
+		$dataproducto = $objproductos->getTable($entradaproducto['id_producto']);
+		//si no es manual y ya esta activa la entrada actualizamos las existencias
+		if(!$dataproducto['manual'] && $entradaproducto['status']=='ACTIVO'){
+			//$objproductotienda->actualizaexistencia($productotienda['id_productotienda'],$entradaproducto['cantidad'],'decrement');
+			//$objproductotienda->actualizaexistencia($productotiendaAnterior['id_productotienda'],$entradaproducto['cantidad'],'increment');
+		}
+		$_request["status"]="BAJA";
+		$_request["deleted_date"]=date("Y-m-d H:i:s");
+		$_request["usuario_deleted"]=$_SESSION['user_id'];
+		$data=fromArray($_request,'entrada_producto',$this->db,"update");	
+		$sql= "UPDATE entrada_producto SET $data[0]  WHERE id_entrada_producto=".$id.";";
+		$row=$this->db->query($sql);
+		if(!$row){
+			return false;
+		}else{
+			return true;
+		}
+	}
+		
 
 
 }

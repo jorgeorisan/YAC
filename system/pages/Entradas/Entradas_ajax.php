@@ -48,7 +48,36 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 			}
 			
 		break;
-				
+		case 'deleteonlydecrement': 
+				$response = [];
+				if( intval($_GET["id"]) && isset($_GET["id"]) ){
+					$id     = $_GET["id"];
+					$producto = new EntradaProducto();
+					if($res = $producto->deleteonlydecrement($id)){
+						$response = array('error'=>false,'response'=>'Exito al eliminar');
+					}else{
+						$response = array('error'=>true,'response'=>'Error al eliminar');
+					}
+				}else{
+					$response = array('error'=>true,'response'=>'Error en el ID');
+				}
+				echo json_encode($response);
+			break;
+		case 'updateexisencias':
+			if( isset($_POST["id"]) && isset($_POST["existencia"]) ){
+				$id            = $_POST["id"];
+				$existencia    = ($_POST["existencia"])    ? $_POST["existencia"]    : 0 ;
+
+				$objproducto = new EntradaProducto();
+
+				$request['cantidad'] = $existencia;
+				$update = $objproducto->updateAll($id,$request);
+				if( !$update ) die('no actualizo con exito EntradaProducto');
+				echo $id;
+			}
+			break;
+		
+		
 		case 'validar':
 			if(isPost()){
 				if( intval($_POST["id_entrada"]) ){

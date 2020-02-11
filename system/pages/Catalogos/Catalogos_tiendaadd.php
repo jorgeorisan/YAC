@@ -28,6 +28,19 @@ if(isPost()){
     $obj = new Tienda();
     $id=$obj->addAll(getPost());
     if($id>0){
+       //nuevas imagenes
+        if (isset($_FILES['imagen'])){
+            $carpetaimg = LOGOS.'/logostienda';
+            move_uploaded_file($_FILES["imagen"]["tmp_name"], $carpetaimg."/".$id.'.png');
+            $request['logo']=$id.'.png';
+            $id = $obj->updateAll($id,$request);
+            if( $id >0  ) {
+            
+                informSuccess(true, make_url("Catalogos","tienda"));
+            }else{
+                informError(true,  make_url("Catalogos","tienda"));
+            }
+        }
         informSuccess(true, make_url("Catalogos","tienda"));
     }else{
         informError(true,make_url("Catalogos","tienda"));
@@ -67,11 +80,9 @@ if(isPost()){
                                                 <label for="name">Ubicacion</label>
                                                 <input type="text" class="form-control" placeholder="Direccion" name="ubicacion" >                        
                                             </div>
-                                            <div class="form-group">
-                                                <label for="name">Logotipo</label>
-                                                <input type="file" class="form-control"  id="imagen1" name="logo" onchange="vistaPrevia(this, 'logoTiendaPrev');" multiple>
-                                                <fieldset id="logoTiendaPrev" class="0">
-                                                </fieldset>
+                                            <input type="file" id="imagen" name="imagen"  value="" title="Imagen">
+                                            <div id='contfileproductos'>
+                                               
                                             </div>
                                         </div>  
                                         <div class="col-sm-6">
@@ -94,6 +105,13 @@ if(isPost()){
                                                     <option value="yellow">YELLOW</option>
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="name">RFC</label>
+                                                <input type="text" class="form-control" placeholder="RFC" name="rfc">                                                                                               
+                                            </div>
+                                            
                                         </div>
                                     </fieldset>
                                     <div class="form-actions" style="text-align: center">

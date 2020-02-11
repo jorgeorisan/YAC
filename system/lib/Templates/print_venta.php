@@ -16,7 +16,7 @@ $datacliente = $cliente->getTable($data['id_persona']);
 $usuario = new Usuario();
 $datauser = $usuario->getTable($data['id_user']);
 $totalpagado = $obj->getpagado($id);
-$porcentpagado = ($totalpagado * 100  / $data['total']);
+$porcentpagado = ($data['total']) ? ($totalpagado * 100  / $data['total']) : 0 ;
 
 if ($porcentpagado >= 75)
     $class  = 'label label-success';
@@ -26,6 +26,13 @@ if ($porcentpagado < 50 )
     $class  = 'label label-danger';
 ?>
 
+<?php 
+    $tipo='Producto';
+    if($datatienda['es_servicios']){
+        $tipo='Servicio';
+    }
+            
+?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
@@ -55,7 +62,16 @@ if ($porcentpagado < 50 )
     <table style="text-align:center; width:100%">
         <tr>
             <td colspan="2" style="">
-                <img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="Yo Amo Comprar" style="width:150px; height:40">
+                <?php
+                if($datatienda['logo']){
+                    $carpetaimg = ASSETS_URL.'/img/logostienda';
+                    echo "<img src='".$carpetaimg.DIRECTORY_SEPARATOR.$datatienda['logo']."' style='width:150px; height:40'>";
+                }else{
+                ?>
+                    <img src="<?php echo ASSETS_URL; ?>/img/logo.png" alt="Yo Amo Comprar" style="width:150px; height:40">
+                <?php
+                }
+                ?>
             </td>
         </tr>
         <tr>
@@ -116,7 +132,7 @@ if ($porcentpagado < 50 )
         <tbody>
             <tr>
                 <th>Cant.</th>
-                <th style="width: 70px">Producto</th>
+                <th style="width: 70px"><?php echo $tipo;?></th>
                 <th>Precio</th>
                 <th>Importe</th>
 
@@ -132,7 +148,18 @@ if ($porcentpagado < 50 )
             $datapv = $objpv->getAllArr($data['id_venta']);
             foreach($datapv as $row) :
                 if($row['cancelado']) continue;
-                $tipoprecio = ($row['tipoprecio']!='Normal') ?  "<br>".htmlentities(ucwords(strtolower($row['tipoprecio']))) : '';
+
+                switch ($row['tipoprecio']) {
+                    case 'Normal':
+                       $tipoprecio = "";
+                        break;
+                    case 'Promocumple':
+                       $tipoprecio = "<br>Regalo";
+                        break;
+                    default:
+                        $tipoprecio  ="<br>".htmlentities(ucwords(strtolower($row['tipoprecio'])));
+                        break;
+                }
                 $precio = number_format($row['total']/$row['cantidad'], 0);
 
                 $total += $row['total'];
@@ -175,17 +202,29 @@ if ($porcentpagado < 50 )
     </table>
     <p class="title" style="width: 250px;">
         <?php 
-        if($data['tipo']=="Credito" || $data['tipo']=="Apartado") { ?>
-            GRACIAS POR SU COMPRA<br>
-            USTED CUENTA CON 30 DIAS A PARTIR DE HOY PARA RECOGER SU PRODUCTO, AL FINALIZAR EL PERIODO DE TIEMPO EL ABONO NO ES REEMBOLSABLE.
-            <?php 
-        }else{ ?>
-            GRACIAS POR SU COMPRA<br>
-            REVISE SU PRODUCTO,
-            SALIDA LA MERCANCIA NO SE ACEPTAN DEVOLUCIONES
+        if($datatienda['es_servicios']){?>
+            GRACIAS POR SU PREFERENCIA<br>
+                    VUELVA PRONTO ATT<?php echo  $datatienda['nombre'] ?>
 
         <?php
-        } ?>
+         }else{
+         
+            if($data['tipo']=="Credito" || $data['tipo']=="Apartado") { ?>
+                GRACIAS POR SU COMPRA<br>
+                USTED CUENTA CON 30 DIAS A PARTIR DE HOY PARA RECOGER SU PRODUCTO, AL FINALIZAR EL PERIODO DE TIEMPO EL ABONO NO ES REEMBOLSABLE.
+            <?php 
+            }else{ ?>
+                GRACIAS POR SU COMPRA<br>
+                REVISE SU PRODUCTO,
+                SALIDA LA MERCANCIA NO SE ACEPTAN DEVOLUCIONES
+
+            <?php
+            } ?>
+         <?php
+         }
+         ?>
+         
+       
     </p>
     
     <?php if($data['sorteo']=="1" && $data['id_persona']!="2") { ?>

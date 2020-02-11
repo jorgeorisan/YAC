@@ -41,7 +41,19 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 		<section id="widget-grid" class="">
 			<div class="widget-body" style='padding-bottom: 10px;'>
 			 	<a class="btn btn-success" href="<?php echo make_url("Productos","add")?>" ><i class="fas fa-plus"></i> Nuevo Producto</a>
-				<a class="btn btn-info" id=""  target="_blank" href="<?php echo make_url("Productos","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
+				<a class="btn btn-info" id=""  target="_blank" href="<?php echo make_url("Productos","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>
+				<a class="btn btn-info"  id='updatekardex' href="#" ><i class="fas fa-retweet"></i> Update Kardex</a>	
+				
+				<div style="text-align:center;display:none;"  id='loading' >
+					<img  src="<?php echo ASSETS_URL; ?>/img/cargando.gif" style="height: 100px;"/><br>
+					Por favor espere, estamos actualizando su informacion..
+				</div>
+				<div class="alert adjusted alert-info fade in msjalert" style="text-align:center;display:none;" >
+					<button class="close" data-dismiss="alert">
+						×
+					</button>
+					<div id="contentmsj"></div>
+				</div>
 			</div>
 			<div class="row">
 				<input type="hidden" value="<?php echo $_SESSION['user_info']['costos'];?>" id='show_costos'>
@@ -178,6 +190,23 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 		
 		$('body').on('click', '#saveproduct', function(){
 			saveproduct(this);
+		});
+		$('body').on('click', '#updatekardex', function(){
+			$("#loading").show();
+			var url = config.base+"/Productos/ajax/?action=get&object=updatekardex"; 
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: $(event).parents('form:first').serialize(), 
+				success: function(response){
+					//swal("Exito al actualizar:"+response);
+					
+					$("#loading").hide();
+					$(".msjalert").show(response);
+					$("#contentmsj").html(response);
+				}
+			});
+			return false; // Evitar ejecutar el submit del formulario.
 		});
 		saveproduct = function(event){
 			var url = config.base+"/Productos/ajax/?action=post&object=updateproducto"; 
@@ -384,8 +413,8 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			id 				   = data['id_producto'];
 			existencias        = data['existencias'];
 			kardex        	   = data['kardex'];
-			title              = '<div  id="contexistencias'+id+'">'+ existenciastienda + '/' + existencias+'</div>'+
-				'<a tarjet="_blank" href="'+config.base+"/Productos/kardex/?id="+id+'"  ><div id="kardex'+id+'">KARDEX='+kardex+'</div></a>';
+			title              = '<div  id="contexistencias'+id+'">'+ existenciastienda + '/' + existencias+'/K:'+kardex+'</div>'+
+				'<a tarjet="_blank" href="'+config.base+"/Productos/kardex/?id="+id+'"  ><div id="kardex'+id+'">KARDEX</div></a>';
 			
 			return title;
 		};
