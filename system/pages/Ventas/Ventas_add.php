@@ -614,13 +614,23 @@ $dataventas     		= $reports->getReporteVentas($arrayfilters);
 
         $("#send").click(function (e) {
             $(".borrar-td").remove();    
-            var tipo      = $("#tipo").val();       
+            var tipo = $("#tipo").val();       
+            if(tipo == 'Apartado'){
+                var abono = $("#montoabono").val();
+                if ( abono > 49  ) {   
+                    if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  {
+                        return notify("info","Se requiere un cliente para los apartados");
+                    }               
+                } else {
+                    return notify("warning","Se requiere un abono minimo de $50 para este apartado");
+                }
+            }
             var cliente   = $("#id_persona").val();
             var productos = $(".producto");  
             if ( ! productos.length )  return notify("info","Los productos son requeridos");
             $("#ticket-items").val($("#productos").html());
             if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  
-                return notify("info","Se requiere un cliente para los apartados");
+                return notify("warning","Se requiere un cliente para los apartados");
            
            
             //$("#montoabono").val(0);
