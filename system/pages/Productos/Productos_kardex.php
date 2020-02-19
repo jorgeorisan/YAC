@@ -641,7 +641,7 @@ foreach( $queryproductos as $key => $valprod){
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/superbox/superbox.min.js"></script>
 
 <script>
-  function borrarregistrokardex(id,tipo){ 
+    function borrarregistrokardex(id,tipo){ 
         swal({
             title: "Estas seguro?",
             text: "Deseas eliminar este registro?",

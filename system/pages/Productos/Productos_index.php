@@ -25,10 +25,11 @@ $arrayfilters['page'] = 'productos';
 
 $arrayfilters['id_categoria'] = (isset($_GET['id_categoria'])) ? $_GET['id_categoria'] : '';
 $arrayfilters['id_marca']     = (isset($_GET['id_marca'])) ? $_GET['id_marca'] : '';
+$arrayfilters['size']     = (isset($_GET['size'])) ? $_GET['size'] : '';
 $jsonarrayfilters=json_encode($arrayfilters);
 //print_r($data);
 $totalproductos   = count(getAllProductos());
-$filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria'].'&id_marca='.$_GET['id_marca']:'';
+$filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria'].'&id_marca='.$_GET['id_marca'].'&size='.$_GET['size']:'';
 ?>
 
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -120,7 +121,7 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 														</div>
 													</div>
 													<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-														<input type="number" id="size" class="form-control form-control-sm d-none d-md-inline-block" placeholder="Filtrar" value="10">
+														<input type="number" id="size" name='size' class="form-control form-control-sm d-none d-md-inline-block" placeholder="Filtrar" value="10">
 													</div>
 												</div>
 												
@@ -391,7 +392,7 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			precio = data['precio'];
 			id    = data['id_producto'];
 			
-			return html ='<div id="contprecio'+id+'">'+precio+'</div>';
+			return html ='<strong><div id="contprecio'+id+'">'+precio+'</div>';
 		};
 		var costo_formatter = function(cell, formatterParams) {
 			data  = cell.getRow().getData();
@@ -424,13 +425,15 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			id  		 = data['id_producto'];
 			manual 		 = data['manual'];
 			nombre       = data['nombre'];
+			codinter     = data['codinter'];
+			codinter 	 ='<div class="registros" style="float: left;" idprod="'+id+'" id="contcodinter'+id+'">'+codinter+':</div>';
 			
-			if(manual==1){ nombreimage  = data['nombre']+'<br>Servicio'; }else{ nombreimage  = data['nombre']; } 
+			nombreimage  = (manual==1) ? data['nombre']+'<br>Servicio' :  data['nombre']; 
 			html = '';
 			if(imagen){
-				html = '<br><a data-toggle="modal" href="#myModal" onclick="showpopupImagen('+id+')">'+'<div id="contnombre'+id+'">'+nombreimage+'</div>'+'</a>';
+				html = '<br><a data-toggle="modal" href="#myModal" onclick="showpopupImagen('+id+')">'+ codinter+'<div id="contnombre'+id+'">'+nombreimage+'</div>'+'</a>';
 			}else {
-				html = '<div id="contnombre'+id+'">'+nombreimage+'</div>'+'<div id="contfileproductos'+id+'"></div>'+
+				html = codinter+'<div id="contnombre'+id+'">'+nombreimage+'</div>'+'<div id="contfileproductos'+id+'"></div>'+
 				'<br><a data-toggle="modal" class="" href="#myModal" onclick="showpopupImagen('+id+')">Subir Imagen</a>';
 			}
 			
@@ -458,17 +461,16 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 			movableColumns:true,
 			columns: [
                 { title: "ID",  field: "id_producto",  align: "left", sorter: "string" },
-				{ title: "Codigo", formatter:  codinter_formatter,  align: "left", sorter: "string" },
-				{ title: "Nombre", formatter:  name_formatter, align: "left",width:250, sorter: "string" },
+				{ title: "Codigo: Nombre", formatter:  name_formatter, align: "left", width:200, sorter: "string" },
 				{ title: "Marca", align: "left", formatter: marca_formatter, sorter: "string" },
 				{ title: "Cate", align: "left", sorter: "string", formatter: categoria_formatter },
 				<?php if($_SESSION['user_info']['costos']) { ?>
-					{ title: "Costo", formatter:  costo_formatter, align: "left", sorter: "string" },
+					{ title: "Costo", formatter:  costo_formatter,width:60, align: "left", sorter: "string" },
 				<?php } ?>
-				{ title: "Mayoreo", formatter:  preciomayoreo_formatter, align: "left", sorter: "string" },
+				{ title: "Mayoreo", formatter:  preciomayoreo_formatter, width:60, align: "left", sorter: "string" },
 				{ title: "Precio", formatter:  precio_formatter, align: "left", sorter: "string" },
 				{ title: "Exist",  formatter: exist_formatter, align: "left", sorter: "string" },
-				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter,width:100  },
+				{ title: "Act",  align: "left", sorter: "string", formatter: act_formatter,width:70  },
 				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false }
 			],
             pageLoaded: function(data){ 
