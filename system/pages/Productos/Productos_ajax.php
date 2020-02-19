@@ -202,6 +202,12 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						$objpt = new ProductoTienda();
 						$PT = $objpt->getTablebyProducto($id,$_SESSION['user_info']['id_tienda']);
 						$id_productotienda = $PT['id_productotienda'];
+
+						$objpv = new ProductosVenta();
+						$PV= $objpv->getTablebyProducto($PT['id_productotienda']);
+
+						
+					
 		
 						$objh = new HistorialInventario();
 						if($datah = $objh->getAllArr($id_productotienda)){

@@ -25,7 +25,7 @@ $arrayfilters['page'] = 'productos';
 
 $arrayfilters['id_categoria'] = (isset($_GET['id_categoria'])) ? $_GET['id_categoria'] : '';
 $arrayfilters['id_marca']     = (isset($_GET['id_marca'])) ? $_GET['id_marca'] : '';
-$arrayfilters['size']     = (isset($_GET['size'])) ? $_GET['size'] : '';
+$arrayfilters['size']     = (isset($_GET['size'])) ? $_GET['size'] : '10';
 $jsonarrayfilters=json_encode($arrayfilters);
 //print_r($data);
 $totalproductos   = count(getAllProductos());
@@ -121,7 +121,7 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 														</div>
 													</div>
 													<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-														<input type="number" id="size" name='size' class="form-control form-control-sm d-none d-md-inline-block" placeholder="Filtrar" value="10">
+														<input type="number" id="size" name='size' class="form-control form-control-sm d-none d-md-inline-block" placeholder="Filtrar" value="<?php echo $_GET['size'];?>">
 													</div>
 												</div>
 												

@@ -118,5 +118,24 @@ class ProductosVenta extends AutoProductosVenta {
 			return true;
 		}
 	}
+	//metodo que sirve para hacer obtener datos en el historial
+	public function getTablebyProducto($id_productotienda)
+	{
+		if(! intval( $id_productotienda )) return false;
+	
+		$sql= "SELECT pv.*,p.nombre,p.precio,p.costo,p.precio_descuento 
+				FROM productos_venta pv 
+				LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda
+				LEFT JOIN producto p ON pt.id_producto=pt.id_producto
+					WHERE pt.id_productotienda=$id_productotienda 
+				";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result getTablebyProducto");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row;
+
+	}
 
 }
