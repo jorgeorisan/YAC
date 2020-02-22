@@ -45,7 +45,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 							 
 						$idtienda 		 = (isset($_GET["id_tienda"])) ? $_GET["id_tienda"] : $_SESSION['user_info']['id_tienda'] ;
-						$size     		 = (isset($_GET["size"]))      ? $_GET["size"] : '10' ;
+						$size     		 = (isset($_GET["size"]) && $_GET["size"]>0)      ? $_GET["size"] : '10' ;
 						$page  	  		 = (isset($_GET["page"]))      ? $_GET["page"] : '0' ;
 						$totalproductos  = (isset($_GET["totalproductos"])) ? $_GET["totalproductos"] : '0' ;
 						$maxRows  = $page * $size;

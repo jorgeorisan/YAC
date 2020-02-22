@@ -474,7 +474,6 @@ $filters = (isset($_GET['id_categoria'])) ? "&id_categoria=".$_GET['id_categoria
 				{ title: "Actions", width: 95, sorter: 'number', formatter: productos_action, sortable: false, headerSort: false }
 			],
             pageLoaded: function(data){ 
-				
 			 }
 		});
 
