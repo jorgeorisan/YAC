@@ -617,12 +617,12 @@ $dataventas     		= $reports->getReporteVentas($arrayfilters);
             var tipo = $("#tipo").val();       
             if(tipo == 'Apartado'){
                 var abono = $("#montoabono").val();
-                if ( abono > 49  ) {   
+                if ( abono > 39  ) {   
                     if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  {
                         return notify("info","Se requiere un cliente para los apartados");
                     }               
                 } else {
-                    return notify("warning","Se requiere un abono minimo de $50 para este apartado");
+                    return notify("warning","Se requiere un abono minimo de $40 para este apartado");
                 }
             }
             var cliente   = $("#id_persona").val();
