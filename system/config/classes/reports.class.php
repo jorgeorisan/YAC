@@ -548,7 +548,7 @@ class Reports extends Usuario {
 
 		
 		$id=$this->db->real_escape_string($id);
-		$sql = "SELECT pv.*,v.id_tienda,u.id_usuario id_usuario,p.codinter,v.tipo,v.icredito,v.folio,v.comentarios,v.fecha
+		$sql = "SELECT pv.*,v.id_tienda,u.id_usuario id_usuario,p.codinter,v.tipo,v.icredito,v.folio,v.comentarios,v.fecha,v.fecha_cancelacion,v.usuario_cancelacion,v.razon_cancelacion,v.comentarios
 						FROM productos_venta pv
 						LEFT JOIN venta v ON pv.id_venta=v.id_venta
 						LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda

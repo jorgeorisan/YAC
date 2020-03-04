@@ -205,7 +205,14 @@ foreach($dataabonos as $row) {
 													</td>
 													<td><?php echo htmlentities($nomtienda) ?></td>
 													<td>$<?php echo number_format($row['total'], 2); ?></td>
-													<td><?php echo $descuento.htmlentities($row['comentarios']) ?></td>
+													<td><?php echo $descuento.htmlentities($row['comentarios']);
+															if($row['fecha_cancelacion']){
+																echo "<br>";
+																echo $row['fecha_cancelacion'].' / '.$row['usuario_cancelacion'];
+																echo "<br>".$row['razon_cancelacion'];
+
+															}
+													?></td>
 													<td>
 														<div class="btn-group">
 															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -242,14 +249,14 @@ foreach($dataabonos as $row) {
 										<tfoot>
 											<?php if($totaldevoluciones>0) {?>
 												<tr>
-													<th colspan="5" style="text-align:right">Devoluciones:</th>
+													<th colspan="6" style="text-align:right">Devoluciones:</th>
 													<th><?php echo $totaldevoluciones;?></th>
 													<th></th>
 													<th></th>
 												</tr>
 											<?php } ?>
 											<tr>
-												<th colspan="5" style="text-align:right">Total:</th>
+												<th colspan="6" style="text-align:right">Total:</th>
 												<th><?php echo $total-$totaldevoluciones;?></th>
 												<th></th>
 												<th></th>

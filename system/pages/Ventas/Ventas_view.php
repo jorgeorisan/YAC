@@ -151,8 +151,15 @@ if ($porcentpagado < 50 )
                                                 <tr>
                                                     <td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Tipo pago: </td>
 													<td colspan="" style="width:30%;"><?php echo htmlentities($data['tipo']); ?></td>
-													<td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Observaciones: </td>
-													<td colspan=""><?php echo $data['comentarios']; ?></td>
+													<td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Observaciones: <br><?php echo ($data['fecha_cancelacion'])  ? '<span style="color:red">Cancelado</span>' : '';?> </td>
+                                                    <td colspan=""><?php echo $data['comentarios'];
+                                                    if($data['fecha_cancelacion']){
+                                                        echo "<br>";
+                                                        echo $data['fecha_cancelacion'].' / '.$data['usuario_cancelacion'];
+                                                        echo "<br>".$data['razon_cancelacion'];
+
+                                                    }
+                                                    ?></td>
                                                 </tr>
                                                  <tr>
                                                     <td colspan="4" style="width:20%;background-color:#d0d0cf; font-weight:bold; text-align: center">PRODUCTOS DE VENTA : </td>

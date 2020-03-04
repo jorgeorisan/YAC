@@ -107,8 +107,12 @@ foreach( $queryproductos as $key => $valprod){
                                             <td><div id="totalkardex">N/E</div></td>
                                             <td><div id="totaldiferencia">N/E</div></td>
                                         
-                                            <td><?php echo $fecha_actualizacion."<br>".$usuario_actualizacion; ?></td>
+                                            <td><?php echo $fecha_actualizacion."<br>".$usuario_actualizacion;
+                                            
+                                            ?></td>
                                             <td class='borrar-td'>
+                                            
+                                            
                                                 <a href="<?php echo make_url("Productos","edit").'/?id='.$codeproducto;?>" class="btn btn-info" > <i class="fas fa-pencil"></i></a>
                                                     
                                             </td>
@@ -316,6 +320,7 @@ foreach( $queryproductos as $key => $valprod){
 												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
+												<th class = "col-md-1" data-class="phone,tablet">Obs</th>
 												<th class = "col-md-1" data-class="phone,tablet"></th>
 											</tr>
 										</thead>
@@ -379,7 +384,8 @@ foreach( $queryproductos as $key => $valprod){
 																<?php echo htmlentities($row['tipo'])."<br>";
 																if($row['icredito']){
 																	echo "<span style='color:red'>En pago</span>";
-																}
+                                                                }
+                                                                
 																?>
 															</td>
 															
@@ -388,8 +394,17 @@ foreach( $queryproductos as $key => $valprod){
 															<td><?php echo htmlentities($nomtienda) ?></td>
 															<td><?php echo htmlentities($row['tipoprecio'])?></td>
 															<td><?php echo htmlentities($row['fecha']) ?></td>
+                                                            <td><?php echo htmlentities($row['comentarios']);
+                                                                if($row['fecha_cancelacion']){
+                                                                    echo "<br>Cancelacion:";
+                                                                    echo $row['fecha_cancelacion'].' / '.$row['usuario_cancelacion'];
+                                                                    echo "<br>".$row['razon_cancelacion'];
+
+                                                                }
+                                                            ?></td>
 															<td>
 																<div class="btn-group">
+                                                                   
 																	<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 																		Accion <span class="caret"></span>
 																	</button>
