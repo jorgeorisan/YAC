@@ -50,6 +50,10 @@ if (($porcentpagado >= 50 && $porcentpagado < 75) )
     $class  = 'label label-warning';
 if ($porcentpagado < 50 )
     $class  = 'label label-danger';
+
+$permisousuario = new PermisoUsuario();
+$persmisodeleteproductoventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ventas', 'deleteproductoventa');
+
 ?>
 
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -212,9 +216,12 @@ if ($porcentpagado < 50 )
                                                                 <?php } ?>  
                                                                 <td><?php echo htmlentities($row['tipoprecio']); ?></td>
                                                                 <td class='borrar-td'>
-                                                                    <?php if (!$row['cancelado']){ ?> 
+                                                                    <?php if (!$row['cancelado']){ 
+                                                                        if($persmisodeleteproductoventa){
+                                                                        ?> 
                                                                         <a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="btn btn-danger deleteventa"> <i class="fas fa-ban"></i></a>
-                                                                    <?php } ?>
+                                                                    <?php }
+                                                                    } ?>
                                                                 </td>
                                                             </tr>
 

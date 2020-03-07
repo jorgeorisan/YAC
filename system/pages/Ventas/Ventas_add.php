@@ -47,6 +47,9 @@ $arrayfilters['size']   	   = '10';
 $jsonarrayfilters 		= json_encode($arrayfilters);
 $reports = new Reports();
 $dataventas     		= $reports->getReporteVentas($arrayfilters);
+$permisousuario = new PermisoUsuario();
+$persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ventas', 'deleteventa');
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -340,13 +343,15 @@ $dataventas     		= $reports->getReporteVentas($arrayfilters);
                                                                                                 <a title="Imprimir Venta"  class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta','close'=>'true')); ?>">Imprimir</a>
                                                                                             </li>
                                                                                             <?php 
-                                                                                            if (!$row['cancelado']){ ?> 
-                                                                                              
-                                                                                                <li class="divider"></li>
-                                                                                                <li>
-                                                                                                    <a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
-                                                                                                </li>
-                                                                                            <?php 
+                                                                                            if (!$row['cancelado']){ 
+                                                                                                if ($persmisodeleteventa){ 
+                                                                                                    ?> 
+                                                                                                    <li class="divider"></li>
+                                                                                                    <li>
+                                                                                                        <a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
+                                                                                                    </li>
+                                                                                                <?php 
+                                                                                                }
                                                                                             } ?>
                                                                                         </ul>
                                                                                     </div>

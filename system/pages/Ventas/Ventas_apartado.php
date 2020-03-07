@@ -20,6 +20,9 @@ $obj = new Venta();
 
 $objReport = new Reports();
 $dataventas = $objReport->getReporteVentasApartados();
+$permisousuario = new PermisoUsuario();
+$persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ventas', 'deleteventa');
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -132,12 +135,14 @@ $dataventas = $objReport->getReporteVentasApartados();
 																	<li>
 																		<a data-toggle="modal" class="" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
 																	</li>
-																<?php } ?>
-																<li class="divider"></li>
-																<li>
-																	<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
-																</li>
-															<?php 
+																<?php }
+																if($persmisodeleteventa){ ?>
+																	<li class="divider"></li>
+																	<li>
+																		<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
+																	</li>
+																<?php 
+																}
 															} ?>
 														</ul>
 													</div>

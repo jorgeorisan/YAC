@@ -38,6 +38,9 @@ $jsonarrayfilters=json_encode($arrayfilters);
 $objreports = new Reports();
 $dataventas = $objreports->getReporteVentas($arrayfilters);
 
+$permisousuario = new PermisoUsuario();
+$persmisodeleteproductoventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ventas', 'deleteproductoventa');
+
 
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -274,12 +277,14 @@ $dataventas = $objreports->getReporteVentas($arrayfilters);
 																				<li>
 																					<a data-toggle="modal" style="color:cornflowerblue" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
 																				</li>
-																			<?php } ?>
+																			<?php }
+																			if($persmisodeleteproductoventa){ ?>
 																			<li class="divider"></li>
 																			<li>
 																				<a href="#" title="Cancelar Producto" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idpventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
 																			</li>
 																		<?php 
+																			}
 																		} ?>
 																	</ul>
 																</div>
