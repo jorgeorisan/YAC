@@ -136,11 +136,11 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                 if (is_array($list) || is_object($list)){
                                                     foreach($list as $val){
                                                         echo "<input type='hidden' name='id_tiendas[]' value='".$val['id_tienda']."'>"; 
-                                                        echo "<th class='".$val['abreviacion']."' >".htmlentities($val['abreviacion'])."</th>";
+                                                        echo "<th class='".$val['abreviacion']."' >Act./".htmlentities($val['abreviacion'])."</th>";
                                                     }
                                                 }
                                                 ?>
-                                                <th>Codigo Interno</th>
+                                                <th>Codigo</th>
                                                 <th>Producto</th>
                                                 <th>Costo</th>
                                                 <th>Mayoreo</th>

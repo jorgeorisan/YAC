@@ -11,9 +11,11 @@
         $list=$obj->getAllArr($_SESSION['user_info']['info_adicional']);
         if (is_array($list) || is_object($list)){
             foreach($list as $val){
+                    $productotienda = new ProductoTienda();
+					$ptienda  = $productotienda->getTablebyProducto($id_producto,$val['id_tienda']);
                 ?>
                 <td class='<?php echo $val['abreviacion']; ?>'>
-                    <input type="number" class='cantidad' style="width:40px" lineid="<?php echo $lineId ?>" abreviacion="<?php echo $val['abreviacion']?>" id='cantidad<?php echo $val['abreviacion'].$lineId ?>' placeholder='0' name="cantidad<?php echo $val['id_tienda']?>[]"  value="<?php echo $cantidad; ?>"/>
+                    <?php echo $ptienda['existencias']?>/<input type="number" class='cantidad' style="width:40px" lineid="<?php echo $lineId ?>" abreviacion="<?php echo $val['abreviacion']?>" id='cantidad<?php echo $val['abreviacion'].$lineId ?>' placeholder='0' name="cantidad<?php echo $val['id_tienda']?>[]"  value="<?php echo $cantidad; ?>"/>
                 </td>
                 <?php
                 $cantidad = 0;
