@@ -387,19 +387,10 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
        
         $("#barcode").focus();
         $("#barcode").autocomplete({
-            source: function (request, response) {
-                var id=$("#id_tienda").val();
-                $.getJSON(config.base+"/Productos/ajax/?action=get&size=20&object=getproductos&id_tienda="+id+"&texto=" + request.term, function (data) {
-                    response($.map(data, function (value, key) {
-                        return {
-                            label: value.codinter+'::'+ value.nombre.toLowerCase()+' $'+ value.precio+'|'+value.existenciastienda,
-                            value: value.codinter
-                        };
-                    }));
-                });
-            },
-            minLength: 2,
-            delay: 100 
+            source: [ <?php echo $_SESSION['CADENA'] ?>],
+            select: function(res) {
+    
+            }
         });
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.
