@@ -6,6 +6,7 @@
     <input type="hidden"                 name="id_producto[]" value="<?php echo $id_producto; ?>"/>
     <input type="hidden"                 name="id_productotienda[]" value="<?php echo $id_productotienda; ?>"/>
     
+    <td><?php echo $codigo;   ?></td>
     <?php 
         $obj = new Tienda();
         $list=$obj->getAllArr($_SESSION['user_info']['info_adicional']);
@@ -23,7 +24,6 @@
         }
     ?>
       
-    <td><?php echo $codigo;   ?></td>
     <td><?php echo $nombre;   ?></td>
     <td>
         <div title='Existentes : <?php echo $existenciatienda ?>' style="<?php echo $show ?>">

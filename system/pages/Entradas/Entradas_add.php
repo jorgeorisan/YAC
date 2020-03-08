@@ -130,6 +130,8 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                     <table id="productos" class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
+                                                
+                                                <th>Codigo</th>
                                                 <?php 
                                                 $obj = new Tienda();
                                                 $list=$obj->getAllArr($_SESSION['user_info']['info_adicional']);
@@ -140,7 +142,6 @@ $disabled = ($tipousu==2 || $tipousu==5) ? '' : 'disabled';
                                                     }
                                                 }
                                                 ?>
-                                                <th>Codigo</th>
                                                 <th>Producto</th>
                                                 <th>Costo</th>
                                                 <th>Mayoreo</th>
