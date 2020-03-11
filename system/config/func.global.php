@@ -139,6 +139,8 @@ function informPermiss( $redirect = true, $redirectUrl = null, $page = 'index'){
     $arrayStatus = array();
     $arrayStatus[""] = "N/A";
     $arrayStatus["0.06"] = "6%";
+    $arrayStatus["0.07"] = "7%";
+    $arrayStatus["0.08"] = "8%";
     $arrayStatus["0.1"]  = "10%";
     $arrayStatus["0.6"]  = "60%";
     $arrayStatus["0.7"]  = "70%";
