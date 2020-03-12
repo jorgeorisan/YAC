@@ -224,9 +224,8 @@ if ($porcentpagado < 50 )
          }
          ?>
          
-       
     </p>
-    
+    <!--
     <?php if($data['sorteo']=="1" && $data['id_persona']!="2") { ?>
     <br>
     - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -237,6 +236,7 @@ if ($porcentpagado < 50 )
             Fecha Compra: <strong><?php  echo date('Y-m-d H:m A',strtotime($data['fecha'])); ?></strong><br>
         </p>
     <?php } ?>
+    -->
 </body>
 
     <script type="text/javascript">
