@@ -21,6 +21,10 @@
                         </select>
                     </td>
                 </tr>
+                <tr>
+                    <th>Por Pagar</th>
+                    <td><input type="number" id="porpagar" class="form-control" name="porpagar" placeholder="PorPagar" readonly value="<?php echo $total?>"/></td>
+                </tr>
                 
                 <tr>
                     <th>Pago/Abono</th>
@@ -39,12 +43,16 @@
         <div class="form-actions" style="text-align: center;width: 100%;margin-left: 0px;">
             <div class="row">
                <div class="col-md-12">
-                    <button class="btn btn-default btn-md" type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <button class="btn btn-danger btn-md" type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         Cancelar
                     </button>
                     <button class="btn btn-primary btn-md" type="button" id="savenewpago">
                         <i class="fa fa-save"></i>
                         Guardar
+                    </button>
+                    <button class="btn btn-success btn-md" type="button" id="savenewpagorestante">
+                        <i class="fa fa-check"></i>
+                        Pagar Restante
                     </button>
                 </div>
             </div>
@@ -57,5 +65,19 @@
         header: "Selecciona una opcion",
         noneSelectedText: "Seleccionar",
         selectedList: 1
+    });
+    $("#savenewpagorestante").click(function (e) {
+        e.preventDefault();
+        $.SmartMessageBox({
+            title : "Pagar Restante? ",
+            buttons : '[No][Yes]',
+            placeholder : "Motivo de cancelacion"
+        }, function(ButtonPressed, Value) {
+            if (ButtonPressed === "Yes") {
+                $("#montoabono").val($("#porpagar").val());
+                $("#savenewpago").click();
+            }
+        });
+        return false;
     });
 </script>
