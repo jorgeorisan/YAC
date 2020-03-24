@@ -100,6 +100,16 @@ class ProductosVenta extends AutoProductosVenta {
 				$row=$this->db->query($sql);
 				if(!$row){
 					return false;
+				}else{
+					// si hay abonos se cancelan los abonos siempre y cuando la venta general este cancelada
+					$_requestdeudores["status"] = "CANCELADO";
+					$_requestdeudores["fecha_cancelacion"]  = date("Y-m-d H:i:s");
+					$_requestdeudores["usuario_cancelacion"]= $_SESSION['user_id'];
+					$data=fromArray($_requestdeudores,'deudores',$this->db,"update");
+					$sql= "UPDATE deudores SET $data[0]  WHERE id_venta=".$objPV['id_venta'].";";
+					$row=$this->db->query($sql);
+					if(!$row)
+						return false;
 				}
 			}
 			$objproductostienda = new ProductoTienda();
@@ -107,6 +117,25 @@ class ProductosVenta extends AutoProductosVenta {
 			$objproductostienda->actualizaexistencia($objPV['id_productotienda'],$objPV['cantidad'],'increment');
 			return true;
 		}
+	}
+	//metodo que sirve para hacer obtener datos en el historial
+	public function getTablebyProducto($id_productotienda)
+	{
+		if(! intval( $id_productotienda )) return false;
+	
+		$sql= "SELECT pv.*,p.nombre,p.precio,p.costo,p.precio_descuento 
+				FROM productos_venta pv 
+				LEFT JOIN producto_tienda pt ON pt.id_productotienda=pv.id_productotienda
+				LEFT JOIN producto p ON pt.id_producto=pt.id_producto
+					WHERE pt.id_productotienda=$id_productotienda 
+				";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result getTablebyProducto");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row;
+
 	}
 
 }

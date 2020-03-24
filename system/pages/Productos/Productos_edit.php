@@ -24,8 +24,8 @@ include(SYSTEM_DIR . "/inc/header.php");
 //include left panel (navigation)
 //follow the tree in inc/config.ui.php
 include(SYSTEM_DIR . "/inc/nav.php");
-if(isset($request['params']['id'])   && $request['params']['id']>0)
-    $id=$request['params']['id'];
+if(isset($_GET['id'])   && $_GET['id']>0)
+    $id=$_GET['id'];
 else
     informError(true,make_url("Productos","index"));
 
@@ -45,12 +45,12 @@ if(isPost()){
             $request['imagen']=$id."_".$_POST['codinter'].'.png';
             $id = $obj->updateAll($id,$request);
             if( $id >0  ) {
-                informSuccess(true, make_url("Productos","view",array('id'=>$id)));
+                informSuccess(true, APP_URL."/Productos/view/?id=".$id,'view');
             }else{
-                informError(true, make_url("Productos","edit",array('id'=>$id)),"edit");
+                informError(true, APP_URL."/Productos/edit/?id=".$id,'edit');
             }
         }else{
-            informSuccess(true, make_url("Productos","view",array('id'=>$id)));
+            informSuccess(true, APP_URL."/Productos/view/?id=".$id,'view');
         }
         
     }else{
@@ -82,7 +82,7 @@ if(isPost()){
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Productos","edit",array('id'=>$id))?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method='post' action="#" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <div class="col-sm-6">
                                         <div class="form-group">
 											<label for="name">Categoria</label>

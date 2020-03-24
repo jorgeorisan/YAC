@@ -11,22 +11,45 @@ class Producto extends AutoProducto {
 	{
 		
 		$tienda = $_SESSION['user_info']['id_tienda'];
-		$queryprod = '';
+		$queryprod = $querylimit= '';
 		$TODO  = " HAVING TIENDA.existencias>0 ";
+		$querymarca = $querycategoria = $queryinvini= $querykardex= '';
 		if(count($arrayfilters)>0){
 			if(isset($arrayfilters['id_tienda']) && $arrayfilters['id_tienda']>0)
 				$tienda = $arrayfilters['id_tienda'] ;
 			if(isset($arrayfilters['todo']) && $arrayfilters['todo']==1)
 				$TODO = '' ;
 			if(isset($arrayfilters['id_producto']) && $arrayfilters['id_producto']>0){
-				$producto  = $arrayfilters['id_producto'];
-				$queryprod = " AND p.id_producto = $producto" ;
+				if(isset($arrayfilters['todo']) && $arrayfilters['todo']==true){
+					$TODO  = "";
+				}else{
+					$producto  = $arrayfilters['id_producto'];
+					$queryprod = " AND p.id_producto = $producto" ;
+				}
 			}
-			if(isset($arrayfilters['similar'])){
+			if(isset($arrayfilters['similar']) && $arrayfilters['similar']!=''){
 				$similar   = $arrayfilters['similar'];
 				$queryprod = "AND (p.codinter like '%". $similar ."%' OR  p.nombre like '%". $similar ."%'  OR  m.nombre like '%". $similar ."%')" ;
 			}
-				
+			if(isset($arrayfilters['id_categoria']) && $arrayfilters['id_categoria']>0)
+				$querycategoria = "AND p.id_categoria =".$arrayfilters['id_categoria'];
+
+			if(isset($arrayfilters['id_marca']) && $arrayfilters['id_marca']>0)
+				$querymarca = "AND p.id_marca =".$arrayfilters['id_marca'];
+			
+			if(isset($arrayfilters['maxRows']) && $arrayfilters['maxRows'] >0 ){
+				$maxRows   = $arrayfilters['maxRows'];
+				$minRows =  $maxRows-$arrayfilters['size'];
+				$long    = $arrayfilters['size'];
+				$TODO .=" LIMIT  $minRows,$long  " ;
+			}
+			if(isset($arrayfilters['inventario_inicial']) && $arrayfilters['inventario_inicial'] >0 ){
+				$queryinvini = " AND inv_ini is null" ;
+			}
+			if(isset($arrayfilters['kardex']) && $arrayfilters['kardex'] >0 ){
+				$querykardex = " AND kardex!=existencias" ;
+			}
+
 		}
 		$prov = $tienda;
 		$querytienda='';
@@ -40,7 +63,7 @@ class Producto extends AutoProducto {
         $sql = "
 			SELECT TODO.id_producto,TODO.codinter,TODO.manual,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
 			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
-			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion
+			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion,TIENDA.inv_ini,ifnull(TIENDA.kardex,0) kardex
 			FROM(
 				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.manual,PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
 					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
@@ -53,6 +76,8 @@ class Producto extends AutoProducto {
 						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
 						WHERE p.status='ACTIVO'
 						$queryprod
+						$querycategoria
+						$querymarca
 						$querytienda
 						AND pr.id_tienda='$prov'
 					) AS PRODUCTO LEFT JOIN (
@@ -66,11 +91,13 @@ class Producto extends AutoProducto {
 					PRODUCTO.id_producto,PRODUCTO.codinter, PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,
 					PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
 					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
+					order by PRODUCTO.nombre
+					
 			) AS TODO
 			LEFT JOIN (
 				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
 					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
-					,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion
+					,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion,EXISTENCIAS.inv_ini,EXISTENCIAS.kardex
 					FROM(
 						SELECT p.id_producto,codinter,p.costo,p.precio_descuento,p.precio,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
 						FROM producto p
@@ -79,10 +106,12 @@ class Producto extends AutoProducto {
 						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
 						WHERE p.status='ACTIVO'
 					) AS PRODUCTO LEFT JOIN(
-						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,u. id_usuario usuario_actualizacion
+						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,u. id_usuario usuario_actualizacion, inv_ini, kardex
 						FROM producto_tienda pt
 						LEFT JOIN usuario u ON  u.id=pt.usuario_actualizacion
 						WHERE tienda_id_tienda='$tienda'
+						$queryinvini
+						$querykardex
 						group by id_producto,tienda_id_tienda
 					)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
 					
@@ -92,7 +121,8 @@ class Producto extends AutoProducto {
 					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
 			) TIENDA ON TODO.id_producto=TIENDA.id_producto
 			
-			$TODO";
+			$TODO
+			";
 		$res = $this->db->query($sql);
 		$set = array();
 		if(!$res){ die("Error getting result getAllArr Producto"); }
@@ -144,7 +174,11 @@ class Producto extends AutoProducto {
 			return false;
 		}
 		$id=$this->db->real_escape_string($id);
-		$sql= "SELECT * FROM producto WHERE id_producto=$id;";
+		$sql= "SELECT p.*, c.categoria,m.nombre marca
+				 FROM producto p
+				Left join categoria c ON c.id_categoria=p.id_categoria
+				Left join marca m ON m.id_marca=p.id_marca
+				WHERE p.id_producto=$id;";
 		$res=$this->db->query($sql);
 		if(!$res)
 			{die("Error getting result producto");}
@@ -153,6 +187,47 @@ class Producto extends AutoProducto {
 		return $row;
 
 	}
+	//
+	public function CheckInvIni($id,$existenciaactual,$diferenciakardex){
+		
+		$id_tienda     = $_SESSION['user_info']['id_tienda'];
+		$id_usuario    = $_SESSION['user_id'];
+
+		$dataproducto = $this->getTable($id);
+
+		$existencia    = $existenciaactual ;
+
+		//entrada 
+		$objEntrada = new Entrada();
+		$requestEntrada['id_user']    = $id_usuario;
+		$requestEntrada['id_tienda']  = $id_tienda;
+		$requestEntrada['fecha']      = date('Y-m-d H:i:s');
+		$requestEntrada['status']     = "ACTIVO";
+		$requestEntrada['concepto']   = "INVENTARIO INICIAL 2020";
+		$requestEntrada['referencia'] = "ENTRADA DIRECTA";
+		$_requestEntrada['icredito']  = 0;
+		$ide = $objEntrada->addByOne($requestEntrada);
+		//entrada de productos
+		$iObjEntradaProducto = new EntradaProducto();
+		$requestEntradaProducto['id_entrada']       = $ide;
+		$requestEntradaProducto['id_producto']      = $id;
+		$requestEntradaProducto['id_tienda']        = $id_tienda;
+		$requestEntradaProducto['cantidad_anterior']= $existencia;
+		$requestEntradaProducto['cantidad']         = $diferenciakardex;
+		$requestEntradaProducto['precio']           = $dataproducto['precio'];
+		$requestEntradaProducto['mayoreo'] 			= $dataproducto['precio_descuento'];
+		$requestEntradaProducto['costo']            = $dataproducto['costo'];
+		$requestEntradaProducto['totalcosto']       = $existencia * $dataproducto['costo'];
+		$requestEntradaProducto['nombre']           = $dataproducto['nombre'];
+		$requestEntradaProducto['act_inventario']   = 1;
+		$idep = $iObjEntradaProducto->addAll($requestEntradaProducto);
+		
+		$objprodtienda = new ProductoTienda();
+		$objprodtienda->updateInventarioInicial($id,$id_tienda);
+			
+		
+	}
+	
 		//metodo que sirve para agregar nuevo
 	public function addAll($_request)
 	{
@@ -272,32 +347,4 @@ class Producto extends AutoProducto {
 			return true;
 
 	}
-
-	//metodo para actualizar la session de productos que se muestran por tienda
-	public function updateProductosTienda($tienda=false){
-		
-
-			$obj = new Producto();
-			
-			$arrayfilters['todo'] = 1;
-			$arrayfilters['id_tienda'] = (isset($tienda)) ?  $tienda : '';
-			$queryproductos = $obj->getAllArr( $arrayfilters );
-			
-			$prod=$texto="";
-			$prodarray=[];
-		
-			foreach($queryproductos as $key => $producto){   
-				$prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
-				//$prodarray[$key]=array("nombre"=>$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']);
-				$texto .= '"' . $producto['codinter'] . '",';
-				$prodarray[$key]=$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda'];
-				
-			}
-			$cadena = substr($prod,1);
-			//return $_SESSION['CADENA']=$cadena;
-			return json_encode($prodarray);
-
-			
-		}
-	
 }

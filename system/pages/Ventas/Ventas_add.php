@@ -35,10 +35,25 @@ if(isPost()){
     $obj = new Venta();
     $id=$obj->addAll(getPost());
 }
+//reporte de 10 ultimas ventas
+$arrayfilters=[];
+$begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
+$end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
+$arrayfilters['fecha_inicial'] = $begin;
+$arrayfilters['fecha_final']   = $end;
+$arrayfilters['id_tienda']     = $idtienda;
+$arrayfilters['page']   	   = 'ventas';
+$arrayfilters['size']   	   = '10';
+$jsonarrayfilters 		= json_encode($arrayfilters);
+$reports = new Reports();
+$dataventas     		= $reports->getReporteVentas($arrayfilters);
+$permisousuario = new PermisoUsuario();
+$persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ventas', 'deleteventa');
+
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
-<div id="main" role="main">
+<div id="main" role="main" onKeyDown="javascript:Verificar()">
      <?php $breadcrumbs["Producto"] = APP_URL."/Producto/index"; include(SYSTEM_DIR . "/inc/ribbon.php"); ?>
     <!-- MAIN CONTENT -->
     <div id="content">
@@ -89,7 +104,7 @@ if(isPost()){
                                                         <option value="">--Tipo Precio--</option>
                                                         <option value="Normal" selected>Normal</option>
                                                         <option value="Mayoreo">Mayoreo</option>
-                                                        <option value="Promocumple">Promo Cumple</option>
+                                                        <option value="Promocumple">Regalo</option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -139,11 +154,16 @@ if(isPost()){
                                     </table>
                                     
                                     <div class="col-sm-12 col-md-12 col-lg-12">
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="col-sm-12 col-md-5 col-lg-5">
                                             <table class="table-striped table-bordered table-hover" style="width:100%">
                                                 <tr>
-                                                    <td><label>Cliente</label></td>
+                                                    <td colspan="2"><label>Cliente</label></td>
+                                                    <td style="width: 50px; text-align:right">
+                                                        <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupclientes()" > <i class="fa fa-plus"></i></a>                                          
                                                     <td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3">
                                                         <select style="width:100%" class="select2" name="id_persona" id="id_persona" >
                                                             <?php 
                                                             $obj = new Persona();
@@ -151,15 +171,13 @@ if(isPost()){
                                                             if (is_array($list) || is_object($list)){
                                                                 foreach($list as $val){
                                                                     $selected =  ( $val['id_persona'] == 2 ) ? "selected" : '';
-                                                                    echo "<option ".$selected ." value='".$val['id_persona']."'>".htmlentities($val['nombre'].' '.$val['ap_paterno'].' '.$val['ap_materno'])."</option>";
+                                                                    echo "<option ".$selected ." value='".$val['id_persona']."'>".htmlentities($val['nombre'].' '.$val['ap_paterno'].' '.$val['ap_materno'].' | '.$val['telefono'])."</option>";
                                                                 }
                                                             }
                                                             ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50px; text-align:right">
-                                                        <a data-toggle="modal" class="btn btn-success" href="#myModal" onclick="showpopupclientes()" > <i class="fa fa-plus"></i></a>                                          
-                                                    <td>
+                                                  
                                                 </tr>
                                                 <tr>
                                                     <td><label>Tipo de pago</label></td>
@@ -247,6 +265,111 @@ if(isPost()){
 
                                             </table>
                                         </div>
+                                        <div class="col-sm-12 col-md-7 col-lg-7">
+                                        <?php 
+                                        if(isset($dataventas) && $dataventas!=''){ ?>
+                                            <div class="row" style="overflow:auto">
+                                                <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
+                                                        <header>
+                                                            <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                                                            <h2><?php echo "Reporte de ultimas 10 ventas" ?></h2>
+                                                        </header>
+                                                        <div>
+                                                            <div class="jarviswidget-editbox">
+                                                            </div>
+                                                            <div class="widget-body">
+                                                                <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th class = "col-md-1" data-class="expand">Folio</th>
+                                                                            <th class = "col-md-1" data-class="">Cliente </th>
+                                                                            <th class = "col-md-1" data-class="">Vendedor </th>
+                                                                            <th class = "col-md-1" data-class="phone,tablet">Fecha</th>
+                                                                            <th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+                                                                            <th class = "col-md-1" data-class="phone,tablet">Total</th>
+                                                                            <th class = "col-md-1" data-class="phone,tablet"></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <?php 
+                                                                        $nomtienda = '';
+                                                                        $total = 0;
+                                                                        $totaldevoluciones= 0;
+                                                                        foreach($dataventas as $row) {
+                                                                            
+                                                                            $cliente = new Persona();
+                                                                            $datacliente = $cliente->getTable($row['id_persona']);
+                                                                            $tienda = new Tienda();
+                                                                            $datatienda = $tienda->getTable($row["id_tienda"]);
+                                                                            if($datatienda) $nomtienda = $datatienda["nombre"]; 
+                                                                        
+                                                                            $descuento = ($row["descuento"]) ? 'Descuento:'.$row["descuento"]."<br>" : ''; 
+                                                                            $class     = ($row["cancelado"]) ? "class='cancelada'" : '';
+                                                                            
+                                                                            if ($row['cancelado']==0) {
+                                                                                $total += $row['total'];
+                                                                                $obj = new Venta();
+                                                                                $totaldevoluciones += $obj->getcancelaciones($row['id_venta']);
+                                                                            }
+                                                                            ?>
+                                                                            <tr <?php echo $class;?>>
+                                                                                <td>
+                                                                                    <a class="" target="_blank" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>">
+                                                                                        <?php echo htmlentities($row['folio'])?>
+                                                                                    </a>
+                                                                                </td>
+                                                                                <td><?php echo htmlentities($datacliente['nombre']." ".$datacliente['ap_paterno'])?></td>
+                                                                                <td><?php echo htmlentities($row['id_usuario'])?></td>
+                                                                                <td><?php echo htmlentities($row['fecha'])?></td>
+                                                                                <td>
+                                                                                    <?php echo htmlentities($row['tipo'])."<br>";
+                                                                                    if($row['icredito']){
+                                                                                        echo "<span style='color:red'>En pago</span>";
+                                                                                    }
+                                                                                    ?>
+                                                                                </td>
+                                                                                <td>$<?php echo number_format($row['total'], 2).'<br>'.$descuento; ?></td>
+                                                                                <td>
+                                                                                    <div class="btn-group">
+                                                                                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                                                                            <i class="fas fa-chevron-down"></i> <span class="caret"></span>
+                                                                                        </button>
+                                                                                        <ul class="dropdown-menu">
+                                                                                            <li>
+                                                                                                <a title="Ver Venta" class=""  target="_blank" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
+                                                                                            </li>
+                                                                                            <li>
+                                                                                                <a title="Imprimir Venta"  class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta','close'=>'true')); ?>">Imprimir</a>
+                                                                                            </li>
+                                                                                            <?php 
+                                                                                            if (!$row['cancelado']){ 
+                                                                                                if ($persmisodeleteventa){ 
+                                                                                                    ?> 
+                                                                                                    <li class="divider"></li>
+                                                                                                    <li>
+                                                                                                        <a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_venta']; ?>" idventa='<?php echo $row['id_venta']; ?>' folio='<?php echo $row['folio']; ?>' class=" deleteventa">Eliminar</a>
+                                                                                                    </li>
+                                                                                                <?php 
+                                                                                                }
+                                                                                            } ?>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        <?php
+                                                                        }
+                                                                        ?>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                            </div>
+                                        <?php 
+                                        }?>
+                                        </div>
                                     </div>
                                     <div class="" style="text-align: center">
                                         <div class="col-md-12">
@@ -306,11 +429,56 @@ if(isPost()){
     //include required scripts
     include(SYSTEM_DIR . "/inc/scripts.php");
 ?>
+<!-- PAGE RELATED PLUGIN(S) -->
+<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/jquery.dataTables.min.js"></script>
+<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.colVis.min.js"></script>
+<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+<script src="<?php echo ASSETS_URL; ?>/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
 
 <!-- PAGE RELATED PLUGIN(S)
 <script src="<?php echo ASSETS_URL; ?>/js/plugin/YOURJS.js"></script>-->
 
 <script>
+    function Verificar()
+    {
+        var tecla=window.event.keyCode;
+        if (tecla==116) {
+            alert("¡¡¡Esta página no debe actualizarse, se podría duplicar la información!!!"); event.keyCode=0;
+            event.returnValue=false;
+        }
+    }
+    $('#dt_basic').dataTable({
+        "aaSorting": [[0,"desc" ]],
+        "iDisplayLength": 3,
+    });
+    $(".deleteventa").click(function(e) {
+        e.preventDefault();
+        var idventa = $(this).attr('idventa');
+        var folio   = $(this).attr('folio');
+        $.SmartMessageBox({
+            title : "Cancelar Venta: "+folio,
+            content : "Menciona el motivo de cancelacion",
+            buttons : '[No][Yes]',
+            input : "text",
+            placeholder : "Motivo de cancelacion"
+        }, function(ButtonPressed, Value) {
+            if (ButtonPressed === "Yes") {
+                if(!Value) return notify('warning','Se necesita un motivo');
+                $.get(config.base+"/Ventas/ajax/deleteventa?action=get&object=deleteventa&idventa="+idventa+"&motivo="+Value,
+                function (response) {
+                    if(response){
+                        notify('success','Cancelada con exito');
+                        window.location=config.base+"/Ventas/add";
+                    }else{
+                        return notify('error','Error al cancelar venta');
+                    }
+                });
+            }
+        });
+        $("#txt1").val('');
+    });
+   
     function nextFocus(inputF, inputS) {
         document.getElementById(inputF).addEventListener('keydown', function(event) {
             if (event.keyCode == 13) {
@@ -440,23 +608,7 @@ if(isPost()){
 
             return false;
         });
-        $("#id_tienda").change(function () {
-            var id=$("#id_tienda").val();
-            $.get(config.base+"/Productos/ajax/?action=get&object=updateProductosTienda&id_tienda="+id, null, function (response) {
-                if ( response ){
-                 
-                    $("#barcode").autocomplete({source:JSON.parse(response)});
-                   
-                }else{
-                    return notify('error', 'Error al obtener los productos');
-                    
-                }     
-            });
-            
-            $("#tiendaprod").val(id);
-            $("#catalogo").attr('href',''+id);
-            return false;
-        });
+       
         $("#cancelar-solicitud").click(function (e) {
             e.preventDefault();
             $("[lineid=descuento-gerencial]").remove();
@@ -467,13 +619,23 @@ if(isPost()){
 
         $("#send").click(function (e) {
             $(".borrar-td").remove();    
-            var tipo      = $("#tipo").val();       
+            var tipo = $("#tipo").val();       
+            if(tipo == 'Apartado'){
+                var abono = $("#montoabono").val();
+                if ( abono > 39  ) {   
+                    if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  {
+                        return notify("info","Se requiere un cliente para los apartados");
+                    }               
+                } else {
+                    return notify("warning","Se requiere un abono minimo de $40 para este apartado");
+                }
+            }
             var cliente   = $("#id_persona").val();
             var productos = $(".producto");  
             if ( ! productos.length )  return notify("info","Los productos son requeridos");
             $("#ticket-items").val($("#productos").html());
             if ( (tipo == "Apartado" || tipo == "Credito")  && cliente == 2  )  
-                return notify("info","Se requiere un cliente para los apartados");
+                return notify("warning","Se requiere un cliente para los apartados");
            
            
             //$("#montoabono").val(0);
@@ -564,15 +726,59 @@ if(isPost()){
                     }     
             });
         }
+        seleccionarpersona = function(id){
+            $("#id_persona option[value="+ id +"]").attr("selected",true);
+            $("#id_persona").select2();
+            $('#myModal').modal('hide');
+        }
         
 
         $("#barcode").focus();
+       
+        $("#id_tienda").change(function () {
+            var id=$("#id_tienda").val();
+            $("#barcode").autocomplete({
+                source: function (request, response) {
+                    var id=$("#id_tienda").val();
+                    $.getJSON(config.base+"/Productos/ajax/?action=get&size=20&object=getproductos&id_tienda="+id+"&texto=" + request.term, function (data) {
+                        response($.map(data, function (value, key) {
+                            return {
+                                label: value.codinter+'::'+ value.nombre.toLowerCase()+' $'+ value.precio+'|'+value.existenciastienda,
+                                value: value.codinter
+                            };
+                        }));
+                    });
+                },
+                minLength: 2,
+                delay: 100 
+            });
+            
+            $("#tiendaprod").val(id);
+            $("#catalogo").attr('href',''+id);
+            return false;
+        });
+       
+        $("#barcode").focus();
+        
+       
         $("#barcode").autocomplete({
             source: [ <?php echo $_SESSION['CADENA'] ?>],
             select: function(res) {
     
             }
         });
+         /*
+         $("#barcode").autocomplete({
+            source: function () {
+                        $.map(<?php echo $_SESSION['CADENA'] ?>, function (value, key) {
+                                return {
+                                    label: value.codinter+'::'+ value.nombre.toLowerCase()+' $'+ value.precio+'|'+value.existenciastienda,
+                                    value: value.codinter
+                            }
+                        });
+                    }
+        });
+        */
         /* DO NOT REMOVE : GLOBAL FUNCTIONS!
          * pageSetUp() is needed whenever you load a page.
          * It initializes and checks for all basic elements of the page

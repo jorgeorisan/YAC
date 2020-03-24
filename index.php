@@ -115,14 +115,17 @@ Routing section
         if ($request['page']==='add')      { $page = "Productos_add.php";      }
         if ($request['page']==='edit')     { $page = "Productos_edit.php";     }
         if ($request['page']==='addpopup') { $page = "Productos_addpopup.php";  }
+        if ($request['page']==='kardex')   { $page = "Productos_kardex.php";   }
         
       }
       if ($request['section']==='Ventas'){
         $page = "Ventas_index.php";
         $dir  = "Ventas";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Ventas_add.php";      }
-        if ($request['page']==='view')     { $page = "Ventas_view.php"; }
+        if ($request['page']==='add')      { $page = "Ventas_add.php";     }
+        if ($request['page']==='corte')    { $page = "Ventas_corte.php";   }
+        if ($request['page']==='view')     { $page = "Ventas_view.php";    }
         if ($request['page']==='credito')  { $page = "Ventas_credito.php"; }
+        if ($request['page']==='productos'){ $page = "Ventas_productos.php"; }
         
       }
       if ($request['section']==='Entradas'){
@@ -173,6 +176,9 @@ Routing section
         if ($request['page']==='productos') { $page = "Reportes_productos.php"; }
         if ($request['page']==='pacientes') { $page = "Reportes_pacientes.php"; }
         if ($request['page']==='horas')     { $page = "Reportes_horas.php"; }
+        if ($request['page']==='pagos')     { $page = "Reportes_pagos.php"; }
+        if ($request['page']==='cortes')    { $page = "Reportes_cortes.php"; }
+        if ($request['page']==='cortediario')    { $page = "Reportes_cortediario.php"; }
       }
       //delete pages
       if(isset($request['params']['id'])){
@@ -186,7 +192,13 @@ Routing section
       }
 
       //*****permisos de usuario  */***///
-      if($request['section']!='Home' && $request['section']!='Examples' && $request['page']!="" && $request['page']!="ajax" && $request['page']!="print" && $request['page']!="excel"  ){
+      if($request['section']!='Home' && 
+        $request['section']!='Examples' && 
+        $request['page']!="" && 
+        $request['page']!="ajax" && 
+        $request['page']!="print" && 
+        $request['page']!="cortediario" && 
+        $request['page']!="excel"  ){
         
         $objpermuser = new PermisoUsuario();
         

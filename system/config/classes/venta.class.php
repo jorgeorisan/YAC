@@ -19,6 +19,19 @@ class Venta extends AutoVenta {
 		}
 		return $set;
 	}
+	//obtiene todas las ventas acredito
+	public function getAllArrVtaCredito()
+	{
+		$sql = "SELECT * FROM venta where tipo in ('Apartado', 'Credito');";
+		$res = $this->db->query($sql);
+		$set = array();
+		if(!$res){ die("Error getting result"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		return $set;
+	}
 		//metodo que sirve para hacer obtener datos en el editar
 	public function getTable($id)
 	{
