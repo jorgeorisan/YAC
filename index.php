@@ -173,12 +173,13 @@ Routing section
       if ($request['section']==='Reportes'){
         $page = "Reportes_index.php";
         $dir  = "Reportes";//si esta en carpeta
-        if ($request['page']==='productos') { $page = "Reportes_productos.php"; }
-        if ($request['page']==='pacientes') { $page = "Reportes_pacientes.php"; }
-        if ($request['page']==='horas')     { $page = "Reportes_horas.php"; }
-        if ($request['page']==='pagos')     { $page = "Reportes_pagos.php"; }
-        if ($request['page']==='cortes')    { $page = "Reportes_cortes.php"; }
+        if ($request['page']==='productos')      { $page = "Reportes_productos.php"; }
+        if ($request['page']==='pacientes')      { $page = "Reportes_pacientes.php"; }
+        if ($request['page']==='horas')          { $page = "Reportes_horas.php"; }
+        if ($request['page']==='pagos')          { $page = "Reportes_pagos.php"; }
+        if ($request['page']==='cortes')         { $page = "Reportes_cortes.php"; }
         if ($request['page']==='cortediario')    { $page = "Reportes_cortediario.php"; }
+        if ($request['page']==='comparativoinv') { $page = "Reportes_comparativoinv.php"; }
       }
       //delete pages
       $id ='';

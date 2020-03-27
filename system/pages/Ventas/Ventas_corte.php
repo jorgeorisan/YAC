@@ -601,7 +601,7 @@ if(isPost()){
 		var cont_din =0;
 		$('.r_entrada').each(function (idx, obj) {
 			if ( $(this).val() > 0){
-				cont_entr+= parseInt($(this).val());
+				cont_entr+= parseFloat($(this).val());
 			}
 		});
 		$('.r_entrada').each(function (idx, obj) {
@@ -611,12 +611,12 @@ if(isPost()){
 		});
 		$('.r_salida').each(function (idx, obj) {
 			if ( $(this).val() > 0){
-				cont_sal+= parseInt($(this).val());
+				cont_sal+= parseFloat($(this).val());
 			}
 		});
 		$('.r_dinero').each(function (idx, obj) {
 			if ( $(this).val() > 0){
-				cont_din+= parseInt($(this).val());
+				cont_din+= parseFloat($(this).val());
 			}
 		});
 		
@@ -627,8 +627,8 @@ if(isPost()){
 		var total_entrada  = $("#total_entrada").html(cont_entr);
 		var total_salida   = $("#total_salida").html(cont_sal);
 		var total_dinero   = $("#total_dinero").html(cont_din) ;
-		var total_caja     = parseInt(cont_entr)-parseInt(cont_sal);
-		var total_dife     = parseInt(cont_din)-parseInt(total_caja);
+		var total_caja     = parseFloat(cont_entr)-parseFloat(cont_sal);
+		var total_dife     = parseFloat(cont_din)-parseFloat(total_caja);
 		
 		$("#total_caja").html(total_caja);
 		$("#total_diferencia").html(total_dife);

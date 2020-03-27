@@ -175,7 +175,8 @@ $menuReportes = array(
 			"tratamientos"  => array( "title" => "Tratamientos",      "url" => APP_URL."/Reportes/tratamientos" ),
 			"horas"     	=> array( "title" => "Horas",       	  "url" => APP_URL."/Reportes/horas" ),
 			"pagos"     	=> array( "title" => "Abonos",      	  "url" => APP_URL."/Reportes/pagos" ),
-			"cortes"     	=> array( "title" => "Cortes",      	  "url" => APP_URL."/Reportes/cortes" )
+			"cortes"     	=> array( "title" => "Cortes",      	  "url" => APP_URL."/Reportes/cortes" ),
+			"comparativo" 	=> array( "title" => "Comparativo",   	  "url" => APP_URL."/Reportes/comparativoinv" )
 		)
 	)
 );

@@ -714,6 +714,97 @@ class Reports extends Usuario {
 		return $set;
 	}
 	
+	//reporte para realizar el comparativo de inventario de las tiendas
+	public function getReporteComparativoInventario($arrayfilters=false){
+		$id_categoria = (isset($arrayfilters['id_categoria']))? $arrayfilters['id_categoria']  : '';
+		$id_marca     = (isset($arrayfilters['id_marca']))    ? $arrayfilters['id_marca']      : '';
+		$todo         = (isset($arrayfilters['todo']))        ? $arrayfilters['todo']          : '';
+		$id_tienda    = (isset($arrayfilters['id_tienda']))   ? $arrayfilters['id_tienda']     : '';
+		
+		$querycategoria = ($id_categoria)  ? " AND p.id_categoria =".$id_categoria : "";
+		$querymarca     = ($id_marca)  ? " AND p.id_categoria =".$id_marca : "";
+		$querytodo      = " HAVING TIENDA.existencias>0 ";
+		$queryprod = $querylimit= '';
+		
+		$prov = $id_tienda;
+		$querytienda='';
+		if($id_tienda == 15) 
+			$prov=13;
+
+		if(!$id_tienda)
+			$querytienda= ($_SESSION['user_info']['id_tienda']==16) ? " AND (p.id_proveedor=14)" : " AND (p.id_proveedor!=14)";
+
+	
+        $sql = "
+			SELECT TODO.id_producto,TODO.codinter,TODO.manual,TODO.nombre,TODO.marca,TODO.categoria,TODO.imagen,
+			TODO.proveedor,TODO.paquete	,TODO.costo,TODO.precio,TODO.preciomayoreo
+			,TODO.existencias, TIENDA.existencias existenciastienda,TIENDA.fecha_actualizacion,TIENDA.usuario_actualizacion,TIENDA.inv_ini,ifnull(TIENDA.kardex,0) kardex
+			FROM(
+				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.manual,PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
+					,SUM(EXISTENCIAS.existencias) existencias
+					FROM(
+						SELECT p.id_producto,p.codinter,p.manual, p.imagen,p.nombre,p.costo,p.precio_descuento,p.precio,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+						FROM producto p
+						LEFT JOIN marca m on p.id_marca=m.id_marca
+						LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+						WHERE p.status='ACTIVO'
+						$queryprod
+						$querycategoria
+						$querymarca
+						$querytienda
+						AND pr.id_tienda='$prov'
+					) AS PRODUCTO LEFT JOIN (
+						SELECT id_producto, existencias, tienda_id_tienda id_tienda
+						FROM producto_tienda 
+						WHERE tienda_id_tienda!='14'
+						group by id_producto,tienda_id_tienda
+					)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+					
+					group by 
+					PRODUCTO.id_producto,PRODUCTO.codinter, PRODUCTO.imagen,PRODUCTO.nombre,PRODUCTO.marca,
+					PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
+					order by PRODUCTO.nombre
+					
+			) AS TODO
+			LEFT JOIN (
+				SELECT PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,PRODUCTO.categoria,
+					PRODUCTO.proveedor,PRODUCTO.paquete	,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento preciomayoreo
+					,SUM(EXISTENCIAS.existencias) existencias,EXISTENCIAS.fecha_actualizacion,EXISTENCIAS.usuario_actualizacion,EXISTENCIAS.inv_ini,EXISTENCIAS.kardex
+					FROM(
+						SELECT p.id_producto,codinter,p.costo,p.precio_descuento,p.precio,p.nombre,m.nombre marca,c.categoria,pr.nombre_corto proveedor,if(paquete=1,'SI','NO') paquete
+						FROM producto p
+						LEFT JOIN marca m on p.id_marca=m.id_marca
+						LEFT JOIN categoria c on p.id_categoria=c.id_categoria
+						LEFT JOIN proveedor pr on p.id_proveedor=pr.id_proveedor
+						WHERE p.status='ACTIVO'
+					) AS PRODUCTO LEFT JOIN(
+						SELECT id_producto, tienda_id_tienda id_tienda, existencias, fecha_actualizacion,u. id_usuario usuario_actualizacion, inv_ini, kardex
+						FROM producto_tienda pt
+						LEFT JOIN usuario u ON  u.id=pt.usuario_actualizacion
+						WHERE tienda_id_tienda='$id_tienda'
+						group by id_producto,tienda_id_tienda
+					)EXISTENCIAS ON PRODUCTO.id_producto=EXISTENCIAS.id_producto
+					
+					group by 
+					PRODUCTO.id_producto,PRODUCTO.codinter,PRODUCTO.nombre,PRODUCTO.marca,
+					PRODUCTO.categoria,PRODUCTO.proveedor,PRODUCTO.paquete
+					,PRODUCTO.costo,PRODUCTO.precio,PRODUCTO.precio_descuento
+			) TIENDA ON TODO.id_producto=TIENDA.id_producto
+			
+			$querytodo
+			";
+		$res = $this->db->query($sql);
+		$set = array();
+		if(!$res){ die("Error getting result getReporteComparativoInventario"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		return $set;
+	}
 
 }
 
