@@ -18,7 +18,8 @@ include(SYSTEM_DIR . "/inc/nav.php");
 
 $obj = new Venta();
 
-$dataventas = $obj->getReporteVentasApartados();
+$objReport = new Reports();
+$dataventas = $objReport->getReporteVentasApartados();
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->

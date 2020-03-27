@@ -51,7 +51,7 @@ class Traspaso extends AutoTraspaso {
 		$_requestTraspaso['comentarios']       = (isset($_request['comentarios'])) ? $_request['comentarios'] : '';
 		$_requestTraspaso['referencia']        = (isset($_request['referencia'])) ? $_request['referencia'] : '';
 		$_requestTraspaso['status'] 	       = 'POR AUTORIZAR';
-		$_requestTraspaso['fecha'] 		       = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
+		$_requestTraspaso['fecha'] 		       = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:i:s") : date('Y-m-d H:i:s');
 		
 		$data=fromArray($_requestTraspaso,'traspaso',$this->db,"add");
 		$sql= "INSERT INTO traspaso (".$data[0].") VALUES(".$data[1]."); ";
@@ -143,7 +143,7 @@ class Traspaso extends AutoTraspaso {
 			$objTraspasoProducto->deleteAll($row['id_traspaso_producto']);
 		}
 		$_request['usuario_deleted'] =  $_SESSION['user_id'];
-		$_request['deleted_date'] 	=  date('Y-m-d H:m:s');
+		$_request['deleted_date'] 	=  date('Y-m-d H:i:s');
 		$_request['status']			= 'BAJA';
 		return $this->updateAll($idtraspaso,$_request);
 	}
@@ -249,7 +249,7 @@ class Traspaso extends AutoTraspaso {
 			$objTraspasoProducto->updateAll($row['id_traspaso_producto'],$requestTraspasoProducto);
 		}
 		$_request['usuario_validacion'] =  $_SESSION['user_id'];
-		$_request['fecha_validacion'] 	=  date('Y-m-d H:m:s');
+		$_request['fecha_validacion'] 	=  date('Y-m-d H:i:s');
 		$_request['status']				='ACTIVO';
 		return $this->updateAll($idtraspaso,$_request);
 	}

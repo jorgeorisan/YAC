@@ -6,9 +6,11 @@ $arrayfilters['fecha_final']   = $dataJson->fecha_final;
 $arrayfilters['id_usuario']    = $dataJson->id_usuario;
 $arrayfilters['id_tienda']     = $dataJson->id_tienda;
 $page_title               	   = ucwords($dataJson->page);
-$dataventas     		= $obj->getReporteVentas($arrayfilters);
-$datacomisionesusuarios = $obj->getReporteComisionesUsuarios($arrayfilters);
-$dataabonos     		= $obj->getReporteAbonos($arrayfilters);
+
+$reports = new Reports();
+$dataventas     		= $reports->getReporteVentas($arrayfilters);
+$datacomisionesusuarios = $reports->getReporteComisionesUsuarios($arrayfilters);
+$dataabonos     		= $reports->getReporteAbonos($arrayfilters);
 $totalAbonosGenerales = 0;
 foreach($dataabonos as $row) {
 	$totalAbonosGenerales+=$row->totalventaabonos;
@@ -132,7 +134,7 @@ header("Expires: 0");
 										<tbody>
 											<?php 
 											$totalventausuariogral   = 0;
-											 $totalAbonosUsers    = 0;
+											$totalAbonosUsers        = 0;
 											$totalventarecargasgral  = 0;
 											$totalventaexcedentegral = 0;
 											$totalcajagral           = 0;
@@ -153,7 +155,9 @@ header("Expires: 0");
 												$totalventadescuento = $row->totalventadescuento; 
 												$totalventa 		 = $totalventa - $totalventadescuento; // quitamos los decuentos
 												$totalventausuario   = $totalventa - $totalventacredito - ($totalventamayoreo/2) - $totalventarecargas  ;
-												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventaexcedente  + $totalventarecargas +  ($totalventamayoreo/2)  ;
+												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventarecargas +  ($totalventamayoreo/2)  ;
+												$totalcaja           = ( $row->id_usuario_tipo !=  9 )  ? $totalcaja : $totalcaja - $totalventaexcedente;
+												$totalcaja           = ( $row->id_usuario !=  'Lizzy' ) ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalgeneral 		 = $totalventa   ; 
 												$totalcomision		 = ( $row->id_usuario_tipo !=  9 ) ? $totalventausuario * $row->comision :  $totalventaexcedente * $row->comision ;
 												$totalventausuariogral   += $totalventausuario;
@@ -174,14 +178,15 @@ header("Expires: 0");
 													<td><?php echo $totalventaabonos; ?></td>
 													<td><?php echo $totalventarecargas; ?></td>
 													<td><?php echo $totalventaexcedente; ?></td>
-													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)+('.$totalventaexcedente.'excedente)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
+													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
 															<?php echo $totalcaja; ?>
 														</span>
 													</td>
 													<td><?php echo $totalventacredito; ?></td>
-													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)+('.$totalventaexcedente.'excedente)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
-															<?php echo $totalcaja; ?>
-														</span>
+													<td>
+														<span title="<?php echo "(".$totalventa.'venta) ='.$totalgeneral ?>">
+															<?php echo $totalgeneral; ?>
+														</span>	
 													</td>
 													<td><?php echo $totalcomision; ?></td>
 												</tr>

@@ -25,7 +25,7 @@ $obj = new HistorialInventario();
 $begin        = ( isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
 $end          = ( isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $idusuario    = ( isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
-$idtienda     = ( isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $_SESSION['user_info']['id_tienda'];
+$idtienda     = (isset($_POST['id_tienda']))     ? $_POST['id_tienda']     : '';
 $codeproducto = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ? $arrayfilters['id_producto'] = $_POST['id_producto'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
@@ -35,7 +35,7 @@ $arrayfilters['page']   	   = 'actinvent';
 $jsonarrayfilters=json_encode($arrayfilters);
 
 $reports = new Reports();
-$dataventas = $reports->getReportesActInv($arrayfilters);
+$datareport = $reports->getReportesActInv($arrayfilters);
 
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -52,7 +52,7 @@ $dataventas = $reports->getReportesActInv($arrayfilters);
 	<div id="content">
 		<section id="widget-grid" class="">
 			<div class="widget-body" style='padding-bottom: 10px;'>
-				<a class="btn btn-info" id="exportarVentaProductos"  target="_blank" href="<?php echo make_url("Reportes","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
+				<a class="btn btn-info" id="exportarActInvet"  target="_blank" href="<?php echo make_url("Reportes","excel",array('jsondata'=>$jsonarrayfilters))?>"  ><i class="fa fa-download"></i> &nbsp;Exportar</a>	
 			</div>
 			<div class="row" style="overflow:auto">
 				<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -64,7 +64,7 @@ $dataventas = $reports->getReportesActInv($arrayfilters);
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Reportes","productos");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Reportes","actinvent");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>  
 										<div class="row">  
 											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">
@@ -155,7 +155,7 @@ $dataventas = $reports->getReportesActInv($arrayfilters);
 			</div>
 			
 
-			<?php if(isset($dataventas) && $dataventas!=''){ ?>
+			<?php if(isset($datareport) && $datareport!=''){ ?>
 				<div class="row">
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
 						<div class="jarviswidget jarviswidget-color-white" id="wid-id-0" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="true">
@@ -169,135 +169,44 @@ $dataventas = $reports->getReportesActInv($arrayfilters);
 								<div class="widget-body" style="overflow:auto">
 									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 										<thead>
-											<tr>
-												<th class = "col-md-1" data-hide="expand"> No. Folio</th>
-												<th class = "col-md-1" data-class="phone,tablet">Cant.</th>
-												<th class = "col-md-1" data-class="phone,tablet">Codigo </th>
-												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
-												<th class = "col-md-1" data-class="phone,tablet">Total</th>
-												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
-												<th class = "col-md-1" data-class="phone,tablet">Usuario</th>
+											<tr> 
+												<th class = "col-md-1" data-hide="expand">Producto</th>
+												<th class = "col-md-1" data-class="phone,tablet"> Sucursal</th>
+												<th class = "col-md-1" data-class="phone,tablet">Exist Ant.</th>
+												<th class = "col-md-1" data-class="phone,tablet">Exist </th>
+												<th class = "col-md-1" data-class="phone,tablet">Marca</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
-												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
+												<th class = "col-md-1" data-class="phone,tablet">Usuario</th>
 												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-class="phone,tablet"></th>
 											</tr>
 										</thead>
 										<tbody>
 											<?php 
-											$nomtienda = '';
-											$totalgeneral = $totaldescgral = $totalgeneralcosto = $totalpagadogral = $totalporpagar = $totalrecargas= $totalexcedente = 0;
-											$idventaanterior='';
-											
-											$class = $classventa= '';
-											foreach ($dataventas as $rowventa){		
-												$ventas = new Venta();										
-												$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
-												if($dataventasproductos){
-													foreach($dataventasproductos as $row) {
-														$tienda = new Tienda();
-														$datatienda = $tienda->getTable($row["id_tienda"]);
-														if($datatienda) $nomtienda = $datatienda["nombre"]; 
-														$id_venta=$row["id_venta"];
-														$idventaanterior=$row["id_venta"];
-													
-														$venta = new Venta();
-														$dataventa = $venta->getTable($row["id_venta"]);
-														
-														$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
-														$totalxproducto = 0;
-														if (!$row['cancelado']) {
-															//calculamos el descuento por producto
-															$totalgeneral  += ($row['total']/$row['cantidad']);
-															$totalgeneralcosto  += ($row['costototal']/$row['cantidad']);
-															if($dataventa['tipo']=='Credito' || $dataventa['tipo']=='Apartado')
-																if($dataventa['icredito']){
-																	$totalporpagar += $porpagar = $row['total'];
-																	$totalgeneralcosto  += ($row['costototal']/$row['cantidad']);
-																}
-																	
-														}
-														?>
-														<tr <?php echo $class;?>>
-															<td>
-																<a class="" href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>">
-																	<?php echo htmlentities($row['folio'])?>
-																</a>
-															</td>
-															<td><?php echo htmlentities($row['cantidad'])?></td>
-															<td><?php echo htmlentities($row['codinter']).'<br>'.htmlentities($row['nombre'])?></td>
-															<td>$<?php echo number_format($row['total']/$row['cantidad'],2)?></td>
-															<td>$<?php echo number_format($row['total'], 2); ?></td>
-															<td>
-																<?php echo htmlentities($row['tipo'])."<br>";
-																if($row['icredito']){
-																	echo "<span style='color:red'>En pago</span>";
-																}
-																?>
-															</td>
-															<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
-															<td><?php echo htmlentities($nomtienda) ?></td>
-															<td><?php echo htmlentities($row['tipoprecio'])?></td>
-															<td><?php echo htmlentities($row['fecha']) ?></td>
-															<td>
-																<div class="btn-group">
-																	<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-																		Accion <span class="caret"></span>
-																	</button>
-																	<ul class="dropdown-menu">
-																		<li>
-																			<a title="Ver Venta" class=""  href="<?php echo make_url("Ventas","view",array('id'=>$row['id_venta'])); ?>"> Ver Venta</a>
-																		</li>
-																		<li>
-																			<a title="Imprimir Venta" class="" target="_blank" href="<?php echo make_url("Ventas","print",array('id'=>$row['id_venta'],'page'=>'venta')); ?>">Imprimir</a>
-																		</li>
-																		<?php 
-																		if (!$row['cancelado']){ ?> 
-																			<?php if($row['icredito']){ ?>
-																				<li>
-																					<a data-toggle="modal" style="color:cornflowerblue" href="#myModal" onclick="showpopuppagar(<?php echo $row['id_venta'] ?>)"> Pagar</a>
-																				</li>
-																			<?php } ?>
-																			<li class="divider"></li>
-																			<li>
-																				<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
-																			</li>
-																		<?php 
-																		} ?>
-																	</ul>
-																</div>
-															</td>
-														</tr>
-														<?php
-													}
-													
-												}
+											foreach ($datareport as $row){		
+												?>
+												<tr>
+													<td>
+														<a class="" href="<?php echo make_url("Productos","edit",array('id'=>$row->id_producto)); ?>">
+															<?php echo htmlentities($row->codinter).'|'.htmlentities($row->nombre) ?>
+														</a>
+													</td>
+													<td><?php echo htmlentities($row->nombre_corto)?></td>
+													<td><?php echo htmlentities($row->existencia_anterior)?></td>
+													<td><?php echo htmlentities($row->existencia)?></td>
+													<td><?php echo htmlentities($row->marca)?></td>
+													<td><?php echo htmlentities($row->tienda); ?></td>
+													<td><?php echo htmlentities($row->id_usuario) ?></td>
+													<td><?php echo htmlentities($row->fecha_registro) ?></td>
+													<td>
+													</td>
+												</tr>
+												<?php
 											}
-											
 											?>
 										</tbody>
+									</table>
 									
-									</table>
-									<br>
-									<br>
-									<table id="" class="table table-striped table-bordered table-hover" width="50%">
-										<thead>
-											<tr>
-												<th class = "col-md-1"  data-class="phone,tablet">Por Pagar</th>
-												<th class = "col-md-1" data-class="phone,tablet">Pagado </th>
-												<th class = "col-md-1" data-class="phone,tablet">Utilidad </th>
-											</tr>
-										</thead>
-										<tbody>
-											<th>$<?php echo number_format($totalporpagar,2) ?></th>
-											<th>$<?php echo number_format($totalgeneral,2) ?></th>
-											<?php if($_SESSION['user_info']['costos']) { ?>
-												<th>$<?php echo number_format($totalgeneral-$totalgeneralcosto,2) ?></th>
-											<?php } ?>
-										</tbody>
-									<table>
-									</table>
 								</div>
 							</div>
 						</div>
@@ -428,56 +337,6 @@ $dataventas = $reports->getReportesActInv($arrayfilters);
 			});
 			$("#txt1").val('');
 		});
-		 //**********pagoS*************/
-         $('body').on('change', '#montoabono', function(){
-            if( $(this).val() ){
-                var monto  = $("input[name=montoabono]", $(this).parents('form:first')).val();
-                var deuda  = $("input[name=deuda]", $(this).parents('form:first')).val();
-                var nuevadeuda = deuda - monto;
-                if(nuevadeuda<0){ 
-                    notify('error','El monto no puede ser mayor a la deuda actual');
-                    $("#monto").val('').focus();
-                    return false;
-                }
-            }
-        });
-        showpopuppagar = function(id_venta){
-            $('#titlemodal').html('<span class="widget-icon"><i class="far fa-plus"></i> Nuevo Pago</span>');
-            $.get(config.base+"/Ventas/ajax/?action=get&object=showpopuppagar&id="+id_venta, null, function (response) {
-                    if ( response ){
-                        $("#contentpopup").html(response);
-                    }else{
-                        return notify('error', 'Error al obtener los datos del Formulario de pacientes');
-                        
-                    }     
-            });
-            return false;
-        }
-        $('body').on('click', '#savenewpago', function(){
-            var monto  = $("input[name=montoabono]", $(this).parents('form:first')).val();
-            var deuda  = $("input[name=deuda]", $(this).parents('form:first')).val();
-            if(!monto)  return notify('error',"Se necesita el monto.");  
-            var nuevadeuda = deuda - monto;
-            if(nuevadeuda<0){ 
-                notify('error','El monto no puede ser mayor a la deuda actual');
-                $("#monto").val('').focus();
-                return false;
-            }
-            var url = config.base+"/Ventas/ajax/?action=get&object=savenewpago"; 
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: $(this).parents('form:first').serialize(), 
-                success: function(response){
-                    if(response>0){
-                        //location.reload();
-                    }else{
-                        return notify('error',"Oopss error al agregar pago"+response);
-                    }
-                }
-             });
-            return false; // Evitar ejecutar el submit del formulario.
-        });
 		/* DO NOT REMOVE : GLOBAL FUNCTIONS!
 		 *
 		 * pageSetUp(); WILL CALL THE FOLLOWING FUNCTIONS

@@ -40,7 +40,7 @@ $usuario = new Usuario();
 $datauser = $usuario->getTable($data['id_user']);
 $totalpagado = $obj->getpagado($id);
 $totalporpagar = $data['total']-$totalpagado;
-$porcentpagado = ($totalpagado * 100  / $data['total']);
+$porcentpagado = ($data['total']) ? ($totalpagado * 100  / $data['total']) : 0 ;
 
 $descuento = ($data['descuento']>0) ? number_format($data['descuento'],2) : '';
 
@@ -50,6 +50,10 @@ if (($porcentpagado >= 50 && $porcentpagado < 75) )
     $class  = 'label label-warning';
 if ($porcentpagado < 50 )
     $class  = 'label label-danger';
+
+$permisousuario = new PermisoUsuario();
+$persmisodeleteproductoventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ventas', 'deleteproductoventa');
+
 ?>
 
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -151,8 +155,15 @@ if ($porcentpagado < 50 )
                                                 <tr>
                                                     <td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Tipo pago: </td>
 													<td colspan="" style="width:30%;"><?php echo htmlentities($data['tipo']); ?></td>
-													<td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Observaciones: </td>
-													<td colspan=""><?php echo $data['comentarios']; ?></td>
+													<td colspan="" style="width:20%;background-color:#d0d0cf; font-weight:bold;">Observaciones: <br><?php echo ($data['fecha_cancelacion'])  ? '<span style="color:red">Cancelado</span>' : '';?> </td>
+                                                    <td colspan=""><?php echo $data['comentarios'];
+                                                    if($data['fecha_cancelacion']){
+                                                        echo "<br>";
+                                                        echo $data['fecha_cancelacion'].' / '.$data['usuario_cancelacion'];
+                                                        echo "<br>".$data['razon_cancelacion'];
+
+                                                    }
+                                                    ?></td>
                                                 </tr>
                                                  <tr>
                                                     <td colspan="4" style="width:20%;background-color:#d0d0cf; font-weight:bold; text-align: center">PRODUCTOS DE VENTA : </td>
@@ -205,9 +216,12 @@ if ($porcentpagado < 50 )
                                                                 <?php } ?>  
                                                                 <td><?php echo htmlentities($row['tipoprecio']); ?></td>
                                                                 <td class='borrar-td'>
-                                                                    <?php if (!$row['cancelado']){ ?> 
+                                                                    <?php if (!$row['cancelado']){ 
+                                                                        if($persmisodeleteproductoventa){
+                                                                        ?> 
                                                                         <a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="btn btn-danger deleteventa"> <i class="fas fa-ban"></i></a>
-                                                                    <?php } ?>
+                                                                    <?php }
+                                                                    } ?>
                                                                 </td>
                                                             </tr>
 

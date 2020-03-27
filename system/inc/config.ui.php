@@ -72,7 +72,6 @@ $menuProductos = array(
 			"icon" => "fa-archive",
 			"sub" => array(
 				'productosindex' => array('title'  => 'Productos','url' => APP_URL."/Productos/index" ),
-				'productosindexall' => array('title'  => 'Productos Todos','url' => make_url("Productos","index",array('opt'=>'All')) ),
 				'productos' => array('title'  => 'Nuevo Producto','url' => APP_URL."/Productos/add" )
 			)
 	)
@@ -105,10 +104,11 @@ $menuVentas = array(
 		"title" => "Ventas",
 		"icon"  => "fa-money-check-alt",
 		"sub" => array(
-				'ventasadd'  => array('title'  => 'Ventas Alta','url'    => APP_URL."/Ventas/add" ),
-				'ventasindex'  => array('title'  => 'Reporte Venta','url' => APP_URL."/Ventas/index" ),
+				'ventasadd'        => array('title'  => 'Ventas Alta','url'    => APP_URL."/Ventas/add" ),
+				'ventasindex'      => array('title'  => 'Reporte Venta','url' => APP_URL."/Ventas/index" ),
 				'ventasproductos'  => array('title'  => 'Reporte por Producto','url' => APP_URL."/Ventas/productos" ),
-				'ventasapartados'  => array('title'  => 'Vtas Apartados/Credito','url' => APP_URL."/Ventas/apartado" )
+				'ventasapartados'  => array('title'  => 'Vtas Apartados/Credito','url' => APP_URL."/Ventas/apartado" ),
+				'ventascorte'      => array('title'  => 'Vtas Corte','url' => APP_URL."/Ventas/corte" )
 		)
 	)
 );
@@ -169,10 +169,13 @@ $menuReportes = array(
 		"icon" => "fa-chart-line",
 		//"url" => APP_URL."/solicitudes/index",
 		"sub" => array(
-			"ventas"     => array( "title" => "Venta Por Producto",      "url" => APP_URL."/Reportes/productos" ),
-			"pacientes"     => array( "title" => "Pacientes",      "url" => APP_URL."/Reportes/pacientes" ),
-			"tratamientos"     => array( "title" => "Tratamientos",      "url" => APP_URL."/Reportes/tratamientos" ),
-			"pagos"     => array( "title" => "Pagos",      "url" => APP_URL."/Reportes/pagos" )
+			"ventas"     	=> array( "title" => "Venta Por Producto","url" => APP_URL."/Reportes/productos" ),
+			"pacientes"     => array( "title" => "Pacientes",      	  "url" => APP_URL."/Reportes/pacientes" ),
+			"actinvent"     => array( "title" => "Act. Inventarios",  "url" => APP_URL."/Reportes/actinvent" ),
+			"tratamientos"  => array( "title" => "Tratamientos",      "url" => APP_URL."/Reportes/tratamientos" ),
+			"horas"     	=> array( "title" => "Horas",       	  "url" => APP_URL."/Reportes/horas" ),
+			"pagos"     	=> array( "title" => "Abonos",      	  "url" => APP_URL."/Reportes/pagos" ),
+			"cortes"     	=> array( "title" => "Cortes",      	  "url" => APP_URL."/Reportes/cortes" )
 		)
 	)
 );

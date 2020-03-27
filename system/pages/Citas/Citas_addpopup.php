@@ -57,7 +57,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <select style="width:100%" class="select2"  required name="id_usuario" id="id_usuario">
+                                        <select style="width:100%" class="select2"  required name="id_user" id="id_user">
                                             <option value="" selected >Selecciona Usuario</option>
                                             <?php 
                                             $obj = new Usuario();

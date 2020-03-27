@@ -67,6 +67,8 @@ if(isPost()){
         informError(true, make_url("Permisos","asignar",array('id'=>$id)),"asignar");
     }
 }
+$objUsuarioTipo = new UsuarioTipo();
+$dataUsuarioTipo=$objUsuarioTipo->getTable($data['id_usuario_tipo']);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
@@ -85,7 +87,7 @@ if(isPost()){
                             <span class="widget-icon"> 
                                 <i class="fa fa-edit"></i>
                             </span>
-                            <h2><?php echo $page_title ?> </h2>
+                            <h2><?php echo $page_title. " : ".$data['nombre']."->".$dataUsuarioTipo['usuario_tipo'] ?> </h2>
                         </header>
                         <div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
@@ -98,10 +100,10 @@ if(isPost()){
                                              <select style="width:100px" class="select2" name="id_usuario_tipo" id="id_usuario_tipo">
                                                 <option value="">--Precargar Perfil--</option>
                                                 <?php 
-                                                $obj = new UsuarioTipo();
-                                                $list=$obj->getAllArr();
-                                                if (is_array($list) || is_object($list)){
-                                                    foreach($list as $val){
+                                                
+                                                $listUt=$objUsuarioTipo->getAllArr();
+                                                if (is_array($listUt) || is_object($listUt)){
+                                                    foreach($listUt as $val){
                                                         $selected = "";
                                                         //if ($data['id_usuario_tipo'] == $val['id'] )
                                                             //$selected = "selected";

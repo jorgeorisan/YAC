@@ -56,7 +56,8 @@ else
                 }
             }
             $objUsuarios = new Usuario();
-            $dataUsuarios = $objUsuarios->getAllArr(false,$idusuariotipo);
+            $arrayfilters['tipo'] = $idusuariotipo;
+            $dataUsuarios = $objUsuarios->getAllArr($arrayfilters);
             foreach ($dataUsuarios as $key => $usuario) {
                 $objpermuser = new PermisoUsuario();
                 $datapermisosuser = $objpermuser->deleteAll($usuario['id']);

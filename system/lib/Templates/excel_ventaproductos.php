@@ -5,8 +5,11 @@ $arrayfilters['fecha_inicial'] = $dataJson->fecha_inicial;
 $arrayfilters['fecha_final']   = $dataJson->fecha_final;
 $arrayfilters['id_usuario']    = $dataJson->id_usuario;
 $arrayfilters['id_tienda']     = $dataJson->id_tienda;
+$arrayfilters['id_producto']   = $codeproducto = $dataJson->id_producto;
 $page_title               	   = ucwords($dataJson->page);
-$dataventas = $obj->getReporteVentas($arrayfilters);
+
+$objreports = new Reports();
+$dataventas = $objreports->getReporteVentas($arrayfilters);
 
 header('Content-type: application/vnd.ms-excel');
 header("Content-Disposition: attachment; filename=$page_title.xls");
@@ -40,10 +43,12 @@ header("Expires: 0");
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Total</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+												<th class = "col-md-1" data-class="phone,tablet">Cliente</th>
 												<th class = "col-md-1" data-hide="phone,tablet">Usuario</th>
 												<th class = "col-md-1" data-hide="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
+												<th class = "col-md-1" data-class="phone,tablet"></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -68,74 +73,78 @@ header("Expires: 0");
 															$totalporpagar += $porpagar = $rowventa['total']-$totalpagado;
 												}
 												$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"]);
-												foreach($dataventasproductos as $row) {
-													$tienda = new Tienda();
-													$datatienda = $tienda->getTable($row["id_tienda"]);
-													if($datatienda) $nomtienda = $datatienda["nombre"]; 
-													$id_venta=$row["id_venta"];
-													$idventaanterior=$row["id_venta"];
-												
-													$venta = new Venta();
-													$dataventa = $venta->getTable($row["id_venta"]);
+												$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
+												if($dataventasproductos){
+													foreach($dataventasproductos as $row) {
+														$tienda = new Tienda();
+														$datatienda = $tienda->getTable($row["id_tienda"]);
+														if($datatienda) $nomtienda = $datatienda["nombre"]; 
+														$id_venta=$row["id_venta"];
+														$idventaanterior=$row["id_venta"];
 													
-													$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
-													$totalxproducto = 0;
-													if (!$row['cancelado']) {
-														//calculamos el descuento por producto
-														$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
-														$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
-														$totalgeneral   += $row['total'];
-														$totalrecargas  += ($row['nombre']=='RECARGA')   ? $row['total'] : 0;
-														$totalexcedente += ($row['nombre']=='EXCEDENTE') ? $row['total'] : 0;
-													}
-													?>
-													<tr <?php echo $class;?>>
-														<td><?php echo htmlentities($row['folio'])?></td>
-														<td><?php echo htmlentities($row['cantidad'])?></td>
-														<td><?php echo htmlentities($row['codinter']."::".$row['nombre'])?></td>
-														<td>$<?php echo number_format($totalxproducto,2)?></td>
-														<td>$<?php echo number_format($row['total'], 2); ?></td>
-														<td>
-															<?php echo htmlentities($row['tipo'])."<br>";
-															if($row['icredito']){
-																echo "<span style='color:red'>En pago</span>";
-															}
-															?>
-														</td>
-														<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
-														<td><?php echo htmlentities($nomtienda) ?></td>
-														<td><?php echo htmlentities($row['tipoprecio'])?></td>
-														<td><?php echo htmlentities($row['fecha']) ?></td>
+														$venta = new Venta();
+														$dataventa = $venta->getTable($row["id_venta"]);
+														$cliente = new Persona();
+														$datacliente = $cliente->getTable($dataventa['id_persona']);
 														
-													</tr>
-													<?php
+														$class     = ($row["cancelado"]) ? "class='cancelada' style='color:red'" : '';
+														$totalxproducto = 0;
+														if (!$row['cancelado']) {
+															//calculamos el descuento por producto
+															$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
+															$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
+															$totalgeneral   += $row['total'];
+															$totalrecargas  += ($row['nombre']=='RECARGA')   ? $row['total'] : 0;
+															$totalexcedente += ($row['nombre']=='EXCEDENTE') ? $row['total'] : 0;
+														}
+														?>
+														<tr <?php echo $class;?>>
+															<td><?php echo htmlentities($row['folio'])?></td>
+															<td><?php echo htmlentities($row['cantidad'])?></td>
+															<td><?php echo htmlentities($row['codinter']."::".$row['nombre'])?></td>
+															<td>$<?php echo number_format($totalxproducto,2)?></td>
+															<td>$<?php echo number_format($row['total'], 2); ?></td>
+															<td>
+																<?php echo htmlentities($row['tipo'])."<br>";
+																if($row['icredito']){
+																	echo "<span style='color:red'>En pago</span>";
+																}
+																?>
+															</td>
+															<td><?php echo htmlentities($datacliente['nombre']." ".$datacliente['ap_paterno'])?></td>
+															<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
+															<td><?php echo htmlentities($nomtienda) ?></td>
+															<td><?php echo htmlentities($row['tipoprecio'])?></td>
+															<td><?php echo htmlentities($row['fecha']) ?></td>
+															<td><?php echo ($rowventa["cancelado"])? 'cancelado':'';?></td>
+														</tr>
+														<?php
+													}
+													if($rowventa["descuento"] || $porpagar){
+														?>
+														<tr <?php echo $classventa;?>>
+															<td></td>
+															<td></td>
+															<td colspan="2">
+																Descuento folio:<?php echo $rowventa["folio"] ?><br>
+																<?php if($porpagar){
+																	echo "Por Pagar:";
+																} ?>
+															</td>
+															<td>$<?php echo number_format($rowventa["descuento"],2) ?>
+																<?php if($porpagar){
+																	echo "$".number_format($porpagar,2);
+																} ?>
+															</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+														<?php
+													}
 												}
-												if($rowventa["descuento"] || $porpagar){
-													?>
-													<tr <?php echo $classventa;?>>
-														<td></td>
-														<td></td>
-														<td colspan="2">
-															Descuento folio:<?php echo $rowventa["folio"] ?><br>
-															<?php if($porpagar){
-																echo "Por Pagar:";
-															} ?>
-														</td>
-														<td>$<?php echo number_format($rowventa["descuento"],2) ?>
-															<?php if($porpagar){
-																echo "$".number_format($porpagar,2);
-															} ?>
-														</td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
-														<td></td>
-													</tr>
-													<?php
-												}
-
 											}
 											
 											echo $descuentos;

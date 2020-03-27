@@ -24,6 +24,7 @@
 		protected $descuento = 0;
 		protected $fecha_registro = "";
 		protected $id_user_registro = 0;
+		protected $sorteo = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -134,6 +135,11 @@
 		public function setIdUserRegistro( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "IDUSERREGISTRO","i") ) 
  				$this->id_user_registro = $value;
+		}
+		
+		public function setSorteo( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "SORTEO","s") ) 
+ 				$this->sorteo = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -305,6 +311,14 @@
  			}
 		}
 		
+		public function getSorteo($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->sorteo) ;
+ 			}else{
+ 				return $this->sorteo ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -369,6 +383,7 @@
 			$this->setDescuento( $res['descuento'] );
 			$this->setFechaRegistro( $res['fecha_registro'] );
 			$this->setIdUserRegistro( $res['id_user_registro'] );
+			$this->setSorteo( $res['sorteo'] );
 			return true;
 		}
 		// end function load

@@ -187,7 +187,7 @@ $datauser = $usuario->getTable($data['id_user']);
                                                                     <td><?php echo htmlentities($row['cantidad_anterior']); ?></td>
                                                                     <td><?php echo htmlentities($row['cantidad']); ?></td>
                                                                     <td><?php echo htmlentities($dataproducto['codinter']); ?></td>
-                                                                    <td><?php echo htmlentities(ucwords(strtolower($row['nombre']))); ?></td>
+                                                                    <td><?php echo (ucwords(strtolower($row['nombre'].'<br><strong>'.strtolower($row['detalles'])."</strong>"))); ?></td>
                                                                     <?php if($_SESSION['user_info']['costos']) { ?>
                                                                         <td><?php echo htmlentities($row['costo']); ?></td>
                                                                     <?php } ?>
@@ -202,9 +202,7 @@ $datauser = $usuario->getTable($data['id_user']);
                                                                     <td class='borrar-td'>
                                                                         <?php 
                                                                         if ($row['status']!='BAJA'){ ?> 
-                                                                           
                                                                                 <a href="#" class="btn btn-danger" onclick="borrar('<?php echo make_url("Pedidos","pedidoproductodelete",array('id'=>$row['id_pedido_producto'])); ?>',<?php echo $row['id_pedido_producto']; ?>);" > <i class="fas fa-ban"></i></a>
-                                                                            
                                                                         <?php 
                                                                         } ?>
                                                                     </td>

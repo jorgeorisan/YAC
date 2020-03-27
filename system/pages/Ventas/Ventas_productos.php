@@ -1,4 +1,6 @@
 <?php
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
+
 //initilize the page
 require_once(SYSTEM_DIR . "/inc/init.php");
 //require UI configuration (nav, ribbon, etc.)
@@ -21,19 +23,24 @@ $idtienda  = '';//$_SESSION['user_info']['id_tienda'];
 $idusuario = '';
 $arrayfilters=[];
 
-$obj = new Venta();
 $begin        = ( isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
 $end          = ( isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $idusuario    = ( isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
-$idtienda     = ( isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $_SESSION['user_info']['id_tienda'];
-$codeproducto = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ? $arrayfilters['id_producto'] = $_POST['id_producto'] : '';
+$idtienda  	  = ($_SESSION['user_id']!=14)       ? $_SESSION['user_info']['id_tienda'] : '';
+$idtienda  	  = (isset($_POST['id_tienda']))     ? $_POST['id_tienda']     : $idtienda;
+$codeproducto = $arrayfilters['id_producto'] = ( isset($_POST['id_producto']) && $_POST['id_producto'] > 0 )  ?  $_POST['id_producto'] : '';
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
 $arrayfilters['id_tienda']     = $idtienda;
 $arrayfilters['page']   	   = 'ventaproductos';
 $jsonarrayfilters=json_encode($arrayfilters);
-$dataventas = $obj->getReporteVentas($arrayfilters);
+
+$objreports = new Reports();
+$dataventas = $objreports->getReporteVentas($arrayfilters);
+
+
+
 
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -120,6 +127,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 														$obj = new Producto();
 														$arrayfilters['todo'] = true;
 														$list=$obj->getAllArr($arrayfilters);
+														
 														if (is_array($list) || is_object($list)){
 															foreach($list as $val){
 																$selected =  ($codeproducto == $val['id_producto'] ) ? "selected" : '';
@@ -175,6 +183,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
 												<th class = "col-md-1" data-class="phone,tablet">Total</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
+												<th class = "col-md-1" data-class="phone,tablet">Cliente</th>
 												<th class = "col-md-1" data-class="phone,tablet">Usuario</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tienda</th>
 												<th class = "col-md-1" data-class="phone,tablet">Precio</th>
@@ -204,7 +213,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 															$totalporpagar += $porpagar = $rowventa['total']-$totalpagado;
 												}
 												$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
-												$dataventasproductos = $ventas->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
+												$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$codeproducto);
 												if($dataventasproductos){
 													foreach($dataventasproductos as $row) {
 														$tienda = new Tienda();
@@ -215,13 +224,13 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 													
 														$venta = new Venta();
 														$dataventa = $venta->getTable($row["id_venta"]);
-														
-														$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
-														$totalxproducto = 0;
-														if (!$row['cancelado']) {
-															//calculamos el descuento por producto
-															$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ; 
-															$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
+														$cliente = new Persona();
+														$datacliente = $cliente->getTable($dataventa['id_persona']);
+														$class     	 = ($row["cancelado"]) ? "class='cancelada'" : '';
+														//calculamos el descuento por producto
+														$descxproducto   = ($totaldesc) ? ($row['total']*$totaldesc/$rowventa['total']) : 0 ;
+														$totalxproducto  = ($row['total']/$row['cantidad'])-$descxproducto;
+														if (!$row['cancelado']) { 
 															$totalgeneral   += $row['total'];
 															$totalrecargas  += ($row['nombre']=='RECARGA')   ? $row['total'] : 0;
 															$totalexcedente += ($row['nombre']=='EXCEDENTE') ? $row['total'] : 0;
@@ -244,6 +253,8 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 																}
 																?>
 															</td>
+															
+															<td><?php echo htmlentities($datacliente['nombre']." ".$datacliente['ap_paterno'])?></td>
 															<td><?php echo htmlentities($rowventa['id_usuario']) ?></td>
 															<td><?php echo htmlentities($nomtienda) ?></td>
 															<td><?php echo htmlentities($row['tipoprecio'])?></td>
@@ -269,7 +280,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 																			<?php } ?>
 																			<li class="divider"></li>
 																			<li>
-																				<a href="#" title="Cancelar Venta" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
+																				<a href="#" title="Cancelar Producto" id="cancelar_venta<?php echo $row['id_productos_venta']; ?>" idpventa='<?php echo $row['id_productos_venta']; ?>' folio='<?php echo $row['nombre']; ?>' class="deleteventa">Cancelar Producto</a>
 																			</li>
 																		<?php 
 																		} ?>
@@ -439,7 +450,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 		var table = $('#dt_basic2').dataTable();
 		$(".deleteventa").click(function(e) {
             e.preventDefault();
-			var idventa = $(this).attr('idventa');
+			var idventa = $(this).attr('idpventa');
 			var folio   = $(this).attr('folio');
 			$.SmartMessageBox({
 				title : "Cancelar Venta: "+folio,
@@ -450,7 +461,7 @@ $dataventas = $obj->getReporteVentas($arrayfilters);
 			}, function(ButtonPressed, Value) {
 				if (ButtonPressed === "Yes") {
 					if(!Value) return notify('warning','Se necesita un motivo');
-					$.get(config.base+"/Ventas/ajax/deleteventa?action=get&object=deleteventa&idventa="+idventa+"&motivo="+Value,
+					$.get(config.base+"/Ventas/ajax/?action=get&object=deleteproductoventa&idproductoventa="+idventa+"&motivo="+Value,
 					function (response) {
 						if(response){
 							notify('success','Cancelada con exito');

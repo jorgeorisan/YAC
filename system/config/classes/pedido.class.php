@@ -66,7 +66,7 @@ class Pedido extends AutoPedido {
 		$_requestPedido['comentarios'] 	       = (isset($_request['comentarios'])) ? $_request['comentarios'] : '';
 		$_requestPedido['referencia'] 		   = (isset($_request['referencia'])) ? $_request['referencia'] : '';
 		$_requestPedido['status'] 		   	   = 'SOLICITADO';
-		$_requestPedido['fecha'] 		  	   = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
+		$_requestPedido['fecha'] 		  	   = (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:i:s") : date('Y-m-d H:i:s');
 		$data=fromArray($_requestPedido,'pedido',$this->db,"add");
 		$sql= "INSERT INTO pedido (".$data[0].") VALUES(".$data[1]."); ";
 		$res=$this->db->query($sql);
@@ -94,6 +94,7 @@ class Pedido extends AutoPedido {
 			$costos     = (isset($_request["costo"]))   ? $_request["costo"]  : [];
 			$mayoreos   = (isset($_request["mayoreo"])) ? $_request["mayoreo"]: [];
 			$precios    = (isset($_request["precio"]))  ? $_request["precio"] : [];
+			$detalles   = (isset($_request["detalles"]))? $_request["detalles"] : [];
 			$totalcosto = $totalgral= 0;
 			foreach ($productos as $key2 => $valproducto) {
 				if($cantidades[$key2]>0){
@@ -111,6 +112,7 @@ class Pedido extends AutoPedido {
 					$_requestPedidoProducto['id_producto']	      = $valproducto;
 					$_requestPedidoProducto['nombre']             = $producto['nombre'];
 					$_requestPedidoProducto['cantidad'] 	      = $cantidades[$key2];
+					$_requestPedidoProducto['detalles'] 	      = $detalles[$key2];
 					$_requestPedidoProducto['costo'] 		      = $costos[$key2];
 					$_requestPedidoProducto['mayoreo'] 	          = $mayoreos[$key2];
 					$_requestPedidoProducto['precio']             = $precios[$key2];
@@ -159,7 +161,7 @@ class Pedido extends AutoPedido {
 			$objPedidoProducto->deleteAll($row['id_pedido_producto']);
 		}
 		$_request['usuario_deleted'] =  $_SESSION['user_id'];
-		$_request['deleted_date'] 	=  date('Y-m-d H:m:s');
+		$_request['deleted_date'] 	=  date('Y-m-d H:i:s');
 		$_request['status']			= 'BAJA';
 		return $this->updateAll($idpedido,$_request);
 		/**FALTA ACTUALIZAR LOS COSTOS A LA ULTIMA ENTRADA VALIDA */
@@ -259,7 +261,7 @@ class Pedido extends AutoPedido {
 			$objPedidoProducto->updateAll($row['id_pedido_producto'],$requestPedidoProducto);
 		}
 		$_request['usuario_validacion'] =  $_SESSION['user_id'];
-		$_request['fecha_validacion'] 	=  date('Y-m-d H:m:s');
+		$_request['fecha_validacion'] 	=  date('Y-m-d H:i:s');
 		$_request['status']				='ACTIVO';
 		return $this->updateAll($idpedido,$_request);
 	}

@@ -11,7 +11,9 @@
         <input type="number" class='cantidad' style="width:50px" lineid="<?php echo $lineId ?>"  id='cantidad<?php echo $lineId ?>' placeholder='0' name="cantidad[]"  value="<?php echo $cantidad; ?>"/>
     </td>
     <td><?php echo $codigo;   ?></td>
-    <td><?php echo $nombre;   ?></td>
+    <td><?php echo $nombre;   ?><br>
+        <input type="text" class='detalles' style="width:100%" lineid="<?php echo $lineId ?>"  id='detalles<?php echo $lineId ?>' placeholder='Detalles' name="detalles[]"  value="<?php echo ''; ?>"/>
+    </td>
     <td>
         <div title='Existentes : <?php echo $existenciatienda ?>' style="<?php echo $show ?>">
             $<input type="number" style="width:50px" name="costo[]"   id='costo<?php echo $lineId; ?>'   value="<?php echo ($costo); ?>">

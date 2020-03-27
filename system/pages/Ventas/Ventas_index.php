@@ -24,7 +24,8 @@ $arrayfilters=[];
 $begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
 $end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
 $idusuario = (isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
-$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : ($_SESSION['user_id']!=14) ? $_SESSION['user_info']['id_tienda'] : '';
+$idtienda  = ($_SESSION['user_id']!=14)      ? $_SESSION['user_info']['id_tienda'] : '';
+$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $idtienda;
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -154,6 +155,7 @@ foreach($dataabonos as $row) {
 										<thead>
 											<tr>
 												<th class = "col-md-1" data-class="expand">Folio</th>
+												<th class = "col-md-1" data-class="">Cliente </th>
 												<th class = "col-md-1" data-class="">Vendedor </th>
 												<th class = "col-md-1" data-class="phone,tablet">Fecha</th>
 												<th class = "col-md-1" data-class="phone,tablet">Tipo</th>
@@ -169,6 +171,9 @@ foreach($dataabonos as $row) {
 											$total = 0;
 											$totaldevoluciones= 0;
 											foreach($dataventas as $row) {
+												
+												$cliente = new Persona();
+												$datacliente = $cliente->getTable($row['id_persona']);
 												$tienda = new Tienda();
 												$datatienda = $tienda->getTable($row["id_tienda"]);
 												if($datatienda) $nomtienda = $datatienda["nombre"]; 
@@ -188,6 +193,7 @@ foreach($dataabonos as $row) {
 															<?php echo htmlentities($row['folio'])?>
 														</a>
 													</td>
+													<td><?php echo htmlentities($datacliente['nombre']." ".$datacliente['ap_paterno'])?></td>
 													<td><?php echo htmlentities($row['id_usuario'])?></td>
 													<td><?php echo htmlentities($row['fecha'])?></td>
 													<td>
@@ -280,7 +286,7 @@ foreach($dataabonos as $row) {
 										<tbody>
 											<?php 
 											$totalventausuariogral   = 0;
-											 $totalAbonosUsers    = 0;
+											$totalAbonosUsers        = 0;
 											$totalventarecargasgral  = 0;
 											$totalventaexcedentegral = 0;
 											$totalcajagral           = 0;
@@ -301,7 +307,7 @@ foreach($dataabonos as $row) {
 												$totalventadescuento = $row->totalventadescuento; 
 												$totalventa 		 = $totalventa - $totalventadescuento; // quitamos los decuentos
 												$totalventausuario   = $totalventa - $totalventacredito - ($totalventamayoreo/2) - $totalventarecargas  ;
-												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventaexcedente  + $totalventarecargas +  ($totalventamayoreo/2)  ;
+												$totalcaja           = $totalventausuario + $totalventaabonos  + $totalventarecargas +  ($totalventamayoreo/2)  ;
 												$totalcaja           = ( $row->id_usuario_tipo !=  9 )  ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalcaja           = ( $row->id_usuario !=  'Lizzy' ) ? $totalcaja : $totalcaja - $totalventaexcedente;
 												$totalgeneral 		 = $totalventa   ; 
@@ -324,7 +330,7 @@ foreach($dataabonos as $row) {
 													<td><?php echo $totalventaabonos; ?></td>
 													<td><?php echo $totalventarecargas; ?></td>
 													<td><?php echo $totalventaexcedente; ?></td>
-													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)+('.$totalventaexcedente.'excedente)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
+													<td><span title="<?php echo "(".$totalventausuario.'ventaUser)+('.$totalventaabonos.'abonos)-('.$totalventarecargas.'recargas)='.$totalcaja ?>">
 															<?php echo $totalcaja; ?>
 														</span>
 													</td>

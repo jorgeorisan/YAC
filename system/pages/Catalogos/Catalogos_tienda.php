@@ -53,6 +53,7 @@ $data = $obj->getAllArr();
 											<th class = "col-md-1" data-hide="phone,tablet">Telefono</th>
 											<th class = "col-md-4" data-hide="phone,tablet">Inf. Adic </th>
 											<th class = "col-md-1" data-hide="phone,tablet">Direccion</th>
+											<th class = "col-md-1" data-hide="phone,tablet">Color</th>
 											<th class = "col-md-2" >Action</th>
 										</tr>
 									</thead>
@@ -64,6 +65,7 @@ $data = $obj->getAllArr();
 												<td><?php echo htmlentities($row['telefono']) ?></td>
 												<td><?php echo htmlentities($row['info_adicional'])?></td>
 												<td><?php echo htmlentities($row['ubicacion'])?></td>
+												<td style="color:<?php echo $row['color']?>"><?php echo htmlentities($row['color'])?></td>
 												
 												<td>
 													<div class="btn-group">

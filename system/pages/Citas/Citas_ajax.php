@@ -179,7 +179,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 							$requestCita['fecha_inicial']           = (isset($_POST['fecha_inicial']))          ? $_POST['fecha_inicial']          : '';
 							$requestCita['fecha_final']             = (isset($_POST['fecha_final']))            ? $_POST['fecha_final']            : '';
 							$requestCita['motivo'] 		            = (isset($_POST['motivo']))                 ? $_POST['motivo']                 : '';
-							$requestCita['id_user']                 = (isset($_POST['id_usuario']))             ? $_POST['id_usuario']           	   : '';
+							$requestCita['id_user']                 = (isset($_POST['id_user']))             	? $_POST['id_user']           	   : '';
 							$requestCita['id_persona']              = (isset($_POST['id_persona']))             ? $_POST['id_persona']             : '';
 							$requestCita['id_historialtratamiento'] = (isset($_POST['id_historialtratamiento']))? $_POST['id_historialtratamiento']: '';
 							$requestCita['motivo']=$requestCita['motivo'].'|'.$motivo2;
@@ -192,11 +192,14 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}						
 						if($id){
 							$datacita=$obj->getTable($id);
+							$tiendas = new Tienda();
+							$tienda  = $tiendas->getTable($datacita['id_tienda']);
+							$class = ($tienda['color'])? "bg-color-".$tienda['color'] : '';
 							switch ($datacita['status']) {
-								case 'active':	   $status = 'Pendiente';  $class = "bg-color-blue"; 	  $editable = true;  $icon = "fa-clock-o"; break;
+								case 'active':	   $status = 'Pendiente';  $editable = true;  $icon = "fa-clock-o"; break;
 								case 'deleted':    $status = 'Cancelada';  $class = "bg-color-red";	      $editable = false; $icon = "fa-warning"; break;
 								case 'Completada': $status = 'Completada'; $class = "bg-color-greenLight";$editable = false; $icon = "fa-check";   break;
-								default: 	       $status = 'N/A';		   $class = "";           	      $editable = true;  $icon = "";           break;
+								default: 	       $status = 'N/A';		   $editable = true;  $icon = "";           break;
 							}
 							$event = array(
 								"title"       => $datacita['persona'],

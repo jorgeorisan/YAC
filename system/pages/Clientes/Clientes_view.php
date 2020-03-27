@@ -118,8 +118,18 @@ if ( !$data ) {
                                         </div>
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                <label for="name">Alergias</label>
-                                                <input type="text" class="form-control" readonly placeholder="Alergias" name="alergias" id="alergias" onkeypress="nextFocus('alergias', 'savenewclient')" value="<?php echo $data['alergias']; ?>">                                                                                               
+                                                <label for="name">Tipo</label>
+                                                <select style="width:100%" class="select2 " disabled name="id_usuario_tipo"  id="id_usuario_tipo">
+                                                    <?php 
+                                                    $listref= getTipoPersona();
+                                                    if (is_array($listref)){
+                                                        foreach($listref as $key => $valref){
+                                                            $selected = ($data['id_usuario_tipo']==$key) ? 'selected':'';
+                                                            echo "<option value='".$key."' $selected>".htmlentities($valref)."</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </fieldset>  

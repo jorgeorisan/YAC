@@ -10,6 +10,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 	switch ($_GET["action"]) {
 		case 'get':
 			switch ($_GET["object"]) {
+				
 				case 'showpopupcatalogo':
 					if( isset($_GET["id_tienda"]) ){
 						$idtienda = $_GET["id_tienda"];
@@ -33,6 +34,166 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						include(SYSTEM_DIR.'/pages/Productos/Productos_buscarproducto.php' );
 					}
 					break;
+				case 'getproductos':
+						$texto    		= (isset($_GET["texto"]))        ? $_GET["texto"] : '' ; 
+						$id_categoria   = (isset($_GET["id_categoria"])) ? $_GET["id_categoria"] : '' ; 
+						$id_marca   	= (isset($_GET["id_marca"]))     ? $_GET["id_marca"] : '' ; 
+						$texto    = (isset($_GET["texto"]))     ? $_GET["texto"] : '' ; 
+						if(isset($_GET["filters"]))  {
+							$filtro = $_GET["filters"];
+							$texto  =  (count($filtro[0])>0) ? $filtro[0]['value'] : ''  ; 
+						}
+							 
+						$idtienda 		 = (isset($_GET["id_tienda"])) ? $_GET["id_tienda"] : $_SESSION['user_info']['id_tienda'] ;
+						$size     		 = (isset($_GET["size"]) && $_GET["size"]>0)      ? $_GET["size"] : '10' ;
+						$page  	  		 = (isset($_GET["page"]))      ? $_GET["page"] : '0' ;
+						$totalproductos  = (isset($_GET["totalproductos"])) ? $_GET["totalproductos"] : '0' ;
+						$maxRows  = $page * $size;
+						$productos = new Producto();
+						$arrayfilters['similar']   		= $texto;
+						$arrayfilters['id_tienda'] 		= $idtienda;
+						$arrayfilters['id_categoria'] 	= $id_categoria;
+						$arrayfilters['id_marca'] 		= $id_marca;
+						$arrayfilters['maxRows']  		= $maxRows;
+						$arrayfilters['todo']      		= '1';
+						
+						$arrayfilters['size']      = $size;
+
+						$productostienda  = $productos->getAllArr($arrayfilters);
+						
+						
+						$totalpagestabu   = $totalproductos /  $size; 
+						
+						if(!$page){
+							echo json_encode($productostienda);
+						}else{
+							//productos index
+							if($texto){
+								$totalpagestabu = count($productostienda) /  $size; 
+								echo json_encode(array("last_page"=>ceil($totalpagestabu),"data"=>$productostienda));
+							}else{
+								echo json_encode(array("last_page"=>ceil($totalpagestabu),"data"=>$productostienda));
+							}
+						}
+				
+					break;
+				case 'updatekardex':
+					// una ves al anio a principios empieza en 2020 enero 
+					echo 'Comienza updatekardex'.date('Y-m-d H:i:s').'<br>';
+					
+					$obj = new Producto();
+
+					$begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-01-01'); 
+					$idusuario    = $_SESSION['user_id'];
+					$idtienda  	  =  $_SESSION['user_info']['id_tienda'] ;
+					$arrayfilters['id_producto']   = ( isset($_GET['id']) && $_GET['id'] > 0 )  ?  $_GET['id'] : '';
+					$arrayfilters['fecha_inicial'] = $begin;
+					$arrayfilters['id_usuario']    = $idusuario;
+					$arrayfilters['id_tienda']     = $idtienda;
+					$jsonarrayfilters=json_encode($arrayfilters);
+					
+					//$arrayfilters['id_producto'] ='';
+					$arrayfilters['kardex'] ='1';
+					//$arrayfilters['todo'] ='1';
+				
+					$queryproductos= $obj->getAllArr($arrayfilters);
+					$totalkardex = '0';
+					foreach( $queryproductos as $key => $valprod){
+				
+					
+						$arrayfilters['id_producto'] =$valprod['id_producto'];
+						
+						$objreports = new Reports();
+						$dataventas = $objreports->getReporteVentas($arrayfilters);
+				
+						$dataentrada           = $objreports->getReporteEntradas($arrayfilters);
+						$datasalidas           = $objreports->getReporteSalidas($arrayfilters);
+						$datatraspasosentrada  = $objreports->getReporteTraspasosEntrada($arrayfilters);
+						$datatraspasossalida   = $objreports->getReporteTraspasosSalida($arrayfilters);
+				
+						$totalkardentradas  = 0;
+						$totalkardsalidas   = 0;
+						foreach($dataentrada as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':           
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardentradas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						foreach($datatraspasosentrada as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardentradas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						// salidas								
+						foreach ($dataventas as $rowventa){
+							$ventas = new Venta();
+							$classventa     = ($rowventa["cancelado"]) ? "class='cancelada'" : '';
+							$dataventasproductos = $objreports->getReporteVentasProductos($rowventa["id_venta"],$arrayfilters['id_producto']);
+							if($dataventasproductos){
+								foreach($dataventasproductos as $row) {
+									if (!$row['cancelado']) { 
+										$totalkardsalidas += $row['cantidad'];
+									}
+								}
+							}
+						}
+						foreach($datatraspasossalida as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardsalidas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						foreach($datasalidas as $row) {
+							$status = htmlentities($row['status']);
+							switch ($status) {
+								case 'BAJA':
+								case 'POR AUTORIZAR':
+									break;
+								default:
+									$totalkardsalidas  += $row['cantidad'];
+									break;
+							} 
+						} 
+						
+						$existenciaactual      = $valprod['existenciastienda'];
+						$fecha_actualizacion   = $valprod['fecha_actualizacion'];
+						$usuario_actualizacion = $valprod['usuario_actualizacion'];
+					
+						$totalkardex      = $totalkardentradas-$totalkardsalidas;
+						$diferenciakardex = $existenciaactual-$totalkardex;
+						//echo $valprod['id_producto'].':actual='. $existenciaactual.' kardex= '.$totalkardex.' diferencia = '.$diferenciakardex.'<br>';
+						//if($diferenciakardex!=0){
+							
+							//$obj->CheckInvIni($valprod['id_producto'],$existenciaactual,$diferenciakardex);
+							$objprodtienda = new ProductoTienda();
+							$objprodtienda->updateKardex($valprod['id_producto'],$idtienda,$totalkardex,$totalkardentradas,$totalkardsalidas);
+					
+						//}
+						
+					}
+					
+					echo 'Termina updatekardex'.date('Y-m-d H:i:s').'<br>';
+					echo 'tienda='.$idtienda.' total actualizados='.$key;
+					
+						
+			
+					break;
 				
 				case 'showpopupHistorial':
 					if( isset($_GET["id"]) && intval($_GET["id"])){
@@ -41,11 +202,27 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						$objpt = new ProductoTienda();
 						$PT = $objpt->getTablebyProducto($id,$_SESSION['user_info']['id_tienda']);
 						$id_productotienda = $PT['id_productotienda'];
+
+						$objpv = new ProductosVenta();
+						$PV= $objpv->getTablebyProducto($PT['id_productotienda']);
+
+						
+					
 		
 						$objh = new HistorialInventario();
 						if($datah = $objh->getAllArr($id_productotienda)){
 							include(SYSTEM_DIR.'/pages/Productos/Productos_showpopupHistorial.php' );
 						}
+					}
+					break;
+				case 'showpopupEditar':
+					if( isset($_GET["id"]) && intval($_GET["id"])){
+						$id = $_GET["id"];
+								
+						$obj = new Producto();
+						$data = $obj->getTable($id);
+						include(SYSTEM_DIR.'/pages/Productos/Productos_showpopupEditar.php' );
+						
 					}
 					break;
 				case 'showpopupImagen':
@@ -59,6 +236,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 						}
 					}
 					break;
+			
 				case 'existeproducto':
 					if( isset($_GET["codigo"]) ){
 						$u = new Producto();
@@ -217,7 +395,22 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					}
 					
 					break;
-				default:
+				
+				case 'updateproducto':
+					$objproducto = new Producto();				
+					$id = $objproducto->updateAll($_POST['id_producto'],getPost());
+					if( $id >0  ) {
+						
+						$data = $objproducto->getTable($id);
+
+						echo json_encode(array("status"=>true,'response'=>json_encode($data),'code'=>$_POST['codinter']));
+					}else{
+						echo json_encode(array("status"=>false,'response'=>'El producto no se actualizo correctamente','code'=>$_POST['codinter'])); "";
+					}
+					
+					
+					break;
+					default:
 					# code...
 					break;
 			}

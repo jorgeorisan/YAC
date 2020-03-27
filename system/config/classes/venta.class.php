@@ -19,6 +19,19 @@ class Venta extends AutoVenta {
 		}
 		return $set;
 	}
+	//obtiene todas las ventas acredito
+	public function getAllArrVtaCredito()
+	{
+		$sql = "SELECT * FROM venta where tipo in ('Apartado', 'Credito');";
+		$res = $this->db->query($sql);
+		$set = array();
+		if(!$res){ die("Error getting result"); }
+		else{
+			while ($row = $res->fetch_assoc())
+				{ $set[] = $row; }
+		}
+		return $set;
+	}
 		//metodo que sirve para hacer obtener datos en el editar
 	public function getTable($id)
 	{
@@ -43,7 +56,8 @@ class Venta extends AutoVenta {
 		$_request['folio']      = $this->getNewFolio($_request['id_tienda']);
 		$_request['total'] 		= $_request['total-global'];
 		$_request['descuento'] 	= (isset($_request['monto'])) ? ($_request['monto']) : 0;
-		$_request['fecha'] 		= (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:m:s") : date('Y-m-d H:m:s');
+		$_request['fecha'] 		= (isset($_request['fecha'])) ? $_request['fecha']." ".date("H:i:s") : date('Y-m-d H:i:s');
+
 		$_request['icredito'] 	= ($_request['tipo']=="Credito" || $_request['tipo']=="Apartado") ? 1 : 0;
 		$_request['id_user_registro']	= $_SESSION['user_id'];
 		

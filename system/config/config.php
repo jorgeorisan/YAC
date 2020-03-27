@@ -18,22 +18,23 @@ if(strpos($directory, $document_root)===0) {
 }
 if(isset($_SERVER["SERVER_NAME"])){
 	if($_SERVER["SERVER_NAME"]=='138.128.161.42'){
-		$base_url =$base_url."/YAC/" ;
+		//$base_url =$base_url."/YAC/" ;
+		$base_url =$base_url."/~sistemamyg" ;
  	}
 }
 
 
 
-defined("APP_URL") 			           ? null : define("APP_URL", str_replace("/system/config", "", $base_url));
-defined("APP_PATH") 			         ? null : define("APP_PATH", str_replace("/system/config", "", $app_path));
-defined("SITE_HOST") 		           ? null : define("SITE_HOST", ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' .
-    $_SERVER['HTTP_HOST']);
-defined("ROOT_DIR") 							 ? null : define("ROOT_DIR", str_replace(DIRECTORY_SEPARATOR.'system'.DIRECTORY_SEPARATOR.'config', "", $directory));
-defined("SYSTEM_DIR")              ? null : define("SYSTEM_DIR", ROOT_DIR . DIRECTORY_SEPARATOR . "system");
-defined("CONFIG_DIR")              ? null : define("CONFIG_DIR", ROOT_DIR . DIRECTORY_SEPARATOR . "system" . DIRECTORY_SEPARATOR . "config");
+defined("APP_URL") 			? null : define("APP_URL", str_replace("/system/config", "", $base_url));
+defined("APP_PATH") 		? null : define("APP_PATH", str_replace("/system/config", "", $app_path));
+defined("SITE_HOST") 		? null : define("SITE_HOST", ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST']);
+defined("ROOT_DIR") 		? null : define("ROOT_DIR", str_replace(DIRECTORY_SEPARATOR.'system'.DIRECTORY_SEPARATOR.'config', "", $directory));
+defined("SYSTEM_DIR")       ? null : define("SYSTEM_DIR", ROOT_DIR . DIRECTORY_SEPARATOR . "system");
+defined("CONFIG_DIR")       ? null : define("CONFIG_DIR", ROOT_DIR . DIRECTORY_SEPARATOR . "system" . DIRECTORY_SEPARATOR . "config");
 //Assets URL, location of your css, img, js, etc. files
-defined("ASSETS_URL")              ? null : define("ASSETS_URL", APP_URL );
-defined("PRODUCTOS")         		   ? null : define("PRODUCTOS", ROOT_DIR . DIRECTORY_SEPARATOR . "productosimages");
+defined("ASSETS_URL")       ? null : define("ASSETS_URL", APP_URL );
+defined("PRODUCTOS")        ? null : define("PRODUCTOS", ROOT_DIR . DIRECTORY_SEPARATOR . "productosimages");
+defined("LOGOS")         	? null : define("LOGOS", ROOT_DIR . DIRECTORY_SEPARATOR . "img");
 #echo "<pre>";
 #print_r(array(APP_URL,APP_PATH,ROOT_DIR,ASSETS_URL));
 #echo "</pre>";#die;
@@ -74,13 +75,20 @@ if (getenv('MYSQL_SOCKET') != null){
 	if(isset($_SERVER["SERVER_NAME"])){
        // echo "<strong>$url_actual</strong>";
 	    if($_SERVER["SERVER_NAME"]!='localhost'){
-				defined("DB_USER") ? null : define("DB_USER", "xqwmrfeeug");
-				defined("DB_PASSWORD") ? null : define("DB_PASSWORD", "KjnmXJfbz3");
-				defined("DB_NAME") ? null : define("DB_NAME", "xqwmrfeeug");
+			
+			if($_SERVER["SERVER_NAME"]=='138.128.161.42'){
+				defined("DB_USER") 		? null : define("DB_USER", "sistemam_taller");
+				defined("DB_PASSWORD") 	? null : define("DB_PASSWORD", "sistemam_taller");
+				defined("DB_NAME") 		? null : define("DB_NAME", "sistemam_tallerhp");
+			}else{
+				defined("DB_USER") 		? null : define("DB_USER", "xqwmrfeeug");
+				defined("DB_PASSWORD") 	? null : define("DB_PASSWORD", "KjnmXJfbz3");
+				defined("DB_NAME") 		? null : define("DB_NAME", "xqwmrfeeug");
+			}
 	    }else{
 	    	defined("DB_USER") ? null : define("DB_USER", "root");
-				defined("DB_PASSWORD") ? null : define("DB_PASSWORD", "");
-				defined("DB_NAME") ? null : define("DB_NAME", "xqwmrfeeug");
+			defined("DB_PASSWORD") ? null : define("DB_PASSWORD", "");
+			defined("DB_NAME") ? null : define("DB_NAME", "xqwmrfeeug");
 	    }
 	}
 	defined("DB_PORT") ? null : define("DB_PORT", null);

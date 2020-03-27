@@ -23,6 +23,7 @@ $obj = new Producto();
 $arrayfilters['todo'] = $all;
 $data = $obj->getAllArr( $arrayfilters );
 
+
 //print_r($data);
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
@@ -70,7 +71,7 @@ $data = $obj->getAllArr( $arrayfilters );
 										foreach($data as  $key => $row) {
 										?>
 											<tr>
-												<td><?php echo htmlentities($row['id_producto'])?></td>
+												<td><?php echo htmlentities($row['id_producto']);?></td>
 												<td><?php echo htmlentities($row['codinter'])?></td>
 												<td>
 													<?php 
@@ -103,7 +104,8 @@ $data = $obj->getAllArr( $arrayfilters );
 													<div  id='contactualizaciones<?php echo $row['id_producto'] ?>'>
 													<?php 
 														if($row['fecha_actualizacion']){ 
-															echo date('Y-m-d H:i',strtotime($row['fecha_actualizacion']))."<br>".htmlentities($row['usuario_actualizacion']);
+															$datos = date('Y-m-d H:i',strtotime($row['fecha_actualizacion']))."<br>".htmlentities($row['usuario_actualizacion']); 
+															echo $datos;
 														}
 													?>
 													</div>
@@ -127,10 +129,13 @@ $data = $obj->getAllArr( $arrayfilters );
 																Actualizar</a>
 															</li>
 															<li>
-																<a class="" href="<?php echo make_url("Productos","view",array('id'=>$row['id_producto'])); ?>">Ver</a>
+																<a class="" href="<?php echo make_url("Productos","view").'/?id='.$row['id_producto']; ?>">Ver</a>
 															</li>
 															<li>
-																<a class="" href="<?php echo make_url("Productos","edit",array('id'=>$row['id_producto'])); ?>">Editar</a>
+																<a class="" href="<?php echo make_url("Productos","kardex").'/?id='.$row['id_producto']; ?>">Kardex</a>
+															</li>
+															<li>
+																<a class="" href="<?php echo make_url("Productos","edit").'/?id='.$row['id_producto']; ?>">Editar</a>
 															</li>
 															
 															<li class="divider"></li>

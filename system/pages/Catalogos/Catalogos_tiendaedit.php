@@ -97,6 +97,17 @@ if(isPost()){
                                                 <label for="name">Teléfono</label>
                                                 <input type="text" class="form-control" placeholder="" name="telefono" value="<?php echo htmlentities($data['telefono']); ?>">                                                                                                                     
                                             </div>
+                                            <div class="form-group">
+                                                <label for="name">Color</label>
+                                                <select style="width:20%" class="select2" name="color" id="color">
+                                                    <option value="">N/A</option>
+                                                    <option value="pink"   <?php echo ($data['color'] == 'pink' ) ? "selected" : '' ?> >PINK</option>
+                                                    <option value="blue"   <?php echo ($data['color'] == 'blue' ) ? "selected" : '' ?> >BLUE</option>
+                                                    <option value="green"  <?php echo ($data['color'] == 'green' ) ? "selected" : '' ?> >GREEN</option>
+                                                    <option value="purple" <?php echo ($data['color'] == 'purple' ) ? "selected" : '' ?> >PURPLE</option>
+                                                    <option value="yellow" <?php echo ($data['color'] == 'yellow' ) ? "selected" : '' ?> >YELLOW</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </fieldset>
                                     <div class="form-actions" style="text-align: center">

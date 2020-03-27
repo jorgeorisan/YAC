@@ -34,3 +34,6 @@ productosimages
 
 # Composer
 composer.lock
+
+#CONECCION BD
+js/bootstrap-notify

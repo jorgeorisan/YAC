@@ -84,7 +84,7 @@ class Persona extends AutoPersona {
 		if(!$row){
 			return false;
 		}else{
-			return true;
+			return $id;
 		}
 	}
 		//metodo que sirve para hacer delete
