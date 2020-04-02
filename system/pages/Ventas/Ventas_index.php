@@ -21,11 +21,11 @@ $idtienda  = '';//$_SESSION['user_info']['id_tienda'];
 $idusuario = '';
 $arrayfilters=[];
 
-$begin     = (isset($_POST['fecha_inicial']))? $_POST['fecha_inicial'] : date('Y-m-d'); 
-$end       = (isset($_POST['fecha_final']))  ? $_POST['fecha_final']   : date('Y-m-d');	
-$idusuario = (isset($_POST['id_usuario']))   ? $_POST['id_usuario']    : '';
+$begin     = (isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-m-d'); 
+$end       = (isset($_GET['fecha_final']))  ? $_GET['fecha_final']   : date('Y-m-d');	
+$idusuario = (isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
 $idtienda  = ($_SESSION['user_id']!=14)      ? $_SESSION['user_info']['id_tienda'] : '';
-$idtienda  = (isset($_POST['id_tienda']))    ? $_POST['id_tienda']     : $idtienda;
+$idtienda  = (isset($_GET['id_tienda']))    ? $_GET['id_tienda']     : $idtienda;
 $arrayfilters['fecha_inicial'] = $begin;
 $arrayfilters['fecha_final']   = $end;
 $arrayfilters['id_usuario']    = $idusuario;
@@ -72,7 +72,7 @@ $persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ve
 						<div style="display: ;">
                             <div class="jarviswidget-editbox" style=""></div>
                             <div class="widget-body">
-								<form id="main-form" class="" role="form" method='post' action="<?php echo make_url("Ventas","index");?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
+								<form id="main-form" class="" role="form" method='get' action="<?php echo APP_URL.'/Ventas/index/?';?>" onsubmit="return checkSubmit();" enctype="multipart/form-data">     
                                     <fieldset>    
 										<div class="row">
 											<div class="col-xs-6  col-sm-6 col-md-6 col-lg-6">
@@ -184,12 +184,12 @@ $persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ve
 											
 												$descuento = ($row["descuento"]) ? 'Descuento:'.$row["descuento"]."<br>" : ''; 
 												$class     = ($row["cancelado"]) ? "class='cancelada'" : '';
-												
+												$obj = new Venta();
 												if ($row['cancelado']==0) {
-													$total += $row['total'];
-													$obj = new Venta();
+													$total += $row['total'];													
 													$totaldevoluciones += $obj->getcancelaciones($row['id_venta']);
 												}
+												
 												?>
 												<tr <?php echo $class;?>>
 													<td>
@@ -201,9 +201,12 @@ $persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ve
 													<td><?php echo htmlentities($row['id_usuario'])?></td>
 													<td><?php echo htmlentities($row['fecha'])?></td>
 													<td>
-														<?php echo htmlentities($row['tipo'])."<br>";
+														<?php echo htmlentities($row['tipo']);
 														if($row['icredito']){
-															echo "<span style='color:red'>En pago</span>";
+															echo "<br><span style='color:red'>En pago</span>";
+														}
+														if ($totalrecargas=$obj->contienerecargas($row['id_venta'])) {
+															echo "<span style='color:blue; float: right;font-size: 10px;'>R=$totalrecargas</span>";
 														}
 														?>
 													</td>
@@ -216,7 +219,9 @@ $persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ve
 																echo "<br>".$row['razon_cancelacion'];
 
 															}
-													?></td>
+															
+														?>
+													</td>
 													<td>
 														<div class="btn-group">
 															<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">

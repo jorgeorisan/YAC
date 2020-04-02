@@ -174,6 +174,23 @@ class Venta extends AutoVenta {
 		$res->close();
 		return $row['totalcancelado'];
 	}
+	//metodo para saber si la venta contiene recargas
+	public function contienerecargas($id)
+	{
+	
+		$sql = "SELECT count(*) recargas
+						FROM productos_venta pv
+						where  pv.id_venta=$id 
+							AND 	
+							pv.nombre='RECARGA'";
+		$res=$this->db->query($sql);
+		if(!$res)
+			{die("Error getting result venta");}
+		$row = $res->fetch_assoc();
+		$res->close();
+		return $row['recargas'];
+	}
+	
 	
 	//metodo que sirve para obtener el folio por tienda
 	public function getNewFolio($idtienda)
