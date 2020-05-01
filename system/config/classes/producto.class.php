@@ -10,7 +10,7 @@ class Producto extends AutoProducto {
 	public function getAllArr( $arrayfilters=false)
 	{
 		
-		$tienda = $_SESSION['user_info']['id_tienda'];
+		$tienda = (isset($_SESSION['user_info']['id_tienda'])) ? $_SESSION['user_info']['id_tienda'] : '';
 		$queryprod = $querylimit= '';
 		$TODO  = " HAVING TIENDA.existencias>0 ";
 		$querymarca = $querycategoria = $queryinvini= $querykardex= '';

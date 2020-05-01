@@ -7,7 +7,7 @@
     <input type="hidden"                 name="id_productotienda[]" value="<?php echo $id_productotienda; ?>"/>
     
     <td>
-    <?php echo $existenciatienda; ?>/<input type="number" readonly class='cantidad' style="width:40px" lineid="<?php echo $lineId ?>"  placeholder='0' name="cantidad[]"  value="<?php echo $cantidad; ?>"/>
+    <?php echo $existenciatienda; ?>/<input type="number"  class='cantidad' style="width:40px" lineid="<?php echo $lineId ?>"  placeholder='0' name="cantidad[]"  value="<?php echo $cantidad; ?>"/>
     </td>        
       
     <td><?php echo $codigo;   ?></td>

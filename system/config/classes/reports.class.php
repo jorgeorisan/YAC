@@ -397,6 +397,39 @@ class Reports extends Usuario {
 		$res->close();
 		return $set;
 	}
+	//ventas a credito generadas el dia de hoy y pagadas el mismo dia
+	public function getVtacreditopagadahoy($arrayfilters)
+	{
+		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
+		$fechafin   = (isset($arrayfilters['fecha_final']))   ? $arrayfilters['fecha_final']   : '';
+		$id_usuario = (isset($arrayfilters['id_usuario']))    ? $arrayfilters['id_usuario']    : '';
+		$id_tienda  = (isset($arrayfilters['id_tienda']))     ? $arrayfilters['id_tienda']     : '';
+		if ( validar_fecha($fechaini) != 3 || validar_fecha($fechafin) != 3){
+			return false;
+		}
+		$qryusuario     = ($id_usuario)  ? " AND v.id_user = '$id_usuario' " : "";
+		$qrytienda      = ($id_tienda>0) ? " AND v.id_tienda  = '$id_tienda'  " : "";
+		$sql = "SELECT SUM(d.montoabono) as totalventaabonos, d.id_user id_usuario 
+				FROM  deudores d
+				LEFT JOIN venta v ON d.id_venta=v.id_venta
+				where  
+					DATE(d.fecha_abono)>='".$fechaini."' and DATE(d.fecha_abono)<='".$fechafin."'
+					AND d.status='ACTIVA'
+					$qryusuario
+					$qrytienda
+				GROUP BY v.id_user
+				";
+		$res = $this->db->query($sql);
+		
+		$set = array();
+		if(!$res){ die("Error getting result  getReporteAbonos"); }
+		else{
+			while ($row = $res->fetch_object())
+				{ $set[] = $row; }
+		}
+		$res->close();
+		return $set;
+	}
 	public function getReportePagos($arrayfilters)
 	{
 		$fechaini   = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';

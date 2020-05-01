@@ -36,6 +36,7 @@ $reports = new Reports();
 $dataventas     		= $reports->getReporteVentas($arrayfilters);
 $datacomisionesusuarios = $reports->getReporteComisionesUsuarios($arrayfilters);
 $dataabonos     		= $reports->getReporteAbonos($arrayfilters);
+$vtacreditopagadahoy    = $reports->getVtacreditopagadahoy($arrayfilters);
 $totalAbonosGenerales = 0;
 foreach($dataabonos as $row) {
 	$totalAbonosGenerales+=$row->totalventaabonos;
