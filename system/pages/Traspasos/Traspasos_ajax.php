@@ -41,7 +41,7 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					$existe  = ( $manual ) ? 1 : $existe; //recargas y excedentes
 					
 					if(!$existe) 
-						echo "Cantidad insuficiente:".$existenciatienda;
+						echo "<script>alert('Cantidad insuficiente:".$existenciatienda."');</script>";
 					else
 						include(SYSTEM_DIR.'/pages/Traspasos/Traspasos_get_producto.php' );
 					
