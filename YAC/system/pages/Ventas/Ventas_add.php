@@ -739,6 +739,7 @@ $persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ve
             var id=$("#id_tienda").val();
             $("#barcode").autocomplete({
                 source: function (request, response) {
+                    console.log(request);
                     var id=$("#id_tienda").val();
                     $.getJSON(config.base+"/Productos/ajax/?action=get&size=20&object=getproductos&id_tienda="+id+"&texto=" + request.term, function (data) {
                         response($.map(data, function (value, key) {

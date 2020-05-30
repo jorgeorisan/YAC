@@ -1,326 +1,205 @@
 <?php
-ob_start();
-
-error_reporting(E_ALL); ini_set('display_errors', 1);
-
-// Olny allow whitelisted IP durring testing
-//$allow = array("192.168.56.1","171.66.214.130", "50.16.212.172", "50.242.118.102"); //allowed IPs
-#if(!in_array($_SERVER['REMOTE_ADDR'], $allow) ){echo $_SERVER['REMOTE_ADDR'];echo $_SERVER['REMOTE_ADDR'];die; exit;}
+include('header.php');
+include('menu-vertical.php');
+?>
 
 
-// set global variables and load functions and classes
-include_once("system/config/config.php");
+<!--productos-->
+<div class="col-12 col-md-12 col-lg-9 ">
+    <!--Row 1 productos-->
+    <div class="row mb-4">
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3  " id="">
+            <div class="contenedorImg text-center">
+                <img src="images/rimel.jpg" class="img-provisional">
+                <div class="contenedorDescripcion">
+                    <button class="btn boton-vistarapida" data-toggle="modal" data-target="#ModalVistaRapida">Vista rápida</button>
+                </div>
+            </div>
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="producto.php">Rimel Exactitud</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 40.00" data-currency="MXN">$ 40.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 50.00" data-currency="MXN">$ 50.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/cera.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Cera Española</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/ramo.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Ramo de Cosméticos</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/sombras.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Paleta de Sombras Frida</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ../Row 1 productos-->
+    <!--Row 2 productos-->
+    <div class="row mb-4">
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/rimel.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Rimel Exactitud</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 40.00" data-currency="MXN">$ 40.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 50.00" data-currency="MXN">$ 50.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/cera.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Cera Española</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/ramo.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Ramo de Cosméticos</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/sombras.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Paleta de Sombras Frida</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ../Row 2 productos-->
+    <!-- Row 3 Paginador-->
+    <div class="row">
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <!--../ Row 3 Paginador-->
+</div>
+<!--/productos-->
 
-// parse request
-/*
-For example if the URL is created with:
- make_url("TestSection","TestPage",array('sample_GET_Var_to_be_encrypted'=>'sample value','something'=>'else'));
- the URL will be:
- TestSection/TestPage/bbp_ucbCG6aPFTgj82cRloHBACOggZfiu7A_LBGjLMb2X6S_X3a1AYHVk3LLjAojL3qW__3f55dfed612c
- The result of unmake_url() will be:
-Array
-(
-    [section] => TestSection
-    [page] => TestPage
-    [hashpass] => 1
-    [path] => TestSection/TestPage
-    [params] => Array
-        (
-            [sample_GET_Var_to_be_encrypted] => sample value
-            [something] => else
-        )
-)
-*/
-$request=unmake_url();
+</div>
+<!--Modal vista rápida-->
+<!-- Modal -->
+<div class="modal fade" id="ModalVistaRapida" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-vr" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title ml-auto sombra-texto-rosa" id="ModalVistaRapida">Rimel Exactitud</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row precio-vr mb-4">
+                    <span class="money" data-currency-mxn="$ 40.00" data-currency="MXN">$ 40.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 50.00" data-currency="MXN">$ 50.00</span>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-7">
+                        <img src="images/rimel.jpg" class="img-provisional-vr">
+                    </div>
+                    <div class="col-12 col-md-5">
 
+                        <div class="row">
+                            <p class="parrafo-vr">
 
-//HOLA
-//PRUEBA DE COMENTARIO EN BRANCH
-/*
-=====================================
-Routing section
-  maps requested URLs to pages and checks authorization
-=====================================
-*/
-//$_SESSION['user_id']=1;
-// Authorized user routing
-    //if ( isset ($_SESSION['user_id']) && $_SESSION['user_id'] * 1 > 0 ){
-    $dir="";//si esta en carpeta
-    if (isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0 ){
-     // echo  "sesion=".$_SESSION['user_id'];
+                                Pestañas hermosas con el maravilloso
+                                rimel marca Diamond, presentaciones:
+                                <i>
+                                    Henna,Aceite de Aguacate, Fibras Alargadoras,Kejel.
+                                </i>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row modal-footer">
+                    <button type="button" class="btn boton-cerrar-vr" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn boton-vistarapida">Ver más información</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--../Modal vista rápida-->
+<?php
+include('footer.php');
+?>
+<script>
+    $(document).ready(function() {
+        $(".contenedorImg").hover(
+            function() {
 
-      //default page to load
-      $page     = "Home_index.php";
-      $page_num = 0;
-      $page2    = ($request['page'])? $request['page'] : 'index';
+                $(".contenedorDescripcion").addClass("visible muestraDescripcion");
+            },
+            function() {
 
-    
-      if ($request['section']==='Clientes'){
-        $page = "Clientes_index.php";
-        $dir  = "Clientes";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Clientes_add.php";      }
-        if ($request['page']==='addpopup') { $page = "Clientes_addpopup.php"; }
-        if ($request['page']==='edit')     { $page = "Clientes_edit.php";     }
-        if ($request['page']==='pedido')   { $page = "Clientes_pedido.php";  }
-        
-      }
-      if ( $request['section'] === 'Catalogos' ) {
-        $page = "Catalogos_clinica.php";
-        $dir  = "Catalogos";//si esta en carpeta
-        if ($request['page'] === 'clinica')     { $page = "Catalogos_clinica.php";     }
-        if ($request['page'] === 'marca')       { $page = "Catalogos_marca.php";       }
-        if ($request['page'] === 'categoria')   { $page = "Catalogos_categoria.php";   }
-        if ($request['page'] === 'usuariotipo') { $page = "Catalogos_usuariotipo.php"; }
-      }
-      if ($request['section']==='Usuarios'){
-        $page = "Usuarios_index.php";
-        $dir  = "Usuarios";//si esta en carpeta
-
-        if ($request['page']==='show') { $page = "Usuarios_show.php"; }
-        if ($request['page']==='add')  { $page = "Usuarios_add.php" ; }
-        if ($request['page']==='edit') { $page = "Usuarios_edit.php"; }
-        if ($request['page']==='ajax') { $page = "Usuarios_ajax.php"; }
-       
-      }
-      if ($request['section']==='Permisos'){
-        $page = "Permisos_index.php";
-        $dir  = "Permisos";//si esta en carpeta
-        if ($request['page']==='add')    { $page = "Permisos_add.php";     }
-        if ($request['page']==='edit')   { $page = "Permisos_edit.php";    }
-        if ($request['page']==='ajax')   { $page = "Permisos_ajax.php";    }
-        if ($request['page']==='asignar'){ $page = "Permisos_asignar.php"; }
-      }
-      if ($request['section']==='Personal'){
-        $page = "Personal_index.php";
-        $dir  = "Personal";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Personal_add.php";   }
-        if ($request['page']==='edit')     { $page = "Personal_edit.php";  }
-      }
-      if ($request['section']==='Citas'){
-        $page = "Citas_index.php";
-        $dir  = "Citas";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Citas_add.php";      }
-        if ($request['page']==='edit')     { $page = "Citas_edit.php";     }
-        if ($request['page']==='view')     { $page = "Citas_view.php";     }
-      }
-      if ($request['section']==='Historial'){
-        $page = "Historial_index.php";
-        $dir  = "Historial";//si esta en carpeta
-        if ($request['page']==='consulta') { $page = "Historial_consulta.php"; }
-        if ($request['page']==='view')     { $page = "Historial_view.php";     }
-      }
-      if ($request['section']==='Productos'){
-        $page = "Productos_index.php";
-        $dir  = "Productos";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Productos_add.php";      }
-        if ($request['page']==='edit')     { $page = "Productos_edit.php";     }
-        if ($request['page']==='addpopup') { $page = "Productos_addpopup.php"; }
-        if ($request['page']==='kardex')   { $page = "Productos_kardex.php";   }
-        
-      }
-      if ($request['section']==='Ventas'){
-        $page = "Ventas_index.php";
-        $dir  = "Ventas";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Ventas_add.php";     }
-        if ($request['page']==='corte')    { $page = "Ventas_corte.php";   }
-        if ($request['page']==='view')     { $page = "Ventas_view.php";    }
-        if ($request['page']==='credito')  { $page = "Ventas_credito.php"; }
-        if ($request['page']==='productos'){ $page = "Ventas_productos.php"; }
-        
-      }
-      if ($request['section']==='Entradas'){
-        $page = "Entradas_index.php";
-        $dir  = "Entradas";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Entradas_add.php";  }
-        if ($request['page']==='view')     { $page = "Entradas_view.php"; }
-        
-      }
-      if ($request['section']==='Pedidos'){
-        $page = "Pedidos_index.php";
-        $dir  = "Pedidos";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Pedidos_add.php";  }
-        if ($request['page']==='view')     { $page = "Pedidos_view.php"; }
-        
-      }
-      if ($request['section']==='Traspasos'){
-        $page = "Traspasos_index.php";
-        $dir  = "Traspasos";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Traspasos_add.php";  }
-        if ($request['page']==='view')     { $page = "Traspasos_view.php"; }
-        
-      }
-      if ($request['section']==='Salidas'){
-        $page = "Salidas_index.php";
-        $dir  = "Salidas";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Salidas_add.php";  }
-        if ($request['page']==='view')     { $page = "Salidas_view.php"; }
-        
-      }
-      if ($request['section']==='Pacientes'){
-        $page = "Pacientes_index.php";
-        $dir  = "Pacientes";//si esta en carpeta
-        if ($request['page']==='add')      { $page = "Pacientes_add.php";      }
-        if ($request['page']==='consulta') { $page = "Pacientes_consulta.php";     }
-        if ($request['page']==='view')     { $page = "Pacientes_view.php";  }
-        
-      }
-      if ($request['section']==='Historial'){
-        $page = "Historial_index.php";
-        $dir  = "Historial";//si esta en carpeta
-        if ($request['page']==='consulta') { $page = "Historial_consulta.php"; }
-        if ($request['page']==='view')     { $page = "Historial_view.php";     }
-      }
-      if ($request['section']==='Reportes'){
-        $page = "Reportes_index.php";
-        $dir  = "Reportes";//si esta en carpeta
-        if ($request['page']==='productos')      { $page = "Reportes_productos.php"; }
-        if ($request['page']==='pacientes')      { $page = "Reportes_pacientes.php"; }
-        if ($request['page']==='horas')          { $page = "Reportes_horas.php"; }
-        if ($request['page']==='pagos')          { $page = "Reportes_pagos.php"; }
-        if ($request['page']==='cortes')         { $page = "Reportes_cortes.php"; }
-        if ($request['page']==='cortediario')    { $page = "Reportes_cortediario.php"; }
-        if ($request['page']==='comparativoinv') { $page = "Reportes_comparativoinv.php"; }
-      }
-      //delete pages
-      $id ='';
-      if(isset($_GET['id']) ) {
-        $id = $_GET['id'];
-      }else{
-        if(isset($request['params']['id'])){
-          $id = $request['params']['id'] ;
-        }
-      }
-      if( $id>0 ) {
-        $table = explode("delete", $request['page']);
-        if(count($table)>1){
-          delete($id,$request['section'],$table[0]);
-        }
-      }
-      
-
-      //*****permisos de usuario  */***///
-      if($request['section']!='Home' && 
-        $request['section']!='Examples' && 
-        $request['page']!="" && 
-        $request['page']!="ajax" && 
-        $request['page']!="print" && 
-        $request['page']!="cortediario" && 
-        $request['page']!="excel"  ){
-        
-        $objpermuser = new PermisoUsuario();
-        
-        $datapermuser  = $objpermuser->getpermisouser($_SESSION['user_id'],$request['section'],$page2);
-        if ( !$datapermuser ) {
-          print_r( "ERROR permisos".$_SESSION['user_id']."------".$request['section']."-----".$page2);
-          //if($_SESSION['user_info']['id_usuario_tipo']==5) exit;
-
-          if($_SESSION['user_info']['id_usuario_tipo']!=4){
-            informPermiss(true,make_url("Home","index"));
-          }else{
-            informPermiss(true,make_url("Ventas","add"));
-          }
-        }
-      }
-      
-      //end delete
-           /******  DEV ROUTING  ******/
-      $request['page']=($request['page'])? $request['page']: 'index';
-      
-      if (file_exists("system/pages/".$dir."/".$request['section']."_".$request['page'].".php")){
-        $page = $dir."/".$request['section']."_".$request['page'].".php";
-        
-      }elseif(file_exists($dir."/system/pages/".$request['section']."_index.php")){
-        $page = $dir."/".$request['section']."_index.php";
-        
-      }elseif(file_exists("system/pages/".$request['section']."_index.php")){
-        $page = $request['section']."_index.php";
-        
-      }else{}
-
-      
-      /***/
-
-
-    }else{
-      // Unauthenticated user
-      // go to login page
-      
-        $page="Login_index.php";
-        switch ($request['section']) {
-          case 'Login':
-            $dir="";//si esta en carpeta
-            if ($request['page']==='ResetPassword' ){$page="Login_ResetPassword.php";}
-            if ($request['page']==='ChangePassword' ){$page="Login_ChangePassword.php";}
-            break;
-          case 'Register':
-            $page="Register_index.php";
-            if ($request['section']==='Register' ){
-                $page="Register_index.php";
-                $dir="";//si esta en carpeta
+                $(".contenedorDescripcion").removeClass("muestraDescripcion");
+                setTimeout(
+                    function() {
+                        $(".contenedorDescripcion").removeClass("visible muestraDescripcion");
+                        $(".contenedorDescripcion").addClass("hidden");
+                    }, 300);
             }
-            break;
-          case 'Clientes':
-            if ($request['page']==='addpopup'){
-              $dir  = "Clientes";//si esta en carpeta
-              $page = "Clientes_adpopup.php";      
-            }
-            break;
-          case 'Reportes':            
-            if ($request['page']==='cortediario'){ 
-              $dir  = "Reportes";//si esta en carpeta 
-              $page = "Reportes_cortediario.php";      
-            }
-            break;
-          default:
-            
-            break;
-        }
-       
-        #die;
-        if($dir)  $page = $dir."/".$page;
-
-        
-    }
-   
-// Public user
-//echo "========session=".$_SESSION['user_id']."<pre>".print_r(unmake_url())."</pre>";
-if( isset($request['path']) && preg_match("/\.php$/",$request['path']) && file_exists(  ROOT_DIR . "/1_example_pages/" . $request['path'])){
-  //echo ROOT_DIR . "/1_example_pages/" . $request['path'];
-
-  include_once(ROOT_DIR . "/1_example_pages/" . $request['path']);
-  include_once(ROOT_DIR . "/node_modules/jquery.tabulator/examples/" . $request['path']);
-}elseif (file_exists("system/pages/".$page)){
- 
-  include_once("system/pages/".$page);
-}else{}
-
-// mostrar productos en sesion
-/*
-if(!isset($_SESSION['CADENA'])){
-
-  $obj = new Producto();
-  
-  $arrayfilters['todo'] = 1;
-  $queryproductos = $obj->getAllArr( $arrayfilters );
-
-  $_SESSION['CADENA']=json_encode( $queryproductos);
-}*/
-if(!isset($_SESSION['CADENA'])){
-  $obj = new Producto();
-  
-  $arrayfilters['todo'] = 1;
-  $queryproductos = $obj->getAllArr( $arrayfilters );
-  
-  $prod="";
- 
-  foreach($queryproductos as $producto){   
-      $prod=$prod.",'".$producto['codinter']."::".str_replace("'", "", $producto['nombre'])." $". $producto['precio']."|". $producto['existenciastienda']."'";
-  }
-  $cadena = substr($prod,1);
-  $_SESSION['CADENA']=$cadena;
-}
-// close database
-if (!$db->connect_errno) {
-   // $db->close();
-}
-ob_end_flush();
+        );
+    });
+</script>

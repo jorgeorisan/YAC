@@ -24,16 +24,16 @@ $RECYCLE.BIN/
 # =========================
 
 # Data
-public/sistema/documentos
+YAC/public/sistema/documentos
 
 # Logs
 internal/log
 
 #imagenes de productos
-productosimages
+YAC/productosimages
 
 # Composer
-composer.lock
+YAC/composer.lock
 
 #CONECCION BD
-js/bootstrap-notify
+YAC/js/bootstrap-notify
