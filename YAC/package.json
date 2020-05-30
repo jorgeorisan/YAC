@@ -1,0 +1,9 @@
+{
+  "name": "yac",
+  "dependencies": {
+    "jquery.tabulator": "3.5.3",
+    "tippy.js": "^3.3.0"
+  },
+  "author": "Paul Laros <support@laros.io>",
+  "private": true
+}

@@ -15,7 +15,6 @@ class Reports extends Usuario {
 	protected $token = ""; 
 	protected $token_expires = ""; 
 
-
 	public function getReporteVentas($arrayfilters)
 	{
 		$fechaini    = (isset($arrayfilters['fecha_inicial'])) ? $arrayfilters['fecha_inicial'] : '';
