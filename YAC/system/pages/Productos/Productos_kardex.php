@@ -36,7 +36,7 @@ if ( !$data ) {
 }
 
 
-$begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : date('Y-01-01'); 
+$begin        = ( isset($_GET['fecha_inicial']))? $_GET['fecha_inicial'] : ''; 
 $idusuario    = ( isset($_GET['id_usuario']))   ? $_GET['id_usuario']    : '';
 $idtienda  	  =  $_SESSION['user_info']['id_tienda'] ;
 $codeproducto = $arrayfilters['id_producto'] = ( isset($_GET['id']) && $_GET['id'] > 0 )  ?  $_GET['id'] : '';
@@ -58,8 +58,8 @@ $queryproductos= $obj->getAllArr($arrayfilters);
 $totalkardex = '0';
 $fecha_actualizacion = $existenciaactual= $usuario_actualizacion='';
 foreach( $queryproductos as $key => $valprod){
-    $existenciaactual = $valprod['existenciastienda'];
-    $fecha_actualizacion  = $valprod['fecha_actualizacion'];
+    $existenciaactual       = $valprod['existenciastienda'];
+    $fecha_actualizacion    = $valprod['fecha_actualizacion'];
     $usuario_actualizacion  = $valprod['usuario_actualizacion'];
 
 }

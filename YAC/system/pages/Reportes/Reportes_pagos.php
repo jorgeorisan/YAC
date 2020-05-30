@@ -36,7 +36,7 @@ $arrayfilters['page']   	   = 'pagos';
 $jsonarrayfilters 		= json_encode($arrayfilters);
 $reports = new Reports();
 $datapagos     		= $reports->getReportePagos($arrayfilters);
-//echo json_encode($datapagos );
+echo json_encode($datapagos );
 ?>
 <!-- ==========================CONTENT STARTS HERE ========================== -->
 <!-- MAIN PANEL -->
