@@ -19,7 +19,7 @@
 
 <body>
     <div class="col-12 ">
-        <div class="row">
+        <div class="row div-head">
             <div class="col-12 col-md-4">
 
             </div>

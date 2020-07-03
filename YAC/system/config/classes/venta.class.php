@@ -103,7 +103,7 @@ class Venta extends AutoVenta {
 					if(!$producto['manual'])
 						$objproductostienda->actualizaexistencia($value,$cantidades[$key],'decrement');
 				}
-			//ABONOS
+				//ABONOS
 				if(($_request['tipo']=="Credito" || $_request['tipo']=="Apartado" ) && $_request['montoabono']>0){
 				
 					$_requesDeudores['id_venta'] 	  = $id;

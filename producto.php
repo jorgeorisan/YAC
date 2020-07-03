@@ -37,6 +37,15 @@ include('menu-vertical.php');
                     Es a prueba de agua, elige la que más te gusta!
                     Tiene 4 presentaciones.
                 </p>
+                <div class="mb-3">
+                    <span class="money" data-currency-mxn="$ 40.00" data-currency="MXN">$ 40.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 50.00" data-currency="MXN">$ 50.00</span>
+                </div>
+                <div class="mb-1">
+                    <span class="disponible">Producto disponible</span> <br>
+                    <span class="disponible d-none">Quedan pocas piezas</span><br>
+                    <span class="disponible d-none">Producto agotado temporalmente</span>
+                </div>
                 <div class=" compartir text-right">
                     <a href="" class="acompartir"><i class="fab fa-facebook-f mx-2"></i></a>
                     <a href="" class="acompartir"><i class="fab fa-twitter mx-2"></i></a>

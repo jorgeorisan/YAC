@@ -17,6 +17,17 @@
                 </select>
             </div>  
             <div class="form-group">
+                <label for="name">Status Categoria</label>
+                <select style="width:100%" class="select2" name="status_categoria" id="status_categoria">
+                 
+                    <option value='Normal' <?php echo ($data['status_categoria'] == 'Normal' ) ?  $selected = "selected" : ''?>>Normal</option>
+                    <option value='Nuevo' <?php echo ($data['status_categoria'] == 'Nuevo' ) ?  $selected = "selected" : ''?>>Nuevo</option>
+                    <option value='Proximamente' <?php echo ($data['status_categoria'] == 'Proximamente' ) ?  $selected = "selected" : ''?>>Proximamente</option>
+                    <option value='Oferta' <?php echo ($data['status_categoria'] == 'Oferta' ) ?  $selected = "selected" : ''?>>Oferta</option>
+                     
+                </select>
+            </div>  
+            <div class="form-group">
                 <label for="name">Seccion</label>
                 <select style="width:100%" class="select2" name="id_proveedor" id="id_proveedor">
                     <?php 

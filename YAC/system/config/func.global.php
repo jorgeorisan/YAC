@@ -2,7 +2,7 @@
 // include autoloader
 if(isset($_SESSION['user_id'])){
   $base = explode('system', $directory);
-  require './vendor/autoload.php';
+  //require './vendor/autoload.php';
 }
 /**
  * set document type

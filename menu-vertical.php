@@ -1,7 +1,7 @@
 <!--menú vertical-->
 <div class="row">
     <div class=" col-lg-3 pl-0  ocultar  ">
-        <nav class="navbar navbar-default sidebar borde-gris " role="navigation">
+        <nav class="navbar navbar-default borde-gris p-2 " role="navigation">
             <div class="container-fluid" id="navbar2">
                 <div class="navbar1-header px-0 pt-1">
                     <button type="button" class="btn-menu2 btn navbar1-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar1-collapse-1">

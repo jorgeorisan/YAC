@@ -5,6 +5,10 @@ error_reporting(E_ALL); ini_set('display_errors', 1);
 
 include('header.php');
 include('menu-vertical.php');
+
+// set global variables and load functions and classes
+include_once("YAC/system/config/config.php");
+require './YAC/vendor/autoload.php';
 ?>
 
 
@@ -12,23 +16,37 @@ include('menu-vertical.php');
 <div class="col-12 col-md-12 col-lg-9 ">
     <!--Row 1 productos-->
     <div class="row mb-4">
-        <div class="col-12 col-md-3 cuadro-producto text-center p-3  " id="">
-            <div class="contenedorImg text-center">
-                <img src="images/rimel.jpg" class="img-provisional">
-                <div class="contenedorDescripcion">
-                    <button class="btn boton-vistarapida" data-toggle="modal" data-target="#ModalVistaRapida">Vista rápida</button>
+        <?php
+
+            $request=unmake_url();
+            $obj = new Producto();
+            
+            $arrayfilters['status_categoria'] = 'Nuevo';
+            $queryproductos = $obj->getAllArrStatusCategoria( $arrayfilters );
+             // echo   var_dump($queryproductos);
+            $prod="";
+            $carpetaimg = ASSETS_URL.'/productosimages/images/';
+            foreach($queryproductos as $producto){   
+            ?>
+            <div class="col-12 col-md-3 cuadro-producto text-center p-3  " id="">
+                <div class="contenedorImg text-center">
+                    <img src="<?php echo $carpetaimg.$producto['imagen']?>" class="img-provisional">
+                    <div class="contenedorDescripcion">
+                        <button class="btn boton-vistarapida" data-toggle="modal" data-target="#ModalVistaRapida">Vista rápida</button>
+                    </div>
+                </div>
+                <div class="desc">
+                    <div class="h-nombre">
+                        <h5><a href="producto.php"><?php echo $producto['nombre']?></a></h5>
+                    </div>
+                    <div class="">
+                        <span class="money" data-currency-mxn="<?php echo $producto['precio']?>" data-currency="MXN"><?php echo $producto['precio']?></span>
+                        <span class="precio-anterior" data-currency-mxn="<?php echo $producto['precio']?>" data-currency="MXN"><?php echo $producto['precio']?></span>
+                    </div>
                 </div>
             </div>
-            <div class="desc">
-                <div class="h-nombre">
-                    <h5><a href="producto.php">Rimel Exactitud</a></h5>
-                </div>
-                <div class="">
-                    <span class="money" data-currency-mxn="$ 40.00" data-currency="MXN">$ 40.00</span>
-                    <span class="precio-anterior" data-currency-mxn="$ 50.00" data-currency="MXN">$ 50.00</span>
-                </div>
-            </div>
-        </div>
+        <?php }
+        ?>
         <div class="col-12 col-md-3 cuadro-producto text-center p-3">
             <img src="images/cera.jpg" class="img-provisional">
             <div class="desc">
@@ -186,6 +204,7 @@ include('menu-vertical.php');
 </div>
 <!--../Modal vista rápida-->
 <?php
+
 include('footer.php');
 ?>
 <script>
@@ -207,3 +226,8 @@ include('footer.php');
         );
     });
 </script>
+
+
+
+
+

@@ -1,6 +1,6 @@
 <?php 
 
-	class AutoProducto {
+	class Autoproducto {
 
 	// Variables
 		protected $db;
@@ -25,6 +25,7 @@
 		protected $precio_editable = 0;
 		protected $updated_date = "";
 		protected $deleted_date = "";
+		protected $status_categoria = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -36,12 +37,12 @@
 			$this->db = $db;
 		}
 		public static function construct( $id ){
-			$producto = new Producto();
+			$producto = new producto();
 			$producto->setId( $id );
 			return $producto;
 		}
 		public static function constructWithValues( $values ){
-			$producto = new Producto();
+			$producto = new producto();
 			$producto->setValues( $values );
 			return $producto;
 		}
@@ -144,6 +145,11 @@
 		public function setDeletedDate( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "DELETEDDATE","s") ) 
  				$this->deleted_date = $value;
+		}
+		
+		public function setStatusCategoria( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "STATUSCATEGORIA","s") ) 
+ 				$this->status_categoria = $value;
 		}
 		
 		public function setValidclass( $value ){
@@ -323,6 +329,14 @@
  			}
 		}
 		
+		public function getStatusCategoria($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->status_categoria) ;
+ 			}else{
+ 				return $this->status_categoria ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -351,7 +365,7 @@
 
 	// Public Support Functions
 		public function load($id) {
-			$sql="SELECT * FROM producto WHERE id = ?";
+			$sql="SELECT * FROM Producto WHERE id = ?";
 
 			if ( $id == 0 )
 				return $this->killInvalidclass( "The ID not validclass." );
@@ -388,6 +402,7 @@
 			$this->setPrecioEditable( $res['precio_editable'] );
 			$this->setUpdatedDate( $res['updated_date'] );
 			$this->setDeletedDate( $res['deleted_date'] );
+			$this->setStatusCategoria( $res['status_categoria'] );
 			return true;
 		}
 		// end function load

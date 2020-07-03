@@ -20,10 +20,11 @@ include(SYSTEM_DIR . "/inc/nav.php");
 $all = (isset($_GET['id_categoria'])) ?  true : false;
 
 $obj = new Producto();
-$arrayfilters['todo'] = $all;
+$arrayfilters['todo'] = 1;
 $arrayfilters['page'] = 'productos';
 
 $arrayfilters['id_categoria'] = (isset($_GET['id_categoria'])) ? $_GET['id_categoria'] : '';
+$arrayfilters['id_subcategoria'] = (isset($_GET['id_subcategoria'])) ? $_GET['id_subcategoria'] : '';
 $arrayfilters['id_marca']     = (isset($_GET['id_marca'])) ? $_GET['id_marca'] : '';
 $arrayfilters['size']     = (isset($_GET['size'])) ? $_GET['size'] : '10';
 $jsonarrayfilters=json_encode($arrayfilters);
@@ -74,7 +75,7 @@ $data = $obj->getAllArr( $arrayfilters );
 										<h3 class="card-title">Productos</h3>
 										<div class="row">
 											<form  action="#" method="GET" id="main-form">
-												<div class="col-sm-6">
+												<div class="col-sm-4">
 													<div class="form-group">
 														<label for="name">Categoria</label>
 														<select style="width:100%" class="select2" name="id_categoria" id="id_categoria">
@@ -92,7 +93,25 @@ $data = $obj->getAllArr( $arrayfilters );
 														</select>
 													</div>  
 												</div>
-												<div class="col-sm-6">
+												<div class="col-sm-4">
+													<div class="form-group">
+														<label for="name">Sub Categoria</label>
+														<select style="width:100%" class="select2" name="id_subcategoria" id="id_subcategoria">
+															<option>Selecciona</option>
+															<?php 
+															$obj = new Subcategoria();
+															$list=$obj->getAllArr();
+															if (is_array($list) || is_object($list)){
+																foreach($list as $val){
+																	$selected = ($arrayfilters['id_subcategoria']==$val['id_subcategoria']) ? 'selected': '';
+																	echo "<option $selected  value='".$val['id_subcategoria']."'>".$val['nombre_subcategoria']."</option>";
+																}
+															}
+																?>
+														</select>
+													</div>  
+												</div>
+												<div class="col-sm-4">
 													<div class="form-group">
 														<label for="name">Marca</label>
 														<select style="width:100%" class="select2" name="id_marca" id="id_marca">
@@ -130,6 +149,7 @@ $data = $obj->getAllArr( $arrayfilters );
 													<th class = "col-md-1" data-class="expand">Codigo: Nombre</th>
 													<th class = "col-md-1" data-class="phone,tablet">Marca</th>
 													<th class = "col-md-1" data-class="phone,tablet">Cate</th>
+													<th class = "col-md-1" data-class="phone,tablet">SubCate</th>
 													<?php if($_SESSION['user_info']['costos']) { ?>
 														
 														<th class = "col-md-1" data-class="phone,tablet">Costo </th>
@@ -169,6 +189,11 @@ $data = $obj->getAllArr( $arrayfilters );
 														<td><?php echo htmlentities($row['marca']) ?></td>
 														<td>
 															<div id="contcategoria<?php echo $id ?>"><?php echo $row['categoria'] ?></div>
+																<a data-toggle="modal" class="" href="#myModal" onclick="showpopupEditar(<?php echo $id ?>)">Editar</a>
+															
+														</td>
+														<td>
+															<div id="contsubcategoria<?php echo $id ?>"><?php echo $row['subcategoria'] ?></div>
 																<a data-toggle="modal" class="" href="#myModal" onclick="showpopupEditar(<?php echo $id ?>)">Editar</a>
 															
 														</td>
@@ -340,7 +365,7 @@ $data = $obj->getAllArr( $arrayfilters );
 						$('#contcosto'+producto.id_producto).html(producto.costo);
 						
 						notify('success',"Exito al actualizar:"+producto.id_producto);
-						
+						return false;
 						//location.reload();
 					}else{
 						return notify('error',"Oopss error al Actualizar:"+data.response);

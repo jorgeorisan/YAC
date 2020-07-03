@@ -8,6 +8,12 @@ body {
     margin-bottom: 40px;
 }
 
+.div-head {
+    background-image: url(../images/fondo.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 footer {
     /*background-color: #ec5caa;*/
     background-image: url('../images/fondo3.jpg');
@@ -30,7 +36,7 @@ footer {
     text-shadow: 1px 1px 10px #000;
 }
 
-.a-nos {
+.a-link {
     color: #fff !important;
     text-shadow: 1px 1px 1px #000;
     font-weight: bold;
@@ -53,6 +59,70 @@ footer {
     color: #fff;
     font-weight: bold;
     text-shadow: 1px 1px 9px #000;
+}
+
+.social {
+    position: absolute;
+    width: 100%;
+    margin-top: 10%;
+    text-align: center;
+    transform: translateY(-50%);
+}
+
+.social .link {
+    vertical-align: middle;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px dashed white;
+    background-clip: content-box;
+    padding: 5px;
+    transition: .5s;
+    color: #D7D0BE;
+    margin-left: 24px;
+    margin-right: 15px;
+    font-size: 28px;
+}
+
+.social .link span {
+    display: block;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.social .link:hover {
+    padding: 20px;
+    color: white;
+    margin-left: -5px;
+    transform: translateX(10px) rotate(360deg);
+}
+
+.social .link.youtube {
+    background-color: #ec5caa;
+    color: white;
+    box-shadow: 1px 1px 22px #ec5caaa6
+}
+
+.social .link.instagram {
+    background-color: #ec5caa;
+    color: white;
+    box-shadow: 1px 1px 22px #ec5caaa6
+}
+
+.social .link.facebook {
+    background-color: #ec5caa;
+    color: white;
+    box-shadow: 1px 1px 22px #ec5caaa6
+}
+
+.derechos {
+    background-color: #312b30;
+    color: #fff;
+    font-size: 14px;
 }
 
 
@@ -340,8 +410,43 @@ section {
     padding-top: 1em;
 }
 
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+.ocultar {
+    display: none;
+}
+
+
+/* ----------- Tablets ----------- */
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .img-provisional {
+        width: 170px !important;
+        height: 140px !important;
+    }
+    .social {
+        margin-top: 52% !important;
+    }
+    .social .link {
+        margin-top: 1em;
+    }
+}
+
+
+/*PANTALLAS MEDIANAS*/
+
+@media (min-width: 1281px) {
     .ocultar {
-        display: none;
+        display: inline;
+    }
+}
+
+
+/*Celular*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .titulos-quienes {
+        font-size: 3em !important;
+    }
+    .subtitulos-quienes {
+        font-size: 1.3em !important
     }
 }

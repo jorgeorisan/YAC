@@ -551,7 +551,7 @@ $persmisodeleteventa= $permisousuario->getpermisouser( $_SESSION['user_id'], 'Ve
         }
         $('body').on('click', '#savenewpago', function(){
             var monto  = $("input[name=montoabono]", $(this).parents('form:first')).val();
-            var deuda  = $("input[name=deuda]", $(this).parents('form:first')).val();
+            var deuda  = $("input[name=porpagar]", $(this).parents('form:first')).val();
             if(!monto)  return notify('error',"Se necesita el monto.");  
             var nuevadeuda = deuda - monto;
             if(nuevadeuda<0){ 

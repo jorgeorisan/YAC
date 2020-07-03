@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "JustSunday";
+    src: url("fonts/JustSunday.ttf");
+}
+
 .sombra-n {
     box-shadow: 2px 1px 3px #b73662;
 }
@@ -240,4 +245,75 @@ page-item.active .page-link {
     text-shadow: 1px 1px 8px #1e0233;
     color: #fff;
     font-size: 1.3em;
+}
+
+.disponible {
+    font-weight: bold;
+    color: #8559a6;
+    text-shadow: 1px 1px 9px #fd018a61;
+}
+
+
+/*quienes somos*/
+
+.cuadro-quienes {
+    box-shadow: 4px 2px 12px 1px #6b36534d;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.titulos-quienes {
+    font-family: "JustSunday";
+    font-size: 7em;
+    color: #ec5caa;
+    font-weight: bold;
+    text-shadow: 1px 1px 4px #ec5caaba;
+}
+
+.subtitulos-quienes {
+    font-size: 2em;
+    color: #ec5caa;
+    text-shadow: 1px 1px 4px #ec5caaba;
+    font-weight: 400;
+}
+
+.box {
+    -webkit-border-radius: 6px 6px;
+    -moz-border-radius: 6px / 6px;
+    -khtml-border-radius: 6px / 6px;
+    border-radius: 6px / 6px;
+    width: 33%;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    max-width: 290px;
+    padding: 10px;
+    overflow: hidden;
+    margin: 20px;
+}
+
+.triangle-topright {
+    width: 0;
+    height: 0;
+    border-top: 80px solid #ec5caa;
+    border-left: 80px solid transparent;
+    float: right;
+    margin-top: -10px;
+    margin-right: -10px;
+}
+
+.facheck {
+    color: #ac6cff;
+    text-shadow: 1px 3px 4px #ec5caa;
+    margin-left: 1rem;
+    margin-right: 0.5rem;
+}
+
+.borde-rosa {
+    border: 1px solid #ec5caa;
+}
+
+.a-tel {
+    color: #fd198e;
+    font-weight: bold;
 }
