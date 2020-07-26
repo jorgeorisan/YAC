@@ -10,7 +10,12 @@
 .texto-rosa {
     color: #fd018a;
 }
-
+.texto-rosa-a {
+    color: #fd018a;
+}
+.texto-rosa-a:hover{
+    color: #855985;
+}
 .div-blanco {
     background-color: #fff !important;
 }
@@ -190,7 +195,7 @@ page-item.active .page-link {
 }
 
 .img-provisional-vr {
-    width: 100%;
+    width: 17em;
     height: auto;
     box-shadow: 5px 6px 12px #0006;
     margin-bottom: 2em;
@@ -317,3 +322,39 @@ page-item.active .page-link {
     color: #fd198e;
     font-weight: bold;
 }
+
+/*tablets*/
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .modall {
+        padding-right: 17px;
+        display: block;
+        width: 95%;
+        margin-left: 4%;
+        margin-right: auto;
+    }
+   
+    .ocultar {
+      display: none;
+    }
+  }
+/* Landscape */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (orientation: landscape) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+    .ocultar {
+        display: inline;
+      }
+  }
+  /*celular*/
+  @media only screen and (max-width: 767px) {
+    .modall {
+        padding-right: 17px;
+        display: block;
+        width: 95%;
+        margin-left: 4%;
+        margin-right: auto;
+    }
+  }
+  

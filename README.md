@@ -3,6 +3,7 @@ require PHP 7
 chmod 0644  index.php
 
 /** SIRVE PARA CREAR LAS CLASES */
+C:\ cd  YAC\system\bin 
 C:\ php createTableModel.php <TABLA> <NOMBRECLASE>
 
 ## Install Package

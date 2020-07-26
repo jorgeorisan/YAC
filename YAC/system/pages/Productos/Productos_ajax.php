@@ -238,17 +238,18 @@ if (  isset($_GET["action"]) && $_GET["object"]){
 					break;
 			
 				case 'existeproducto':
-					if( isset($_GET["codigo"]) ){
-						$u = new Producto();
-						if($u->existeProducto($_GET['codigo'])){
-							echo 1;
-						}else{
-							echo 0;
+				case 'showinfoproducto':
+					if( isset($_GET["id"]) && intval($_GET["id"])){
+						$id = $_GET["id"];
+		
+						$obj = new Producto();
+						$data = $obj->getTable($id);
+						if($data){
+							include(SYSTEM_DIR.'/pages/Productos/Productos_showinfoproducto.php' );
 						}
-					}else{
-						echo 0;
 					}
 					break;
+			
 				case 'addpopup':
 					include(SYSTEM_DIR.'/pages/Productos/Productos_addpopup.php' );
 					break;

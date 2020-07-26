@@ -1,8 +1,5 @@
-<?php 
-// set global variables and load functions and classes
-include_once("YAC/system/config/config.php");
-require './YAC/vendor/autoload.php';
-?>
+
+
 <html lang="es">
 
 <head>
@@ -85,14 +82,4 @@ require './YAC/vendor/autoload.php';
             </div>
         </div>
     </div>
-    <div class="container">
-    <input type="text" id="base" value="<?php echo APP_URL; ?>" hidden>
-        <!--indica en que página estás-->
-        <div class="row">
-            <ul class="indica-pagina mx-0 pl-3 my-3">
-                <li><a href="/" class="color-morado" title="Home">Home</a></li>
-                <li>Productos</li>
-            </ul>
-        </div>
-        <!--/indica en que página estás-->
-        
+    <div class="">

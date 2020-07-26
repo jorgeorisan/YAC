@@ -1,6 +1,6 @@
 <!--menú vertical-->
 <div class="row">
-    <div class=" col-lg-3 pl-0  ocultar  ">
+    <div class=" col-lg-3 col-md-4 pl-0 ocultar   ">
         <nav class="navbar navbar-default borde-gris p-2 " role="navigation">
             <div class="container-fluid" id="navbar2">
                 <div class="navbar1-header px-0 pt-1">

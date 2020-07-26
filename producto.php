@@ -15,7 +15,7 @@ include('menu-vertical.php');
     <section id="default" class="padding-top0">
         <div class="row">
 
-            <div class="col-11 col-md-8  col-lg-6">
+            <div class="col-11 col-md-8  col-lg-7">
                 <div class="">
                     <img class="xzoom mb-4" id="xzoom-default" src="images/imagen1.jpg" xoriginal="images/imagen1.1.jpg" />
                     <div class="xzoom-thumbs">
@@ -29,7 +29,7 @@ include('menu-vertical.php');
                     </div>
                 </div>
             </div>
-            <div class="col-11 col-md-4 col-lg-6">
+            <div class="col-11 col-md-4 col-lg-5">
                 <h5 class="texto-rosa">Descripción del producto:</h5>
                 <p class="text-justify">
                     Esta máscara te ayudará a tener unas pestañas más definidas

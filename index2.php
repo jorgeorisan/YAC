@@ -1,55 +1,233 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+ob_start();
 
-<head>
-    <meta charset="UTF-8">
-    <title>CodePen - Product gallery zoom</title>
-    <link rel='stylesheet' href='css/xzoom.css'>
-    <link rel="stylesheet" href="css/visor.css">
+error_reporting(E_ALL); ini_set('display_errors', 1);
 
-</head>
+include('header.php');
+include('menu-vertical.php');
 
-<body>
-    <!-- partial:index.partial.html -->
+// set global variables and load functions and classes
+include_once("YAC/system/config/config.php");
+require './YAC/vendor/autoload.php';
+?>
 
-    <body>
 
-        <div class="container">
+<!--productos-->
+<div class="col-12 col-md-12 col-lg-9 ">
+    <!--Row 1 productos-->
+    <div class="row mb-4">
+        <?php
 
-            <!-- default start -->
-            <section id="default" class="padding-top0">
-                <div class="row">
-                    <div class="large-12 column">
-                        <h3>Product Zooming</h3>
+            $request=unmake_url();
+            $obj = new Producto();
+            
+            $arrayfilters['status_categoria'] = 'Nuevo';
+            $queryproductos = $obj->getAllArrStatusCategoria( $arrayfilters );
+             // echo   var_dump($queryproductos);
+            $prod="";
+            $carpetaimg = ASSETS_URL.'/productosimages/images/';
+            foreach($queryproductos as $producto){   
+            ?>
+            <div class="col-12 col-md-3 cuadro-producto text-center p-3  " id="">
+                <div class="contenedorImg text-center">
+                    <img src="<?php echo $carpetaimg.$producto['imagen']?>" class="img-provisional">
+                    <div class="contenedorDescripcion">
+                        <button class="btn boton-vistarapida" data-toggle="modal" data-target="#ModalVistaRapida">Vista rápida</button>
                     </div>
-                    <hr>
-                    <div class="large-5 column">
-                        <div class="xzoom-container">
-                            <img class="xzoom" id="xzoom-default" src="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/preview/01_b_car.jpg" xoriginal="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/original/01_b_car.jpg" />
-                            <div class="xzoom-thumbs">
-                                <a href="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/original/01_b_car.jpg"><img class="xzoom-gallery" width="80" src="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/thumbs/01_b_car.jpg" xpreview="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/preview/01_b_car.jpg" title="The description goes here"></a>
+                </div>
+                <div class="desc">
+                    <div class="h-nombre">
+                        <h5><a href="producto.php"><?php echo $producto['nombre']?></a></h5>
+                    </div>
+                    <div class="">
+                        <span class="money" data-currency-mxn="<?php echo $producto['precio']?>" data-currency="MXN"><?php echo $producto['precio']?></span>
+                        <span class="precio-anterior" data-currency-mxn="<?php echo $producto['precio']?>" data-currency="MXN"><?php echo $producto['precio']?></span>
+                    </div>
+                </div>
+            </div>
+        <?php }
+        ?>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/cera.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Cera Española</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/ramo.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Ramo de Cosméticos</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/sombras.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Paleta de Sombras Frida</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ../Row 1 productos-->
+    <!--Row 2 productos-->
+    <div class="row mb-4">
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/rimel.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Rimel Exactitud</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 40.00" data-currency="MXN">$ 40.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 50.00" data-currency="MXN">$ 50.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/cera.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Cera Española</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/ramo.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Ramo de Cosméticos</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 cuadro-producto text-center p-3">
+            <img src="images/sombras.jpg" class="img-provisional">
+            <div class="desc">
+                <div class="h-nombre">
+                    <h5><a href="">Paleta de Sombras Frida</a></h5>
+                </div>
+                <div class="">
+                    <span class="money" data-currency-mxn="$ 290.00" data-currency="MXN">$ 290.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 440.00" data-currency="MXN">$ 440.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ../Row 2 productos-->
+    <!-- Row 3 Paginador-->
+    <div class="row">
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <!--../ Row 3 Paginador-->
+</div>
+<!--/productos-->
 
-                                <a href="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/original/02_o_car.jpg"><img class="xzoom-gallery" width="80" src="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/preview/02_o_car.jpg" title="The description goes here"></a>
+</div>
+<!--Modal vista rápida-->
+<!-- Modal -->
+<div class="modal fade" id="ModalVistaRapida" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-vr" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title ml-auto sombra-texto-rosa" id="ModalVistaRapida">Rimel Exactitud</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row precio-vr mb-4">
+                    <span class="money" data-currency-mxn="$ 40.00" data-currency="MXN">$ 40.00</span>
+                    <span class="precio-anterior" data-currency-mxn="$ 50.00" data-currency="MXN">$ 50.00</span>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-7">
+                        <img src="images/rimel.jpg" class="img-provisional-vr">
+                    </div>
+                    <div class="col-12 col-md-5">
 
-                                <a href="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/original/03_r_car.jpg"><img class="xzoom-gallery" width="80" src="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/preview/03_r_car.jpg" title="The description goes here"></a>
+                        <div class="row">
+                            <p class="parrafo-vr">
 
-                                <a href="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/original/04_g_car.jpg"><img class="xzoom-gallery" width="80" src="http://www.jqueryscript.net/demo/Feature-rich-Product-Gallery-With-Image-Zoom-xZoom/images/gallery/preview/04_g_car.jpg" title="The description goes here"></a>
-                            </div>
+                                Pestañas hermosas con el maravilloso
+                                rimel marca Diamond, presentaciones:
+                                <i>
+                                    Henna,Aceite de Aguacate, Fibras Alargadoras,Kejel.
+                                </i>
+                            </p>
                         </div>
                     </div>
-                    <div class="large-7 column"></div>
                 </div>
-            </section>
-            <!-- default end -->
+                <div class="row modal-footer">
+                    <button type="button" class="btn boton-cerrar-vr" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn boton-vistarapida">Ver más información</button>
+                </div>
+            </div>
         </div>
-    </body>
-    <!-- partial -->
-    <script src='js/jquery-1.11.1.min.js'></script>
-    <script src='js/xzoom.min.js'></script>
-    <script src='js/hammer.min.js'></script>
-    <script src='js/foundation.min.js'></script>
-    <script src="js/visor.js"></script>
+    </div>
+</div>
+<!--../Modal vista rápida-->
+<?php
 
-</body>
+include('footer.php');
+?>
+<script>
+    $(document).ready(function() {
+        $(".contenedorImg").hover(
+            function() {
 
-</html>
+                $(".contenedorDescripcion").addClass("visible muestraDescripcion");
+            },
+            function() {
+
+                $(".contenedorDescripcion").removeClass("muestraDescripcion");
+                setTimeout(
+                    function() {
+                        $(".contenedorDescripcion").removeClass("visible muestraDescripcion");
+                        $(".contenedorDescripcion").addClass("hidden");
+                    }, 300);
+            }
+        );
+    });
+</script>
+
+
+
+
+

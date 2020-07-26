@@ -1,6 +1,6 @@
 </div>
 <footer>
-  <div class="col-12 foot p-4 ">
+  <div class="col-12 foot p-5 ">
     <div class="row mb-3">
       <div class="col-12 col-md-5 mb-5">
         <h5 class="h-foot mb-3">Tienda</h5>
@@ -29,7 +29,7 @@
         </span><br>
       </div>
       <div class="col-12 col-md-3  mb-5">
-        <h5 class="h-foot mb-3">Nuestras redes sociales</h5>
+        <h5 class="h-foot mb-5">Nuestras redes sociales</h5>
         <!-- partial:index.partial.html -->
         <div class="social row">
           <a href="https://www.facebook.com/pg/YoAmoComprarOficial" class="link facebook" target="_blank"><span class="fab fa-facebook"></span></a>
@@ -54,7 +54,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
 <script type="text/javascript">
+ var config = {
+    base: $('#base').val()
+  };
   (function($) {
+   
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
       if (!$(this).next().hasClass('show')) {
         $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
@@ -68,7 +72,9 @@
 
       return false;
     });
+   
   })(jQuery)
+  
 </script>
 
 </html>

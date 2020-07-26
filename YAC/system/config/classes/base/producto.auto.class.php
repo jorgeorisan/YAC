@@ -1,6 +1,6 @@
 <?php 
 
-	class Autoproducto {
+	class AutoProducto {
 
 	// Variables
 		protected $db;
@@ -9,6 +9,7 @@
 		protected $id_proveedor = 0;
 		protected $id_marca = 0;
 		protected $id_categoria = 0;
+		protected $id_subcategoria = 0;
 		protected $nombre = "";
 		protected $precio = 0;
 		protected $costo = 0;
@@ -26,6 +27,7 @@
 		protected $updated_date = "";
 		protected $deleted_date = "";
 		protected $status_categoria = "";
+		protected $descripcion = "";
 
 		protected $validclass = true;
 		protected $statusclass = array();
@@ -37,12 +39,12 @@
 			$this->db = $db;
 		}
 		public static function construct( $id ){
-			$producto = new producto();
+			$producto = new Producto();
 			$producto->setId( $id );
 			return $producto;
 		}
 		public static function constructWithValues( $values ){
-			$producto = new producto();
+			$producto = new Producto();
 			$producto->setValues( $values );
 			return $producto;
 		}
@@ -67,6 +69,11 @@
 		public function setIdCategoria( $value ){			
 			if ( $this->validclassateInput("/^.*$/", $value, "IDCATEGORIA","i") ) 
  				$this->id_categoria = $value;
+		}
+		
+		public function setIdSubcategoria( $value ){			
+			if ( $this->validclassateInput("/^.*$/", $value, "IDSUBCATEGORIA","i") ) 
+ 				$this->id_subcategoria = $value;
 		}
 		
 		public function setNombre( $value ){			
@@ -152,6 +159,9 @@
  				$this->status_categoria = $value;
 		}
 		
+		public function setDescripcion( $value ){ 				$this->descripcion = $value;
+		}
+		
 		public function setValidclass( $value ){
 			if ( $this->validclassateInput('/^(true|false)$/', ( $value ) ? 'true' : 'false', "Validclass",'s') )
 				$this->validclass = $value;
@@ -198,6 +208,14 @@
  				return htmlspecialchars($this->id_categoria) ;
  			}else{
  				return $this->id_categoria ;
+ 			}
+		}
+		
+		public function getIdSubcategoria($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->id_subcategoria) ;
+ 			}else{
+ 				return $this->id_subcategoria ;
  			}
 		}
 		
@@ -337,6 +355,14 @@
  			}
 		}
 		
+		public function getDescripcion($sanitize=true){ 
+ 			if($sanitize){
+ 				return htmlspecialchars($this->descripcion) ;
+ 			}else{
+ 				return $this->descripcion ;
+ 			}
+		}
+		
 		public function getValidclass(){
 			return $this->validclass;
 		}
@@ -365,7 +391,7 @@
 
 	// Public Support Functions
 		public function load($id) {
-			$sql="SELECT * FROM Producto WHERE id = ?";
+			$sql="SELECT * FROM producto WHERE id = ?";
 
 			if ( $id == 0 )
 				return $this->killInvalidclass( "The ID not validclass." );
@@ -386,6 +412,7 @@
 			$this->setIdProveedor( $res['id_proveedor'] );
 			$this->setIdMarca( $res['id_marca'] );
 			$this->setIdCategoria( $res['id_categoria'] );
+			$this->setIdSubcategoria( $res['id_subcategoria'] );
 			$this->setNombre( $res['nombre'] );
 			$this->setPrecio( $res['precio'] );
 			$this->setCosto( $res['costo'] );
@@ -403,6 +430,7 @@
 			$this->setUpdatedDate( $res['updated_date'] );
 			$this->setDeletedDate( $res['deleted_date'] );
 			$this->setStatusCategoria( $res['status_categoria'] );
+			$this->setDescripcion( $res['descripcion'] );
 			return true;
 		}
 		// end function load
