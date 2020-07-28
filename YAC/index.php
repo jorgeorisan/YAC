@@ -113,6 +113,7 @@ Routing section
         $page = "Productos_index.php";
         $dir  = "Productos";//si esta en carpeta
         if ($request['page']==='add')      { $page = "Productos_add.php";      }
+        if ($request['page']==='ajax')     { $page = "Productos_ajax.php";    }
         if ($request['page']==='edit')     { $page = "Productos_edit.php";     }
         if ($request['page']==='addpopup') { $page = "Productos_addpopup.php"; }
         if ($request['page']==='kardex')   { $page = "Productos_kardex.php";   }
@@ -271,6 +272,12 @@ Routing section
               $page = "Reportes_cortediario.php";      
             }
             break;
+          case 'Productos':            
+              if ($request['page']==='ajax'){ 
+                $dir  = "Productos";//si esta en carpeta 
+                $page = "Productos_ajax.php";      
+              }
+              break;
           default:
             
             break;
